@@ -1,0 +1,24 @@
+STRINGTABLE Nprojector          {
+    Nprojector                  "cmNodeProjector";
+
+    NPRJ_LONG_PROJECTION        "Projection";
+    NPRJ_BOOL_TILE              "Tile";
+    NPRJ_BOOL_SEAMLESS          "Seamless";
+    NPRJ_REAL_OFFSET_U          "Offset U";
+    NPRJ_REAL_OFFSET_V          "Offset V";
+    NPRJ_REAL_LENGTH_U          "Length U";
+    NPRJ_REAL_LENGTH_V          "Length V";
+    NPRJ_VECTOR_POSITION        "Position";
+    NPRJ_VECTOR_SIZE            "Size";
+    NPRJ_VECTOR_ROTATION        "Rotation";
+    NPRJ_BOOL_FORCE2D           "Force 2D";
+
+    NPRJ_PROJ_SPHERICAL         "Spherical";
+    NPRJ_PROJ_CYLINDRICAL       "Cylindrical";
+    NPRJ_PROJ_FLAT              "Flat";
+    NPRJ_PROJ_CUBIC             "Cubic";
+    NPRJ_PROJ_FRONTAL           "Frontal";
+    NPRJ_PROJ_SPATIAL           "Spatial";
+    NPRJ_PROJ_UVW               "UVW Mapping";
+    NPRJ_PROJ_SHRINKWRAP        "Shrink Mapping";
+}

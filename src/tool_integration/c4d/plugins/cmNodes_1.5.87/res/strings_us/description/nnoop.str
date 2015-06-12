@@ -1,0 +1,3 @@
+STRINGTABLE Nnoop                   {
+    Nnoop                           "cmNodeNoop";
+}

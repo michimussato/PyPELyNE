@@ -1,0 +1,35 @@
+// C4D-DialogResource
+
+DIALOGSTRINGS DLG_EXPFILE
+{
+  CAPTION_TEXT  ".Obj ファイルのエクスポート";
+  IDS_DTITLE    "エクスポート オプション";
+  IDS_FLIPU     "UV座標の水平反転";
+  IDS_FLIPV     "UV座標の垂直反転";
+  IDS_GTAGN     "グループタグ名";
+  IDS_HEIR      "階層構造を保持";
+  IDS_HTX1      "Red-i Productions 提供";
+  IDS_HTX2      "$"Riptide$"";
+  IDS_HTX3      "Wavefront .obj フィルタ";
+  IDS_HTX4      "\u00A9 2004 by Keith 'Spanki' Young";
+  IDS_HTX5      "http://www.skinprops.com";
+  IDS_MESHN     "メッシュ名";
+  IDS_REVERSEF  "ポリゴンの反転";
+  IDS_SCALEF    "スケール値:";
+  IDS_SORTC     "C4D";
+  IDS_SORTG     "グループ";
+  IDS_SORTM     "マテリアル";
+  IDS_SORTR     "リージョン";
+  IDS_TFACE     "ポリゴンの並べ替え";
+  IDS_TGNRL     "一般";
+  IDS_TGROUP    "グループオプション";
+  IDS_XASG      "グループ";
+  IDS_XASR      "UVMapper用リージョン";
+  IDS_XPNGONS   "Export Ngons";
+  IDS_XPFACES   "エクスポート: ポリゴン";
+  IDS_XPGROUPS  "エクスポート: グループ";
+  IDS_XPMATS    "エクスポート: マテリアル";
+  IDS_XPNORMS   "エクスポート: 法線";
+  IDS_XPRGNS    "エクスポート: リージョン";
+  IDS_XPUV      "エクスポート: UV座標";
+}

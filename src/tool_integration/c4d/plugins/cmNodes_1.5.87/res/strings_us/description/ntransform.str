@@ -1,0 +1,23 @@
+STRINGTABLE Ntransform              {
+    Ntransform                      "cmNodeTransform";
+
+    NTFM_BOOL_MIRROR                "Mirror";
+    NTFM_BOOL_FLIP                  "Flip";
+
+    NTFM_STATIC_TRANSLATE           "Translate";
+    NTFM_REAL_TRANSLATE_X           "X";
+    NTFM_REAL_TRANSLATE_Y           "Y";
+
+    NTFM_STATIC_ROTATE              "Rotate";
+    NTFM_REAL_ROTATE                "Z";
+    NTFM_STATIC_1                   "";
+
+    NTFM_STATIC_SCALE               "Scale";
+    NTFM_REAL_SCALE_X               "X";
+    NTFM_REAL_SCALE_Y               "Y";
+
+    NTFM_STATIC_CENTER              "Center";
+    NTFM_REAL_CENTER_X              "X";
+    NTFM_REAL_CENTER_Y              "Y";
+
+}

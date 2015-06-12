@@ -1,0 +1,15 @@
+STRINGTABLE Ndirblur                {
+    Ndirblur                        "cmNodeDirBlur";
+
+    NDBL_REAL_RADIUS                "Radius";
+    NDBL_REAL_ANGLE                 "Angle";
+    NDBL_LONG_DENSITY               "Density";
+    NDBL_REAL_MIX                   "Mix";
+    NDBL_LONG_CUSTOM_DENSITY        "Custom";
+
+    NDBL_DENSITY_LOW                "Low";
+    NDBL_DENSITY_MED                "Medium";
+    NDBL_DENSITY_HIGH               "High";
+    NDBL_DENSITY_CUSTOM             "Custom";
+
+}

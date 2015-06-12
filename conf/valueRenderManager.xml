@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<valueRenderManager>
+    <family value="Deadline" abbrev="DDL">
+        <vendor value="Thinkbox">
+            <version value="5.2" command="/Applications/Deadline/Resources/bin/deadlinecommand">
+                <flag key="-SubmitCommandLineJob" data="none" type="none"/>
+                <flag key="-executable" data="required" type="string"/>
+                <flag key="-startupdirectory" data="required" type="string"/>
+                <flag key="-chunksize" data="required" type="integer"/>
+                <flag key="-arguments" data="required" type="list"/>
+                <flag key="-frames" data="required" type="list"/>
+                <flag key="-initialstatus" data="required" type="string"/>
+                <flag key="-prop" data="optional" type="tuple"/>
+                <guiplugins>
+                    <plugin abbrev="CIN">
+                        <argument key="-nogui" value="none"/>
+                    </plugin>
+                    <plugin abbrev="NUK">
+                    </plugin>
+                    <plugin abbrev="NUX">
+                    </plugin>
+                    <plugin abbrev="FSN">
+                    </plugin>
+                    <plugin abbrev="RFL">
+                    </plugin>
+                </guiplugins>
+                <cmdplugins>
+                    <plugin value="Arnold" abbrev="ARN">
+                        <executable value="/Applications/MtoA/bin/kick"/>
+                        <argument key="-nstdin" data="none" type="none"/>
+                        <argument key="-dw" data="none" type="none"/>
+                        <argument key="-v" data="required" type="integer"/>
+                        <argument key="-as" data="required" type="integer"/>
+                        <argument key="-i" data="required" type="strint"/>
+                        <argument key="-o" data="required" type="sting"/>
+                    </plugin>
+                </cmdplugins>
+            </version>
+        </vendor>
+    </family>
+</valueRenderManager>
+
+<!-- 
+deadlinecommand \
+-SubmitCommandLineJob \
+-executable "/Applications/MtoA/bin/kick" \
+-startupdirectory "/Volumes/pili/projects/2009-01-10___myself___mazda787b/assets/AST_mazda/RND_DDL__lightTunnel/usr/" \
+-chunksize "1" \
+-arguments "-nstdin -dw -v 2 -as 3 -i <QUOTE>/Volumes/pili/projects/2009-01-10___myself___mazda787b/assets/AST_mazda/RND_DDL__lightTunnel/input/AST_mazda__SHD_MAY__mazda_shading__ASS_lightTunnel/ASS_lightTunnel.<STARTFRAME%4>.ass<QUOTE> -o <QUOTE>/Volumes/pili/projects/2009-01-10___myself___mazda787b/assets/AST_mazda/RND_DDL__lightTunnel/output/SEQ_lightTunnel_EXR/current/SEQ_lightTunnel_EXR.<STARTFRAME%4>.exr<QUOTE>" \
+-frames "1001-1050" \
+-initialstatus "Suspended" \
+-prop "Comment=Arnold" \
+-prop "Priority=50" \
+-prop "Interruptible=true" \
+-prop "OutputDirectory0=/Volumes/pili/projects/2009-01-10___myself___mazda787b/assets/AST_mazda/RND_DDL__lightTunnel/output/SEQ_lightTunnel_EXR/current" \
+-prop "OutputFilename0=SEQ_lightTunnel_EXR.####.exr" \
+-prop "Name=2009-01-10___myself___mazda787b  |  AST_mazda  |  RND_DDL__lightTunnel  |  SEQ_lightTunnel_EXR  |  2015-05-14_0012-47" \ -->

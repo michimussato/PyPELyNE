@@ -1,0 +1,76 @@
+// //////////////// //
+// Triangle Counter //
+// //////////////// //
+
+global proc int triangleCounter () {
+	int $tCount = 0;	
+	int $tcountObjs[];
+	int $tcountComp[];
+
+	if (size(`filterExpand -sm 12`)) {
+		string $polyObjs[] = stringArrayRemoveDuplicates(`filterExpand -sm 12`);
+		
+    	$tcountObjs = `polyEvaluate -t $polyObjs`;
+	}
+	if (size(`filterExpand -sm 34`)) {
+		$tcountComp = `polyEvaluate -tc`;
+	}
+
+	$tCount = $tcountObjs[0] + $tcountComp[0];
+	return $tCount;
+}
+
+if (!`headsUpDisplay -ex HUDTriangleCounter`)
+{
+	headsUpDisplay
+		-section          0
+		-block            8
+		-blockSize        "small"
+		-label            "Tris:"
+		-labelFontSize    "small"
+		-dataFontSize	  "small"
+		-command          "triangleCounter"
+		-event            "SelectionChanged"
+		-nodeChanges      "attributeChange"
+		HUDTriangleCounter;
+}
+
+
+// ///////////////// //
+// Selection Counter //
+// ///////////////// //
+
+global proc int selectionCounter () {
+	return (size(`ls -sl -fl`));
+};
+
+if (!`headsUpDisplay -ex HUDSelectionCounter`)
+{
+	headsUpDisplay
+		-section			0
+		-block				7
+		-blockSize			"small"
+		-label				"Sel:"
+		-labelFontSize		"small"
+		-dataFontSize		"large"
+		-command			"selectionCounter"
+		-event				"SelectionChanged"
+		-nodeChanges		"attributeChange"
+		HUDSelectionCounter;
+}
+
+// ////////// //
+// Menu Stuff //
+// ////////// //
+
+global string $gHeadsUpDisplayMenu;
+
+menuItem -parent $gHeadsUpDisplayMenu
+	-checkBox true
+	-label "Triangle Count"
+	-command "headsUpDisplay -e -vis 1 HUDTriangleCounter";
+
+menuItem -parent $gHeadsUpDisplayMenu
+	-checkBox true
+	-label "Selection Count"
+	-command "headsUpDisplay -e -vis 1 HUDSelectionCounter";

@@ -1,0 +1,142 @@
+STRINGTABLE RF_PARTICLE_IMPORTER
+{
+	RFParticleImporter "RealFlow Particle Importer";
+
+	P_IMP_SETUP				"Setup";
+	P_IMP_CHANNELS   		"Channels";
+	P_IMP_DISPLAY			"Display";
+
+	P_IMP_VECTOR			"Vector";
+	P_IMP_SCALAR			"Scalar";
+	
+	P_IMP_CURRENT_FRAME		"Current Frame";
+	P_IMP_CORE_FRAME		"Core Frames";
+	P_IMP_ALL_FRAME			"All Frames";
+	
+	P_IMP_KEEP				"Keep";
+	P_IMP_ADD				"Add";
+	P_IMP_NO				"No";
+	
+	P_IMP_TPDEFAULT			"TP View Type";
+	P_IMP_PARTICLES			"Particles";
+	P_IMP_CIRCLES			"Circles";
+	P_IMP_BOX				"Box";
+
+	P_IMP_COLOR_NONE		"None";
+	P_IMP_COLOR_VELOCITY	"Velocity";
+	P_IMP_COLOR_NORMAL		"Normal";
+	P_IMP_COLOR_FORCE		"Force";
+	P_IMP_COLOR_TEXTUREU	"Texture U";
+	P_IMP_COLOR_TEXTUREV	"Texture V";
+	P_IMP_COLOR_NEIGHBOR	"Neighbor";
+	P_IMP_COLOR_AGE		    "Age";
+	P_IMP_COLOR_ISOLATION	"Isolation";
+	P_IMP_COLOR_VISCOSITY	"Viscosity";
+	P_IMP_COLOR_DENSITY		"Density";
+	P_IMP_COLOR_PRESSURE	"Pressure";
+	P_IMP_COLOR_MASS		"Mass";
+	P_IMP_COLOR_TEMPERATURE	"Temperature";
+	P_IMP_COLOR_VORTICITY	"Vorticity";
+
+	P_IMP_CAMERA			"Camera";
+	P_IMP_XY				"XY";
+	P_IMP_YZ				"YZ";
+	P_IMP_XZ				"XZ";
+
+	P_IMP_FILE_PATH			"File Path";
+	P_IMP_NAME				"Name";
+	P_IMP_PADDING			"Padding";
+	P_IMP_CACHE_MODE		"Cache Mode";
+	P_IMP_CACHE_CORE		"Cache Core";
+	P_IMP_START_FRAME		"Start Frame";
+	P_IMP_END_FRAME			"End Frame";
+	P_IMP_OFFSET			"Offset";
+	P_IMP_SCALE			"Scale";
+	P_IMP_LOD			"Level of Detail";
+	P_IMP_LIFE			"Life Time";
+	P_IMP_KEEP_ORDER		"Keep order of particles";
+	P_IMP_LOCK_CURRENT		"Lock Current Frame";
+	P_IMP_LOCK_LAST			"Lock Last Frame";
+	P_IMP_INVERT_SEQUENCE	"Invert Sequence";
+   P_IMP_BLUR_LENGTH    "Blur Length";
+
+	P_IMP_VELOCITY			"Velocity";
+	P_IMP_VELOCITY_V		"";
+	P_IMP_FORCE				"Force";
+	P_IMP_FORCE_V			"";
+	P_IMP_VORTICITY			"Vorticity";
+	P_IMP_VORTICITY_V		"";
+	P_IMP_NORMAL			"Normal";
+	P_IMP_NORMAL_V			"";
+	P_IMP_TEXTURE			"Texture";
+	P_IMP_TEXTURE_V			"";
+	P_IMP_NEIGHBOURS		"Number of Neighbors";
+	P_IMP_NEIGHBOURS_V		"";
+	P_IMP_INFOBIT			"Information Bit";
+	P_IMP_INFOBIT_V			"";
+	P_IMP_AGE				"Age";
+	P_IMP_AGE_V				"";
+	P_IMP_ISOLATION			"Isolation Time";
+	P_IMP_ISOLATION_V		"";
+	P_IMP_VISCOSITY			"Viscosity";
+	P_IMP_VISCOSITY_V		"";
+	P_IMP_DENSITY			"Density";
+	P_IMP_DENSITY_V			"";
+	P_IMP_PRESSURE			"Pressure";
+	P_IMP_PRESSURE_V		"";
+	P_IMP_MASS				"Mass";
+	P_IMP_MASS_V			"";
+	P_IMP_TEMPERATURE		"Temperature";
+	P_IMP_TEMPERATURE_V		"";
+	P_IMP_ID				"Particle ID";
+	P_IMP_ID_V				"";
+
+	// display
+	P_IMP_DISPLAY_MODE		"Display Mode";
+	P_IMP_CIRCLES_DIR		"Circle Direction";
+	P_IMP_RADIUS			"Circle Radius";
+	P_IMP_COLOR_MODE		"Color By";
+	P_IMP_MIN_COLOR			"Min Color";
+	P_IMP_MAX_COLOR			"Max Color";
+	P_IMP_DISP_COLOR		"Color";
+	P_IMP_DISPLAY_AUTO_RANGE "Automatic Range";
+	P_IMP_DISPLAY_MIN       "Min Value";
+	P_IMP_DISPLAY_MAX       "Max Value";
+	P_IMP_DISPLAY_CURRENT_MIN "Current Min";
+	P_IMP_DISPLAY_CURRENT_MAX "Current Max";
+    P_IMP_ADD_PARTICLE_SHADER "Add shader";
+
+	// render
+	P_IMP_GRP_RENDER		"Render";
+	P_IMP_RENDER_TYPE		"Render type";
+	P_IMP_RENDER_TYPE_POINT 	"Point";
+	P_IMP_RENDER_TYPE_SPHERE 	"Sphere";
+	P_IMP_RENDER_TYPE_SPRITE 	"Sprite";
+	P_IMP_RENDER_TYPE_OBJECT 	"Object";
+	P_IMP_RENDER_OBJECT 		"Render instance";
+	P_IMP_RENDER_RADIUS		"Radius";
+
+   P_IMP_GRP_CHANNEL_OPERATIONS  "Channel Operations";
+   P_IMP_GRP_CHOP_LIST           "Operations";
+   P_IMP_ENABLE_CHOPS            "Enable Operations";
+   P_IMP_ADD_CHOP                "Add New Operation";
+
+	P_IMP_CHAN_VELOCITY           "Velocity";
+	P_IMP_CHAN_FORCE              "Force";
+	P_IMP_CHAN_VORTICITY          "Vorticity";
+	P_IMP_CHAN_NORMAL             "Normal";
+	P_IMP_CHAN_TEXTURE            "Texture";
+	P_IMP_CHAN_NEIGHBOURS         "Neighbors";
+	P_IMP_CHAN_INFOBIT            "Info bit";
+	P_IMP_CHAN_AGE                "Age";
+	P_IMP_CHAN_ISOLATION          "Isolation";
+	P_IMP_CHAN_VISCOSITY          "Viscosity";
+	P_IMP_CHAN_DENSITY            "Density";
+	P_IMP_CHAN_PRESSURE           "Pressure";
+	P_IMP_CHAN_MASS               "Mass";
+	P_IMP_CHAN_TEMPERATURE        "Temperature";
+	P_IMP_CHAN_ID                 "Id";
+
+   P_IMP_SHARE_ASSETS            "Share all frames (Team Render)";
+}
+

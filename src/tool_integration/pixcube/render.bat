@@ -1,0 +1,2 @@
+Powershell.exe \\SMSRV-001\Allgemein\Kunden\UBS\UBS_Artcontent_2014\tasks\0025__rendering\shot_0003__A002_C077_0106HO\output\C4D_exr_vray_ultraQuick\C4D_exr_vray_ultraQuick.py
+PAUSE

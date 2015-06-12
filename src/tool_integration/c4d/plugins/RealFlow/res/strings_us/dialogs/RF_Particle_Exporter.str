@@ -1,0 +1,46 @@
+DIALOGSTRINGS RF_PARTICLE_EXPORTER
+{
+	RFParticleExporter "RealFlow Particle Exporter";
+
+  	P_EXP_SETUP				"Setup";
+	P_EXP_PARTICLE			"Particle File";
+
+	P_EXP_PSYS				"Particle System";
+	P_EXP_DIR				"Directory";
+	P_EXP_NAME				"Name";
+	P_EXP_PADDING			"Padding";
+	P_EXP_START				"Start Frame";
+	P_EXP_END				"End Frame";
+	P_EXP_INC				"Inc Frame";
+	P_EXP_INFO				"";
+	P_EXP_BUTTON			"Export";
+	P_EXP_CANCEL			"Cancel";
+		
+	P_EXP_FLUIDNAME			"Fluid Name";
+	P_EXP_FLUIDTYPE			"Fluid Type";
+		P_EXP_GAS				"Gas";
+		P_EXP_LIQUID			"Liquid";
+		P_EXP_DUMB				"Dumb";
+		P_EXP_ELASTIC			"Elastic";
+	P_EXP_FPS				"Frames / sec";
+		P_EXP_FPS30				"30";
+		P_EXP_FPS25				"25";
+		P_EXP_FPS24				"24";
+	P_EXP_SCENE_SCALE		"Scene Scale";
+	P_EXP_RADIUS			"Radius";
+	P_EXP_EMITTER_POSX		"Emitter Position X";
+	P_EXP_EMITTER_POSY		"Emitter Position Y";
+	P_EXP_EMITTER_POSZ		"Emitter Position Z";
+	P_EXP_EMITTER_ROTX		"Emitter Rotation X";
+	P_EXP_EMITTER_ROTY		"Emitter Rotation Y";
+	P_EXP_EMITTER_ROTZ		"Emitter Rotation Z";
+	P_EXP_EMITTER_SCALEX		"Emitter Scale X";
+	P_EXP_EMITTER_SCALEY		"Emitter Scale Y";
+	P_EXP_EMITTER_SCALEZ		"Emitter Scale Z";
+
+	P_EXP_CALC_VELOCITY		"Calculate velocity";
+
+	P_EXP_FORMAT            "Format";
+	P_EXP_FORMAT_RF2012_STR "RealFlow 2012";
+	P_EXP_FORMAT_RF2013_STR "RealFlow 2013 and higher";
+}

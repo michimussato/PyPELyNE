@@ -1,0 +1,5 @@
+STRINGTABLE Nswitch                             {
+    Nswitch                                     "cmNodeSwitch";
+
+    NSWT_LONG_WHICH                             "Which";
+}

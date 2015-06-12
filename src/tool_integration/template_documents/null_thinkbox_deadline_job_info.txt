@@ -1,0 +1,8 @@
+Plugin=
+Frames=
+Priority=50
+Name=
+Department=
+Comment=
+OutputDirectory0=
+OutputFilename0=

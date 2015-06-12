@@ -1,0 +1,10 @@
+STRINGTABLE Ndistance               {
+    Ndistance                       "cmNodeDistance";
+
+    NDNST_REAL_DISTANCE             "Distance";
+    NDNST_LONG_EXCLUSION_MODE       "Objects";
+    NDNST_INEX_OBJECTS              "";
+
+    NDNST_MODE_INCLUDE              "Include";
+    NDNST_MODE_EXCLUDE              "Exclude";
+}

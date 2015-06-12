@@ -1,0 +1,25 @@
+STRINGTABLE Ngrade                  {
+    Ngrade                          "cmNodeGrade";
+
+    NGRD_LONG_LUMA_MATH             "Luminance Math";
+    NGRD_BOOL_CLAMP_BLACK           "Clamp Black";
+    NGRD_BOOL_CLAMP_WHITE           "Clamp White";
+
+    NGRD_REAL_BLACKPOINT            "Blackpoint";
+    NGRD_REAL_WHITEPOINT            "Whitepoint";
+    NGRD_REAL_LIFT                  "Lift";
+    NGRD_REAL_GAIN                  "Gain";
+    NGRD_REAL_MULTIPLY              "Multiply";
+    NGRD_REAL_OFFSET                "Offset";
+    NGRD_REAL_GAMMA                 "Gamma";
+    NGRD_REAL_SATURATION            "Saturation";
+    NGRD_REAL_CONTRAST              "Contrast";
+    NGRD_BTN_RESET_MASTER           "Reset";
+
+    NGRD_REAL_MIX                   "Mix";
+
+    NGRD_LUM_REC709                 "Rec 709";
+    NGRD_LUM_CCIR601                "Ccir 601";
+    NGRD_LUM_AVERAGE                "Average";
+    NGRD_LUM_MAXIMUM                "Maximum";
+}

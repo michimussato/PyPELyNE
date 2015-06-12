@@ -1,0 +1,20 @@
+publishing (linking actually)
+
+dst
+
+cd /Users/michaelmussato/Dropbox/development/workspace/PyPELyNE/projects/proj1/content/assets/test/ANM_CIN__animation/input
+
+ls -al
+drwxr-xr-x@ 5 michaelmussato  staff   170 May  7 08:48 .
+drwxr-xr-x@ 7 michaelmussato  staff   238 May  6 19:20 ..
+-rw-r--r--@ 1 michaelmussato  staff  6148 May  7 08:47 .DS_Store
+lrwxr-xr-x  1 michaelmussato  staff    38 May  7 08:48 assets.test.MDL_MAY__auto.ABC__asfrasfr -> ../../MDL_MAY__auto/live/ABC__asfrasfr
+
+
+
+
+src
+
+cd /Users/michaelmussato/Dropbox/development/workspace/PyPELyNE/projects/proj1/content/assets/test/MDL_MAY__auto/live 
+
+ln -s ../output/ABC__asfrasfr/2015-05-07_0845-25/ ABC__asfrasfr

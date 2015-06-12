@@ -1,0 +1,17 @@
+STRINGTABLE RF_MELTMATERIAL
+{
+	RFMeltMaterial "RealFlow MeltMaterial";
+
+    RF_MELTMATERIAL_SETUP           "Setup";
+    RF_MELTMATERIAL_INDEX           "Melt Index";
+    RF_MELTMATERIAL_MAT1            "Material 1";
+    RF_MELTMATERIAL_MAT2            "Material 2";
+    RF_MELTMATERIAL_MAT3            "Material 3";
+    RF_MELTMATERIAL_MAT4            "Material 4";
+    RF_MELTMATERIAL_MAT5            "Material 5";
+    RF_MELTMATERIAL_MAT6            "Material 6";
+    RF_MELTMATERIAL_MAT7            "Material 7";
+    RF_MELTMATERIAL_MAT8            "Material 8";
+    RF_MELTMATERIAL_MAT9            "Material 9";
+    RF_MELTMATERIAL_MAT10           "Material 10";
+}

@@ -1,0 +1,29 @@
+#symbolic link win
+
+#pattern
+# mklink /D "path\to\linkToBeCreated" "path\to\physicalFolder"
+
+#scripts
+mklink /D "C:\Users\michael.mussato.SCHERRERMEDIEN\AppData\Roaming\MAXON\CINEMA 4D R13_05DFD2A0\library\scripts" "C:\Users\michael.mussato.SCHERRERMEDIEN\Dropbox\development\workspace\PyPELyNE\src\tool_integration\c4d\scripts"
+mklink /D "C:\Users\michael.mussato.SCHERRERMEDIEN\AppData\Roaming\MAXON\CINEMA 4D R14_4A9E4467\library\scripts" "C:\Users\michael.mussato.SCHERRERMEDIEN\Dropbox\development\workspace\PyPELyNE\src\tool_integration\c4d\scripts"
+
+#layout
+mklink /D "C:\Users\michael.mussato.SCHERRERMEDIEN\AppData\Roaming\MAXON\CINEMA 4D R13_05DFD2A0\library\layout" "C:\Users\michael.mussato.SCHERRERMEDIEN\Dropbox\development\workspace\PyPELyNE\src\tool_integration\c4d\layout"
+mklink /D "C:\Users\michael.mussato.SCHERRERMEDIEN\AppData\Roaming\MAXON\CINEMA 4D R14_4A9E4467\library\layout" "C:\Users\michael.mussato.SCHERRERMEDIEN\Dropbox\development\workspace\PyPELyNE\src\tool_integration\c4d\layout"
+
+#plugins
+mklink /D "C:\Users\michael.mussato.SCHERRERMEDIEN\AppData\Roaming\MAXON\CINEMA 4D R13_05DFD2A0\plugins" "C:\Users\michael.mussato.SCHERRERMEDIEN\Dropbox\development\workspace\PyPELyNE\src\tool_integration\c4d\plugins"
+mklink /D "C:\Users\michael.mussato.SCHERRERMEDIEN\AppData\Roaming\MAXON\CINEMA 4D R14_4A9E4467\plugins" "C:\Users\michael.mussato.SCHERRERMEDIEN\Dropbox\development\workspace\PyPELyNE\src\tool_integration\c4d\plugins"
+
+#xgroup
+mklink /D "C:\Users\michael.mussato.SCHERRERMEDIEN\AppData\Roaming\MAXON\CINEMA 4D R13_05DFD2A0\library\xgroup" "C:\Users\michael.mussato.SCHERRERMEDIEN\Dropbox\development\workspace\PyPELyNE\src\tool_integration\c4d\xgroup"
+mklink /D "C:\Users\michael.mussato.SCHERRERMEDIEN\AppData\Roaming\MAXON\CINEMA 4D R14_4A9E4467\library\xgroup" "C:\Users\michael.mussato.SCHERRERMEDIEN\Dropbox\development\workspace\PyPELyNE\src\tool_integration\c4d\xgroup"
+
+
+#new.c4d
+mklink "C:\Program Files\MAXON\CINEMA 4D R13\new.c4d" "C:\Users\michael.mussato.SCHERRERMEDIEN\Dropbox\development\workspace\PyPELyNE\src\tool_integration\c4d\new.c4d"
+mklink "C:\Program Files\MAXON\CINEMA 4D R14\new.c4d" "C:\Users\michael.mussato.SCHERRERMEDIEN\Dropbox\development\workspace\PyPELyNE\src\tool_integration\c4d\new.c4d"
+
+#shortcuttable
+mklink "C:\Users\michael.mussato.SCHERRERMEDIEN\AppData\Roaming\MAXON\CINEMA 4D R13_05DFD2A0\prefs\shortcuttable.res" "C:\Users\michael.mussato.SCHERRERMEDIEN\Dropbox\development\workspace\PyPELyNE\src\tool_integration\c4d\shortcuttable\shortcuttable.res"
+mklink "C:\Users\michael.mussato.SCHERRERMEDIEN\AppData\Roaming\MAXON\CINEMA 4D R14_4A9E4467\prefs\shortcuttable.res" "C:\Users\michael.mussato.SCHERRERMEDIEN\Dropbox\development\workspace\PyPELyNE\src\tool_integration\c4d\shortcuttable\shortcuttable.res"

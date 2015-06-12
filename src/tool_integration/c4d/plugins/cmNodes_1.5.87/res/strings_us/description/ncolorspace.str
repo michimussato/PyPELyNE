@@ -1,0 +1,11 @@
+STRINGTABLE Ncolorspace             {
+    Ncolorspace                     "cmNodeColorspace";
+
+    NCSP_LONG_COLOR_SRC             "Input";
+    NCSP_LONG_COLOR_DST             "Output";
+
+    NCSP_RGB                        "Linear";
+    NCSP_HSV                        "HSV";
+    NCSP_HSL                        "HSL";
+    NCSP_SRGB                       "sRGB";
+}

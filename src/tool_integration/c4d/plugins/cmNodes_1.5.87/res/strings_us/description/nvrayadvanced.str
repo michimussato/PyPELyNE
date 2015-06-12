@@ -1,0 +1,125 @@
+STRINGTABLE Nvrayadvanced                           {
+    Nvrayadvanced                                   "cmNodeVrayAdvanced";
+
+    NVRAYADVANCED_LINK_MATERIAL                     "Vray Advanced Mat";
+
+    VRAYMATERIAL_USE_MATTE                          "Enable Matte";
+    VRAYMATERIAL_USE_COLOR1                         "Enable Diffuse 1";
+    VRAYMATERIAL_USE_COLOR2                         "Enable Diffuse 2";
+    VRAYMATERIAL_USE_LUMINANCE                      "Enable Luminosity";
+    VRAYMATERIAL_USE_TRANSPARENCY                   "Enable Refraction";
+    VRAYMATERIAL_USE_FLAKES                         "Enable Flakes";
+    VRAYMATERIAL_USE_REFLECTION                     "Enable Reflection";
+    VRAYMATERIAL_USE_BUMP                           "Enable Bump";
+    VRAYMATERIAL_USE_SPECULAR1                      "Enable Specular 1";
+    VRAYMATERIAL_USE_SPECULAR2                      "Enable Specular 2";
+    VRAYMATERIAL_USE_SPECULAR3                      "Enable Specular 3";
+    VRAYMATERIAL_USE_SPECULAR4                      "Enable Specular 4";
+    VRAYMATERIAL_USE_SPECULAR5                      "Enable Specular 5";
+    VRAYMATERIAL_USE_SSS                            "Enable SSS";
+    VRAYMATERIAL_USE_TRANSP                         "Enable Weight";
+
+    ID_VRAYMATERIALGROUP_MATTE                      "Matte Material";
+    ID_VRAYMATERIALGROUP_COLOR                      "Diffuse Layer 1";
+    ID_VRAYMATERIALGROUP_COLOR2                     "Diffuse Layer 2";
+    ID_VRAYMATERIALGROUP_LUMINANCE                  "Luminosity Layer";
+    ID_VRAYMATERIALGROUP_TRANSPARENCY               "Refraction Layer";
+    ID_VRAYMATERIALGROUP_FLAKES                     "Flakes Layer";
+    ID_VRAYMATERIALGROUP_REFLECTION                 "Reflection Layer";
+    ID_VRAYMATERIALGROUP_BUMP                       "Bump";
+    ID_VRAYMATERIALGROUP_SPECULAR1                  "Specular Layer 1";
+    ID_VRAYMATERIALGROUP_SPECULAR2                  "Specular Layer 2";
+    ID_VRAYMATERIALGROUP_SPECULAR3                  "Specular Layer 3";
+    ID_VRAYMATERIALGROUP_SPECULAR4                  "Specular Layer 4";
+    ID_VRAYMATERIALGROUP_SPECULAR5                  "Specular Layer 5";
+    ID_VRAYMATERIALGROUP_TRANSP                     "Material Weight";
+    ID_VRAYMATERIALGROUP_SSS                        "SSS2 Layer";
+
+    VRAYMATERIAL_MATTE_OPSHADER                     "Matte Opacity";
+    VRAYMATERIAL_MATTE_ALPHASHADER                  "Matte Alpha";
+
+    VRAYMATERIAL_TRANSP_SHADER                      "Material Weight";
+
+    VRAYMATERIAL_BUMP_SHADER                        "Bump";
+
+    VRAYMATERIAL_LUMINANCE_SHADER                   "Luminosity Color";
+    VRAYMATERIAL_LUMINANCE_DIRTRADIUSTEX            "Luminosity Dirt";
+    VRAYMATERIAL_LUMINANCE_DIRTOCCLUDED             "Luminosity Occulded";
+    VRAYMATERIAL_LUMINANCE_DIRTUNOCCLUDED           "Luminosity Unocculded";
+    VRAYMATERIAL_LUMINANCE_TRANSPSHADER             "Luminosity Transparency";
+
+    VRAYMATERIAL_FLAKES_COLORSHADER                 "Flakes Color";
+    VRAYMATERIAL_FLAKES_GLOSSINESSSHADER            "Flakes Glossiness";
+    VRAYMATERIAL_FLAKES_ORIENTATIONSHADER           "Flakes Orientation";
+
+    VRAYMATERIAL_REFLECTION_SHADER                  "Reflection Color";
+    VRAYMATERIAL_REFLECTION_TRANSPSHADER            "Reflection Transparency";
+
+    VRAYMATERIAL_SPECULAR1_SHADER                   "Specular1 Color";
+    VRAYMATERIAL_SPECULAR1_TRANSPSHADER             "Specular1 Transparency";
+    VRAYMATERIAL_SPECULAR1_HIGHLIGHTGLOSSSHADER     "Specular1 Hilight Glossiness";
+    VRAYMATERIAL_SPECULAR1_REFLECTIONGLOSSSHADER    "Specular1 Reflection Glossiness";
+    VRAYMATERIAL_SPECULAR1_ANISOTROPYSHADER         "Specular1 Anisotropy";
+    VRAYMATERIAL_SPECULAR1_ANISOTROPYROTSHADER      "Specular1 Anisotropy Rotation";
+    VRAYMATERIAL_SPECULAR1_FRESNELREFLSHADER        "Specular1 Reflectance 90 Degree";
+    VRAYMATERIAL_SPECULAR1_FRESNELREFRSHADER        "Specular1 Reflectance 0 Degree";
+
+    VRAYMATERIAL_SPECULAR2_SHADER                   "Specular2 Color";
+    VRAYMATERIAL_SPECULAR2_TRANSPSHADER             "Specular2 Transparency";
+    VRAYMATERIAL_SPECULAR2_HIGHLIGHTGLOSSSHADER     "Specular2 Hilight Glossiness";
+    VRAYMATERIAL_SPECULAR2_REFLECTIONGLOSSSHADER    "Specular2 Reflection Glossiness";
+    VRAYMATERIAL_SPECULAR2_ANISOTROPYSHADER         "Specular2 Anisotropy";
+    VRAYMATERIAL_SPECULAR2_ANISOTROPYROTSHADER      "Specular2 Anisotropy Rotation";
+    VRAYMATERIAL_SPECULAR2_FRESNELREFLSHADER        "Specular2 Reflectance 90 Degree";
+    VRAYMATERIAL_SPECULAR2_FRESNELREFRSHADER        "Specular2 Reflectance 0 Degree";
+
+    VRAYMATERIAL_SPECULAR3_SHADER                   "Specular3 Color";
+    VRAYMATERIAL_SPECULAR3_TRANSPSHADER             "Specular3 Transparency";
+    VRAYMATERIAL_SPECULAR3_HIGHLIGHTGLOSSSHADER     "Specular3 Hilight Glossiness";
+    VRAYMATERIAL_SPECULAR3_REFLECTIONGLOSSSHADER    "Specular3 Reflection Glossiness";
+    VRAYMATERIAL_SPECULAR3_ANISOTROPYSHADER         "Specular3 Anisotropy";
+    VRAYMATERIAL_SPECULAR3_ANISOTROPYROTSHADER      "Specular3 Anisotropy Rotation";
+    VRAYMATERIAL_SPECULAR3_FRESNELREFLSHADER        "Specular3 Reflectance 90 Degree";
+    VRAYMATERIAL_SPECULAR3_FRESNELREFRSHADER        "Specular3 Reflectance 0 Degree";
+
+    VRAYMATERIAL_SPECULAR4_SHADER                   "Specular4 Color";
+    VRAYMATERIAL_SPECULAR4_TRANSPSHADER             "Specular4 Transparency";
+    VRAYMATERIAL_SPECULAR4_HIGHLIGHTGLOSSSHADER     "Specular4 Hilight Glossiness";
+    VRAYMATERIAL_SPECULAR4_REFLECTIONGLOSSSHADER    "Specular4 Reflection Glossiness";
+    VRAYMATERIAL_SPECULAR4_ANISOTROPYSHADER         "Specular4 Anisotropy";
+    VRAYMATERIAL_SPECULAR4_ANISOTROPYROTSHADER      "Specular4 Anisotropy Rotation";
+    VRAYMATERIAL_SPECULAR4_FRESNELREFLSHADER        "Specular4 Reflectance 90 Degree";
+    VRAYMATERIAL_SPECULAR4_FRESNELREFRSHADER        "Specular4 Reflectance 0 Degree";
+
+    VRAYMATERIAL_SPECULAR5_SHADER                   "Specular5 Color";
+    VRAYMATERIAL_SPECULAR5_TRANSPSHADER             "Specular5 Transparency";
+    VRAYMATERIAL_SPECULAR5_HIGHLIGHTGLOSSSHADER     "Specular5 Hilight Glossiness";
+    VRAYMATERIAL_SPECULAR5_REFLECTIONGLOSSSHADER    "Specular5 Reflection Glossiness";
+    VRAYMATERIAL_SPECULAR5_ANISOTROPYSHADER         "Specular5 Anisotropy";
+    VRAYMATERIAL_SPECULAR5_ANISOTROPYROTSHADER      "Specular5 Anisotropy Rotation";
+    VRAYMATERIAL_SPECULAR5_FRESNELREFLSHADER        "Specular5 Reflectance 90 Degree";
+    VRAYMATERIAL_SPECULAR5_FRESNELREFRSHADER        "Specular5 Reflectance 0 Degree";
+
+    VRAYMATERIAL_COLOR1_SHADER                      "Diffuse1 Color";
+    VRAYMATERIAL_COLOR1_DIRTRADIUSTEX               "Diffuse1 Dirt";
+    VRAYMATERIAL_COLOR1_DIRTOCCLUDED                "Diffuse1 Occulded";
+    VRAYMATERIAL_COLOR1_DIRTUNOCCLUDED              "Diffuse1 Unocculded";
+    VRAYMATERIAL_COLOR1_TRANSPSHADER                "Diffuse1 Transparency";
+    VRAYMATERIAL_COLOR1_ROUGHNESSTEX                "Diffuse1 Roughness";
+
+    VRAYMATERIAL_COLOR2_SHADER                      "Diffuse2 Color";
+    VRAYMATERIAL_COLOR2_DIRTRADIUSTEX               "Diffuse2 Dirt";
+    VRAYMATERIAL_COLOR2_DIRTOCCLUDED                "Diffuse2 Occulded";
+    VRAYMATERIAL_COLOR2_DIRTUNOCCLUDED              "Diffuse2 Unocculded";
+    VRAYMATERIAL_COLOR2_TRANSPSHADER                "Diffuse2 Transparency";
+    VRAYMATERIAL_COLOR2_ROUGHNESSTEX                "Diffuse2 Roughness";
+
+    VRAYMATERIAL_TRANSPARENCY_SHADER                "Refraction Color";
+    VRAYMATERIAL_TRANSPARENCY_GLOSSINESSSHADER      "Refraction Glossiness";
+    VRAYMATERIAL_COLOR1_SSSBACKSHADER               "Refraction Translucency";
+
+    VRAYMATERIAL_SSS_OVERALLCOLORSHADER             "SSS Overall Color";
+    VRAYMATERIAL_SSS_SSSCOLORSHADER                 "SSS Color";
+    VRAYMATERIAL_SSS_SCATTERSHADER                  "SSS Scatter Color";
+    VRAYMATERIAL_SSS_SCATTERMULTSHADER              "SSS Scatter Radius";
+}

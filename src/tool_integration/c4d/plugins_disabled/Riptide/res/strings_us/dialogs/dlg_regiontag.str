@@ -1,0 +1,11 @@
+// C4D-DialogResource
+
+DIALOGSTRINGS DLG_REGIONTAG
+{
+  H1    "UVMapper Region Selections";
+  T1    "Available";
+  T2    "->";
+  T3    "Selected";
+  T4    "<-";
+  TDLG  "Region Tag";
+}

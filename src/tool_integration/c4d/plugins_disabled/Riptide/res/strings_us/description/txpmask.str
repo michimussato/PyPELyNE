@@ -1,0 +1,7 @@
+STRINGTABLE Txpmask
+{
+	Txpmask "Export Mask Tag";
+
+	XPMASK_ENABLED	"Enabled";
+	XPMASK_CHILDREN	"Apply to Children";
+}

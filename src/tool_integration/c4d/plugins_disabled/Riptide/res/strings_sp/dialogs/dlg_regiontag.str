@@ -1,0 +1,11 @@
+// C4D-DialogResource
+
+DIALOGSTRINGS DLG_REGIONTAG
+{
+  H1    "Seleccion de regiones de mapeo UV";
+  T1    "Disponibles";
+  T2    "->";
+  T3    "Seleccionadas";
+  T4    "<-";
+  TDLG  "Etiqueta de regón";
+}

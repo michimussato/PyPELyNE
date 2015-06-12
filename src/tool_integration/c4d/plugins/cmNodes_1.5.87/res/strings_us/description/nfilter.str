@@ -1,0 +1,14 @@
+STRINGTABLE Nfilter                 {
+    Nfilter                         "cmNodeFilter";
+
+    NFLT_REAL_HUE                   "Hue";
+    NFLT_REAL_SATURATION            "Saturation";
+    NFLT_REAL_LIGHTNESS             "Lightness";
+    NFLT_BOOL_COLORIZE              "Colorize";
+    NFLT_REAL_BRIGHNESS             "Brightness";
+    NFLT_REAL_CONTRAST              "Contrast";
+    NFLT_REAL_LOW_CLIP              "Low Clip";
+    NFLT_REAL_HIGH_CLIP             "High Clip";
+    NFLT_BOOL_CLIPPING              "Enable Clipping";
+    NFLT_REAL_GAMMA                 "Gamma";
+}

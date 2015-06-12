@@ -1,0 +1,82 @@
+STRINGTABLE RF_MESH_IMPORTER
+{
+	RFMeshImporter "RealFlow Mesh Importer";
+
+	M_IMP_SETUP			"Setup";
+	M_IMP_GRP_BIN_CHANNELS  "BIN";
+	M_IMP_GRP_MD_CHANNELS	"MD";
+
+	M_IMP_CURRENT_FRAME		"Current Frame";
+	M_IMP_CORE_FRAME		"Core Frames";
+	M_IMP_ALL_FRAME			"All Frames";
+	
+	M_IMP_KEEP				"Keep";
+	M_IMP_ADD				"Add";
+	M_IMP_NO				"No";
+	
+	M_IMP_FILE_PATH			"File Path";
+	M_IMP_NAME				"Name";
+	M_IMP_PADDING			"Padding";
+	M_IMP_CACHE_MODE		"Cache Mode";
+	M_IMP_CACHE_CORE		"Cache Core";
+	M_IMP_START_FRAME		"Start Frame";
+	M_IMP_END_FRAME			"End Frame";
+	M_IMP_OFFSET			"Offset";
+	M_IMP_LOD				"Level of Detail";
+	M_IMP_SCALE				"Scale";
+	M_IMP_BLUR				"Blur Length";
+	M_IMP_LOCK_CURRENT		"Lock Current Frame";
+	M_IMP_INVERT_SEQUENCE	"Invert Sequence";
+
+	M_IMP_VELOCITY			"Velocity";
+	M_IMP_VELOCITY_V		"";
+	M_IMP_TEXTURE			"Texture";
+	M_IMP_TEXTURE_V			"";
+
+	M_IMP_MDVELOCITY		"Velocity";
+	M_IMP_MDVEL_LEN			"Magnitude";
+	M_IMP_MDVEL_SCALE		"Scale";
+	M_IMP_MDFORCE			"Force";
+	M_IMP_MDFORCE_LEN		"Magnitude";
+	M_IMP_MDFORCE_SCALE		"Scale";
+	M_IMP_MDNORMAL			"Normal";
+	M_IMP_MDNORM_LEN		"Magnitude";
+	M_IMP_MDNORM_SCALE		"Scale";
+	M_IMP_MDNEIGHBORS		"Neighbors";
+	M_IMP_MDNEIGH_SCALE		"Scale";
+	M_IMP_MDTEXTURE			"Texture";
+	M_IMP_MDTEX_LEN			"Magnitude";
+	M_IMP_MDTEX_SCALE		"Scale";
+	M_IMP_MDAGE			"Age";
+	M_IMP_MDAGE_SCALE		"Scale";
+	M_IMP_MDISOLATION		"Isolation";
+	M_IMP_MDISO_SCALE		"Scale";
+	M_IMP_MDVISCOSITY		"Viscosity";
+	M_IMP_MDVISC_SCALE		"Scale";
+	M_IMP_MDDENSITY			"Density";
+	M_IMP_MDDENS_SCALE		"Scale";
+	M_IMP_MDPRESSURE		"Pressure";
+	M_IMP_MDPRESS_SCALE		"Scale";
+	M_IMP_MDMASS			"Mass";
+	M_IMP_MDMASS_SCALE		"Scale";
+	M_IMP_MDTEMPERATURE		"Temperature";
+	M_IMP_MDTEMP_SCALE		"Scale";
+	M_IMP_MDVORTICITY		"Vorticity";
+	M_IMP_MDVORT_LEN		"Magnitude";
+	M_IMP_MDVORT_SCALE		"Scale";
+	M_IMP_MDCURVATURE		"Curvature";
+	M_IMP_MDCURV_SCALE		"Scale";
+	M_IMP_MDIDENTITY		"Identity";
+	M_IMP_MDID_SCALE		"";
+
+	M_IMP_GRP_PIVOT			"Pivot";
+	M_IMP_PIVOT			"Pivot position";
+	M_IMP_BINVEL_LEN		"Magnitude";
+
+	M_IMP_CHAN_VELOCITY        "Velocity";
+	M_IMP_CHAN_VELOCITY_SCALE  "Scale";
+	M_IMP_CHAN_VELOCITY_MAG    "Magnitude";
+	M_IMP_CHAN_TEXTURE         "Texture";
+	M_IMP_CHAN_WEIGHT          "Weight";
+   M_IMP_SHARE_ASSETS         "Share all frames (Team Render)";
+}

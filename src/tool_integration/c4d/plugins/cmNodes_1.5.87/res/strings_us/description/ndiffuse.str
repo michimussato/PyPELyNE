@@ -1,0 +1,13 @@
+STRINGTABLE Ndiffuse                {
+    Ndiffuse                        "cmNodeDiffuse";
+
+    NDIF_REAL_INTENSITY             "Intensity";
+    NDIF_REAL_FALLOFF               "Falloff";
+    NDIF_BOOL_USEBUMP               "Use Bump";
+    NDIF_BOOL_USESHADOWS            "Use Shadows";
+    NDIF_LONG_EXCLUSION_MODE        "Lights";
+    NDIF_INEX_LIGHTS                "";
+
+    NDIF_MODE_INCLUDE               "Include";
+    NDIF_MODE_EXCLUDE               "Exclude";
+}

@@ -1,0 +1,19 @@
+STRINGTABLE Ninfo                               {
+    Ninfo                                       "cmNodeInfo";
+
+    NINF_LONG_INFO                              "Info";
+
+    NINF_BOOL_NORMALIZE                         "Normalize";
+    NINF_REAL_MINVAL                            "Minimum";
+    NINF_REAL_MAXVAL                            "Maximum";
+    NINF_BOOL_USEBUMP                           "Use Bump";
+
+    NINF_INFO_FACING                            "Facing Ratio";
+    NINF_INFO_UVW                               "UV Coordinates";
+    NINF_INFO_CAMDIST                           "Camera Distance";
+    NINF_INFO_ONORMAL                           "Normals (Object)";
+    NINF_INFO_WNORMAL                           "Normals (World)";
+    NINF_INFO_CNORMAL                           "Normals (Camera)";
+    NINF_INFO_OBJCOLOR                          "Object Color";
+    NINF_INFO_NORMALDIR                         "Normal Direction";
+}

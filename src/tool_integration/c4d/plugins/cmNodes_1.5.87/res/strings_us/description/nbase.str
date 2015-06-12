@@ -1,0 +1,30 @@
+STRINGTABLE Nbase {
+    Nbase                               "cmNode";
+
+    //groups
+    NB_GROUP_NODEPROPERTIES             "Node";
+    NB_GROUP_MASKPROPERTIES             "Mask";
+    NB_GROUP_MISCPROPERTIES             "Misc";
+
+    //channel properties
+    NB_BOOL_CHN_RED                     "Red";
+    NB_BOOL_CHN_GREEN                   "Green";
+    NB_BOOL_CHN_BLUE                    "Blue";
+
+    //mask properties
+    NB_BOOL_MASK                        "Use Mask";
+    NB_LONG_MASK_CHANNEL                "";
+    NB_BOOL_INVERT                      "Invert";
+
+    NB_CHN_SEP                          "";
+    NB_CHN_RED                          "Red";
+    NB_CHN_GREEN                        "Green";
+    NB_CHN_BLUE                         "Blue";
+    NB_CHN_AVERAGE                      "Average";
+
+    //node properties
+    NB_STRING_LABEL                     "Label";
+    NB_BOOL_DISABLE                     "Disable";
+    NB_BOOL_POSTAGESTAMP                "Postage Stamp";
+    NB_STRING_NOTE                      "Note";
+}

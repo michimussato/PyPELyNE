@@ -1,0 +1,16 @@
+// C4D-StringResource
+// Identifier	Text 
+
+STRINGTABLE
+{
+  IDS_OEXPORT          	"Exporteur .OBJ";
+  IDS_OEXPORTHLP		"Filtre d'exportation .OBJ Amélioré";
+  IDS_OIMPORT			"Importeur .OBJ";
+  IDS_OIMPORTHLP		"Filtre d'importation .OBJ Amélioré";
+  IDS_GTAG				"Étiquettes de Groupe";
+  IDS_GTAGHELP			"Suivi facile des Groupes dans les fichiers .Obj";
+  IDS_RTAG				"Étiquettes de Région UVMapper";
+  IDS_RTAGHELP			"Suivi facile des Régions dans les fichiers .Obj";
+  IDS_XPTAG		"Export Mask";
+  IDS_XPTAGHLP		"Block Mesh (and children) from being Exported";
+}

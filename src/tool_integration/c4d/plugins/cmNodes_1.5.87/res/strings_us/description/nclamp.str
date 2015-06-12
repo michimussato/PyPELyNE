@@ -1,0 +1,11 @@
+STRINGTABLE Nclamp                  {
+    Nclamp                          "cmNodeClamp";
+
+    NCLMP_BOOL_MIN                  "Min";
+    NCLMP_COLOR_MIN                 "";
+
+    NCLMP_BOOL_MAX                  "Max";
+    NCLMP_COLOR_MAX                 "";
+
+    NCLMP_REAL_MIX                  "Mix";
+}

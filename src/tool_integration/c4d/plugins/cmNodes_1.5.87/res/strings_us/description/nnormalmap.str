@@ -1,0 +1,11 @@
+STRINGTABLE Nnormalmap              {
+    Nnormalmap                      "cmNodeNormalMap";
+
+    NNMP_REAL_RADIUS                "Radius";
+    NNMP_REAL_HEIGHT                "Height";
+    NNMP_LONG_METHOD                "Method";
+
+    NNMP_METHOD_SOBEL               "Sobel";
+    NNMP_METHOD_PREWITT             "Prewitt";
+    NNMP_METHOD_KIRSH               "Kirsh";
+}

@@ -1,0 +1,51 @@
+STRINGTABLE Prefs_cmnodes           {
+    Prefs_cmnodes                   "cmNodes";
+
+    PREF_CMN_GROUP_EDITOR           "Editor";
+    PREF_CMN_GROUP_DISPLAY          "Display";
+
+    PREF_CMN_L_INSERT_NODE          "Insert Node At";
+    PREF_CMN_L_PASTE_NODE           "Paste Node At";
+
+    PREF_CMN_B_SNAPPING             "Enable Snapping";
+    PREF_CMN_L_SNAP_THRESHOLD       "Snap Threshold";
+
+    PREF_CMN_L_GRID_WIDTH           "Grid Size X";
+    PREF_CMN_L_GRID_HEIGHT          "Grid Size Y";
+
+    PREF_CMN_L_NODE_WIDTH           "Node Width";
+    PREF_CMN_B_AUTOLABELS           "Auto Labels";
+    PREF_CMN_L_PORT_PADDING         "Port Padding";
+    PREF_CMN_L_MID_DRAG_THRESHOLD   "Mid Wire Drag Tolerance";
+    PREF_CMN_B_MID_DRAG_VISIBLE     "Visible Only";
+    PREF_CMN_L_STAMPSIZE            "Postage Stamp Size";
+
+    PREF_CMN_B_NEWMATERIAL          "New Material for Material Node";
+    PREF_CMN_B_TOLERANTSELECTION    "Tolerant Selection";
+
+    PREF_CMN_C_NOTE_INDICATOR       "Note Indicator";
+    PREF_CMN_C_WIRECOLOR            "Wire Color";
+    PREF_CMN_C_WIREACTIVE           "Wire Highlight Color";
+    PREF_CMN_L_WIRESTYLE            "Wire Style";
+
+    PREF_CMN_GROUP_NODECOLORS       "Node Colors";
+
+    PREF_CMN_C_NODES_INPUT          "Input";
+    PREF_CMN_C_NODES_ADJUST         "Adjust";
+    PREF_CMN_C_NODES_CHANNELS       "Channels";
+    PREF_CMN_C_NODES_EFFECTS2D      "Effects 2D";
+    PREF_CMN_C_NODES_OUTPUT         "Output";
+    PREF_CMN_C_NODES_UTILITY        "Utility";
+
+    CMN_INSERT_ORIGIN               "Tree Origin";
+    CMN_INSERT_VIEWCENTER           "View Center";
+    CMN_INSERT_POSITION             "Original Position";
+    CMN_INSERT_CURSORPOS            "Cursor Position";
+
+    CMN_WIRESTYLE_STRAIGHT          "Straight";
+    CMN_WIRESTYLE_BEZIER            "Bezier";
+
+    CMN_STAMPSIZE_SMALL             "Small";
+    CMN_STAMPSIZE_MEDIUM            "Medium";
+    CMN_STAMPSIZE_LARGE             "Large";
+}

@@ -1,0 +1,1212 @@
+/*	written by 		James.R
+  	file_name		JR_Voxel_Generator
+  	title			Voxel_Model_Generator
+  	version			4.0.0
+  	first version	2014-4-14
+  	update			2014-9-5
+	
+  	Copyright (C) 2014 by James.R
+  	averst.nj@Gmail.com
+*/
+//	Description
+//		Select a polygon or NURBS geometry or fluid container to execute this script
+//		This script will create models inside the volume of geometry, so be careful 
+//		low spacing will lead to a heavy scene.
+
+//query in geometry
+proc float[] sampleInfo(string $sampleNode, vector $instPos){
+	float $rawData[];
+	//polygon sampling
+	if(`nodeType $sampleNode` == "closestPointOnMesh"){
+		setAttr ($sampleNode + ".inPosition") ($instPos.x) ($instPos.y) ($instPos.z);
+		float $quePos[] = `getAttr ($sampleNode + ".position")`;
+    	float $queNor[] = `getAttr ($sampleNode + ".normal")`;
+    	vector $posVec = <<($instPos.x - $quePos[0]), ($instPos.y - $quePos[1]), ($instPos.z - $quePos[2])>>;
+    	float $dist = mag($posVec);
+    	$rawData = {($posVec.x), ($posVec.y), ($posVec.z), ($queNor[0]), ($queNor[1]), ($queNor[2]), $dist, ($quePos[0]), ($quePos[1]), ($quePos[2])};
+    }
+    //NURBS sampling
+    if(`nodeType $sampleNode` == "closestPointOnSurface"){
+    	setAttr ($sampleNode + ".inPosition") ($instPos.x) ($instPos.y) ($instPos.z);
+    	float $quePos[] = `getAttr ($sampleNode + ".position")`;
+    	vector $posVec = <<($instPos.x - $quePos[0]), ($instPos.y - $quePos[1]), ($instPos.z - $quePos[2])>>;
+    	float $dist = mag($posVec);
+    	float $parU, $parV;
+    	$parU = `getAttr ($sampleNode + ".parameterU")`;
+    	$parV = `getAttr ($sampleNode + ".parameterV")`;
+    	string $inSurface[] = `listConnections -s true ($sampleNode + ".inputSurface")`;
+    	float $queNor[] = `pointOnSurface -u $parU -v $parV -normal $inSurface[0]`;
+    	$rawData = {($posVec.x), ($posVec.y), ($posVec.z), ($queNor[0]), ($queNor[1]), ($queNor[2]), $dist, ($quePos[0]), ($quePos[1]), ($quePos[2])};
+    }
+
+    return $rawData;
+}
+
+proc int inGeo(vector $posVec, vector $normVec, float $dist, float $hollowThre, int $invert){
+	int $isInGeo = false;
+    unit $posVec;
+    unit $normVec;
+    float $angle = rad_to_deg(angle($posVec, $normVec));
+    float $dotRes = dot($posVec, $normVec);
+    //test hollow distance
+    int $inHolThre = false;
+    if($hollowThre < 0.0 || ($hollowThre >= 0.0 && $dist <= $hollowThre)) $inHolThre = true;
+
+    if(($angle >= 90.001 || $dist <= 0.001) && $inHolThre) $isInGeo = true;
+    //if(($dotRes < 0.0 || $dist <= 0.0001) && $inHolThre) $isInGeo = true;
+    if($invert) $isInGeo = !$isInGeo;
+    return $isInGeo;
+}
+
+proc float[] getFluidVoxelSize(string $fluidShape){
+	float $voxelSize[];
+	int $isSquare = `getAttr ($fluidShape + ".squareVoxels")`;
+	int $baseRes = `getAttr ($fluidShape + ".baseResolution")`;
+	float $resolutions[] = `getAttr ($fluidShape + ".resolution")`;
+	float $dimensions[] = `getAttr ($fluidShape + ".dimensions")`;
+	if($isSquare){
+		float $maxAxis = max(max($dimensions[0], $dimensions[1]), $dimensions[2]);
+		float $dimenRatio[];
+		//normalize
+		$dimenRatio[0] = $dimensions[0]/$maxAxis;
+		$dimenRatio[1] = $dimensions[1]/$maxAxis;
+		$dimenRatio[2] = $dimensions[2]/$maxAxis;
+		//number
+		int $numW = round($dimenRatio[0] * $baseRes);
+		int $numH = round($dimenRatio[1] * $baseRes);
+		int $numD = round($dimenRatio[2] * $baseRes);
+		//size
+		$voxelSize[0] = $dimensions[0] / $numW;
+		$voxelSize[1] = $dimensions[1] / $numH;
+		$voxelSize[2] = $dimensions[2] / $numD;
+	}else{
+		$voxelSize[0] = $dimensions[0] / $resolutions[0];
+		$voxelSize[1] = $dimensions[1] / $resolutions[1];
+		$voxelSize[2] = $dimensions[2] / $resolutions[2];
+	}
+
+	return $voxelSize;
+}
+
+proc float getFluidAttrFloatAtPos(string $fluidShape, string $attribute, float $samplePos[]){
+	float $voxelVal[];
+	int $index[] = `fluidVoxelInfo -voxel ($samplePos[0]) ($samplePos[1]) ($samplePos[2]) -cb $fluidShape`;
+	if(!catchQuiet(`getFluidAttr -at $attribute $fluidShape`)){
+		$voxelVal = `getFluidAttr -at $attribute -xi $index[0] -yi $index[1] -zi $index[2] $fluidShape`;
+	}else{
+		$voxelVal = {-1};
+	}
+	return $voxelVal[0];
+}
+
+proc vector getFluidAttrVectorAtPos(string $fluidShape, string $attribute, float $samplePos[]){
+	float $voxelVal[];
+	int $index[] = `fluidVoxelInfo -voxel ($samplePos[0]) ($samplePos[1]) ($samplePos[2]) -cb $fluidShape`;
+	if(!catchQuiet(`getFluidAttr -at $attribute $fluidShape`)){
+		$voxelVal = `getFluidAttr -at $attribute -xi $index[0] -yi $index[1] -zi $index[2] $fluidShape`;
+	}else{
+		$voxelVal = {0, 0, 0};
+	}
+	return <<$voxelVal[0], $voxelVal[1], $voxelVal[2]>>;
+}
+
+//round() function
+proc int round(float $num){
+	int $roundNum;
+	float $wholeNum = trunc($num);
+	float $fricNum = $num - $wholeNum;
+	if(abs($fricNum) < 0.5){
+		if($num >= 0){
+			$roundNum = floor($num);
+		}else{
+			$roundNum = ceil($num);
+		}
+	}else{
+		if($num >= 0){
+			$roundNum = ceil($num);
+		}else{
+			$roundNum = floor($num);
+		}
+	}
+	return $roundNum;
+}
+//----------------------------------------
+
+//voxel by particles---
+//particle grid
+proc string buildParArray(string $pName, float $spacing){
+	string $geo[] = `ls -sl`;
+	//if(size($geo) == 0) error "Select a Geometry to execute the script!";
+	float $bounds[] = `xform -q -bb $geo[0]`;
+	//draw particle system
+	string $namPar[] = `particle -n $pName -ll ($bounds[0]) ($bounds[1]) ($bounds[2]) 
+	                    -ur ($bounds[3]) ($bounds[4]) ($bounds[5])
+	                    -grs ($spacing)
+	                    -c 1`;
+	return $namPar[0];
+}
+
+proc string buildHCPParArray(string $pName, float $radius){
+	string $geo[] = `ls -sl`;
+	float $bounds[] = `xform -q -bb $geo[0]`;
+	//create particle node
+	particle -n $pName;
+	string $namPar[] = `ls -sl -l`;                 //get absolute path for emit
+	//caculating size
+	float $length = $bounds[3] - $bounds[0];
+	float $width = $bounds[5] - $bounds[2];
+	float $height = $bounds[4] - $bounds[1];
+	//caculating element amount
+	int $numX = round($length / ($radius * 2));
+	int $numY = ($height > 2*$radius) ? (1+ceil(($height-2*$radius) / (2*sqrt(6)/3*$radius))) : round($height/(2*$radius));
+	int $numZ = ($width > 2*$radius) ? (1+ceil(($width-2*$radius) / (sqrt(3)*$radius))) : round($width/(2*$radius));
+	//add particles
+	float $omitPos[] = {$bounds[0], $bounds[1], $bounds[0]};
+	int $i, $j, $k;
+	for($k = 0; $k < $numY; $k++){
+		if(($k+1)%2){
+			$omitPos[0] = $bounds[0]; $omitPos[2] = $bounds[2];
+		}else{
+			$omitPos[0] = $bounds[0] + $radius;
+			$omitPos[2] = $bounds[2] + (sqrt(3)/3) * $radius;
+		}
+		for($j = 0; $j < $numZ; $j++){
+			if((($j+1)%2 && ($k+1)%2) || (!(($j+1)%2) && !(($k+1)%2))){
+				$omitPos[0] = $bounds[0];
+			}else{
+				$omitPos[0] = $bounds[0] + $radius;
+			}
+			for($i = 0; $i < $numX; $i++){
+				emit -o ($namPar[0]) -pos ($omitPos[0]) ($omitPos[1]) ($omitPos[2]);
+				$omitPos[0] += $radius * 2;
+			}
+			$omitPos[2] += sqrt(3) * $radius;
+		}
+		$omitPos[1] += (2 * sqrt(6)/3) * $radius;
+	}
+
+	return $namPar[0];
+}
+
+//particle fluid grid
+proc string buildParFluidGrid(string $pName, string $attribute, float $attrThreMin, float $attrThreMax, float $addAttrFluid[], int $showProgress){
+	//get position array
+	string $geo[] = `ls -sl`;
+	string $fluidShape[];
+	$fluidShape = (`objectType $geo[0]` != "fluidShape") ? (`listRelatives -s -ni -fullPath $geo[0]`) : $geo;
+	vector $posArray[];
+	$posArray = `getAttr ($fluidShape[0] + ".fieldDataPosition")`;
+	//sample attribute
+	particle -n $pName;
+	string $namPar[] = `ls -sl -l`;                 //get absolute path for emit
+	string $parShap[] = `listRelatives -s -f -ni`;
+	vector $parPos;
+
+	//add sampling attributes
+  	if(int($addAttrFluid[0])) addAttr -ln "VXG_voxelValue" -dt doubleArray -w false $parShap[0];
+  	if(int($addAttrFluid[1])) addAttr -ln "VXG_voxelVel" -dt vectorArray -w false $parShap[0];
+
+  	int $pace = 0;
+	//progress bar
+  	if($showProgress) progressWindow -title "Evaluating Particles" -max (size($posArray)) -progress 0 -ii true;
+
+	for($parPos in $posArray){
+		if($showProgress && `progressWindow -q -isCancelled`) break;
+		float $voxelVal = getFluidAttrFloatAtPos($fluidShape[0], $attribute, {$parPos.x, $parPos.y, $parPos.z});
+		//test is in fluid
+		int $isInFluid;
+		if($attrThreMin < 0){
+			$isInFluid = ($voxelVal >= 0.001) ? true : false;
+		}else{
+			$isInFluid = ($voxelVal >= $attrThreMin && $voxelVal <= $attrThreMax) ? true : false;
+		}
+
+		if($isInFluid){
+			int $newId[] = `emit -o ($namPar[0]) -pos ($parPos.x) ($parPos.y) ($parPos.z)`;
+			//write-in attributes
+			if(int($addAttrFluid[0])) particle -e -id $newId[0] -at "VXG_voxelValue" -fv $voxelVal $parShap[0];
+			if(int($addAttrFluid[1])){
+				vector $voxelVel = getFluidAttrVectorAtPos($fluidShape[0], "velocity", {$parPos.x, $parPos.y, $parPos.z});
+				particle -e -id $newId[0] -at "VXG_voxelVel" -vv ($voxelVel.x) ($voxelVel.y) ($voxelVel.z) $parShap[0];
+			}
+		}
+		$pace ++;
+		if($showProgress) progressWindow -e -progress $pace;
+	}
+	if($showProgress) progressWindow -endProgress;
+
+	return $parShap[0];
+}
+
+proc string parFluidQueExt(string $pName, string $attribute, float $attrThreMin, float $attrThreMax, float $addAttrFluid[], int $showProgress){
+	string $geo[] = `ls -sl`;
+	string $fluidShape[];
+	$fluidShape = (`objectType $geo[0]` != "fluidShape") ? (`listRelatives -s -ni -fullPath $geo[0]`) : $geo;
+	string $parShap[] = `listRelatives -s -f -ni $pName`;
+  	setAttr ($parShap[0]+".lifespanMode") 3;
+  	float $idArray[] = `getParticleAttr -at "id" -array true $parShap[0]`;
+
+  	//add sampling attributes
+  	if(int($addAttrFluid[0])) addAttr -ln "VXG_voxelValue" -dt doubleArray -w false $parShap[0];
+  	if(int($addAttrFluid[1])) addAttr -ln "VXG_voxelVel" -dt vectorArray -w false $parShap[0];
+
+  	//progress bar
+  	if($showProgress) progressWindow -title "Evaluating Particles" -max (size($idArray)) -progress 0 -ii true;
+
+  	for($count in $idArray){
+  		if($showProgress && `progressWindow -q -isCancelled`) break;
+  		vector $parPos = `getParticleAttr -at "worldPosition" ($parShap[0] + ".pt[" + $count + "]")`;
+  		float $voxelVal = getFluidAttrFloatAtPos($fluidShape[0], $attribute, {$parPos.x, $parPos.y, $parPos.z});
+  		//test is in fluid
+		int $isInFluid;
+		if($attrThreMin < 0){
+			$isInFluid = ($voxelVal >= 0.001) ? true : false;
+		}else{
+			$isInFluid = ($voxelVal >= $attrThreMin && $voxelVal <= $attrThreMax) ? true : false;
+		}
+		if(!$isInFluid){
+			select ($parShap[0] + ".pt[" + $count + "]");
+        	setParticleAttr -at "lifespanPP" -fv 0.0 ($parShap[0] + ".pt[" + $count + "]");
+		}else{
+			if(int($addAttrFluid[0])) particle -e -id $count -at "VXG_voxelValue" -fv $voxelVal $parShap[0];
+			if(int($addAttrFluid[1])){
+				select ($parShap[0] + ".pt[" + $count + "]");
+        		setParticleAttr -at "lifespanPP" -fv 9999.0 ($parShap[0] + ".pt[" + $count + "]");
+        		//write-in attributes
+				vector $voxelVel = getFluidAttrVectorAtPos($fluidShape[0], "velocity", {$parPos.x, $parPos.y, $parPos.z});
+				particle -e -id $count -at "VXG_voxelVel" -vv ($voxelVel.x) ($voxelVel.y) ($voxelVel.z) $parShap[0];
+			}
+		}
+		if($showProgress) progressWindow -e -progress $count;
+  	}
+  	if($showProgress) progressWindow -endProgress;
+
+	return $parShap[0];
+}
+
+//kill outside particles
+proc string parGeoQuery(string $namGeo, string $objType, float $hollowThre, int $invert, float $addAttr[], int $showProgress){
+  string $parShap[] = `listRelatives -s -f -ni`;
+  setAttr ($parShap[0]+".lifespanMode") 3;
+  float $idArray[] = `getParticleAttr -at "id" -array true`;
+  string $sampler;
+  float $sampleData[];
+  
+  //create sampling node
+  if($objType == "mesh"){
+  	$sampler = `createNode closestPointOnMesh`;
+  	connectAttr -f ($namGeo + ".worldMesh") ($sampler + ".inMesh");
+  	connectAttr -f ($namGeo + ".worldMatrix") ($sampler + ".inputMatrix");
+  }else{
+  	$sampler = `createNode closestPointOnSurface`;
+  	connectAttr -f ($namGeo + ".worldSpace") ($sampler + ".inputSurface");
+  }
+  
+  //add sampling attributes
+  if(int($addAttr[0])) addAttr -ln "VXG_cloSampleDis" -dt doubleArray -w false $parShap[0];
+  if(int($addAttr[1])) addAttr -ln "VXG_cloSamplePos" -dt vectorArray -w false $parShap[0];
+  if(int($addAttr[2])) addAttr -ln "VXG_cloSampleNorm" -dt vectorArray -w false $parShap[0];
+
+  //progress bar
+  if($showProgress) progressWindow -title "Evaluating Particles" -max (size($idArray)) -progress 0 -ii true;
+
+  //sampling & setting lifespan of particles
+  for($count in $idArray){
+      if($showProgress && `progressWindow -q -isCancelled`) break;
+      vector $cusPos = `getParticleAttr -at "worldPosition" -array true ($parShap[0] + ".pt[" + $count + "]")`;
+      //vector $cusPos = <<1, 2, 3>>;
+      $sampleData = sampleInfo($sampler, $cusPos);
+      vector $posVec = <<$sampleData[0], $sampleData[1], $sampleData[2]>>;
+	  vector $normVec = <<$sampleData[3], $sampleData[4], $sampleData[5]>>;
+	  float $distance = $sampleData[6];
+
+      int $isInGeo = inGeo($posVec, $normVec, $distance, $hollowThre, $invert);
+      if($isInGeo){
+      	select ($parShap[0] + ".pt[" + $count + "]");
+        setParticleAttr -at "lifespanPP" -fv 9999.0 ($parShap[0] + ".pt[" + $count + "]");
+        //write-in attributes
+        if(int($addAttr[0])) particle -e -id $count -at "VXG_cloSampleDis" -fv $distance $parShap[0];
+        if(int($addAttr[1])) particle -e -id $count -at "VXG_cloSamplePos" -vv ($sampleData[7]) ($sampleData[8]) ($sampleData[9]) $parShap[0];
+        if(int($addAttr[2])) particle -e -id $count -at "VXG_cloSampleNorm" -vv ($normVec.x) ($normVec.y) ($normVec.z) $parShap[0];
+      }else{
+      	select ($parShap[0] + ".pt[" + $count + "]");
+        setParticleAttr -at "lifespanPP" -fv 0.0 ($parShap[0] + ".pt[" + $count + "]");
+      }
+
+      if($showProgress) progressWindow -e -progress $count;
+  }
+  if($showProgress) progressWindow -endProgress;
+  delete $sampler;
+  saveInitialState $parShap[0];
+  //playButtonStart;
+  currentTime `currentTime -q`;          //force refresh
+
+  return $parShap[0];
+}
+
+//do instancing
+proc makeInstance(float $edgeLen[], string $parShapName, string $cusGeoName, int $gridMode){
+	string $namGeo[];
+	if(`checkBox -q -v cusGeoBox`){
+		$namGeo[0] = $cusGeoName;
+	}else{
+		if($gridMode == 1) $namGeo = `polyCube -w $edgeLen[0] -h $edgeLen[0] -d $edgeLen[0] -n "voxRefCube"`;
+		if($gridMode == 2) $namGeo = `polySphere -r $edgeLen[0] -sx 20 -sy 20 -ax 0 1 0 -cuv 2 -ch 1 -n "voxRefSphere"`;
+		if($gridMode == 3) $namGeo = `polyCube -w $edgeLen[0] -h $edgeLen[1] -d $edgeLen[2] -n "voxRefCube"`;
+	}
+  	particleInstancer -addObject -obj ($namGeo[0]) -lod Geometry -ru Degrees -ro XYZ -position worldPosition -age age $parShapName;
+  	setAttr ($namGeo[0] + ".visibility") false;
+}
+
+//voxel by duplicating geometry---
+//pos data array
+proc vector[] gridArray(int $useAbsCount, float $spacing, int $countArr[]){
+	float $lenXYZ[];
+	int $numXYZ[];
+	vector $gridArray[];
+	
+	string $geo[] = `ls -sl`;
+	//if(size($geo) == 0) error "Select a Geometry to execute the script!";
+
+	//get boundry of array
+	float $bound[] = `xform -q -bb $geo[0]`;
+	$lenXYZ = {($bound[3] - $bound[0]), ($bound[4] - $bound[1]), ($bound[5] - $bound[2])};
+	if(!$useAbsCount){
+		$numXYZ = {round($lenXYZ[0]/$spacing), round($lenXYZ[1]/$spacing), round($lenXYZ[2]/$spacing)};
+	}else{
+		$numXYZ = $countArr;
+	}
+	
+	//building array
+	int $i, $j, $k;
+	if(!$useAbsCount){
+		for ($k = 0; $k <= $numXYZ[2]; $k++) {
+			for ($j = 0; $j <= $numXYZ[1]; $j++) {
+				for ($i = 0; $i <= $numXYZ[0]; $i++) {
+					$gridArray[size($gridArray)] = <<($bound[0] + $i * $spacing), ($bound[1] + $j * $spacing), ($bound[2] + $k * $spacing)>>;
+				}
+			}
+		}
+	}else{
+		for ($k = 0; $k < $numXYZ[2]; $k++) {
+			for ($j = 0; $j < $numXYZ[1]; $j++) {
+				for ($i = 0; $i < $numXYZ[0]; $i++) {
+					float $posX, $posY, $posZ;
+					if($numXYZ[0] == 1) $posX = ($bound[3] + $bound[0])/2; else $posX = $i * ($lenXYZ[0]/($numXYZ[0]-1)) + $bound[0];
+					if($numXYZ[1] == 1) $posY = ($bound[4] + $bound[1])/2; else $posY = $j * ($lenXYZ[1]/($numXYZ[1]-1)) + $bound[1];
+					if($numXYZ[2] == 1) $posZ = ($bound[5] + $bound[2])/2; else $posZ = $k * ($lenXYZ[2]/($numXYZ[2]-1)) + $bound[2];
+					$gridArray[size($gridArray)] = <<$posX, $posY, $posZ>>;
+				}
+			}
+		}
+	}
+	return $gridArray;
+}
+
+proc vector[] gridHCPArray(float $radius){
+	string $geo[] = `ls -sl`;
+	float $bounds[] = `xform -q -bb $geo[0]`;
+	vector $gridArray[];
+	//caculating size
+	float $length = $bounds[3] - $bounds[0];
+	float $width = $bounds[5] - $bounds[2];
+	float $height = $bounds[4] - $bounds[1];
+	//caculating element amount
+	int $numX = round($length / ($radius * 2));
+	int $numY = ($height > 2*$radius) ? (1+ceil(($height-2*$radius) / (2*sqrt(6)/3*$radius))) : round($height/(2*$radius));
+	int $numZ = ($width > 2*$radius) ? (1+ceil(($width-2*$radius) / (sqrt(3)*$radius))) : round($width/(2*$radius));
+
+	//building
+	float $omitPos[] = {$bounds[0], $bounds[1], $bounds[0]};
+	int $i, $j, $k;
+	for($k = 0; $k < $numY; $k++){
+		if(($k+1)%2){
+			$omitPos[0] = $bounds[0]; $omitPos[2] = $bounds[2];
+		}else{
+			$omitPos[0] = $bounds[0] + $radius;
+			$omitPos[2] = $bounds[2] + (sqrt(3)/3) * $radius;
+		}
+		for($j = 0; $j < $numZ; $j++){
+			if((($j+1)%2 && ($k+1)%2) || (!(($j+1)%2) && !(($k+1)%2))){
+				$omitPos[0] = $bounds[0];
+			}else{
+				$omitPos[0] = $bounds[0] + $radius;
+			}
+			for($i = 0; $i < $numX; $i++){
+				$gridArray[size($gridArray)] = <<$omitPos[0],$omitPos[1],$omitPos[2]>>;
+				$omitPos[0] += $radius * 2;
+			}
+			$omitPos[2] += sqrt(3) * $radius;
+		}
+		$omitPos[1] += (2 * sqrt(6)/3) * $radius;
+	}
+	return $gridArray;
+}
+
+proc vector[] gridFluidPosArray(string $fluidObject){
+	string $geo[] = `ls -sl`;
+	string $fluidShape[];
+	$fluidShape = (`objectType $geo[0]` != "fluidShape") ? (`listRelatives -s -ni -fullPath $geo[0]`) : $geo;
+	vector $posArray[];
+	$posArray = `getAttr ($fluidShape[0] + ".fieldDataPosition")`;
+	return $posArray;
+}
+
+//duplicating voxel items
+proc placeVoxelItem(vector $posArray[], float $edgeLen, float $hollowThre, int $invert, string $cusGeoName, string $objType, int $gridMode){
+	string $geo[] = `ls -sl`;
+	int $useInstance = `checkBox -q -v insBox`;
+	int $deleteOrig = `checkBox -q -v delOriBox`;
+	//create sampling node
+	string $sampler;
+	if($objType == "mesh"){
+  		$sampler = `createNode closestPointOnMesh`;
+  		connectAttr -f ($geo[0] + ".worldMesh") ($sampler + ".inMesh");
+  		connectAttr -f ($geo[0] + ".worldMatrix") ($sampler + ".inputMatrix");
+  	}else{
+  		$sampler = `createNode closestPointOnSurface`;
+  		connectAttr -f ($geo[0] + ".worldSpace") ($sampler + ".inputSurface");
+  	}
+	float $sampleData[];
+	//geo for instance
+	string $namGeo[];
+	if(`checkBox -q -v cusGeoBox`){
+		$namGeo[0] = $cusGeoName;
+	}else{
+		if($gridMode == 1) $namGeo = `polyCube -w $edgeLen -h $edgeLen -d $edgeLen -n "voxRefCube"`;
+		if($gridMode == 2) $namGeo = `polySphere -r $edgeLen -sx 20 -sy 20 -ax 0 1 0 -cuv 2 -ch 1 -n "voxRefSphere"`;
+	}
+	string $dupedName = `textFieldGrp -q -tx eleNamFil`;
+
+	//group for duplicated elements
+	string $grpName = `textFieldGrp -q -tx grpNamFil`;
+	string $voxelGrp;
+	if(!`objExists $grpName`){
+		if(size($grpName) == 0) $grpName = "voxelModelGrp";
+		$voxelGrp = `group -w -em -n $grpName`;
+	}else{
+		$voxelGrp = $grpName;
+	}
+
+	//progress bar
+	float $pace = 1;
+	progressWindow -title "Evaluating Point Array" -max (size($posArray)) -progress 0 -ii true;
+
+	string $dupObj[];
+	vector $cubePos;
+	for($cubePos in $posArray){
+		if(`progressWindow -q -isCancelled`) break;
+    	$sampleData = sampleInfo($sampler, $cubePos);
+        vector $posVec = <<$sampleData[0], $sampleData[1], $sampleData[2]>>;
+	    vector $normVec = <<$sampleData[3], $sampleData[4], $sampleData[5]>>;
+	    float $distance = $sampleData[6];
+        int $isInGeo = inGeo($posVec, $normVec, $distance, $hollowThre, $invert);
+
+    	if($isInGeo){
+    		if(!$useInstance){
+    			$dupObj = `duplicate -n $dupedName $namGeo[0]`;
+    			xform -a -ws -t ($cubePos.x) ($cubePos.y) ($cubePos.z) $dupObj[0];
+    			parent ($dupObj[0]) $voxelGrp;
+    		}else{
+    			$dupObj = `duplicate -ilf -n $dupedName $namGeo[0]`;
+    			xform -a -ws -t ($cubePos.x) ($cubePos.y) ($cubePos.z) $dupObj[0];
+    			parent ($dupObj[0]) $voxelGrp;
+    		}
+    	}
+    	$pace ++;
+    	progressWindow -e -progress $pace;
+	}
+	progressWindow -endProgress;
+	delete $sampler;
+	if($deleteOrig){
+		delete $namGeo[0];
+	}else{
+		setAttr ($namGeo[0] + ".visibility") false;
+	}
+}
+
+proc placeVoxelItemFluid(vector $posArray[], float $offset, string $cusGeoName, string $attribute, float $attrThreMin, float $attrThreMax){
+	string $geo[] = `ls -sl`;
+	string $fluidShape[];
+	$fluidShape = (`objectType $geo[0]` != "fluidShape") ? (`listRelatives -s -ni -fullPath $geo[0]`) : $geo;
+	int $useInstance = `checkBox -q -v insBox`;
+	int $deleteOrig = `checkBox -q -v delOriBox`;
+	//cube size
+	float $cubeSize[] = getFluidVoxelSize($fluidShape[0]);
+	float $edgeLenX = $cubeSize[0] - $offset;
+	float $edgeLenY = $cubeSize[1] - $offset;
+	float $edgeLenZ = $cubeSize[2] - $offset;
+	//geo for instance
+	string $namGeo[];
+	if(`checkBox -q -v cusGeoBox`){
+		$namGeo[0] = $cusGeoName;
+	}else{
+		$namGeo = `polyCube -w $edgeLenX -h $edgeLenY -d $edgeLenZ -n "voxRefCube"`;
+	}
+	string $dupedName = `textFieldGrp -q -tx eleNamFil`;
+
+	//group for duplicated elements
+	string $grpName = `textFieldGrp -q -tx grpNamFil`;
+	string $voxelGrp;
+	if(!`objExists $grpName`){
+		if(size($grpName) == 0) $grpName = "voxelModelGrp";
+		$voxelGrp = `group -w -em -n $grpName`;
+	}else{
+		$voxelGrp = $grpName;
+	}
+
+	//progress bar
+	float $pace = 1;
+	progressWindow -title "Evaluating Point Array" -max (size($posArray)) -progress 0 -ii true;
+
+	string $dupObj[];
+	vector $cubePos;
+	for($cubePos in $posArray){
+		if(`progressWindow -q -isCancelled`) break;
+		float $voxelVal = getFluidAttrFloatAtPos($fluidShape[0], $attribute, {$cubePos.x, $cubePos.y, $cubePos.z});
+		//test is in fluid
+		int $isInFluid;
+		if($attrThreMin < 0){
+			$isInFluid = ($voxelVal >= 0.001) ? true : false;
+		}else{
+			$isInFluid = ($voxelVal >= $attrThreMin && $voxelVal <= $attrThreMax) ? true : false;
+		}
+
+    	if($isInFluid){
+    		if(!$useInstance){
+    			$dupObj = `duplicate -n $dupedName $namGeo[0]`;
+    			xform -a -ws -t ($cubePos.x) ($cubePos.y) ($cubePos.z) $dupObj[0];
+    			parent ($dupObj[0]) $voxelGrp;
+    		}else{
+    			$dupObj = `duplicate -ilf -n $dupedName $namGeo[0]`;
+    			xform -a -ws -t ($cubePos.x) ($cubePos.y) ($cubePos.z) $dupObj[0];
+    			parent ($dupObj[0]) $voxelGrp;
+    		}
+    	}
+    	$pace ++;
+    	progressWindow -e -progress $pace;
+	}
+	progressWindow -endProgress;
+	if($deleteOrig){
+		delete $namGeo[0];
+	}else{
+		setAttr ($namGeo[0] + ".visibility") false;
+	}
+}
+
+//toggle normals
+proc softernNorm(string $object, int $delHistory, float $angle){
+	polySoftEdge -a ($angle) -ch 1 ($object);
+	select $object;
+	if($delHistory) delete -ch;
+}
+
+//test softenedge node
+proc int findSoftenEdgeNode(string $object, float $angle){
+	int $success = false;
+	string $nodeList[] = `listHistory $object`;
+	string $nodeItem = "";
+	for($nodeItem in $nodeList){
+		if(`nodeType $nodeItem` == "polySoftEdge"){
+			setAttr ($nodeItem + ".angle") $angle;
+			$success = true;
+			break;
+		}
+	}
+
+	return $success;
+}
+
+//cache animation
+proc string cacheParAni(string $selGeo, string $pName, float $spacing, string $objType, float $hollowThre, int $invert, float $addAttr[], string $fluidAttrib, float $fluidAttrThreMin, float $fluidAttrThreMax, float $addAttrFluid[], int $gridMode, int $frameMin, int $frameMax, string $folderName){
+	if(!`objExists "dynGlobals1"`) dynGlobals;
+	setAttr "dynGlobals1.useParticleDiskCache" 0;
+	string $newPar = "";
+
+	//progress bar
+	progressWindow -title "Baking Particle" -min $frameMin -max $frameMax -progress $frameMin -ii true;
+
+	int $curF;
+	for($curF = $frameMin; $curF <= $frameMax; $curF++){
+		if(`progressWindow -query -isCancelled`) break;
+	    currentTime $curF;
+	    //build grid
+	    if($gridMode == 1) buildParArray($pName, $spacing);
+		if($gridMode == 2) buildHCPParArray($pName, $spacing);
+		if($gridMode == 3){
+				$newPar = buildParFluidGrid($pName, $fluidAttrib, $fluidAttrThreMin, $fluidAttrThreMax, $addAttrFluid, 0);
+			}else{
+				$newPar = parGeoQuery($selGeo, $objType, $hollowThre, $invert, $addAttr, 0);
+			}
+	    dynExport -mnf $curF -mxf $curF -path $folderName -f "cache" $newPar;
+	    if($curF != $frameMax){
+	        delete `listRelatives -p $newPar`;
+	        select $selGeo;
+	    }else{
+	        setAttr "dynGlobals1.useParticleDiskCache" 1;
+	        setAttr -type "string" dynGlobals1.cacheDirectory $folderName;
+	    }
+
+	    progressWindow -e -progress $curF;
+	}
+	progressWindow -endProgress;
+	select $newPar;
+
+	return $newPar;
+}
+
+//main buttons command
+//particle method command---
+proc parButCmd(){
+	string $selGeo[] = `ls -sl`;
+	if(size($selGeo) == 0) error "Select a Geometry to execute the script!";
+	string $objType = eval("objectType `listRelatives -s -ni -fullPath`");
+	if($objType != "nurbsSurface" && $objType != "mesh" && $objType != "fluidShape") error "Only poly mesh or NURBS surface or fluid container is accepted!";
+	if(($objType == "fluidShape" && (combineRadioButtonPar() != 3)) || ($objType != "fluidShape" && (combineRadioButtonPar() == 3))) error "You must use a fluid container in sample fluid mode!";
+	//collect data
+	int $gridMode = combineRadioButtonPar();
+	string $pName = `textFieldGrp -q -tx parNamFil`;
+	if(size($pName) == 0) $pName = "voxelRefParticle";
+	string $fluidAttrib = `textFieldGrp -q -tx fluidAttribFilPar`;
+	if(size($fluidAttrib) == 0) $fluidAttrib = "density";
+	float $spacing = `floatSliderGrp -q -v spcSliPar`;
+	float $offset = `floatSliderGrp -q -v ofsSliPar`;
+	float $edgeLen[];
+	if($gridMode != 3) $edgeLen = {$spacing - $offset};
+	else{
+		//caculate voxel size
+		string $fluidShape[] = `listRelatives -s -ni -fullPath`;
+		float $cubeSize[] = getFluidVoxelSize($fluidShape[0]);
+		$edgeLen = {$cubeSize[0] - $offset, $cubeSize[1] - $offset, $cubeSize[2] - $offset};
+	}
+	float $addAttr[] = {float(`checkBoxGrp -q -v1 addAttrBox`), float(`checkBoxGrp -q -v2 addAttrBox`), float(`checkBoxGrp -q -v3 addAttrBox`)};
+	float $addAttrFluid[] = {float(`checkBoxGrp -q -v1 addAttrFluidBox`), float(`checkBoxGrp -q -v2 addAttrFluidBox`)};
+	float $hollowThre = `floatSliderGrp -q -v hdisSli`;
+	if(!`checkBox -q -v holBox`) $hollowThre = -1.0;
+	int $useInverse = `checkBox -q -v inverseBox`;
+	float $fluidAttrThreMin = `floatSliderGrp -q -v fluidThreMinSli`;
+	float $fluidAttrThreMax = `floatSliderGrp -q -v fluidThreMaxSli`;
+	if(!`checkBox -q -v fluidThreBox`){$fluidAttrThreMin = -1; $fluidAttrThreMax = -1;}
+	int $containerMani = `radioButtonGrp -q -sl conMapRadio`;
+	int $useAnimation = `iconTextCheckBox -q -v useAniBox`;
+	string $folderName = `textFieldButtonGrp -q -text cacheFolderBut`;
+	if($useAnimation && (!size($folderName))) error "Cache folder miss!";
+	int $frameMin = `intFieldGrp -q -v1 frameRangeField`;
+	int $frameMax = `intFieldGrp -q -v2 frameRangeField`;
+	//if "copy" is chosen, duplicate the selected object
+	if($containerMani == 3){
+		string $copyGeo[] = `duplicate $selGeo[0]`;
+		setAttr ($selGeo[0] + ".visibility") false;
+		$selGeo = $copyGeo;
+	}
+	//particle shape
+	string $parShapName;
+	//geo to instance
+	string $cusGeoName = `textFieldButtonGrp -q -text geoFieldBut`;
+	if(!`checkBox -q -v gridOnlyBox`){
+		if(`checkBox -q -v cusGeoBox`){
+			if(size($cusGeoName) == 0) error "No Instance Object Spicified!";
+			if(!`objExists $cusGeoName`) error "Invaild or non-existent spicified Object";
+		}
+	}
+	//toggle normals
+	if($objType == "mesh"){
+		if(!findSoftenEdgeNode($selGeo[0], 180.0)) softernNorm($selGeo[0], false, 180.0);
+	}
+	//point cloud
+	if(!`checkBox -q -v useExtParBox`){
+		if($useAnimation) $parShapName = cacheParAni($selGeo[0], $pName, $spacing, $objType, $hollowThre, $useInverse, $addAttr, $fluidAttrib, $fluidAttrThreMin, $fluidAttrThreMax, $addAttrFluid, $gridMode, $frameMin, $frameMax, $folderName); 
+		else{
+			if($gridMode == 1) buildParArray($pName, $spacing);
+			if($gridMode == 2) buildHCPParArray($pName, $spacing);
+			if($gridMode == 3){
+				$parShapName = buildParFluidGrid($pName, $fluidAttrib, $fluidAttrThreMin, $fluidAttrThreMax, $addAttrFluid, 1);
+			}else{
+				$parShapName = parGeoQuery($selGeo[0], $objType, $hollowThre, $useInverse, $addAttr, 1);
+			}
+		}
+	}else{
+		//use existing particle
+		if(!`objExists $pName`) error "No spicified particle system found!";
+		//saveInitialState;
+		if($gridMode == 3){
+			$parShapName = parFluidQueExt($pName, $fluidAttrib, $fluidAttrThreMin, $fluidAttrThreMax, $addAttrFluid, 1);
+		}else{
+			select $pName;
+			$parShapName = parGeoQuery($selGeo[0], $objType, $hollowThre, $useInverse, $addAttr, 1);
+		}
+	}
+	//do instance
+	if(!`checkBox -q -v gridOnlyBox`) makeInstance($edgeLen, $parShapName, $cusGeoName, $gridMode);
+	//hide or delete container object
+	if($containerMani != 4){
+		if($containerMani == 1 || $containerMani == 3){
+			setAttr ($selGeo[0] + ".visibility") false;
+		}else{
+			delete $selGeo[0];
+		}
+	}
+}
+
+//duplicating model command---
+proc geoButCmd(){
+	string $selGeo[] = `ls -sl`;
+	if(size($selGeo) == 0) error "Select a Geometry to execute the script!";
+	string $objType = eval("objectType `listRelatives -s -ni -fullPath`");
+	if($objType != "nurbsSurface" && $objType != "mesh" && $objType != "fluidShape") error "Only poly mesh or NURBS surface or fluid container is accepted!";
+	if(($objType == "fluidShape" && (combineRadioButtonGeo() != 3)) || ($objType != "fluidShape" && (combineRadioButtonGeo() == 3))) error "You must use a fluid container in sample fluid mode!";
+	//collect data
+	int $gridMode = combineRadioButtonGeo();
+	int $useAbsCount = `checkBox -q -v absVBox`;
+	int $countX = `intFieldGrp -q -v1 countFieldGeo`; int $countY = `intFieldGrp -q -v2 countFieldGeo`; int $countZ = `intFieldGrp -q -v3 countFieldGeo`;
+	float $spacing = `floatSliderGrp -q -v spcSliGeo`;
+	vector $posArray[];
+	float $offset = `floatSliderGrp -q -v ofsSliGeo`;
+	float $edgeLen = $spacing - $offset;
+	float $hollowThre = `floatSliderGrp -q -v hdisSli`;
+	if(!`checkBox -q -v holBox`) $hollowThre = -1.0;
+	int $useInverse = `checkBox -q -v inverseBox`;
+	string $fluidAttrib = `textFieldGrp -q -tx fluidAttribFilGeo`;
+	if(size($fluidAttrib) == 0) $fluidAttrib = "density";
+	//if($gridMode == 3 && size($fluidAttrib) == 0) error "No fluid attribute specified!";
+	float $fluidAttrThreMin = `floatSliderGrp -q -v fluidThreMinSli`;
+	float $fluidAttrThreMax = `floatSliderGrp -q -v fluidThreMaxSli`;
+	if(!`checkBox -q -v fluidThreBox`){$fluidAttrThreMin = -1; $fluidAttrThreMax = -1;}
+	int $containerMani = `radioButtonGrp -q -sl conMapRadio`;
+	//if "copy" is chosen, duplicate the selected object
+	if($containerMani == 3 && $gridMode != 3){
+		string $copyGeo[] = `duplicate $selGeo[0]`;
+		setAttr ($selGeo[0] + ".visibility") false;
+		$selGeo = $copyGeo;
+	}
+	//geo to instance
+	string $cusGeoName = `textFieldButtonGrp -q -text geoFieldBut`;
+	if(`checkBox -q -v cusGeoBox`){
+			if(size($cusGeoName) == 0) error "No Instance Object Spicified!";
+			if(!`objExists $cusGeoName`) error "Invaild or non-existent spicified Object";
+	}
+	//toggle normals
+	if($objType == "mesh"){
+		if(!findSoftenEdgeNode($selGeo[0], 180.0)) softernNorm($selGeo[0], false, 180.0);
+	}
+	//generating grids
+	if($gridMode == 1) $posArray = gridArray($useAbsCount ,$spacing, {$countX, $countY, $countZ});
+	if($gridMode == 2) $posArray = gridHCPArray($spacing);
+	if($gridMode == 3) $posArray = gridFluidPosArray($selGeo[0]);
+	if($gridMode != 3){
+		placeVoxelItem($posArray, $edgeLen, $hollowThre, $useInverse, $cusGeoName, $objType, $gridMode);
+	}else{
+		placeVoxelItemFluid($posArray, $offset, $cusGeoName, $fluidAttrib, $fluidAttrThreMin, $fluidAttrThreMax);
+	}
+
+	//hide or delete container object
+	if($containerMani != 4){
+		if($containerMani == 1 || $containerMani == 3){
+			setAttr ($selGeo[0] + ".visibility") false;
+		}else{
+			delete $selGeo[0];
+		}
+	}
+}
+
+//widgets cmd
+//grid mode radio button command geo---
+proc int combineRadioButtonGeo(){
+	int $sel = `radioButtonGrp -q -sl modeRadGeo`;
+	if(!$sel) $sel = `radioButtonGrp -q -sl modeRadGeo2` + 2;
+	return $sel;
+}
+
+proc gridModeRadGeoCmd(int $sel){
+	//$sel = `radioButtonGrp -q -sl modeRadGeo`;
+	if($sel == 1){
+		checkBox -e -enable true absVBox;
+		countBoxCmd(`checkBox -q -v absVBox`);
+		floatSliderGrp -e -enable true spcSliGeo;
+		textFieldGrp -e -en false fluidAttribFilGeo;
+		if(`textFieldGrp -q -tx eleNamFil` == "voxelSphere") textFieldGrp -e -tx "voxelCube" eleNamFil;
+	}
+	if($sel == 2){
+		checkBox -e -enable false absVBox;
+		intFieldGrp -e -enable false countFieldGeo;
+		floatSliderGrp -e -enable true spcSliGeo;
+		textFieldGrp -e -en false fluidAttribFilGeo;
+		if(`textFieldGrp -q -tx eleNamFil` == "voxelCube") textFieldGrp -e -tx "voxelSphere" eleNamFil;
+	}
+	if($sel == 3){
+		checkBox -e -enable false absVBox;
+		intFieldGrp -e -enable false countFieldGeo;
+		floatSliderGrp -e -enable false spcSliGeo;
+		textFieldGrp -e -en true fluidAttribFilGeo;
+		if(`textFieldGrp -q -tx eleNamFil` == "voxelSphere") textFieldGrp -e -tx "voxelCube" eleNamFil;
+	}
+}
+
+//grid mode radio button command particle---
+proc int combineRadioButtonPar(){
+	int $sel = `radioButtonGrp -q -sl modeRadPar`;
+	if(!$sel) $sel = `radioButtonGrp -q -sl modeRadPar2` + 2;
+	return $sel;
+}
+
+proc gridModeRadParCmd(int $sel){
+	//$sel = `radioButtonGrp -q -sl modeRadGeo`;
+	if($sel == 1 || $sel == 2){
+		floatSliderGrp -e -en true spcSliPar;
+		textFieldGrp -e -en false fluidAttribFilPar;
+		checkBoxGrp -e -en true addAttrBox;
+		checkBoxGrp -e -en false addAttrFluidBox;
+	}
+	if($sel == 3){
+		floatSliderGrp -e -en false spcSliPar;
+		textFieldGrp -e -en true fluidAttribFilPar;
+		checkBoxGrp -e -en false addAttrBox;
+		checkBoxGrp -e -en true addAttrFluidBox;
+	}
+}
+
+//cus-geo button command---
+proc geoFieldButCmd(){
+	string $selGeo[] = `ls -sl`;
+	textFieldButtonGrp -e -text $selGeo[0] geoFieldBut;
+}
+
+//cus-geo check command---
+proc useCusBoxCmd(string $trigger){
+	if($trigger == "on"){
+		textFieldGrp -e -en true geoFieldBut;
+		floatSliderGrp -e -en false ofsSliPar;
+		floatSliderGrp -e -en false ofsSliGeo;
+	}
+	if($trigger == "off"){
+		textFieldGrp -e -en false geoFieldBut;
+		floatSliderGrp -e -en true ofsSliPar;
+		floatSliderGrp -e -en true ofsSliGeo;
+	}
+}
+
+//use count box cmd---
+proc countBoxCmd(int $isOn){
+	if($isOn){
+		intFieldGrp -e -en true countFieldGeo;
+		if(`checkBox -q -v cusGeoBox`) floatSliderGrp -e -en false spcSliGeo;
+	}else{
+		intFieldGrp -e -en false countFieldGeo;
+		floatSliderGrp -e -en true spcSliGeo;
+	}
+}
+
+//count field change cmd---
+proc countFieldCCmd(){
+	int $vx, $vy, $vz;
+	$vx = `intFieldGrp -q -v1 countFieldGeo`;
+	$vy = `intFieldGrp -q -v2 countFieldGeo`;
+	$vz = `intFieldGrp -q -v3 countFieldGeo`;
+	if($vx < 1) intFieldGrp -e -v1 1 countFieldGeo;
+	if($vy < 1) intFieldGrp -e -v2 1 countFieldGeo;
+	if($vz < 1) intFieldGrp -e -v3 1 countFieldGeo;
+}
+
+//fluid threshold change cmd---
+proc fluidThreSliCmd(){
+	float $minThre = `floatSliderGrp -q -v fluidThreMinSli`;
+	float $maxThre = `floatSliderGrp -q -v fluidThreMaxSli`;
+	if($maxThre <= $minThre) floatSliderGrp -e -v (clamp(0.001, 10000, $minThre + 0.5)) fluidThreMaxSli;
+}
+
+//get scene name---
+proc getSceceName(){
+	string $sceneFileName = `file -q -sn -shn`;
+	string $cacheFolder = "";
+	if(size($sceneFileName)) $cacheFolder = startString($sceneFileName, size($sceneFileName)-3);
+	else $cacheFolder = "untitled";
+	textFieldButtonGrp -e -text $cacheFolder cacheFolderBut;
+
+	frameRangeCmd();
+}
+
+//delete cache---
+proc vgxDeleteCacheFile(){
+	float $mayaVersion = getApplicationVersionAsFloat();
+	string $folderName = `textFieldButtonGrp -q -text cacheFolderBut`;
+	if(!size($folderName)) error "No folder specified!";
+	string $projectPath = `workspace -q -fullName`;
+	string $fullCachePath;
+	if($mayaVersion <= 2013.5){
+		$fullCachePath = $projectPath+"/"+"particles"+"/"+$folderName+"/";
+	}else{
+		$fullCachePath = $projectPath+"/"+"cache/particles"+"/"+$folderName+"/";
+	}
+	string $convertedPathString = (`about -windows`) ? substituteAllString($fullCachePath,"/","\\") : $fullCachePath;
+	if(`filetest -d $fullCachePath` == 0) error "Directory doesn't exists!"; else
+	{
+		string $delMassage = (`about -windows`) ? `system("del "+$convertedPathString+"*.pd*")` : `system("rm "+$convertedPathString+"*.pd*")`;
+		print ("Particle Cache Clear -- " + $convertedPathString);
+	}
+}
+
+//generate animation information---
+proc string aniInfoString(){
+	string $infoStr;
+	float $mayaVersion = getApplicationVersionAsFloat();
+	int $startFrame = `intFieldGrp -q -v1 frameRangeField`;
+	int $endFrame = `intFieldGrp -q -v2 frameRangeField`;
+	string $folderName = `textFieldButtonGrp -q -text cacheFolderBut`;
+	if(!size($folderName)) $folderName = "?";
+	string $projectPath = `workspace -q -fullName`;
+	string $fullCachePath;
+	if($mayaVersion <= 2013.5){
+		$fullCachePath = $projectPath+"/"+"particles"+"/"+$folderName+"/";
+	}else{
+		$fullCachePath = $projectPath+"/"+"cache/particles"+"/"+$folderName+"/";
+	}
+	string $convertedPathString = substituteAllString($fullCachePath,"/","\\");
+
+	$infoStr = "Cache Dir: " + $convertedPathString + "\n" + "Start Frame: " + string($startFrame) + "   " + "End Frame: " + string($endFrame);
+	return $infoStr;
+}
+
+//time range menu cmd---
+proc setTimeRange(){
+	string $type = `optionMenuGrp -q -v timeRangeMenu`;
+	switch ($type){
+		case "Playback Range":
+			intFieldGrp -e -en false frameRangeField;
+			intFieldGrp -e -v1 `playbackOptions -q -min` -v2 `playbackOptions -q -max` frameRangeField;
+			button -e -en true updateFrameBut;
+			break;
+		case "Render Global Range":
+			intFieldGrp -e -en false frameRangeField;
+			intFieldGrp -e -v1 `getAttr "defaultRenderGlobals.startFrame"` frameRangeField;
+			intFieldGrp -e -v2 `getAttr "defaultRenderGlobals.endFrame"` frameRangeField;
+			button -e -en true updateFrameBut;
+			break;
+		case "Custom Range":
+			intFieldGrp -e -en true frameRangeField;
+			button -e -en false updateFrameBut;
+			break;
+	}
+
+	frameRangeCmd();
+}
+
+//change text---
+proc frameRangeCmd(){
+	string $aniInfoStr = aniInfoString();
+	text -e -label $aniInfoStr aniInfo;
+}
+
+//update time range---
+proc updateRangeCmd(){
+	string $type = `optionMenuGrp -q -v timeRangeMenu`;
+	if($type == "Playback Range") intFieldGrp -e -v1 `playbackOptions -q -min` -v2 `playbackOptions -q -max` frameRangeField;
+	if($type == "Render Global Range") intFieldGrp -e -v1 `getAttr "defaultRenderGlobals.startFrame"` -v2 `getAttr "defaultRenderGlobals.endFrame"` frameRangeField;
+	frameRangeCmd();
+}
+
+//use animation box cmd---
+proc useAniCmd(int $isOn){
+	if($isOn){
+		textFieldButtonGrp -e -en true cacheFolderBut;
+		optionMenuGrp -e -en true timeRangeMenu;
+		if(`optionMenuGrp -q -v timeRangeMenu` == "Custom Range"){
+			intFieldGrp -e -en true frameRangeField;
+		}else{
+			button -e -en true updateFrameBut;
+		}
+		button -e -en true clearCacheBut;
+		text -e -en true aniInfo;
+		checkBox -e -en false -v 0 useExtParBox;
+		if(combineRadioButtonPar() != 3) floatSliderGrp -e -en true spcSliPar;
+		iconTextCheckBox -e -fn "boldLabelFont" useAniBox;
+		if(getApplicationVersionAsFloat() < 2014.0) iconTextCheckBox -e -bgc 0.2 0.27 0.33  useAniBox;
+	}else{
+		textFieldButtonGrp -e -en false cacheFolderBut;
+		optionMenuGrp -e -en false timeRangeMenu;
+		intFieldGrp -e -en false frameRangeField;
+		button -e -en false updateFrameBut;
+		text -e -en false aniInfo;
+		button -e -en false clearCacheBut;
+		checkBox -e -en true useExtParBox;
+		iconTextCheckBox -e -fn "plainLabelFont" useAniBox;
+	}
+}
+
+//create UI
+proc drawUI(){
+	if(`window -exists vxgridMainWindow`) deleteUI vxgridMainWindow;
+	window -t "Voxel Model Generator V4" -w 500 -h 480 vxgridMainWindow;
+	window -e -w 500 -h 480 vxgridMainWindow;
+	columnLayout -adj true mainCol;
+		tabLayout -height 480 vgxMainTab;
+			formLayout -nd 100 parForm;
+				radioButtonGrp -l "Grid Mode" -nrb 2 -l1 "General Voxel Mode" -l2 "Close Packing Mode" -sl 1 -on1 "gridModeRadParCmd(1)" -on2 "gridModeRadParCmd(2)" -cw3 100 160 160 modeRadPar;
+				radioButtonGrp -l "" -nrb 1 -l1 "Sample Fluid Mode" -scl "modeRadPar" -on1 "gridModeRadParCmd(3)" -cw2 100 160 modeRadPar2;
+				floatSliderGrp -l "Spacing" -f true -min 0 -max 5 -fmx 10000 -pre 2 -s 0.1 -v 0.5 -cw3 100 80 40 spcSliPar;
+				floatSliderGrp -l "Offset" -f true -min 0 -max 1 -fmx 10000 -pre 2 -s 0.1 -v 0.0 -cw3 100 80 40 ofsSliPar;
+				textFieldGrp -l "Particle Sys. Name" -tx "voxelRefParticle" -cw2 100 80 -ad2 2 parNamFil;
+				textFieldGrp -l "Fluid Attribute" -tx "density" -cw2 100 80 -ad2 2 -en false fluidAttribFilPar;
+					popupMenu -button 3;
+						menuItem -l "density" -c "textFieldGrp -e -tx \"density\" fluidAttribFilPar";
+						menuItem -l "temperature" -c "textFieldGrp -e -tx \"temperature\" fluidAttribFilPar";
+						menuItem -l "fuel" -c "textFieldGrp -e -tx \"fuel\" fluidAttribFilPar";
+						menuItem -l "falloff" -c "textFieldGrp -e -tx \"falloff\" fluidAttribFilPar";
+				checkBox -l "Particle Grid Only" -v false gridOnlyBox;
+				checkBox -l "Use Existing Particle Sys." -v false -onc "floatSliderGrp -e -en false spcSliPar" -ofc "if(combineRadioButtonPar() != 3) floatSliderGrp -e -en true spcSliPar" useExtParBox;
+				checkBoxGrp -l "Add Attributes  " -ncb 3 -l1 "distance" -l2 "position" -l3 "normal" -v1 0 -v2 0 -v3 0 -cw4 100 80 80 80 addAttrBox;
+				checkBoxGrp -l "Add Attr. Fluid  " -ncb 2 -l1 "voxel value" -l2 "velocity" -v1 0 -v2 0 -cw3 100 80 80 -en false addAttrFluidBox;
+				button -l "Generate Voxel by Instancer!" -h 40 -c parButCmd parBut;
+				//animation controls
+				separator aniSeparator;
+				textFieldButtonGrp -l "Cache dict." -text "untitled" -en false -bl "Auto detect" -cw3 100 250 100 -ad3 3 -bc "getSceceName" -tcc "frameRangeCmd" cacheFolderBut;
+					optionMenuGrp -l "Set Time Range  " -cw2 105 200 timeRangeMenu;
+						menuItem -label "Playback Range";
+						menuItem -label "Render Global Range";
+						menuItem -label "Custom Range";
+				optionMenuGrp -e -sl 1 -cc "setTimeRange" -en false timeRangeMenu;
+				intFieldGrp -nf 2 -l "Frame Range" -v1 `playbackOptions -q -min` -v2 `playbackOptions -q -max` -cw3 100 80 80 -en false -cc "frameRangeCmd" -dc "frameRangeCmd" frameRangeField;
+				button -l "update" -h 22 -w 100 -en false -c "updateRangeCmd" updateFrameBut;
+				button -l "clear cache" -h 22 -w 100 -en false -c "vgxDeleteCacheFile" clearCacheBut;
+				text -l `aniInfoString` -align "left" -h 40 -en false -font "smallBoldLabelFont" -ww true aniInfo;
+				iconTextCheckBox -style "textOnly" -height 30 -label "Use Particle Cache Animation" -v 0 -onc "useAniCmd(1)" -ofc "useAniCmd(0)" useAniBox;
+				if(getApplicationVersionAsFloat() < 2014.0) iconTextCheckBox -e -bgc 0.4 0.4 0.4 useAniBox; else iconTextCheckBox -e -fla 0 useAniBox;
+			formLayout -e
+				-attachForm "modeRadPar" "top" 5
+				-attachForm "modeRadPar" "left" 4
+				-attachControl "modeRadPar2" "top" 4 "modeRadPar"
+				-attachForm "modeRadPar2" "left" 4
+				-attachControl "spcSliPar" "top" 5 "modeRadPar2"
+				-attachForm "spcSliPar" "left" 4
+				-attachForm "spcSliPar" "right" 4
+				-attachControl "ofsSliPar" "top" 5 "spcSliPar"
+				-attachForm "ofsSliPar" "left" 4
+				-attachForm "ofsSliPar" "right" 4
+				-attachControl "parNamFil" "top" 5 "ofsSliPar"
+				-attachForm "parNamFil" "left" 4
+				-attachForm "parNamFil" "right" 4
+				-attachControl "fluidAttribFilPar" "top" 5 "parNamFil"
+				-attachForm "fluidAttribFilPar" "left" 4
+				-attachForm "fluidAttribFilPar" "right" 4
+				-attachControl "gridOnlyBox" "top" 5 "fluidAttribFilPar"
+				-attachForm "gridOnlyBox" "left" 107
+				-attachControl "useExtParBox" "top" 5 "fluidAttribFilPar"
+				-attachControl "useExtParBox" "left" 59 "gridOnlyBox"
+				-attachControl "addAttrBox" "top" 5 "gridOnlyBox"
+				-attachForm "addAttrBox" "left" 4
+				-attachControl "addAttrFluidBox" "top" 5 "addAttrBox"
+				-attachForm "addAttrFluidBox" "left" 4
+				-attachControl "aniSeparator" "top" 5 "addAttrFluidBox"
+				-attachForm "aniSeparator" "left" 5
+				-attachForm "aniSeparator" "right" 5
+				-attachForm "cacheFolderBut" "left" 4
+				-attachForm "cacheFolderBut" "right" 4
+				-attachControl "cacheFolderBut" "top" 7 "aniSeparator"
+				-attachForm "timeRangeMenu" "left" 4
+				-attachControl "timeRangeMenu" "top" 4 "cacheFolderBut"
+				-attachForm "frameRangeField" "left" 4
+				-attachControl "frameRangeField" "top" 4 "timeRangeMenu"
+				-attachControl "updateFrameBut" "top" 4 "timeRangeMenu"
+				-attachControl "updateFrameBut" "left" 10 "frameRangeField"
+				-attachControl "clearCacheBut" "top" 4 "timeRangeMenu"
+				-attachControl "clearCacheBut" "left" 8 "updateFrameBut"
+				-attachForm "aniInfo" "left" 15
+				-attachForm "aniInfo" "right" 4
+				-attachControl "aniInfo" "top" 10 "frameRangeField"
+				-attachForm "parBut" "left" 4
+				-attachForm "parBut" "right" 4
+				-attachForm "parBut" "bottom" 4
+				-attachForm "useAniBox" "left" 4
+				-attachForm "useAniBox" "right" 4
+				-attachControl "useAniBox" "bottom" 5 "parBut"
+			parForm;
+			setParent "..";
+			formLayout -nd 100 geoForm;
+				radioButtonGrp -l "Grid Mode" -nrb 2 -l1 "General Voxel Mode" -l2 "Close Packing Mode" -sl 1 -on1 "gridModeRadGeoCmd(1)" -on2 "gridModeRadGeoCmd(2)" -cw3 100 160 160 modeRadGeo;
+				radioButtonGrp -l "" -nrb 1 -l1 "Sample Fluid Mode" -on1 "gridModeRadGeoCmd(3)" -scl "modeRadGeo" -cw2 100 160 modeRadGeo2;
+				checkBox -l "Use Absolute Value" -v false  -onc "countBoxCmd(true)" -ofc "countBoxCmd(false)" absVBox;
+				intFieldGrp -l "Count X.Y.Z." -nf 3 -v1 10 -v2 10 -v3 10 -en false -cw4 100 80 80 80 -cc "countFieldCCmd" countFieldGeo;
+				floatSliderGrp -l "Spacing" -f true -min 0 -max 5 -fmx 10000 -pre 2 -s 0.1 -v 0.5 -cw3 100 80 40 spcSliGeo;
+				floatSliderGrp -l "Offset" -f true -min 0 -max 1 -fmx 10000 -pre 2 -s 0.1 -v 0.0 -cw3 100 80 40 ofsSliGeo;
+				textFieldGrp -l "Fluid Attribute" -tx "density" -cw2 100 80 -ad2 2 -en false fluidAttribFilGeo;
+					popupMenu -button 3;
+						menuItem -l "density" -c "textFieldGrp -e -tx \"density\" fluidAttribFilGeo";
+						menuItem -l "temperature" -c "textFieldGrp -e -tx \"temperature\" fluidAttribFilGeo";
+						menuItem -l "fuel" -c "textFieldGrp -e -tx \"fuel\" fluidAttribFilGeo";
+						menuItem -l "falloff" -c "textFieldGrp -e -tx \"falloff\" fluidAttribFilGeo";
+				checkBox -l "Use Instance" -v false insBox;
+				checkBox -l "Delete Ref. Object" -v false delOriBox;
+				textFieldGrp -l "Voxel Element Name" -tx "voxelCube" -cw2 100 80 -ad2 2 eleNamFil;
+				textFieldGrp -l "Group Name" -tx "voxelModelGrp" -cw2 100 80 -ad2 2 grpNamFil;
+				button -l "Generate Voxel Model Group!" -h 40 -c geoButCmd geoBut;
+			formLayout -e
+				-attachForm "modeRadGeo" "top" 5
+				-attachForm "modeRadGeo" "left" 4
+				-attachForm "modeRadGeo2" "left" 4
+				-attachControl "modeRadGeo2" "top" 4 "modeRadGeo"
+				-attachControl "absVBox" "top" 5 "modeRadGeo2"
+				-attachForm "absVBox" "left" 108
+				-attachControl "countFieldGeo" "top" 5 "absVBox"
+				-attachForm "countFieldGeo" "left" 4
+				-attachControl "spcSliGeo" "top" 5 "countFieldGeo"
+				-attachForm "spcSliGeo" "left" 4
+				-attachForm "spcSliGeo" "right" 4
+				-attachControl "ofsSliGeo" "top" 5 "spcSliGeo"
+				-attachForm "ofsSliGeo" "left" 4
+				-attachForm "ofsSliGeo" "right" 4
+				-attachControl "fluidAttribFilGeo" "top" 5 "ofsSliGeo"
+				-attachForm "fluidAttribFilGeo" "left" 4
+				-attachForm "fluidAttribFilGeo" "right" 4
+				-attachControl "insBox" "top" 5 "fluidAttribFilGeo"
+				-attachForm "insBox" "left" 108
+				-attachControl "delOriBox" "top" 5 "fluidAttribFilGeo"
+				-attachControl "delOriBox" "left" 60 "insBox"
+				-attachControl "eleNamFil" "top" 5 "insBox"
+				-attachForm "eleNamFil" "left" 4
+				-attachForm "eleNamFil" "right" 4
+				-attachControl "grpNamFil" "top" 5 "eleNamFil"
+				-attachForm "grpNamFil" "left" 4
+				-attachForm "grpNamFil" "right" 4
+				-attachForm "geoBut" "left" 4
+				-attachForm "geoBut" "right" 4
+				-attachForm "geoBut" "bottom" 4
+			geoForm;
+			setParent "..";
+			formLayout -nd 100 gloSetForm;
+				radioButtonGrp -nrb 4 -l "Container Operat." -l1 "Hide" -l2 "Delete" -l3 "Copy" -l4 "Do Nothing" -sl 1 -ct5 "right" "both" "both" "both" "both" -cw5 100 100 100 100 100 conMapRadio;
+				checkBox -l "Use Cuntom Geo." -v 0 -onc "useCusBoxCmd(\"on\")" -ofc "useCusBoxCmd(\"off\")" cusGeoBox;
+				textFieldButtonGrp -l "Custom Geo." -h 30 -en false -bl "pick" -bc geoFieldButCmd -cw3 100 250 100 -ad3 3 geoFieldBut;
+				checkBox -l "Use Hollow" -v 0 -onc "floatSliderGrp -e -en true hdisSli" -ofc "floatSliderGrp -e -en false hdisSli" holBox;
+				floatSliderGrp -l "Hollow Dist." -f true -min 0 -max 5 -fmx 10000 -s 0.1 -pre 3 -v 0.5 -cw3 100 80 40 -en false hdisSli;
+				checkBox -l "Use Fluid Attribute Threshold" -v 0 -onc "floatSliderGrp -e -en true fluidThreMinSli; floatSliderGrp -e -en true fluidThreMaxSli;" -ofc "floatSliderGrp -e -en false fluidThreMinSli; floatSliderGrp -e -en false fluidThreMaxSli;"  fluidThreBox;
+				floatSliderGrp -l "Threshold Min" -f true -min 0.001 -max 5 -fmx 10000 -v 0.001 -s 0.1 -pre 3 -cw3 100 80 40 -en false -cc "fluidThreSliCmd()" fluidThreMinSli;
+				floatSliderGrp -l "Threshold Max" -f true -min 0.001 -max 5 -fmx 10000 -v 1.000 -s 0.1 -pre 3 -cw3 100 80 40 -en false -cc "fluidThreSliCmd()" fluidThreMaxSli;
+				checkBox -l "Invert" -v 0 inverseBox;
+			formLayout -e
+				-attachForm "conMapRadio" "top" 6
+				-attachForm "conMapRadio" "left" 4
+				-attachControl "cusGeoBox" "top" 4 "conMapRadio"
+				-attachForm "cusGeoBox" "left" 90
+				-attachControl "geoFieldBut" "top" 4 "cusGeoBox"
+				-attachForm "geoFieldBut" "left" 4
+				-attachForm "geoFieldBut" "right" 4
+				-attachControl "holBox" "top" 4 "geoFieldBut"
+				-attachForm "holBox" "left" 90
+				-attachControl "hdisSli" "top" 4 "holBox"
+				-attachForm "hdisSli" "left" 4
+				-attachForm "hdisSli" "right" 4
+				-attachForm "fluidThreBox" "left" 90
+				-attachControl "fluidThreBox" "top" 4 "hdisSli"
+				-attachForm "fluidThreMinSli" "left" 4
+				-attachForm "fluidThreMinSli" "right" 4
+				-attachControl "fluidThreMinSli" "top" 4 "fluidThreBox"
+				-attachForm "fluidThreMaxSli" "left" 4
+				-attachForm "fluidThreMaxSli" "right" 4
+				-attachControl "fluidThreMaxSli" "top" 4 "fluidThreMinSli"
+				-attachForm "inverseBox" "left" 90
+				-attachControl "inverseBox" "top" 4 "fluidThreMaxSli"
+			gloSetForm;
+		tabLayout -e -tabLabel "parForm" "By Particle Instancer" -tabLabel "geoForm" "By Geometry Copy" -tabLabel "gloSetForm" "Global Settings" -selectTabIndex 1 vgxMainTab;
+	showWindow vxgridMainWindow;
+}
+
+drawUI();

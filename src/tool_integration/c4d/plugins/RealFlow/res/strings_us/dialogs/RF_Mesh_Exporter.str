@@ -1,0 +1,22 @@
+DIALOGSTRINGS RF_MESH_EXPORTER
+{
+	RFMeshExporter "RealFlow Mesh Exporter";
+
+  	M_EXP_SETUP				"Setup";
+
+	M_EXP_OBJ				"Mesh";
+	M_EXP_DIR				"Directory";
+	M_EXP_NAME				"Name";
+	M_EXP_PADDING			"Padding";
+	M_EXP_START				"Start Frame";
+	M_EXP_END				"End Frame";
+	M_EXP_INC				"Inc Frame";
+	M_EXP_INFO				"";
+	M_EXP_BUTTON			"Export";
+	M_EXP_CANCEL			"Cancel";
+		
+	M_EXP_TEX				"Export Texture";
+	M_EXP_NUMF				"Number of Fluids";
+	M_EXP_VEL				"Export Velocity";
+	M_EXP_RECALC_VEL		"Calculate velocity";
+}

@@ -1,0 +1,571 @@
+<?xml version="1.0"?>
+<valueApplication>
+	<family value="CINEMA 4D" abbrev="CIN">
+		<vendor value="MAXON">
+            <version value="R 13" template="None">
+				<platform value="Windows">
+					<x32 value="None">
+                    </x32>
+					<x64 value="C:\Program Files\MAXON\CINEMA 4D R13\CINEMA 4D 64 Bit.exe">
+                        <flag value="-parallel"/>
+                    </x64>
+				</platform>
+				<platform value="Darwin">
+					<x32 value="None">
+                    </x32>
+					<x64 value="/Applications/MAXON/CINEMA 4D R13/CINEMA 4D.app/Contents/MacOS/CINEMA 4D">
+                    </x64>
+				</platform>
+			</version>
+			<version value="R 14" template="None">
+				<platform value="Windows">
+					<x32 value="C:\Program Files\MAXON\CINEMA 4D R14\CINEMA 4D.exe">
+						<flag value="-parallel"/>
+                    </x32>
+					<x64 value="C:\Program Files\MAXON\CINEMA 4D R14\CINEMA 4D 64 Bit.exe">
+                        <flag value="-parallel"/>
+                    </x64>
+				</platform>
+				<platform value="Darwin">
+					<x32 value="None">
+                    </x32>
+					<x64 value="/Applications/MAXON/CINEMA 4D R14/CINEMA 4D.app/Contents/MacOS/CINEMA 4D">
+                    </x64>
+				</platform>
+			</version>
+			<version value="R 15" template="null_maxon_cinema4d_r15.c4d">
+				<platform value="Windows">
+					<x32 value="None">
+                    </x32>
+					<x64 value="C:\Program Files\MAXON\CINEMA 4D R15\CINEMA 4D 64 Bit.exe">
+                        <flag value="-parallel"/>
+                    </x64>
+				</platform>
+				<platform value="Darwin">
+					<x32 value="None">
+                    </x32>
+					<x64 value="/Applications/MAXON/CINEMA 4D R15/CINEMA 4D.app/Contents/MacOS/CINEMA 4D">
+                    </x64>
+				</platform>
+			</version>
+			<version value="R 16" template="None">
+				<platform value="Windows">
+					<x32 value="None">
+                    </x32>
+					<x64 value="C:\Program Files\MAXON\CINEMA 4D R16\CINEMA 4D 64 Bit.exe">
+                        <flag value="-parallel"/>
+                    </x64>
+				</platform>
+				<platform value="Darwin">
+					<x32 value="None">
+                    </x32>
+					<x64 value="/Applications/MAXON/CINEMA 4D R16/CINEMA 4D.app/Contents/MacOS/CINEMA 4D">
+                    </x64>
+				</platform>
+			</version>
+		</vendor>
+	</family>
+	<family value="Maya" abbrev="MAY">
+		<directory value="externalFiles"/>
+		<directory value="scenes"/>
+		<directory value="sourceimages"/>
+		<directory value="tmp">
+			<subdirectory value="renderData">
+				<subdirectory value="mentalray"/>
+			</subdirectory>
+		</directory>
+		<directory value="uvLayout"/>
+		<vendor value="Autodesk">
+			<version value="2013" template="null_autodesk_maya2013.ma">
+				<platform value="Windows">
+					<x32 value="C:\Program Files (x86)\Autodesk\Maya2013\bin\maya.exe">
+                    </x32>
+					<x64 value="C:\Program Files\Autodesk\Maya2013\bin\maya.exe">
+                    </x64>
+				</platform>
+				<platform value="Darwin">
+					<x32 value="None">
+                    </x32>
+					<x64 value="/Applications/Autodesk/maya2013/Maya.app/Contents/bin/maya">
+                    </x64>
+				</platform>
+			</version>
+			<version value="2014" template="null_autodesk_maya2014.ma">
+				<platform value="Windows">
+					<x32 value="C:\Program Files (x86)\Autodesk\Maya2014\bin\maya.exe">
+                    </x32>
+					<x64 value="C:\Program Files\Autodesk\Maya2014\bin\maya.exe">
+                    </x64>
+				</platform>
+				<platform value="Darwin">
+					<x32 value="None">
+                    </x32>
+					<x64 value="/Applications/Autodesk/maya2014/Maya.app/Contents/MacOS/Maya">
+                    </x64>
+				</platform>
+			</version>
+		</vendor>
+	</family>
+    <family value="UVLayout" abbrev="UVL">
+		<vendor value="Headus">
+			<version value="2.08.01" template="None">
+				<platform value="Windows">
+					<x32 value="C:\Program Files (x86)\headus UVLayout v2 Professional\howin32.exe">
+                        <flag value="-launch"/>
+                    </x32>
+					<x64 value="None">
+                    </x64>
+				</platform>
+				<platform value="Darwin">
+					<x32 value="/Applications/headus-UVLayout-Pro.app/Contents/MacOS/headus-launch">
+                    </x32>
+					<x64 value="None">
+                    </x64>
+				</platform>
+			</version>
+		</vendor>
+	</family>
+	<family value="Photoshop" abbrev="PSH">
+		<vendor value="Adobe">
+			<version value="CS6" template="null_adobe_photoshop_CS6.psd">
+				<platform value="Windows">
+					<x32 value="None">
+                    </x32>
+					<x64 value="None">
+                    </x64>
+				</platform>
+				<platform value="Darwin">
+					<x32 value="None">
+                    </x32>
+					<x64 value="/Applications/Adobe Photoshop CS6/Adobe Photoshop CS6.app/Contents/MacOS/Adobe Photoshop CS6">
+                    </x64>
+				</platform>
+			</version>
+			<version value="CC12" template="null_adobe_photoshop_CC12.psd">
+				<platform value="Windows">
+					<x32 value="None">
+                    </x32>
+					<x64 value="C:\Program Files\Adobe\Adobe Photoshop CC (64 Bit)\Photoshop.exe">
+                    </x64>
+				</platform>
+				<platform value="Darwin">
+					<x32 value="None">
+                    </x32>
+					<x64 value="/Applications/Adobe Photoshop CC/Adobe Photoshop CC.app/Contents/MacOS/Adobe Photoshop CC">
+                    </x64>
+				</platform>
+			</version>
+		</vendor>
+	</family>
+	<family value="After Effects" abbrev="AFX">
+		<vendor value="Adobe">
+			<version value="CS6" template="null_adobe_aftereffects_CS6.aep">
+				<platform value="Windows">
+					<x32 value="None">
+                    </x32>
+					<x64 value="None">
+                    </x64>
+				</platform>
+				<platform value="Darwin">
+					<x32 value="None">
+                    </x32>
+					<x64 value="/Applications/Adobe After Effects CS6/Adobe After Effects CS6.app/Contents/MacOS/After Effects">
+                    </x64>
+				</platform>
+			</version>
+			<version value="CC12" template="null_adobe_aftereffects_CC12.aep">
+				<platform value="Windows">
+					<x32 value="None">
+                    </x32>
+					<x64 value="C:\Program Files\Adobe\Adobe After Effects CC\Support Files\AfterFX.exe">
+                    </x64>
+				</platform>
+				<platform value="Darwin">
+					<x32 value="None">
+                    </x32>
+					<x64 value="/Applications/Adobe After Effects CC/Adobe After Effects CC.app/Contents/MacOS/After Effects">
+                    </x64>
+				</platform>
+			</version>
+		</vendor>
+	</family>
+	<family value="Premiere" abbrev="PRM">
+		<vendor value="Adobe">
+			<version value="CS6" template="null_adobe_premiere_CS6.prproj">
+				<platform value="Windows">
+					<x32 value="None">
+                    </x32>
+					<x64 value="None">
+                    </x64>
+				</platform>
+				<platform value="Darwin">
+					<x32 value="None">
+                    </x32>
+					<x64 value="/Applications/Adobe Premiere Pro CS6/Adobe Premiere Pro CS6.app/Contents/MacOS/Adobe Premiere Pro CS6">
+                    </x64>
+				</platform>
+			</version>
+			<version value="CC12" template="null_adobe_premiere_CC12.prproj">
+				<platform value="Windows">
+					<x32 value="None">
+                    </x32>
+					<x64 value="C:\Program Files\Adobe\Adobe Premiere Pro CC\Adobe Premiere Pro.exe">
+                    </x64>
+				</platform>
+				<platform value="Darwin">
+					<x32 value="None">
+                    </x32>
+					<x64 value="/Applications/Adobe Premiere Pro CC/Adobe Premiere Pro CC.app/Contents/MacOS/Adobe Premiere Pro CC">
+                    </x64>
+				</platform>
+			</version>
+		</vendor>
+	</family>
+	<family value="InDesign" abbrev="IND">
+		<vendor value="Adobe">
+			<version value="CS6" template="null_adobe_indesign_CS6.indd">
+				<platform value="Windows">
+					<x32 value="None">
+                    </x32>
+					<x64 value="None">
+                    </x64>
+				</platform>
+				<platform value="Darwin">
+					<x32 value="None">
+                    </x32>
+					<x64 value="/Applications/Adobe InDesign CS6/Adobe InDesign CS6.app/Contents/MacOS/Adobe InDesign CS6">
+                    </x64>
+				</platform>
+			</version>
+			<version value="CC12" template="null_adobe_indesign_CC12.indd">
+				<platform value="Windows">
+					<x32 value="None">
+                    </x32>
+					<x64 value="C:\Program Files\Adobe\Adobe InDesign CC (64 bit)\InDesign.exe">
+                    </x64>
+				</platform>
+				<platform value="Darwin">
+					<x32 value="None">
+                    </x32>
+					<x64 value="/Applications/Adobe InDesign CC/Adobe InDesign CC.app/Contents/MacOS/Adobe InDesign CC">
+                    </x64>
+				</platform>
+			</version>
+		</vendor>
+	</family>
+	<family value="Illustrator" abbrev="ILU">
+		<vendor value="Adobe">
+			<version value="CS6" template="None">
+				<platform value="Windows">
+					<x32 value="None">
+                    </x32>
+					<x64 value="None">
+                    </x64>
+				</platform>
+				<platform value="Darwin">
+					<x32 value="None">
+                    </x32>
+					<x64 value="/Applications/Adobe Illustrator CS6/Adobe Illustrator.app/Contents/MacOS/Adobe Illustrator">
+                    </x64>
+				</platform>
+			</version>
+			<version value="CC12" template="null_adobe_illustrator_CC12.ai">
+				<platform value="Windows">
+					<x32 value="None">
+                    </x32>
+					<x64 value="C:\Program Files\Adobe\Adobe Illustrator CC (64 Bit)\Support Files\Contents\Windows\Illustrator.exe">
+                    </x64>
+				</platform>
+				<platform value="Darwin">
+					<x32 value="None">
+                    </x32>
+					<x64 value="/Applications/Adobe Illustrator CC/Adobe Illustrator.app/Contents/MacOS/Adobe Illustrator">
+                    </x64>
+				</platform>
+			</version>
+		</vendor>
+	</family>
+	<family value="RealFlow" abbrev="RFL">
+<!-- 	<defaultOutput value="SEQ__particles"/>
+		<defaultOutput value="MDL__meshes"/>
+		<defaultOutput value="SEQ__images"/> -->
+		<directory value="images"/>
+		<directory value="initialState"/>
+		<directory value="log"/>
+		<directory value="meshes"/>
+		<directory value="objects"/>
+		<directory value="particles"/>
+		<directory value="preview">
+			<subdirectory value="images"/>
+		</directory>
+		<vendor value="Next Limit">
+			<version value="6.0.0.0055" template="null_nextlimit_realflow_6000055.flw">
+				<platform value="Windows">
+					<x32 value="None">
+                    </x32>
+					<x64 value="None">
+                    </x64>
+				</platform>
+				<platform value="Darwin">
+					<x32 value="/Applications/RealFlow 2012/RealFlow.app/Contents/MacOS/RealFlow">
+                    </x32>
+					<x64 value="None">
+                    </x64>
+				</platform>
+			</version>
+			<version value="7.0.1.0131" template="null_nextlimit_realflow_7010131.flw">
+				<platform value="Windows">
+					<x32 value="None">
+                    </x32>
+					<x64 value="None">
+                    </x64>
+				</platform>
+				<platform value="Darwin">
+					<x32 value="/Applications/RealFlow 2013/RealFlow.app/Contents/MacOS/RealFlow">
+                    </x32>
+					<x64 value="None">
+                    </x64>
+				</platform>
+			</version>
+		</vendor>
+	</family>
+	<family value="ZBrush" abbrev="ZBR">
+		<vendor value="Pixologic">
+			<version value="4R5" template="null_pixologic_zbrush_4r5.zpr">
+				<platform value="Windows">
+					<x32 value="None">
+                    </x32>
+					<x64 value="None">
+                    </x64>
+				</platform>
+				<platform value="Darwin">
+					<x32 value="/Applications/ZBrushOSX 4R5/ZBrush.app">
+                    </x32>
+					<x64 value="None">
+                    </x64>
+				</platform>
+			</version>
+			<version value="4R6" template="null_pixologic_zbrush_4r6.ZPR">
+				<platform value="Windows">
+					<x32 value="None">
+                    </x32>
+					<x64 value="None">
+                    </x64>
+				</platform>
+				<platform value="Darwin">
+					<x32 value="/Applications/ZBrushOSX 4R6/ZBrush.app">
+                    </x32>
+					<x64 value="None">
+                    </x64>
+				</platform>
+			</version>
+		</vendor>
+	</family>
+	<family value="Mudbox" abbrev="MUD">
+		<vendor value="Autodesk">
+			<version value="2013" template="null_autodesk_mudbox_2013.mud">
+				<platform value="Windows">
+					<x32 value="None">
+                    </x32>
+					<x64 value="None">
+                    </x64>
+				</platform>
+				<platform value="Darwin">
+					<x32 value="None">
+                    </x32>
+					<x64 value="/Applications/Autodesk/Mudbox2013/Mudbox.app/Contents/MacOS/Mudbox">
+                    </x64>
+				</platform>
+			</version>
+			<version value="2015" template="null_autodesk_mudbox_2015.mud">
+				<platform value="Windows">
+					<x32 value="None">
+                    </x32>
+					<x64 value="None">
+                    </x64>
+				</platform>
+				<platform value="Darwin">
+					<x32 value="None">
+                    </x32>
+					<x64 value="/Applications/Autodesk/Mudbox2015/Mudbox.app/Contents/MacOS/Mudbox">
+                    </x64>
+				</platform>
+			</version>
+		</vendor>
+	</family>
+	<family value="Blender" abbrev="BLD">
+		<vendor value="Blender Foundation">
+			<version value="2.6.9" template="null_blenderfoundation_blender_269.blend">
+				<platform value="Windows">
+					<x32 value="None">
+                    </x32>
+					<x64 value="None">
+                    </x64>
+				</platform>
+				<platform value="Darwin">
+					<x32 value="None">
+                    </x32>
+					<x64 value="/Applications/Blender/blender.app/Contents/MacOS/blender">
+                    </x64>
+				</platform>
+			</version>
+		</vendor>
+	</family>
+	<family value="Houdini" abbrev="HOU">
+		<vendor value="Side Effects Software">
+			<version value="13.0.314" template="null_sidefx_houdini_130260.hip">
+				<platform value="Windows">
+					<x32 value="None">
+                    </x32>
+					<x64 value="None">
+                    </x64>
+				</platform>
+				<platform value="Darwin">
+					<x32 value="None">
+                    </x32>
+					<x64 value="/Applications/Houdini 13.0.314/Houdini FX.app/Contents/MacOS/houdini">
+                    </x64>
+				</platform>
+			</version>
+		</vendor>
+	</family>
+	<family value="Nuke" abbrev="NUK">
+		<vendor value="The Foundry">
+			<version value="7.0v8" template="null_thefoundry_nuke_708.nk">
+				<platform value="Windows">
+					<x32 value="None">
+                    </x32>
+					<x64 value="None">
+                    </x64>
+				</platform>
+				<platform value="Darwin">
+					<x32 value="None">
+                    </x32>
+					<x64 value="/Applications/Nuke7.0v8/Nuke7.0v8.app/Nuke7.0v8">
+						<flag value="-V"/>
+						<flag value="2"/>
+                    </x64>
+				</platform>
+			</version>
+            <version value="8.0v3" template="None">
+				<platform value="Windows">
+					<x32 value="None">
+                    </x32>
+					<x64 value="C:\Program Files\Nuke8.0v3\Nuke8.0.exe">
+                    </x64>
+				</platform>
+				<platform value="Darwin">
+					<x32 value="None">
+                    </x32>
+					<x64 value="/Applications/Nuke8.0v3/Nuke8.0v3.app/Nuke8.0v3">
+						<flag value="-V"/>
+						<flag value="2"/>
+                    </x64>
+				</platform>
+			</version>
+		</vendor>
+	</family>
+	<family value="NukeX" abbrev="NUX">
+		<vendor value="The Foundry">
+			<version value="7.0v8" template="null_thefoundry_nukex_708.nk">
+				<platform value="Windows">
+					<x32 value="None">
+                    </x32>
+					<x64 value="None">
+                    </x64>
+				</platform>
+				<platform value="Darwin">
+					<x32 value="None">
+                    </x32>
+					<x64 value="/Applications/Nuke7.0v8/Nuke7.0v8.app/Nuke7.0v8">
+						<flag value="--nukex"/>
+						<flag value="-V"/>
+						<flag value="2"/>
+                    </x64>
+				</platform>
+			</version>
+		</vendor>
+	</family>
+	<family value="Fusion" abbrev="FSN">
+		<vendor value="Blackmagicdesign">
+			<version value="7.5" template="None">
+				<platform value="Windows">
+					<x32 value="None">
+                    </x32>
+					<x64 value="C:\Program Files\Blackmagic Design\Fusion\Fusion.exe">
+                    </x64>
+				</platform>
+				<platform value="Darwin">
+					<x32 value="None">
+                    </x32>
+					<x64 value="None">
+                    </x64>
+				</platform>
+			</version>
+		</vendor>
+	</family>
+	<family value="HDRLightStudio" abbrev="LST">
+		<vendor value="Lightmap">
+			<version value="4" template="None">
+				<platform value="Windows">
+					<x32 value="None">
+                    </x32>
+					<x64 value="None">
+                    </x64>
+				</platform>
+				<platform value="Darwin">
+					<x32 value="None">
+                    </x32>
+					<x64 value="/Applications/HDRLightStudio.app/Contents/MacOS/HDRLightStudio">
+                    </x64>
+				</platform>
+			</version>
+		</vendor>
+	</family>
+	<family value="Deadline" abbrev="DDL">
+		<vendor value="Thinkbox Software">
+			<version value="5.2.4949 (Monitor)" template="None">
+				<platform value="Windows">
+					<x32 value="None">
+                    </x32>
+					<x64 value="None">
+                    </x64>
+				</platform>
+				<platform value="Darwin">
+					<x32 value="None">
+                    </x32>
+					<x64 value="/Applications/Deadline/Resources/bin/deadlinemonitor">
+                    </x64>
+				</platform>
+			</version>
+<!--			<version value="5.2.4949 (Slave)" template="None">
+				<platform value="Windows">
+					<x32 value="None">
+                    </x32>
+					<x64 value="None">
+                    </x64>
+				</platform>
+				<platform value="Darwin">
+					<x32 value="None">
+                    </x32>
+					<x64 value="/Applications/Deadline/Resources/bin/deadlineslave">
+                    </x64>
+				</platform>
+			</version> -->
+			<version value="5.2.4949 (Submitter)" template="None">
+				<platform value="Windows">
+					<x32 value="None">
+                    </x32>
+					<x64 value="None">
+                    </x64>
+				</platform>
+				<platform value="Darwin">
+					<x32 value="None">
+                    </x32>
+					<x64 value="/Applications/Deadline/Resources/bin/deadlinecommand">
+                    </x64>
+				</platform>
+			</version>
+		</vendor>
+	</family>
+</valueApplication>

@@ -1,0 +1,3 @@
+// Return UVLayout install directory
+global proc string uvlayout_home()
+{ return "/Applications/headus-UVLayout-Pro.app"; }

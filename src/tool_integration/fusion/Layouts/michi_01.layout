@@ -1,0 +1,65 @@
+{
+	{
+		FrameTypeID = "ChildFrame",
+		Mode = 3,
+		LayoutPreset = 0,
+		Left = 86,
+		Top = 240,
+		Width = 1566,
+		Height = 758,
+		Views = ordered() {
+			Main = MultiView {
+				Active = "Flow",
+				ViewList = ordered() {
+					Flow = "FlowView",
+					Console = "ConsoleView",
+					Timeline = "TimelineView",
+					Spline = "SplineEditorView",
+					Info = "InfoView",
+					Chat = "ChatView",
+				},
+			},
+			Controls = MultiView {
+				Active = "Tools",
+				ViewList = ordered() {
+					Tools = "ControlView",
+					Modifiers = "ModifierView",
+				},
+			},
+			Left = "PreviewContainer",
+			Transport = "TransportView",
+			Time = "TimeView",
+		},
+		Layout = {
+			Columns = 2,
+			RatioX = 1,
+			RatioY = 1,
+			{
+				Rows = 3,
+				RatioX = 0.833420365535248,
+				RatioY = 100,
+				{ ID = "Left", RatioX = 1, RatioY = 1, Pop = true, },
+				{ ID = "Main", RatioY = 0.47554347826087, Pop = true, },
+				{ ID = "Time", SnapY = 52, Flat = true, },
+			},
+			{
+				Rows = 2,
+				PixelX = 317,
+				{ ID = "Controls", RatioX = 1, RatioY = 1, },
+				{ ID = "Transport", FixedY = -2, },
+			},
+		},
+	},
+	{
+		FrameTypeID = "FloatViewFrame",
+		Mode = 3,
+		Left = 3172,
+		Top = 52,
+		Width = 810,
+		Height = 561,
+		Views = ordered() {
+			Right = "PreviewContainer",
+		},
+		Layout = { ID = "Right", RatioX = 1, RatioY = 1, },
+	},
+}

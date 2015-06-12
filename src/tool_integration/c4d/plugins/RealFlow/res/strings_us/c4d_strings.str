@@ -1,0 +1,17 @@
+// C4D-StringResource
+// Identifier	Text
+
+STRINGTABLE
+{
+  RF_PARTICLE_IMPORTER "#$1 RealFlow Particle Importer";
+  RF_PARTICLE_EXPORTER "#$2 RealFlow Particle Exporter";
+  RF_PARTICLE_NODE "RealFlow Particle";
+  RF_SD_IMPORTER "#$3 RealFlow SD Importer";
+  RF_SD_ANIM "RealFlow SD Animation";
+  RF_SD_EXPORTER "#$4 RealFlow SD Exporter";
+  RF_MESH_IMPORTER "#$5 RealFlow Mesh Importer";
+  RF_MESH_EXPORTER "#$6 RealFlow Mesh Exporter";
+  RF_SD_READER "RealFlow SD Reader";
+  RF_MELTMATERIAL "RealFlow MeltMaterial";
+  RF_PARTICLESHADER "RealFlow Particle Shader";
+}

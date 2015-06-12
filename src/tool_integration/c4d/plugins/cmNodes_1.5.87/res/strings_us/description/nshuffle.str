@@ -1,0 +1,14 @@
+STRINGTABLE Nshuffle                            {
+    Nshuffle                                    "cmNodeShuffle";
+
+    NSHF_LONG_SHUFFLE_RED                       "red";
+    NSHF_LONG_SHUFFLE_GREEN                     "green";
+    NSHF_LONG_SHUFFLE_BLUE                      "blue";
+
+    NSHF_CHN_RED                                "red";
+    NSHF_CHN_GREEN                              "green";
+    NSHF_CHN_BLUE                               "blue";
+    NSHF_CHN_SEP                                "";
+    NSHF_CHN_WHITE                              "white";
+    NSHF_CHN_BLACK                              "black";
+}

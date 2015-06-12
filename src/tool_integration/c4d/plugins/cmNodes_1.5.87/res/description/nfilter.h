@@ -1,0 +1,19 @@
+#ifndef _Nfilter_H_
+#define _Nfilter_H_
+
+enum {
+    NFLT_REAL_HUE                       = 1002,
+    NFLT_REAL_SATURATION,
+    NFLT_REAL_LIGHTNESS,
+    NFLT_BOOL_COLORIZE,
+    NFLT_REAL_BRIGHNESS,
+    NFLT_REAL_CONTRAST,
+    NFLT_REAL_LOW_CLIP,
+    NFLT_REAL_HIGH_CLIP,
+    NFLT_BOOL_CLIPPING,
+    NFLT_REAL_GAMMA,
+
+    NFLT_DUMMY
+};
+
+#endif

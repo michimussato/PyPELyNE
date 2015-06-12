@@ -1,0 +1,18 @@
+DIALOGSTRINGS RF_SD_IMPORTER
+{
+	RFSDImporter "RealFlow SD Importer";
+
+  	SD_IMP_SETUP			"Setup";
+
+	SD_IMP_CAM				"Camera";
+	SD_IMP_OBJ				"Object(s)";
+	SD_IMP_OBJNUM			"";
+	SD_IMP_OBJDESC			"";
+	SD_IMP_SCALE			"Scale";
+	SD_IMP_CREATE			"Create Missing Objects";
+	SD_IMP_TEX				"Add Texture";
+	SD_IMP_NORM				"Invert Normals";
+	SD_IMP_KEYS				"Create Motion Keys";
+	SD_IMP_BUTTON			"Import";
+	SD_IMP_CANCEL			"Cancel";
+}

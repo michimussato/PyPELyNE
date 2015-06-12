@@ -1,0 +1,6 @@
+STRINGTABLE Nfresnel                {
+    Nfresnel                        "cmNodeFresnel";
+
+    NFNL_REAL_IOR                   "IOR";
+    NFNL_BOOL_USEBUMP               "Use Bump";
+}

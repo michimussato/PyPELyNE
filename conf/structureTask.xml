@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<structureTask>
+	<family value="Maya">
+		<taskBase value="project">
+			<subFolder value="externalFiles">
+			</subFolder>
+			<subFolder value="scenes">
+			</subFolder>
+			<subFolder value="sourceimages">
+			</subFolder>
+			<subFolder value="tmp">
+				<subFolder value="renderData">
+					<subFolder value="mentalray">
+					</subFolder>
+				</subFolder>
+			</subFolder>
+			<subFolder value="uvLayout">
+			</subFolder>
+		</taskBase>
+	</family>
+	<family value="Mudbox">
+		<taskBase value="project">
+		</taskBase>
+	</family>
+	<family value="CINEMA 4D">
+		<taskBase value="project">
+		</taskBase>
+	</family>
+	<family value="RealFlow">
+		<taskBase value="project">
+			<subFolder value="images">
+			</subFolder>
+			<subFolder value="initialState">
+			</subFolder>
+			<subFolder value="log">
+			</subFolder>
+			<subFolder value="meshes">
+			</subFolder>
+			<subFolder value="objects">
+			</subFolder>
+			<subFolder value="particles">
+			</subFolder>
+			<subFolder value="preview">
+				<subFolder value="images">
+				</subFolder>
+			</subFolder>
+		</taskBase>
+	</family>
+	<family value="Photoshop">
+		<taskBase value="project">
+		</taskBase>
+	</family>
+	<family value="Nuke">
+		<taskBase value="project">
+		</taskBase>
+	</family>
+	<family value="Illustrator">
+		<taskBase value="project">
+		</taskBase>
+	</family>
+	<family value="Indesign">
+		<taskBase value="project">
+		</taskBase>
+	</family>
+	<family value="After Effects">
+		<taskBase value="project">
+		</taskBase>
+	</family>
+	<family value="ZBrush">
+		<taskBase value="project">
+		</taskBase>
+	</family>
+	<family value="Premiere">
+		<taskBase value="project">
+		</taskBase>
+	</family>
+	<family value="PFTrack">
+		<taskBase value="project">
+		</taskBase>
+	</family>
+	<family value="Blender">
+		<taskBase value="project">
+		</taskBase>
+	</family>
+	<family value="Houdini">
+		<taskBase value="project">
+		</taskBase>
+	</family>
+</structureTask>

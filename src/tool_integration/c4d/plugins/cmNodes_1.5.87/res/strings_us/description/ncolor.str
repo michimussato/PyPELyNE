@@ -1,0 +1,5 @@
+STRINGTABLE Ncolor {
+    Ncolor                          "cmNodeColor";
+
+    NCOL_COLOR_INPUT                "Color";
+}

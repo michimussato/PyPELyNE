@@ -1,0 +1,3 @@
+STRINGTABLE Ninput {
+    Ninput                          "cmNodeInput";
+}

@@ -1,0 +1,7 @@
+#symbolic link win
+
+#pattern
+# mklink /D "path\to\linkToBeCreated" "path\to\physicalFolder"
+
+#prefs
+mklink "C:\ProgramData\Blackmagic Design\Fusion\Profiles\Default\Fusion7.prefs" "C:\Users\michael.mussato.SCHERRERMEDIEN\Dropbox\development\workspace\PyPELyNE\src\tool_integration\fusion\Fusion7.prefs"

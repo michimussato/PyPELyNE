@@ -1,0 +1,7 @@
+STRINGTABLE Ncurves                 {
+    Ncurves                         "cmNodeCurves";
+
+    NCRV_SPLINE_CURVE               "Spline";
+
+    NCRV_REAL_MIX                   "Mix";
+}

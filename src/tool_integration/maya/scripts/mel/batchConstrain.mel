@@ -1,0 +1,20 @@
+//batch constraint:
+
+string $selection[];
+$selection = `ls -sl -l`;
+
+for ( $object in $selection )
+{
+    print "processing item: ";
+    print $object;
+    print "\n";
+    //this is the controller:
+    select -r CTR__body_tilt ;
+    //this is any intermediate object (for weighting)
+    select -add CTR__move ;
+    select -add $object;
+
+    orientConstraint -mo -skip x -skip y -weight 0.5;
+
+    select -clear;
+}

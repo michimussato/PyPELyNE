@@ -1,0 +1,461 @@
+Composition {
+	CurrentTime = 0,
+	RenderRange = { 0, 1000, },
+	GlobalRange = { 0, 1000, },
+	CurrentID = 25,
+	Version = "Fusion 7.5 build 1477",
+	SavedOutputs = 2,
+	HeldTools = 0,
+	DisabledTools = 0,
+	LockedTools = 0,
+	AudioOffset = 0,
+	AutoRenderRange = true,
+	Resumable = true,
+	OutputClips = {
+	},
+	Tools = {
+		PositionPass_1_2_2 = Loader {
+			Clips = {
+				Clip {
+					ID = "Clip1",
+					Filename = "C:\\Users\\michael.mussato.SCHERRERMEDIEN\\Desktop\\demo\\0010__c4d\\output\\seq\\demo_NoAA.0000.exr",
+					FormatID = "OpenEXRFormat",
+					Length = 101,
+					LengthSetManually = true,
+					TrimIn = 0,
+					TrimOut = 100,
+					ExtendFirst = 0,
+					ExtendLast = 0,
+					Loop = 0,
+					AspectMode = 0,
+					Depth = 0,
+					TimeCode = 0,
+					GlobalStart = 0,
+					GlobalEnd = 100,
+				},
+			},
+			NameSet = true,
+			Inputs = {
+				["Gamut.SLogVersion"] = Input { Value = FuID { "SLog2", }, },
+				["Clip1.OpenEXRFormat.Channels"] = Input { Value = 1, },
+				["Clip1.OpenEXRFormat.RedName"] = Input { Value = FuID { "#0004#Material Normal.red", }, },
+				["Clip1.OpenEXRFormat.GreenName"] = Input { Value = FuID { "#0004#Material Normal.green", }, },
+				["Clip1.OpenEXRFormat.BlueName"] = Input { Value = FuID { "#0004#Material Normal.blue", }, },
+			},
+			ViewInfo = OperatorInfo {
+				Pos = { 731, 207, },
+				Flags = {
+					ShowPic = true,
+				},
+			},
+		},
+		ChannelBooleans9 = ChannelBoolean {
+			Inputs = {
+				EnableExtraChannels = Input { Value = 1, },
+				ToXNormal = Input { Value = 5, },
+				ToYNormal = Input { Value = 6, },
+				ToZNormal = Input { Value = 7, },
+				Background = Input {
+					SourceOp = "PositionPass_1_2_2",
+					Source = "Output",
+				},
+			},
+			ViewInfo = OperatorInfo { Pos = { 903.07, 207, }, },
+		},
+		ColorCorrector7 = ColorCorrector {
+			Inputs = {
+				MaskChannel = Input { Value = 5, },
+				WheelTintAngle1 = Input { Value = -0.189606401935654, },
+				WheelTintLength1 = Input { Value = 1, },
+				ColorRanges = Input {
+					Value = ColorCurves {
+						Curves = {
+							{
+								Points = {
+									{ 0, 1, },
+									{ 0.4, 0.2, },
+									{ 0.6, 0, },
+									{ 1, 0, },
+								},
+							},
+							{
+								Points = {
+									{ 0, 0, },
+									{ 0.4, 0, },
+									{ 0.6, 0.2, },
+									{ 1, 1, },
+								},
+							},
+						},
+					},
+				},
+				HistogramIgnoreTransparent = Input { Value = 1, },
+				Input = Input {
+					SourceOp = "ColorCorrector6",
+					Source = "Output",
+				},
+				EffectMask = Input {
+					SourceOp = "Shader1_1",
+					Source = "Output",
+				},
+			},
+			ViewInfo = OperatorInfo { Pos = { 1278.8, 308.777, }, },
+		},
+		Shader1_1 = Shader {
+			CtrlWZoom = false,
+			Inputs = {
+				Ambient = Input { Value = 0, },
+				Diffuse = Input { Value = 0, },
+				Specular = Input { Value = 2, },
+				EquatorAngle = Input { Value = -210.1578947, },
+				PolarHeight = Input { Value = 12.5874126, },
+				DiffuseCurve = Input {
+					SourceOp = "Shader1DiffuseCurve_1",
+					Source = "Value",
+				},
+				SpecularCurve = Input {
+					SourceOp = "Shader1SpecularCurve_1",
+					Source = "Value",
+				},
+				Input = Input {
+					SourceOp = "ChannelBooleans9",
+					Source = "Output",
+				},
+			},
+			ViewInfo = OperatorInfo { Pos = { 1110.72, 156.159, }, },
+		},
+		Underlay1 = Underlay {
+			ViewInfo = UnderlayInfo {
+				Pos = { 849.166, 375.931, },
+				Size = { 156.974, 91.8999, },
+			},
+		},
+		ColorCorrector6 = ColorCorrector {
+			Inputs = {
+				MaskChannel = Input { Value = 5, },
+				WheelTintAngle1 = Input { Value = 0.639831213343716, },
+				WheelTintLength1 = Input { Value = 1, },
+				ColorRanges = Input {
+					Value = ColorCurves {
+						Curves = {
+							{
+								Points = {
+									{ 0, 1, },
+									{ 0.4, 0.2, },
+									{ 0.6, 0, },
+									{ 1, 0, },
+								},
+							},
+							{
+								Points = {
+									{ 0, 0, },
+									{ 0.4, 0, },
+									{ 0.6, 0.2, },
+									{ 1, 1, },
+								},
+							},
+						},
+					},
+				},
+				HistogramIgnoreTransparent = Input { Value = 1, },
+				Input = Input {
+					SourceOp = "input",
+					Source = "Output",
+				},
+				EffectMask = Input {
+					SourceOp = "Shader1",
+					Source = "Output",
+				},
+			},
+			ViewInfo = OperatorInfo { Pos = { 1067.62, 311.503, }, },
+		},
+		Shader1DiffuseCurve = LUTBezier {
+			KeyColorSplines = {
+				[0] = {
+					[0] = { 0, RH = { 0.333333333333333, 0.333333333333333, }, Flags = { Linear = true, }, },
+					[1] = { 1, LH = { 0.666666666666667, 0.666666666666667, }, Flags = { Linear = true, }, },
+				},
+			},
+			SplineColor = { Red = 0, Green = 0, Blue = 0, },
+		},
+		Shader1SpecularCurve_1 = LUTBezier {
+			KeyColorSplines = {
+				[0] = {
+					[0] = { 0, RH = { 0.333333333333333, 0.333333333333333, }, Flags = { Linear = true, }, },
+					[1] = { 1, LH = { 0.666666666666667, 0.666666666666667, }, Flags = { Linear = true, }, },
+				},
+			},
+			SplineColor = { Red = 0, Green = 0, Blue = 0, },
+		},
+		Shader1DiffuseCurve_1 = LUTBezier {
+			KeyColorSplines = {
+				[0] = {
+					[0] = { 0, RH = { 0.333333333333333, 0.333333333333333, }, Flags = { Linear = true, }, },
+					[1] = { 1, LH = { 0.666666666666667, 0.666666666666667, }, Flags = { Linear = true, }, },
+				},
+			},
+			SplineColor = { Red = 0, Green = 0, Blue = 0, },
+		},
+		input = Merge {
+			CtrlWZoom = false,
+			NameSet = true,
+			Inputs = {
+				PerformDepthMerge = Input { Value = 0, },
+			},
+			ViewInfo = OperatorInfo { Pos = { 851.704, 414.875, }, },
+		},
+		Shader1SpecularCurve = LUTBezier {
+			KeyColorSplines = {
+				[0] = {
+					[0] = { 0, RH = { 0.333333333333333, 0.333333333333333, }, Flags = { Linear = true, }, },
+					[1] = { 1, LH = { 0.666666666666667, 0.666666666666667, }, Flags = { Linear = true, }, },
+				},
+			},
+			SplineColor = { Red = 0, Green = 0, Blue = 0, },
+		},
+		Shader1 = Shader {
+			Inputs = {
+				Ambient = Input { Value = 0, },
+				Diffuse = Input { Value = 0, },
+				EquatorAngle = Input { Value = 14.0526316, },
+				PolarHeight = Input { Value = 16.3636364, },
+				DiffuseCurve = Input {
+					SourceOp = "Shader1DiffuseCurve",
+					Source = "Value",
+				},
+				SpecularCurve = Input {
+					SourceOp = "Shader1SpecularCurve",
+					Source = "Value",
+				},
+				Input = Input {
+					SourceOp = "ChannelBooleans9",
+					Source = "Output",
+				},
+			},
+			ViewInfo = OperatorInfo { Pos = { 1106.81, 207, }, },
+		},
+	},
+	Views = {
+		{
+			FrameTypeID = "ChildFrame",
+			Mode = 3,
+			LayoutPreset = 0,
+			Left = 25,
+			Top = 25,
+			Width = 1570,
+			Height = 762,
+			Views = ordered() {
+				Main = MultiView {
+					Active = "Flow",
+					ViewList = ordered() {
+						Flow = "FlowView",
+						Console = "ConsoleView",
+						Timeline = "TimelineView",
+						Spline = "SplineEditorView",
+						Info = "InfoView",
+						Chat = "ChatView",
+					},
+					Flow = FlowView {
+						Flags = {
+							Navigator = true,
+							ConnectedSnap = true,
+							PipesAlways = true,
+							ShowGrid = false,
+							AutoSnap = true,
+							RemoveRouters = true,
+						},
+						NavigatorSize = { 100, 100, },
+						Direction = "Vertical",
+						PipeStyle = "Direct",
+						Scale = 0.641715,
+						Offset = { 205.909, 47.3694, },
+					},
+					Timeline = TimelineView {
+						TreeControlState = {
+						},
+						DisplayMode = "All Tools",
+						ShowCurrentTimeTools = false,
+						Filter = "Show All",
+						ShowSelectedTools = false,
+						ShowAnimatedToolsOnly = false,
+						ShowEditBoxes = false,
+						KeyFrameView = {
+							Position = { Left = 130, Bottom = 511, },
+							ScaleX = 0.75187969924812,
+							OffsetX = -49.6240601503759,
+							OffsetY = 0,
+							AutoScaling = "scroll",
+							AutoSnapTo = "frame",
+							AutoSnapToGuidelines = true,
+							GuidelinesGrabEnabled = true,
+							GuidelinesSnapTo = "none",
+						},
+						Spreadsheet = { LeftPos = 130, Visible = false, },
+					},
+					Spline = SplineEditorView {
+						LeftPos = 225,
+						ScaleX = 0.2,
+						ScaleY = 0.00343642611683849,
+						OffsetX = -3.59999999999999,
+						OffsetY = 0,
+						AutoScaling = "scroll",
+						AutoSnapTo = "frame",
+						AutoSnapToGuidelines = true,
+						GuidelinesSnapTo = "frame",
+						ShowKeyMarkers = false,
+						IndependentHandles = false,
+						ShowNonSplineModifiers = false,
+						GuidelinesGrabEnabled = true,
+						ShowOneToolOnly = false,
+						ShowSelectedTools = false,
+						ShowAllInputs = false,
+						Filter = "Show All",
+					},
+				},
+				Controls = MultiView {
+					Active = "Tools",
+					ViewList = ordered() {
+						Tools = "ControlView",
+						Modifiers = "ModifierView",
+					},
+				},
+				Left = "PreviewContainer",
+				Right = "PreviewContainer",
+				Transport = "TransportView",
+				Time = "TimeView",
+			},
+			Layout = {
+				Columns = 2,
+				RatioX = 1,
+				RatioY = 1,
+				{
+					Rows = 3,
+					RatioX = 0.833420365535248,
+					RatioY = 0.00990990990990991,
+					{
+						Columns = 2,
+						RatioX = 1,
+						RatioY = 0.47554347826087,
+						{ ID = "Left", RatioX = 0.500313873195229, RatioY = 0.00952380952380952, Pop = true, },
+						{ ID = "Right", RatioX = 0.499686126804771, Pop = true, },
+						Pop = true,
+					},
+					{ ID = "Main", RatioY = 0.47554347826087, Pop = true, },
+					{ ID = "Time", SnapY = 52, Flat = true, },
+				},
+				{
+					Rows = 2,
+					PixelX = 317,
+					{ ID = "Controls", RatioX = 1, RatioY = 1, },
+					{ ID = "Transport", FixedY = -2, },
+				},
+			},
+		},
+	},
+	Prefs = {
+		Comp = {
+			Memory = {
+				FramesAtOnce = 5,
+				Render = {
+					SimultaneousBranching = true,
+				},
+				Interactive = {
+					SimultaneousBranching = true,
+				},
+			},
+			Views = {
+				Right = {
+					SideB = {
+						PrevCtrlInactiveColor = 65280,
+						PickW = 1,
+						PickH = 1,
+						PrevCtrlActiveColor = 255,
+						Viewer = {
+							EnableLUTs = false,
+							LUTPlugin = "",
+							NearZ = 0,
+							FitMarginX = 0,
+							FitMarginType = 0,
+							FarZ = -1000,
+							FitMarginY = 0,
+						},
+					},
+				},
+				Left = {
+					Viewer = {
+						LUTPlugin = "7.5",
+					},
+					SideB = {
+						PrevCtrlInactiveColor = 65280,
+						PickW = 1,
+						PickH = 1,
+						PrevCtrlActiveColor = 255,
+						Viewer = {
+							EnableLUTs = false,
+							LUTPlugin = "Center",
+							NearZ = 0,
+							FitMarginX = 0,
+							FitMarginType = 0,
+							FarZ = -1000,
+							FitMarginY = 0,
+						},
+					},
+				},
+				View1 = {
+					Viewer = {
+						LUTPlugin = "As...",
+					},
+					PrevCtrlInactiveColor = 0,
+					PickW = 0,
+					PickH = 0,
+					PrevCtrlActiveColor = 0,
+					SideB = {
+						PrevCtrlInactiveColor = 65280,
+						PickW = 1,
+						PickH = 1,
+						PrevCtrlActiveColor = 255,
+						Viewer = {
+							EnableLUTs = false,
+							LUTPlugin = "HDTV 1080",
+							NearZ = 0,
+							FitMarginX = 0,
+							FitMarginType = 0,
+							FarZ = -1000,
+							FitMarginY = 0,
+						},
+					},
+				},
+				Defaults = {
+					CtrlWheelZoom = false,
+				},
+			},
+			FrameFormat = {
+				Name = "HDTV 1080",
+				Width = 1920,
+				Height = 1080,
+				Rate = 25,
+				PerFeet = 1,
+				GuideRatio = 1.77777777777778,
+			},
+			LastFile = "\\\\smsrv-001\\Allgemein\\Kunden\\UBS\\UBS_Artcontent_2014\\tasks\\0025__rendering\\shot_0002__A002_C065_0106FZ\\output\\EXR_vray_ultraQuick\\EXR_vray_ultraQuick.3651.exr",
+			SplineEditor = {
+				AutoSnap = {
+					Keys = 18,
+				},
+			},
+			Paths = {
+			},
+			FlowView = {
+				Direction = 1,
+				ConnectedSnap = true,
+				ShowGrid = false,
+				ShowNavigator = 1,
+				PipesOnTop = true,
+			},
+			QuickTime = {
+			},
+		},
+	},
+}
+
+ 

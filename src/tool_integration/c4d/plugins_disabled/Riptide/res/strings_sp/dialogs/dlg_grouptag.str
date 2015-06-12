@@ -1,0 +1,11 @@
+// C4D-DialogResource
+
+DIALOGSTRINGS DLG_GROUPTAG
+{
+  H1    "Selecci{on de Grupos";
+  T1    "Disponibles";
+  T2    "->";
+  T3    "Seleccionados";
+  T4    "<-";
+  TDLG  "Etiqueta de Grupo";
+}

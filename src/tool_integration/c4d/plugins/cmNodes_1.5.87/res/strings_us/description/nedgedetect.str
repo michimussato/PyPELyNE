@@ -1,0 +1,10 @@
+STRINGTABLE Nedgedetect             {
+    Nedgedetect                     "cmNodeEdgeDetect";
+
+    NEDT_REAL_RADIUS                "Radius";
+    NEDT_LONG_METHOD                "Method";
+
+    NEDT_METHOD_SOBEL               "Sobel";
+    NEDT_METHOD_PREWITT             "Prewitt";
+    NEDT_METHOD_KIRSH               "Kirsh";
+}

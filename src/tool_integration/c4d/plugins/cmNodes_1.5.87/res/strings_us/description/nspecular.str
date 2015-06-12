@@ -1,0 +1,14 @@
+STRINGTABLE Nspecular               {
+    Nspecular                       "cmNodeSpecular";
+
+    NSPC_REAL_INTENSITY             "Intensity";
+    NSPC_REAL_FALLOFF               "Falloff";
+    NSPC_REAL_OFFSET                "Offset";
+    NSPC_BOOL_USEBUMP               "Use Bump";
+    NSPC_BOOL_USESHADOWS            "Use Shadows";
+    NSPC_LONG_EXCLUSION_MODE        "Lights";
+    NSPC_INEX_LIGHTS                "";
+
+    NSPC_MODE_INCLUDE               "Include";
+    NSPC_MODE_EXCLUDE               "Exclude";
+}

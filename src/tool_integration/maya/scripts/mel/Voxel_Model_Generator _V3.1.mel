@@ -1,0 +1,657 @@
+/*	written by 		James.R
+  	file_name		JR_Voxel_Generator
+  	title			Voxel_Model_Generator
+  	version			3.1.0
+  	first version	2014-4-14
+  	update			2014-7-28
+	
+  	Copyright (C) 2014 by James.R
+  	averst.nj@Gmail.com
+*/
+//	Description
+//		Select a polygon or NURBS geometry to execute this script
+//		This script will create models inside the volume of geometry, so be careful 
+//		low spacing will lead to a massive scene.
+
+//query in geometry
+proc float[] sampleInfo(string $sampleNode, vector $instPos){
+	float $rawData[];
+	//polygon sampling
+	if(`nodeType $sampleNode` == "closestPointOnMesh"){
+		setAttr ($sampleNode + ".inPosition") ($instPos.x) ($instPos.y) ($instPos.z);
+		float $quePos[] = `getAttr ($sampleNode + ".position")`;
+    	float $queNor[] = `getAttr ($sampleNode + ".normal")`;
+    	vector $posVec = <<($instPos.x - $quePos[0]), ($instPos.y - $quePos[1]), ($instPos.z - $quePos[2])>>;
+    	float $dist = mag($posVec);
+    	$rawData = {($posVec.x), ($posVec.y), ($posVec.z), ($queNor[0]), ($queNor[1]), ($queNor[2]), $dist};
+    }
+    //NURBS sampling
+    if(`nodeType $sampleNode` == "closestPointOnSurface"){
+    	setAttr ($sampleNode + ".inPosition") ($instPos.x) ($instPos.y) ($instPos.z);
+    	float $quePos[] = `getAttr ($sampleNode + ".position")`;
+    	vector $posVec = <<($instPos.x - $quePos[0]), ($instPos.y - $quePos[1]), ($instPos.z - $quePos[2])>>;
+    	float $dist = mag($posVec);
+    	float $parU, $parV;
+    	$parU = `getAttr ($sampleNode + ".parameterU")`;
+    	$parV = `getAttr ($sampleNode + ".parameterV")`;
+    	string $inSurface[] = `listConnections -s true ($sampleNode + ".inputSurface")`;
+    	float $queNor[] = `pointOnSurface -u $parU -v $parV -normal $inSurface[0]`;
+    	$rawData = {($posVec.x), ($posVec.y), ($posVec.z), ($queNor[0]), ($queNor[1]), ($queNor[2]), $dist};
+    }
+
+    return $rawData;
+}
+
+proc int inGeo(vector $posVec, vector $normVec, float $dist, float $hollowThre){
+	int $isInGeo = false;
+    unit $posVec;
+    unit $normVec;
+    float $angle = rad_to_deg(angle($posVec, $normVec));
+    //test hollow distance
+    int $inHolThre = false;
+    if($hollowThre < 0.0 || ($hollowThre >= 0.0 && $dist <= $hollowThre)) $inHolThre = true;
+
+    if(($angle >=90.001 || $dist <= 0.001) && $inHolThre) $isInGeo = true;
+    return $isInGeo;
+}
+
+//round() function
+proc int round(float $num){
+	int $roundNum;
+	float $wholeNum = trunc($num);
+	float $fricNum = $num - $wholeNum;
+	if(abs($fricNum) < 0.5){
+		if($num >= 0){
+			$roundNum = floor($num);
+		}else{
+			$roundNum = ceil($num);
+		}
+	}else{
+		if($num >= 0){
+			$roundNum = ceil($num);
+		}else{
+			$roundNum = floor($num);
+		}
+	}
+	return $roundNum;
+}
+//----------------------------------------
+
+//voxel by particles---
+//particle grid
+proc string buildParArray(string $pName, float $spacing){
+	string $geo[] = `ls -sl`;
+	//if(size($geo) == 0) error "Select a Geometry to execute the script!";
+	float $bounds[] = `xform -q -bb $geo[0]`;
+	//draw particle system
+	string $namPar[] = `particle -n $pName -ll ($bounds[0]) ($bounds[1]) ($bounds[2]) 
+	                    -ur ($bounds[3]) ($bounds[4]) ($bounds[5])
+	                    -grs ($spacing)
+	                    -c 1`;
+	return $namPar[0];
+}
+
+proc string buildHCPParArray(string $pName, float $radius){
+	string $geo[] = `ls -sl`;
+	float $bounds[] = `xform -q -bb $geo[0]`;
+	//create particle node
+	particle -n $pName;
+	string $namPar[] = `ls -sl -l`;                 //get absolute path for emit
+	//caculating size
+	float $length = $bounds[3] - $bounds[0];
+	float $width = $bounds[5] - $bounds[2];
+	float $height = $bounds[4] - $bounds[1];
+	//caculating element amount
+	int $numX = round($length / ($radius * 2));
+	int $numY = ($height > 2*$radius) ? (1+ceil(($height-2*$radius) / (2*sqrt(6)/3*$radius))) : round($height/(2*$radius));
+	int $numZ = ($width > 2*$radius) ? (1+ceil(($width-2*$radius) / (sqrt(3)*$radius))) : round($width/(2*$radius));
+	//add particles
+	float $omitPos[] = {$bounds[0], $bounds[1], $bounds[0]};
+	int $i, $j, $k;
+	for($k = 0; $k < $numY; $k++){
+		if(($k+1)%2){
+			$omitPos[0] = $bounds[0]; $omitPos[2] = $bounds[2];
+		}else{
+			$omitPos[0] = $bounds[0] + $radius;
+			$omitPos[2] = $bounds[2] + (sqrt(3)/3) * $radius;
+		}
+		for($j = 0; $j < $numZ; $j++){
+			if((($j+1)%2 && ($k+1)%2) || (!(($j+1)%2) && !(($k+1)%2))){
+				$omitPos[0] = $bounds[0];
+			}else{
+				$omitPos[0] = $bounds[0] + $radius;
+			}
+			for($i = 0; $i < $numX; $i++){
+				emit -o ($namPar[0]) -pos ($omitPos[0]) ($omitPos[1]) ($omitPos[2]);
+				$omitPos[0] += $radius * 2;
+			}
+			$omitPos[2] += sqrt(3) * $radius;
+		}
+		$omitPos[1] += (2 * sqrt(6)/3) * $radius;
+	}
+
+	return $namPar[0];
+}
+
+//kill outside particles
+proc string parGeoQuery(string $namGeo, string $objType, float $hollowThre, float $addAttr[]){
+  string $parShap[] = `listRelatives -s -f -ni`;
+  setAttr ($parShap[0]+".lifespanMode") 3;
+  float $idArry[] = `getParticleAttr -at "id" -array true`;
+  string $sampler;
+  float $sampleData[];
+  
+  //create sampling node
+  if($objType == "mesh"){
+  	$sampler = `createNode closestPointOnMesh`;
+  	connectAttr -f ($namGeo + ".worldMesh") ($sampler + ".inMesh");
+  	connectAttr -f ($namGeo + ".worldMatrix") ($sampler + ".inputMatrix");
+  }else{
+  	$sampler = `createNode closestPointOnSurface`;
+  	connectAttr -f ($namGeo + ".worldSpace") ($sampler + ".inputSurface");
+  }
+  
+  //add sampling attributes
+  if(int($addAttr[0])) addAttr -ln "VXG_cloSampleDis" -dt doubleArray -w false $parShap[0];
+  if(int($addAttr[1])) addAttr -ln "VXG_cloSamplePos" -dt vectorArray -w false $parShap[0];
+  if(int($addAttr[2])) addAttr -ln "VXG_cloSampleNorm" -dt vectorArray -w false $parShap[0];
+
+  //progress bar
+  progressWindow -title "Evaluating Particles" -max (size($idArry)) -progress 0 -ii true;
+
+  //sampling & setting lifespan of particles
+  for($count in $idArry){
+      if(`progressWindow -q -isCancelled`) break;
+      vector $cusPos = `getParticleAttr -at "pos" -array true ($parShap[0] + ".pt[" + $count + "]")`;
+      //vector $cusPos = <<1, 2, 3>>;
+      $sampleData = sampleInfo($sampler, $cusPos);
+      vector $posVec = <<$sampleData[0], $sampleData[1], $sampleData[2]>>;
+	  vector $normVec = <<$sampleData[3], $sampleData[4], $sampleData[5]>>;
+	  float $distance = $sampleData[6];
+
+      int $isInGeo = inGeo($posVec, $normVec, $distance, $hollowThre);
+      if($isInGeo){
+      	select ($parShap[0] + ".pt[" + $count + "]");
+        setParticleAttr -at "lifespanPP" -fv 9999.0 ($parShap[0] + ".pt[" + $count + "]");
+        //write-in attributes
+        if(int($addAttr[0])) particle -e -id $count -at "VXG_cloSampleDis" -fv $distance $parShap[0];
+        if(int($addAttr[1])) particle -e -id $count -at "VXG_cloSamplePos" -vv ($posVec.x) ($posVec.y) ($posVec.z) $parShap[0];
+        if(int($addAttr[2])) particle -e -id $count -at "VXG_cloSampleNorm" -vv ($normVec.x) ($normVec.y) ($normVec.z) $parShap[0];
+      }else{
+      	select ($parShap[0] + ".pt[" + $count + "]");
+        setParticleAttr -at "lifespanPP" -fv 0.0 ($parShap[0] + ".pt[" + $count + "]");
+      }
+
+      progressWindow -e -progress $count;
+  }
+  progressWindow -endProgress;
+  delete $sampler;
+  saveInitialState $parShap[0];
+  playButtonStart;
+
+  return $parShap[0];
+}
+
+//do instancing
+proc makeInstance(float $edgeLen, string $parShapName, string $cusGeoName, int $gridMode){
+	string $namGeo[];
+	if(`checkBox -q -v cusGeoBox`){
+		$namGeo[0] = $cusGeoName;
+	}else{
+		if($gridMode == 1) $namGeo = `polyCube -w $edgeLen -h $edgeLen -d $edgeLen -n "voxRefCube"`;
+		if($gridMode == 2) $namGeo = `polySphere -r $edgeLen -sx 20 -sy 20 -ax 0 1 0 -cuv 2 -ch 1 -n "voxRefSphere"`;
+	}
+  	particleInstancer -addObject -obj ($namGeo[0]) -lod Geometry -ru Degrees -ro XYZ -position worldPosition -age age $parShapName;
+  	setAttr ($namGeo[0] + ".visibility") false;
+}
+
+//voxel by duplicating geometry---
+//pos data array
+proc vector[] gridArray(int $useAbsCount, float $spacing, int $countArr[]){
+	float $lenXYZ[];
+	int $numXYZ[];
+	vector $gridArray[];
+	
+	string $geo[] = `ls -sl`;
+	//if(size($geo) == 0) error "Select a Geometry to execute the script!";
+
+	//get boundry of array
+	float $bound[] = `xform -q -bb $geo[0]`;
+	$lenXYZ = {($bound[3] - $bound[0]), ($bound[4] - $bound[1]), ($bound[5] - $bound[2])};
+	if(!$useAbsCount){
+		$numXYZ = {round($lenXYZ[0]/$spacing), round($lenXYZ[1]/$spacing), round($lenXYZ[2]/$spacing)};
+	}else{
+		$numXYZ = $countArr;
+	}
+	
+	//building array
+	int $i, $j, $k;
+	if(!$useAbsCount){
+		for ($k = 0; $k <= $numXYZ[2]; $k++) {
+			for ($j = 0; $j <= $numXYZ[1]; $j++) {
+				for ($i = 0; $i <= $numXYZ[0]; $i++) {
+					$gridArray[size($gridArray)] = <<($bound[0] + $i * $spacing), ($bound[1] + $j * $spacing), ($bound[2] + $k * $spacing)>>;
+				}
+			}
+		}
+	}else{
+		for ($k = 0; $k < $numXYZ[2]; $k++) {
+			for ($j = 0; $j < $numXYZ[1]; $j++) {
+				for ($i = 0; $i < $numXYZ[0]; $i++) {
+					float $posX, $posY, $posZ;
+					if($numXYZ[0] == 1) $posX = ($bound[3] + $bound[0])/2; else $posX = $i * ($lenXYZ[0]/($numXYZ[0]-1)) + $bound[0];
+					if($numXYZ[1] == 1) $posY = ($bound[4] + $bound[1])/2; else $posY = $j * ($lenXYZ[1]/($numXYZ[1]-1)) + $bound[1];
+					if($numXYZ[2] == 1) $posZ = ($bound[5] + $bound[2])/2; else $posZ = $k * ($lenXYZ[2]/($numXYZ[2]-1)) + $bound[2];
+					$gridArray[size($gridArray)] = <<$posX, $posY, $posZ>>;
+				}
+			}
+		}
+	}
+	return $gridArray;
+}
+
+proc vector[] gridHCPArray(float $radius){
+	string $geo[] = `ls -sl`;
+	float $bounds[] = `xform -q -bb $geo[0]`;
+	vector $gridArray[];
+	//caculating size
+	float $length = $bounds[3] - $bounds[0];
+	float $width = $bounds[5] - $bounds[2];
+	float $height = $bounds[4] - $bounds[1];
+	//caculating element amount
+	int $numX = round($length / ($radius * 2));
+	int $numY = ($height > 2*$radius) ? (1+ceil(($height-2*$radius) / (2*sqrt(6)/3*$radius))) : round($height/(2*$radius));
+	int $numZ = ($width > 2*$radius) ? (1+ceil(($width-2*$radius) / (sqrt(3)*$radius))) : round($width/(2*$radius));
+
+	//building
+	float $omitPos[] = {$bounds[0], $bounds[1], $bounds[0]};
+	int $i, $j, $k;
+	for($k = 0; $k < $numY; $k++){
+		if(($k+1)%2){
+			$omitPos[0] = $bounds[0]; $omitPos[2] = $bounds[2];
+		}else{
+			$omitPos[0] = $bounds[0] + $radius;
+			$omitPos[2] = $bounds[2] + (sqrt(3)/3) * $radius;
+		}
+		for($j = 0; $j < $numZ; $j++){
+			if((($j+1)%2 && ($k+1)%2) || (!(($j+1)%2) && !(($k+1)%2))){
+				$omitPos[0] = $bounds[0];
+			}else{
+				$omitPos[0] = $bounds[0] + $radius;
+			}
+			for($i = 0; $i < $numX; $i++){
+				$gridArray[size($gridArray)] = <<$omitPos[0],$omitPos[1],$omitPos[2]>>;
+				$omitPos[0] += $radius * 2;
+			}
+			$omitPos[2] += sqrt(3) * $radius;
+		}
+		$omitPos[1] += (2 * sqrt(6)/3) * $radius;
+	}
+	return $gridArray;
+}
+
+//duplicating voxel items
+proc placeVoxelItem(vector $posArray[], float $edgeLen, float $hollowThre, string $cusGeoName, string $objType, int $gridMode){
+	string $geo[] = `ls -sl`;
+	int $useInstance = `checkBox -q -v insBox`;
+	int $deleteOrig = `checkBox -q -v delOriBox`;
+	//create sampling node
+	string $sampler;
+	if($objType == "mesh"){
+  		$sampler = `createNode closestPointOnMesh`;
+  		connectAttr -f ($geo[0] + ".worldMesh") ($sampler + ".inMesh");
+  		connectAttr -f ($geo[0] + ".worldMatrix") ($sampler + ".inputMatrix");
+  	}else{
+  		$sampler = `createNode closestPointOnSurface`;
+  		connectAttr -f ($geo[0] + ".worldSpace") ($sampler + ".inputSurface");
+  	}
+	float $sampleData[];
+	//geo for instance
+	string $namGeo[];
+	if(`checkBox -q -v cusGeoBox`){
+		$namGeo[0] = $cusGeoName;
+	}else{
+		if($gridMode == 1) $namGeo = `polyCube -w $edgeLen -h $edgeLen -d $edgeLen -n "voxRefCube"`;
+		if($gridMode == 2) $namGeo = `polySphere -r $edgeLen -sx 20 -sy 20 -ax 0 1 0 -cuv 2 -ch 1 -n "voxRefSphere"`;
+	}
+	string $dupedName = `textFieldGrp -q -tx eleNamFil`;
+
+	//group for duplicated elements
+	string $grpName = `textFieldGrp -q -tx grpNamFil`;
+	string $voxelGrp;
+	if(!`objExists $grpName`){
+		if(size($grpName) == 0) $grpName = "voxelModelGrp";
+		$voxelGrp = `group -w -em -n $grpName`;
+	}else{
+		$voxelGrp = $grpName;
+	}
+
+	//progress bar
+	float $pace = 1;
+	progressWindow -title "Evaluating Point Array" -max (size($posArray)) -progress 0 -ii true;
+
+	string $dupObj[];
+	vector $cubePos;
+	for($cubePos in $posArray){
+		if(`progressWindow -q -isCancelled`) break;
+    	$sampleData = sampleInfo($sampler, $cubePos);
+        vector $posVec = <<$sampleData[0], $sampleData[1], $sampleData[2]>>;
+	    vector $normVec = <<$sampleData[3], $sampleData[4], $sampleData[5]>>;
+	    float $distance = $sampleData[6];
+        int $isInGeo = inGeo($posVec, $normVec, $distance, $hollowThre);
+
+    	if($isInGeo){
+    		if(!$useInstance){
+    			$dupObj = `duplicate -n $dupedName $namGeo[0]`;
+    			xform -a -ws -t ($cubePos.x) ($cubePos.y) ($cubePos.z) $dupObj[0];
+    			parent ($dupObj[0]) $voxelGrp;
+    		}else{
+    			$dupObj = `duplicate -ilf -n $dupedName $namGeo[0]`;
+    			xform -a -ws -t ($cubePos.x) ($cubePos.y) ($cubePos.z) $dupObj[0];
+    			parent ($dupObj[0]) $voxelGrp;
+    		}
+    	}
+    	$pace ++;
+    	progressWindow -e -progress $pace;
+	}
+	progressWindow -endProgress;
+	delete $sampler;
+	if($deleteOrig){
+		delete $namGeo[0];
+	}else{
+		setAttr ($namGeo[0] + ".visibility") false;
+	}
+}
+
+//toggle normals
+proc softernNorm(string $object, int $delHistory, float $angle){
+	polySoftEdge -a ($angle) -ch 1 ($object);
+	select $object;
+	if($delHistory) delete -ch;
+}
+
+//test softenedge node
+proc int findSoftenEdgeNode(string $object, float $angle){
+	int $success = false;
+	string $nodeList[] = `listHistory $object`;
+	string $nodeItem = "";
+	for($nodeItem in $nodeList){
+		if(`nodeType $nodeItem` == "polySoftEdge"){
+			setAttr ($nodeItem + ".angle") $angle;
+			$success = true;
+			break;
+		}
+	}
+
+	return $success;
+}
+
+//main buttons command
+//particle method command---
+proc parButCmd(){
+	string $selGeo[] = `ls -sl`;
+	if(size($selGeo) == 0) error "Select a Geometry to execute the script!";
+	string $objType = eval("objectType `listRelatives -s -ni`");
+	if($objType != "nurbsSurface" && $objType != "mesh") error "Only poly mesh or NURBS surface accepted!";
+	//collect data
+	int $gridMode = `radioButtonGrp -q -sl modeRadPar`;
+	string $pName = `textFieldGrp -q -tx parNamFil`;
+	if(size($pName) == 0) $pName = "voxelRefParticle";
+	float $spacing = `floatSliderGrp -q -v spcSliPar`;
+	float $edgeLen = $spacing - `floatSliderGrp -q -v ofsSliPar`;
+	float $addAttr[] = {float(`checkBoxGrp -q -v1 addAttrBox`), float(`checkBoxGrp -q -v2 addAttrBox`), float(`checkBoxGrp -q -v3 addAttrBox`)};
+	float $hollowThre = `floatSliderGrp -q -v hdisSli`;
+	if(!`checkBox -q -v holBox`) $hollowThre = -1.0;
+	int $containerMani = `radioButtonGrp -q -sl conMapRadio`;
+	//if "copy" is chosen, duplicate the selected object
+	if($containerMani == 3){
+		string $copyGeo[] = `duplicate $selGeo[0]`;
+		setAttr ($selGeo[0] + ".visibility") false;
+		$selGeo = $copyGeo;
+	}
+	//particle shape
+	string $parShapName;
+	//geo to instance
+	string $cusGeoName = `textFieldButtonGrp -q -text geoFieldBut`;
+	if(!`checkBox -q -v gridOnlyBox`){
+		if(`checkBox -q -v cusGeoBox`){
+			if(size($cusGeoName) == 0) error "No Instance Object Spicified!";
+			if(!`objExists $cusGeoName`) error "Invaild or non-existent spicified Object";
+		}
+	}
+	//toggle normals
+	if($objType == "mesh"){
+		if(!findSoftenEdgeNode($selGeo[0], 180.0)) softernNorm($selGeo[0], false, 180.0);
+	}
+	//point cloud
+	if(!`checkBox -q -v useExtParBox`){
+		if($gridMode == 1) buildParArray($pName, $spacing);
+		if($gridMode == 2) buildHCPParArray($pName, $spacing);
+		$parShapName = parGeoQuery($selGeo[0], $objType, $hollowThre, $addAttr);
+	}else{
+		//use existing particle
+		if(!`objExists $pName`) error "No spicified particle system found!";
+		select $pName;
+		//saveInitialState;
+		$parShapName = parGeoQuery($selGeo[0], $objType, $hollowThre, $addAttr);
+	}
+	//do instance
+	if(!`checkBox -q -v gridOnlyBox`) makeInstance($edgeLen, $parShapName, $cusGeoName, $gridMode);
+	//hide or delete container object
+	if($containerMani == 1 || $containerMani == 3){
+		setAttr ($selGeo[0] + ".visibility") false;
+	}else{
+		delete $selGeo[0];
+	}
+}
+
+//duplicating model command---
+proc geoButCmd(){
+	string $selGeo[] = `ls -sl`;
+	if(size($selGeo) == 0) error "Select a Geometry to execute the script!";
+	string $objType = eval("objectType `listRelatives -s -ni`");
+	if($objType != "nurbsSurface" && $objType != "mesh") error "Only poly mesh or NURBS surface accepted!";
+	//collect data
+	int $gridMode = `radioButtonGrp -q -sl modeRadGeo`;
+	int $useAbsCount = `checkBox -q -v absVBox`;
+	int $countX = `intFieldGrp -q -v1 countFieldGeo`; int $countY = `intFieldGrp -q -v2 countFieldGeo`; int $countZ = `intFieldGrp -q -v3 countFieldGeo`;
+	float $spacing = `floatSliderGrp -q -v spcSliGeo`;
+	vector $posArray[];
+	float $edgeLen = $spacing - `floatSliderGrp -q -v ofsSliGeo`;
+	float $hollowThre = `floatSliderGrp -q -v hdisSli`;
+	if(!`checkBox -q -v holBox`) $hollowThre = -1.0;
+	int $containerMani = `radioButtonGrp -q -sl conMapRadio`;
+	//if "copy" is chosen, duplicate the selected object
+	if($containerMani == 3){
+		string $copyGeo[] = `duplicate $selGeo[0]`;
+		setAttr ($selGeo[0] + ".visibility") false;
+		$selGeo = $copyGeo;
+	}
+	//geo to instance
+	string $cusGeoName = `textFieldButtonGrp -q -text geoFieldBut`;
+	if(`checkBox -q -v cusGeoBox`){
+			if(size($cusGeoName) == 0) error "No Instance Object Spicified!";
+			if(!`objExists $cusGeoName`) error "Invaild or non-existent spicified Object";
+	}
+	//toggle normals
+	if($objType == "mesh"){
+		if(!findSoftenEdgeNode($selGeo[0], 180.0)) softernNorm($selGeo[0], false, 180.0);
+	}
+	//generating grids
+	if($gridMode == 1) $posArray = gridArray($useAbsCount ,$spacing, {$countX, $countY, $countZ});
+	if($gridMode == 2) $posArray = gridHCPArray($spacing);
+	placeVoxelItem($posArray, $edgeLen, $hollowThre, $cusGeoName, $objType, $gridMode);
+
+	//hide or delete container object
+	if($containerMani == 1 || $containerMani == 3){
+		setAttr ($selGeo[0] + ".visibility") false;
+	}else{
+		delete $selGeo[0];
+	}
+}
+
+//widgets cmd
+//grid mode radio button command---
+proc gridModeRadGeoCmd(int $sel){
+	$sel = `radioButtonGrp -q -sl modeRadGeo`;
+	if($sel == 1){
+		checkBox -e -enable true absVBox;
+		countBoxCmd(`checkBox -q -v absVBox`);
+		if(`textFieldGrp -q -tx eleNamFil` == "voxelSphere") textFieldGrp -e -tx "voxelCube" eleNamFil;
+	}
+	if($sel == 2){
+		checkBox -e -enable false absVBox;
+		intFieldGrp -e -enable false countFieldGeo;
+		floatSliderGrp -e -enable true spcSliGeo;
+		if(`textFieldGrp -q -tx eleNamFil` == "voxelCube") textFieldGrp -e -tx "voxelSphere" eleNamFil;
+	}
+}
+
+//cus-geo button command---
+proc geoFieldButCmd(){
+	string $selGeo[] = `ls -sl`;
+	textFieldButtonGrp -e -text $selGeo[0] geoFieldBut;
+}
+
+//cus-geo check command---
+proc useCusBoxCmd(string $trigger){
+	if($trigger == "on"){
+		textFieldGrp -e -en true geoFieldBut;
+		floatSliderGrp -e -en false ofsSliPar;
+		floatSliderGrp -e -en false ofsSliGeo;
+	}
+	if($trigger == "off"){
+		textFieldGrp -e -en false geoFieldBut;
+		floatSliderGrp -e -en true ofsSliPar;
+		floatSliderGrp -e -en true ofsSliGeo;
+	}
+}
+
+//use count box cmd---
+proc countBoxCmd(int $isOn){
+	if($isOn){
+		intFieldGrp -e -en true countFieldGeo;
+		if(`checkBox -q -v cusGeoBox`) floatSliderGrp -e -en false spcSliGeo;
+	}else{
+		intFieldGrp -e -en false countFieldGeo;
+		floatSliderGrp -e -en true spcSliGeo;
+	}
+}
+
+//count field change cmd---
+proc countFieldCCmd(){
+	int $vx, $vy, $vz;
+	$vx = `intFieldGrp -q -v1 countFieldGeo`;
+	$vy = `intFieldGrp -q -v2 countFieldGeo`;
+	$vz = `intFieldGrp -q -v3 countFieldGeo`;
+	if($vx < 1) intFieldGrp -e -v1 1 countFieldGeo;
+	if($vy < 1) intFieldGrp -e -v2 1 countFieldGeo;
+	if($vz < 1) intFieldGrp -e -v3 1 countFieldGeo;
+}
+
+//create UI
+proc drawUI(){
+	if(`window -exists vxgridMainWindow`) deleteUI vxgridMainWindow;
+	window -t "Voxel Model Generator V3" -w 400 -h 660 vxgridMainWindow;
+	columnLayout -adj true mainCol;
+		frameLayout -bv true -cll true -cl false -lv true -l "By Particle Instancer" parFrame;
+			formLayout -nd 100 parForm;
+				radioButtonGrp -l "Grid Mode" -nrb 2 -l1 "General Voxel Mode" -l2 "Close Packing Mode" -sl 1 -cw3 100 160 160 modeRadPar;
+				floatSliderGrp -l "Spacing" -f true -min 0 -max 5 -fmx 10000 -pre 2 -s 0.1 -v 0.5 -cw3 100 80 40 spcSliPar;
+				floatSliderGrp -l "Offset" -f true -min 0 -max 1 -fmx 10000 -pre 2 -s 0.1 -v 0.0 -cw3 100 80 40 ofsSliPar;
+				textFieldGrp -l "Particle Sys. Name" -tx "voxelRefParticle" -cw2 100 80 -ad2 2 parNamFil;
+				checkBox -l "Particle Grid Only" -v false gridOnlyBox;
+				checkBox -l "Use Existing Particle Sys." -v false -onc "floatSliderGrp -e -en false spcSliPar" -ofc "floatSliderGrp -e -en true spcSliPar" useExtParBox;
+				checkBoxGrp -l "Add Attributes  " -ncb 3 -l1 "distance" -l2 "position" -l3 "normal" -v1 0 -v2 0 -v3 0 -cw4 100 80 80 80 addAttrBox;
+				button -l "Generate Voxel by Instancer!" -h 40 -c parButCmd parBut;
+			formLayout -e
+				-attachForm "modeRadPar" "top" 5
+				-attachForm "modeRadPar" "left" 4
+				-attachControl "spcSliPar" "top" 5 "modeRadPar"
+				-attachForm "spcSliPar" "left" 4
+				-attachForm "spcSliPar" "right" 4
+				-attachControl "ofsSliPar" "top" 5 "spcSliPar"
+				-attachForm "ofsSliPar" "left" 4
+				-attachForm "ofsSliPar" "right" 4
+				-attachControl "parNamFil" "top" 5 "ofsSliPar"
+				-attachForm "parNamFil" "left" 4
+				-attachForm "parNamFil" "right" 4
+				-attachControl "gridOnlyBox" "top" 5 "parNamFil"
+				-attachForm "gridOnlyBox" "left" 90
+				-attachControl "useExtParBox" "top" 5 "parNamFil"
+				-attachControl "useExtParBox" "left" 50 "gridOnlyBox"
+				-attachControl "addAttrBox" "top" 5 "gridOnlyBox"
+				-attachForm "addAttrBox" "left" 4
+				-attachControl "parBut" "top" 5 "addAttrBox"
+				-attachForm "parBut" "left" 4
+				-attachForm "parBut" "right" 4
+				-attachForm "parBut" "bottom" 4
+			parForm;
+			setParent "..";
+		setParent "..";
+		frameLayout -bv true -cll true -cl false -lv true -l "By Geometry Group" geoFrame;
+			formLayout -nd 100 geoForm;
+				radioButtonGrp -l "Grid Mode" -nrb 2 -l1 "General Voxel Mode" -l2 "Close Packing Mode" -sl 1 -on1 "gridModeRadGeoCmd(1)" -on2 "gridModeRadGeoCmd(2)" -cw3 100 160 160 modeRadGeo;
+				checkBox -l "Use Absolute Value" -v false  -onc "countBoxCmd(true)" -ofc "countBoxCmd(false)" absVBox;
+				intFieldGrp -l "Count X.Y.Z." -nf 3 -v1 10 -v2 10 -v3 10 -en false -cw4 100 80 80 80 -cc "countFieldCCmd" countFieldGeo;
+				floatSliderGrp -l "Spacing" -f true -min 0 -max 5 -fmx 10000 -pre 2 -s 0.1 -v 0.5 -cw3 100 80 40 spcSliGeo;
+				floatSliderGrp -l "Offset" -f true -min 0 -max 1 -fmx 10000 -pre 2 -s 0.1 -v 0.0 -cw3 100 80 40 ofsSliGeo;
+				checkBox -l "Use Instance" -v false insBox;
+				checkBox -l "Delete Ref. Object" -v false delOriBox;
+				textFieldGrp -l "Voxel Element Name" -tx "voxelCube" -cw2 100 80 -ad2 2 eleNamFil;
+				textFieldGrp -l "Group Name" -tx "voxelModelGrp" -cw2 100 80 -ad2 2 grpNamFil;
+				button -l "Generate Voxel Model Group!" -h 40 -c geoButCmd geoBut;
+			formLayout -e
+				-attachForm "modeRadGeo" "top" 5
+				-attachForm "modeRadGeo" "left" 4
+				-attachControl "absVBox" "top" 5 "modeRadGeo"
+				-attachForm "absVBox" "left" 108
+				-attachControl "countFieldGeo" "top" 5 "absVBox"
+				-attachForm "countFieldGeo" "left" 4
+				-attachControl "spcSliGeo" "top" 5 "countFieldGeo"
+				-attachForm "spcSliGeo" "left" 4
+				-attachForm "spcSliGeo" "right" 4
+				-attachControl "ofsSliGeo" "top" 5 "spcSliGeo"
+				-attachForm "ofsSliGeo" "left" 4
+				-attachForm "ofsSliGeo" "right" 4
+				-attachControl "insBox" "top" 5 "ofsSliGeo"
+				-attachForm "insBox" "left" 108
+				-attachControl "delOriBox" "top" 5 "ofsSliGeo"
+				-attachControl "delOriBox" "left" 60 "insBox"
+				-attachControl "eleNamFil" "top" 5 "insBox"
+				-attachForm "eleNamFil" "left" 4
+				-attachForm "eleNamFil" "right" 4
+				-attachControl "grpNamFil" "top" 5 "eleNamFil"
+				-attachForm "grpNamFil" "left" 4
+				-attachForm "grpNamFil" "right" 4
+				-attachControl "geoBut" "top" 5 "grpNamFil"
+				-attachForm "geoBut" "left" 4
+				-attachForm "geoBut" "right" 4
+				-attachForm "geoBut" "bottom" 4
+			geoForm;
+			setParent "..";
+		setParent "..";
+		formLayout -nd 100 gloSetForm;
+			radioButtonGrp -nrb 3 -l "Container Operat." -l1 "Hide" -l2 "Delete" -l3 "Copy" -sl 1 -ct4 "right" "both" "both" "both" -cw4 100 100 100 100 conMapRadio;
+			checkBox -l "Use Cuntom Geo." -v 0 -onc "useCusBoxCmd(\"on\")" -ofc "useCusBoxCmd(\"off\")" cusGeoBox;
+			textFieldButtonGrp -l "Custom Geo." -h 30 -en false -bl "pick" -bc geoFieldButCmd -cw3 100 200 100 -ad3 3 geoFieldBut;
+			checkBox -l "Use Hollow" -v 0 -onc "floatSliderGrp -e -en true hdisSli" -ofc "floatSliderGrp -e -en false hdisSli" holBox;
+			floatSliderGrp -l "Hollow Dist." -f true -min 0 -max 5 -fmx 10000 -s 0.1 -v 0.5 -cw3 100 80 40 -en false hdisSli;
+		formLayout -e
+			-attachForm "conMapRadio" "top" 6
+			-attachForm "conMapRadio" "left" 4
+			-attachControl "cusGeoBox" "top" 4 "conMapRadio"
+			-attachForm "cusGeoBox" "left" 90
+			-attachControl "geoFieldBut" "top" 4 "cusGeoBox"
+			-attachForm "geoFieldBut" "left" 4
+			-attachForm "geoFieldBut" "right" 4
+			-attachControl "holBox" "top" 4 "geoFieldBut"
+			-attachForm "holBox" "left" 90
+			-attachControl "hdisSli" "top" 4 "holBox"
+			-attachForm "hdisSli" "left" 4
+			-attachForm "hdisSli" "right" 4
+		gloSetForm;
+	showWindow vxgridMainWindow;
+}
+
+drawUI();

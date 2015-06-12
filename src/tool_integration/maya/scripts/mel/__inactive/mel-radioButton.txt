@@ -1,0 +1,57 @@
+string $windowName = "createSquircle";
+string $windowTitle = "Create a Squircle";
+
+
+proc myProc(){
+	int $radioButton;
+	polyCube -w 1 -h 1 -sx $radioButton -sy $radioButton -sz $radioButton;
+}
+
+
+if (`window -ex $windowName`){
+	deleteUI $windowName;
+	}
+	
+window //create a window
+-title $windowTitle //give it a title
+-width 250 -height 220 //set width and height
+$windowName; //give the window a unique name
+//columnLayout -width 250;
+
+columnLayout -adjustableColumn true -columnAlign "center";
+	text -l "Create a Squircle of the size:" -h 40;
+
+	columnLayout -adjustableColumn true;
+	radioCollection;
+	radioButton -label "8x8x8" -onCommand "$radioButton = 8";
+	radioButton -label "16x16x16" -onCommand "$radioButton = 16";
+	radioButton -label "32x32x32" -onCommand "$radioButton = 32";
+
+	columnLayout -adjustableColumn true;
+	button -label "Button One" -command myProc;
+	button -label "Button Two";
+	
+
+showWindow $windowName; //tell Maya to draw the window
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+polySphere -r 1 -sx 64 -sy 32 -ax 0 1 0 -cuv 2 -ch 1; //polySphere creation
+sphere -p 0 0 0 -ax 0 1 0 -ssw 0 -esw 360 -r 1 -d 3 -ut 0 -tol 0.01 -s 8 -nsp 4 -ch 1; //NurbsSphere creation

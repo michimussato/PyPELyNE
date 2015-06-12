@@ -1,0 +1,508 @@
+Composition {
+	CurrentTime = 0,
+	RenderRange = { 0, 1000, },
+	GlobalRange = { 0, 1000, },
+	CurrentID = 22,
+	Version = "Fusion 7.5 build 1477",
+	SavedOutputs = 2,
+	HeldTools = 0,
+	DisabledTools = 0,
+	LockedTools = 0,
+	AudioOffset = 0,
+	AutoRenderRange = true,
+	Resumable = true,
+	OutputClips = {
+	},
+	Tools = {
+		Instance_PipeRouter28_1 = PipeRouter {
+			ViewInfo = PipeRouterInfo { Pos = { 454, 151, }, },
+		},
+		Instance_BG = Underlay {
+			NameSet = true,
+			ViewInfo = UnderlayInfo {
+				Pos = { 456.959, 112.118, },
+				Size = { 86, 86, },
+			},
+			Colors = { TileColor = { R = 0.498039215686275, G = 0, B = 0.498039215686275, }, },
+		},
+		Instance_PipeRouter80_1 = PipeRouter {
+			Inputs = {
+				Input = Input {
+					SourceOp = "Instance_PipeRouter28_1",
+					Source = "Output",
+				},
+			},
+			ViewInfo = PipeRouterInfo { Pos = { 454, 259.218, }, },
+		},
+		Instance_PipeRouter79_1 = PipeRouter {
+			ViewInfo = PipeRouterInfo { Pos = { 607.982, 150.398, }, },
+		},
+		Instance_PipeRouter73_1 = PipeRouter {
+			Inputs = {
+				Input = Input {
+					SourceOp = "Instance_PipeRouter79_1",
+					Source = "Output",
+				},
+			},
+			ViewInfo = PipeRouterInfo { Pos = { 607.982, 219.595, }, },
+		},
+		Instance_PipeRouter75_1 = PipeRouter {
+			Inputs = {
+				Input = Input {
+					SourceOp = "Instance_PipeRouter73_1",
+					Source = "Output",
+				},
+			},
+			ViewInfo = PipeRouterInfo { Pos = { 607.982, 289.561, }, },
+		},
+		Instance_Normals = Underlay {
+			NameSet = true,
+			ViewInfo = UnderlayInfo {
+				Pos = { 600.993, 112.392, },
+				Size = { 86, 86, },
+			},
+			Colors = { TileColor = { R = 0.498039215686275, G = 0, B = 0.498039215686275, }, },
+		},
+		Instance_Instance_Displace_G = Displace {
+			NameSet = true,
+			Inputs = {
+				ProcessRed = Input { Value = 0, },
+				ProcessBlue = Input { Value = 0, },
+				ProcessAlpha = Input { Value = 0, },
+				Type = Input { Value = 1, },
+				Channel = Input { Value = 0, },
+				XRefraction = Input { Value = 0.04, },
+				YRefraction = Input {
+					Value = 0.04,
+					Expression = "XRefraction",
+				},
+				Input = Input {
+					SourceOp = "Instance_PipeRouter81_2",
+					Source = "Output",
+				},
+				Foreground = Input {
+					SourceOp = "Instance_PipeRouter76_1",
+					Source = "Output",
+				},
+			},
+			ViewInfo = OperatorInfo { Pos = { 714.012, 327.376, }, },
+		},
+		Instance_Instance_Displace_R = Displace {
+			NameSet = true,
+			Inputs = {
+				ProcessGreen = Input { Value = 0, },
+				ProcessBlue = Input { Value = 0, },
+				ProcessAlpha = Input { Value = 0, },
+				Type = Input { Value = 1, },
+				Channel = Input { Value = 0, },
+				XRefraction = Input { Value = 0.02, },
+				YRefraction = Input {
+					Value = 0.02,
+					Expression = "XRefraction",
+				},
+				Input = Input {
+					SourceOp = "Instance_PipeRouter80_1",
+					Source = "Output",
+				},
+				Foreground = Input {
+					SourceOp = "Instance_PipeRouter74_1",
+					Source = "Output",
+				},
+			},
+			ViewInfo = OperatorInfo { Pos = { 713.755, 264.761, }, },
+		},
+		Instance_PipeRouter74_1 = PipeRouter {
+			Inputs = {
+				Input = Input {
+					SourceOp = "Instance_PipeRouter73_1",
+					Source = "Output",
+				},
+			},
+			ViewInfo = PipeRouterInfo { Pos = { 713.755, 219.595, }, },
+		},
+		Instance_PipeRouter81_2 = PipeRouter {
+			Inputs = {
+				Input = Input {
+					SourceOp = "Instance_PipeRouter80_1",
+					Source = "Output",
+				},
+			},
+			ViewInfo = PipeRouterInfo { Pos = { 454, 320.17, }, },
+		},
+		Instance_PipeRouter76_1 = PipeRouter {
+			Inputs = {
+				Input = Input {
+					SourceOp = "Instance_PipeRouter75_1",
+					Source = "Output",
+				},
+			},
+			ViewInfo = PipeRouterInfo { Pos = { 714.012, 289.561, }, },
+		},
+		Instance_PipeRouter77_1 = PipeRouter {
+			Inputs = {
+				Input = Input {
+					SourceOp = "Instance_PipeRouter75_1",
+					Source = "Output",
+				},
+			},
+			ViewInfo = PipeRouterInfo { Pos = { 607.982, 351.432, }, },
+		},
+		Instance_PipeRouter78 = PipeRouter {
+			Inputs = {
+				Input = Input {
+					SourceOp = "Instance_PipeRouter77_1",
+					Source = "Output",
+				},
+			},
+			ViewInfo = PipeRouterInfo { Pos = { 714.348, 351.432, }, },
+		},
+		Instance_ChannelBooleans3_2 = ChannelBoolean {
+			Inputs = {
+				ToGreen = Input { Value = 15, },
+				ToBlue = Input { Value = 15, },
+				Background = Input {
+					SourceOp = "Instance_Instance_Displace_R",
+					Source = "Output",
+				},
+			},
+			ViewInfo = OperatorInfo { Pos = { 860.592, 264.761, }, },
+		},
+		Instance_Instance_Displace_B = Displace {
+			NameSet = true,
+			Inputs = {
+				ProcessRed = Input { Value = 0, },
+				ProcessGreen = Input { Value = 0, },
+				ProcessAlpha = Input { Value = 0, },
+				Type = Input { Value = 1, },
+				Channel = Input { Value = 0, },
+				XRefraction = Input { Value = 0.06, },
+				YRefraction = Input {
+					Value = 0.06,
+					Expression = "XRefraction",
+				},
+				Input = Input {
+					SourceOp = "Instance_PipeRouter83_1",
+					Source = "Output",
+				},
+				Foreground = Input {
+					SourceOp = "Instance_PipeRouter78",
+					Source = "Output",
+				},
+			},
+			ViewInfo = OperatorInfo { Pos = { 714.348, 387.605, }, },
+		},
+		Instance_ChannelBooleans3_2_1 = ChannelBoolean {
+			Inputs = {
+				ToRed = Input { Value = 15, },
+				ToGreen = Input { Value = 15, },
+				Background = Input {
+					SourceOp = "Instance_Instance_Displace_B",
+					Source = "Output",
+				},
+			},
+			ViewInfo = OperatorInfo { Pos = { 852.692, 387.605, }, },
+		},
+		Instance_ChannelBooleans3_1_1 = ChannelBoolean {
+			Inputs = {
+				ToRed = Input { Value = 15, },
+				ToBlue = Input { Value = 15, },
+				Background = Input {
+					SourceOp = "Instance_Instance_Displace_G",
+					Source = "Output",
+				},
+			},
+			ViewInfo = OperatorInfo { Pos = { 855.042, 327.376, }, },
+		},
+		Instance_PipeRouter83_1 = PipeRouter {
+			Inputs = {
+				Input = Input {
+					SourceOp = "Instance_PipeRouter81_2",
+					Source = "Output",
+				},
+			},
+			ViewInfo = PipeRouterInfo { Pos = { 454, 387.605, }, },
+		},
+		Instance_ChannelBooleans4_1 = ChannelBoolean {
+			Inputs = {
+				ToRed = Input { Value = 5, },
+				ToBlue = Input { Value = 15, },
+				Background = Input {
+					SourceOp = "Instance_ChannelBooleans3_2",
+					Source = "Output",
+				},
+				Foreground = Input {
+					SourceOp = "Instance_ChannelBooleans3_1_1",
+					Source = "Output",
+				},
+			},
+			ViewInfo = OperatorInfo { Pos = { 982.167, 327.376, }, },
+		},
+		Instance_ChannelBooleans5_1 = ChannelBoolean {
+			CtrlWZoom = false,
+			Inputs = {
+				ToRed = Input { Value = 5, },
+				ToGreen = Input { Value = 6, },
+				Background = Input {
+					SourceOp = "Instance_ChannelBooleans4_1",
+					Source = "Output",
+				},
+				Foreground = Input {
+					SourceOp = "Instance_ChannelBooleans3_2_1",
+					Source = "Output",
+				},
+			},
+			ViewInfo = OperatorInfo { Pos = { 982.167, 387.605, }, },
+		},
+	},
+	Views = {
+		{
+			FrameTypeID = "ChildFrame",
+			Mode = 3,
+			LayoutPreset = 0,
+			Left = 50,
+			Top = 50,
+			Width = 1570,
+			Height = 762,
+			Views = ordered() {
+				Main = MultiView {
+					Active = "Flow",
+					ViewList = ordered() {
+						Flow = "FlowView",
+						Console = "ConsoleView",
+						Timeline = "TimelineView",
+						Spline = "SplineEditorView",
+						Info = "InfoView",
+						Chat = "ChatView",
+					},
+					Flow = FlowView {
+						Flags = {
+							Navigator = true,
+							ConnectedSnap = true,
+							PipesAlways = true,
+							ShowGrid = false,
+							AutoSnap = true,
+							RemoveRouters = true,
+						},
+						NavigatorSize = { 100, 100, },
+						Direction = "Vertical",
+						PipeStyle = "Direct",
+						Scale = 1,
+						Offset = { 26, 15, },
+					},
+					Timeline = TimelineView {
+						TreeControlState = {
+						},
+						DisplayMode = "All Tools",
+						ShowCurrentTimeTools = false,
+						Filter = "Show All",
+						ShowSelectedTools = false,
+						ShowAnimatedToolsOnly = false,
+						ShowEditBoxes = false,
+						KeyFrameView = {
+							Position = { Left = 130, Bottom = 514, },
+							ScaleX = 0.75187969924812,
+							OffsetX = -49.624060150376,
+							OffsetY = 0,
+							AutoScaling = "scroll",
+							AutoSnapTo = "frame",
+							AutoSnapToGuidelines = false,
+							GuidelinesGrabEnabled = true,
+							GuidelinesSnapTo = "none",
+						},
+						Spreadsheet = { LeftPos = 130, Visible = false, },
+					},
+					Spline = SplineEditorView {
+						LeftPos = 206,
+						ScaleX = 0.2,
+						ScaleY = 0.00343642611683849,
+						OffsetX = -3.59999999999999,
+						OffsetY = 0,
+						AutoScaling = "scroll",
+						AutoSnapTo = "frame",
+						AutoSnapToGuidelines = true,
+						GuidelinesSnapTo = "frame",
+						ShowKeyMarkers = false,
+						IndependentHandles = false,
+						ShowNonSplineModifiers = false,
+						GuidelinesGrabEnabled = true,
+						ShowOneToolOnly = false,
+						ShowSelectedTools = false,
+						ShowAllInputs = false,
+						Filter = "Show All",
+					},
+				},
+				Controls = MultiView {
+					Active = "Tools",
+					ViewList = ordered() {
+						Tools = "ControlView",
+						Modifiers = "ModifierView",
+					},
+				},
+				Left = "PreviewContainer",
+				Right = "PreviewContainer",
+				Transport = "TransportView",
+				Time = "TimeView",
+			},
+			Layout = {
+				Columns = 2,
+				RatioX = 1,
+				RatioY = 1,
+				{
+					Rows = 3,
+					RatioX = 0.79406068431246,
+					RatioY = 100,
+					{
+						Columns = 2,
+						RatioX = 1,
+						RatioY = 0.462290502793296,
+						{ ID = "Left", RatioX = 0.50040749796251, RatioY = 100, Pop = true, },
+						{ ID = "Right", RatioX = 0.49959250203749, Pop = true, },
+						Pop = true,
+					},
+					{ ID = "Main", RatioY = 0.462290502793296, Pop = true, },
+					{ ID = "Time", SnapY = 52, Flat = true, },
+				},
+				{
+					Rows = 2,
+					PixelX = 317,
+					{ ID = "Controls", RatioX = 1, RatioY = 1, },
+					{ ID = "Transport", FixedY = -2, },
+				},
+			},
+		},
+	},
+	Prefs = {
+		Comp = {
+			Paths = {
+			},
+			FlowView = {
+				ShowNavigator = 1,
+				PipesOnTop = true,
+				Direction = 1,
+				ConnectedSnap = true,
+				ShowGrid = false,
+			},
+			LastFile = "C:\\Program Files (x86)\\Notepad++\\notepad++.exe",
+			FrameFormat = {
+				GuideRatio = 1.77777777777778,
+				Name = "HDTV 1080",
+				PerFeet = 1,
+				Rate = 25,
+				Width = 1920,
+				Height = 1080,
+			},
+			SplineEditor = {
+				AutoSnap = {
+					Keys = 18,
+				},
+			},
+			Memory = {
+				Render = {
+					SimultaneousBranching = true,
+				},
+				FramesAtOnce = 5,
+				Interactive = {
+					SimultaneousBranching = true,
+				},
+			},
+			Views = {
+				Defaults = {
+					CtrlWheelZoom = false,
+				},
+				Right = {
+					SideB = {
+						PrevCtrlInactiveColor = 65280,
+						PickW = 1,
+						PickH = 1,
+						PrevCtrlActiveColor = 255,
+						Viewer = {
+							EnableLUTs = false,
+							LUTPlugin = "",
+							FitMarginY = 0,
+							FitMarginX = 0,
+							FitMarginType = 0,
+							FarZ = -1000,
+							NearZ = 0,
+						},
+					},
+					CtrlWheelZoom = false,
+					Toolbar = {
+						Style = 0,
+						Size = 0,
+					},
+					OpToolbar = {
+						Style = 0,
+						Size = 0,
+					},
+				},
+				View1 = {
+					PrevCtrlInactiveColor = 0,
+					PickW = 1,
+					PickH = 1,
+					SideB = {
+						PrevCtrlInactiveColor = 65280,
+						PickW = 1,
+						PickH = 1,
+						PrevCtrlActiveColor = 255,
+						Viewer = {
+							EnableLUTs = false,
+							LUTPlugin = "HDTV 1080",
+							FitMarginY = 0,
+							FitMarginX = 0,
+							FitMarginType = 0,
+							FarZ = -1000,
+							NearZ = 0,
+						},
+					},
+					QuadLayoutName = "Left 3",
+					PrevCtrlActiveColor = 0,
+					Viewer = {
+						LUTPlugin = "As...",
+					},
+				},
+				Left = {
+					CtrlWheelZoom = false,
+					Viewer = {
+						DoD = {
+							Show = true,
+						},
+						CheckerUnderlay = true,
+						Normalise = false,
+						LUTPlugin = "7.5",
+						Channel = 4294967295,
+						One2One = false,
+						Smooth = false,
+					},
+					SideB = {
+						PrevCtrlInactiveColor = 65280,
+						PickW = 1,
+						PickH = 1,
+						PrevCtrlActiveColor = 255,
+						Viewer = {
+							EnableLUTs = false,
+							FitMarginY = 0,
+							LUTPlugin = "Center",
+							ScaleMode = 0,
+							FitMarginX = 0,
+							FitMarginType = 0,
+							FarZ = -1000,
+							NearZ = 0,
+						},
+					},
+					Toolbar = {
+						Style = 0,
+						Size = 0,
+					},
+					OpToolbar = {
+						Style = 0,
+						Size = 0,
+					},
+				},
+			},
+			QuickTime = {
+			},
+		},
+	},
+}
+
+ 

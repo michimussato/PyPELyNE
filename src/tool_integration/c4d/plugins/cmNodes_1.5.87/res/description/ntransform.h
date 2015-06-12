@@ -1,0 +1,28 @@
+#ifndef _Ntransform_H_
+#define _Ntransform_H_
+
+enum {
+    NTFM_FIRST                  = 1000,
+    NTFM_BOOL_MIRROR,
+    NTFM_BOOL_FLIP,
+
+    NTFM_STATIC_TRANSLATE,
+    NTFM_REAL_TRANSLATE_X,
+    NTFM_REAL_TRANSLATE_Y,
+
+    NTFM_STATIC_ROTATE,
+    NTFM_REAL_ROTATE,
+    NTFM_STATIC_1,
+
+    NTFM_STATIC_SCALE,
+    NTFM_REAL_SCALE_X,
+    NTFM_REAL_SCALE_Y,
+
+    NTFM_STATIC_CENTER,
+    NTFM_REAL_CENTER_X,
+    NTFM_REAL_CENTER_Y,
+
+    NTFM_DUMMY
+};
+
+#endif

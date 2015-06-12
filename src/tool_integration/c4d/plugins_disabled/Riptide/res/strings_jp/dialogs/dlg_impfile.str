@@ -1,0 +1,31 @@
+// C4D-DialogResource
+
+DIALOGSTRINGS DLG_IMPFILE
+{
+  CAPTION_TEXT  ".Objファイルのインポート";
+  IDS_DOCMERGE  "現行ファイルにマージ";
+  IDS_DOCNEW    "新規ファイルを作成";
+  IDS_DOCOPTS   "ファイル オプション";
+  IDS_DTITLE    "インポート オプション";
+  IDS_FACEREV   "ポリゴンの反転";
+  IDS_FLIPU2    "UV座標の水平反転";
+  IDS_FLIPV2    "UV座標の垂直反転";
+  IDS_GENERALG  "一般";
+  IDS_HTX1      "Red-i Productions 提供";
+  IDS_HTX2      "$"Riptide$"";
+  IDS_HTX3      "Wavefront .obj フィルタ";
+  IDS_HTX4      "\u00A9 2004 by Keith 'Spanki' Young";
+  IDS_HTX5      "http://www.skinprops.com";
+  IDS_MESHG     "メッシュの分割";
+  IDS_MPGRPS    "インポート: グループ";
+  IDS_MPMATS    "インポート: マテリアル";
+  IDS_MPNGONS   "Import Ngons";
+  IDS_MPNRMS    "インポート: 法線";
+  IDS_MPRGNS    "インポート: リージョン";
+  IDS_MPUVS     "インポート: UV座標";
+  IDS_SCALEF    "スケール値:";
+  IDS_SPLITG    "グループ";
+  IDS_SPLITM    "マテリアル";
+  IDS_SPLITN    "分割しない";
+  IDS_SPLITR    "リージョン";
+}

@@ -1,0 +1,8 @@
+>[12/May/2015 16:21:26] - User scripts organizer file /Users/michaelmussato/Library/Application Support/Next Limit/RealFlow 6/commandsOrganizer.dat not found. 
+>[12/May/2015 16:21:26] - Graph node library updated.
+>[12/May/2015 16:21:26] - Max time step: 0.04 seconds
+>[12/May/2015 16:21:26] - Min time step: 0.00012012 seconds
+>[12/May/2015 16:21:26] - -- New scene --
+>[12/May/2015 16:21:26] - Workspace version: 6042.25.0.28 (STANDARD EDITION)
+>[12/May/2015 16:21:26] - Setting up scene
+>[12/May/2015 16:21:27] -  Loading /Users/michaelmussato/Dropbox/development/workspace/PyPELyNE/src/template_documents/null_nextlimit_realflow_7010131.flw

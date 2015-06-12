@@ -1,0 +1,7 @@
+STRINGTABLE ToolPointCollapse
+{
+  ToolPointCollapse "PointCollapse";
+
+  PCOLL_ONLY_VISIBLE "Only Visible";
+  PCOLL_SEARCH_RADIUS "Search Radius";
+}

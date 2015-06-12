@@ -1,0 +1,8 @@
+STRINGTABLE Nemboss                 {
+    Nemboss                         "cmNodeEmboss";
+
+    NEMB_REAL_INTENSITY             "Intensity";
+    NEMB_REAL_RADIUS                "Radius";
+    NEMB_REAL_ANGLE                 "Angle";
+    NEMB_BOOL_ADDITIVE              "Additive";
+}

@@ -1,0 +1,20 @@
+STRINGTABLE Ncolorize                           {
+    Ncolorize                                   "cmNodeColorize";
+
+    NCLZ_LONG_CHANNEL                           "Channel";
+    NCLZ_LONG_REPEAT                            "Repeat";
+    NCLZ_GRAD_COLOR                             "Color";
+
+    NCLZ_CHN_SEP                                "";
+    NCLZ_CHN_LUM                                "Luminance";
+    NCLZ_CHN_HUE                                "Hue";
+    NCLZ_CHN_SAT                                "Saturation";
+    NCLZ_CHN_LGT                                "Lightness";
+    NCLZ_CHN_RED                                "Red";
+    NCLZ_CHN_GRN                                "Green";
+    NCLZ_CHN_BLU                                "Blue";
+
+    NCLZ_RPT_NONE                               "None";
+    NCLZ_RPT_CYCLE                              "Cycle";
+    NCLZ_RPT_MIRROR                             "Mirror";
+}

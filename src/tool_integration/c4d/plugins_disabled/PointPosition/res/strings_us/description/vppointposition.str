@@ -1,0 +1,7 @@
+STRINGTABLE VPpointposition
+{
+	VPpointposition						"PointPositionPass";
+	VP_POINTPOSITION_INVERTX            "Invert X";
+	VP_POINTPOSITION_INVERTY            "Invert Y";
+	VP_POINTPOSITION_INVERTZ            "Invert Z";
+}

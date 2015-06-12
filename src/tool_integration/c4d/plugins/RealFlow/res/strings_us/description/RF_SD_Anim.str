@@ -1,0 +1,18 @@
+STRINGTABLE RF_SD_ANIM
+{
+	RFSDAnim "RealFlow SD Animation";
+
+	SD_ANIM_SETUP			"Setup";
+
+	SD_ANIM_FILE			"SD File Path";
+	SD_ANIM_START			"Start Frame";
+	SD_ANIM_END				"End Frame";
+	SD_ANIM_OFFSET			"Offset";
+	SD_ANIM_SCALE			"Scale";
+	SD_ANIM_LOCK_LAST		"Lock Last Frame";
+	SD_ANIM_LOCK_CURRENT	"Lock Current Frame";
+	SD_ANIM_INVERT_SEQUENCE	"Invert Sequence";
+	SD_ANIM_CREATEKEYS		"Create Motion Keys";
+	SD_ANIM_REMOVEKEYS		"Delete Motion Keys";
+   SD_ANIM_SHARE_ASSETS    "Share all frames (Team Render)";
+}

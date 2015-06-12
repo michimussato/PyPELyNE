@@ -1,0 +1,14 @@
+STRINGTABLE Nreflection             {
+    Nreflection                     "cmNodeReflection";
+
+    NRFL_LONG_FALLOFF               "Falloff";
+    NRFL_REAL_MINDISTANCE           "Min Distance";
+    NRFL_REAL_MAXDISTANCE           "Max Distance";
+    NRFL_LONG_RAYLIMIT              "Recursion Limit";
+    NRFL_BOOL_USEBUMP               "Use Bump";
+    NRFL_SPLINE_FALLOFF             "Curve";
+
+    NRFL_FALLOFF_NONE               "None";
+    NRFL_FALLOFF_LINEAR             "Linear";
+    NRFL_FALLOFF_SPLINE             "Spline";
+}

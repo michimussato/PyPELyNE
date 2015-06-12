@@ -1,0 +1,31 @@
+// C4D-DialogResource
+
+DIALOGSTRINGS DLG_IMPFILE
+{
+  CAPTION_TEXT  ".Obj File Import";
+  IDS_DOCMERGE  "Merge Into Current Document";
+  IDS_DOCNEW    "Create New Document";
+  IDS_DOCOPTS   "Document Options";
+  IDS_DTITLE    "Import Options";
+  IDS_FACEREV   "Reverse Faces";
+  IDS_FLIPU2    "Flip UV Horizontally";
+  IDS_FLIPV2    "Flip UV Vertically";
+  IDS_GENERALG  "General";
+  IDS_HTX1      "Red-i Productions Presents";
+  IDS_HTX2      "$"Riptide$"";
+  IDS_HTX3      "Wavefront .obj Filter";
+  IDS_HTX4      "\u00A9 2004 by Keith 'Spanki' Young";
+  IDS_HTX5      "http://www.skinprops.com";
+  IDS_MESHG     "Mesh Splitting";
+  IDS_MPGRPS    "Import Groups";
+  IDS_MPMATS    "Import Materials";
+  IDS_MPNGONS   "Import Ngons";
+  IDS_MPNRMS    "Import Normals";
+  IDS_MPRGNS    "Import Regions";
+  IDS_MPUVS     "Import UV Coords";
+  IDS_SCALEF    "Scale Factor:";
+  IDS_SPLITG    "Split by Group";
+  IDS_SPLITM    "Split by Material";
+  IDS_SPLITN    "Don't Split";
+  IDS_SPLITR    "Split by Region";
+}

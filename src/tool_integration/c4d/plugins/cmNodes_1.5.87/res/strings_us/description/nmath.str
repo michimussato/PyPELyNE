@@ -1,0 +1,14 @@
+STRINGTABLE Nmath                   {
+    Nmath                           "cmNodeMath";
+
+    NMTH_LONG_OPERATION             "Operation";
+
+    NMTH_REAL_MIX                   "Mix";
+
+    NMTH_OP_ADD                     "Add";
+    NMTH_OP_SUB                     "Subtract";
+    NMTH_OP_MUL                     "Multiply";
+    NMTH_OP_DIV                     "Divide";
+    NMTH_OP_MIN                     "Minimum";
+    NMTH_OP_MAX                     "Maximum";
+}

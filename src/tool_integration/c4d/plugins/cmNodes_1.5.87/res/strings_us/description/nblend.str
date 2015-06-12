@@ -1,0 +1,37 @@
+STRINGTABLE Nblend                              {
+    Nblend                                      "cmNodeBlend";
+
+    NBLN_LONG_BLENDMODE                         "Blend Mode";
+    NBLN_REAL_MIX                               "Mix";
+
+    NBLN_MODE_SEP                               "";
+    NBLN_MODE_NORMAL                            "Normal";
+    NBLN_MODE_DARKEN                            "Darken";
+    NBLN_MODE_MULTIPLY                          "Multiply";
+    NBLN_MODE_COLORBURN                         "Color Burn";
+    NBLN_MODE_LINEARBURN                        "Linear Burn";
+    NBLN_MODE_DARKERCOLOR                       "Darker Color";
+    NBLN_MODE_LIGHTEN                           "Lighten";
+    NBLN_MODE_SCREEN                            "Screen";
+    NBLN_MODE_COLORDODGE                        "Color Dodge";
+    NBLN_MODE_LINEARDODGE                       "Linear Dodge";
+    NBLN_MODE_LIGHTERCOLOR                      "Lighter Color";
+    NBLN_MODE_OVERLAY                           "Overlay";
+    NBLN_MODE_SOFTLIGHT                         "Soft Light";
+    NBLN_MODE_HARDLIGHT                         "Hard Light";
+    NBLN_MODE_VIVIDLIGHT                        "Vivid Light";
+    NBLN_MODE_LINEARLIGHT                       "Linear Light";
+    NBLN_MODE_PINLIGHT                          "Pin Light";
+    NBLN_MODE_HARDMIX                           "Hard Mix";
+    NBLN_MODE_DIFFERENCE                        "Difference";
+    NBLN_MODE_EXCLUSION                         "Exclusion";
+    NBLN_MODE_SUBTRACT                          "Subtract";
+    NBLN_MODE_DIVIDE                            "Divide";
+    NBLN_MODE_HUE                               "Hue";
+    NBLN_MODE_SATURATION                        "Saturation";
+    NBLN_MODE_COLOR                             "Color";
+    NBLN_MODE_LUMINOSITY                        "Luminosity";
+    NBLN_MODE_LEVR                              "Levr";
+    NBLN_MODE_GRAINEXTRACT                      "Grain Extract";
+    NBLN_MODE_GRAINMERGE                        "Grain Merge";
+}

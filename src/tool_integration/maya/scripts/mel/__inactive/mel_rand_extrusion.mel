@@ -1,0 +1,98 @@
+string $faces[] = {};
+
+//how many runs/iterations?
+int $runs = 2;
+
+//percentage of all available faces to be extruded
+float $selectPercent = 0.2;
+//iteration factor for $selectPercent (usually <1)
+float $selectPercentIterationFactor = 1;
+
+//extrusion factor min/max
+float $extrusionMin = 1;
+float $extrusionMax = 3;
+//iteration scale factor of extrusion factor (usually <1)
+float $extrusionIterationFactor = 1;
+
+//scale factors min/max xyz
+float $rangeStart = 0.8;
+float $rangeEnd = 1.2;
+//iteration scale factor of min/max xyz-scale factors
+float $scaleIterationFactor = 1;
+
+
+
+
+
+
+
+//constructionHistory -toggle false;
+DeleteHistory;
+
+//get selection
+string $getSelection[] = `ls -sl`;
+
+
+for($k=0; $k<$runs; $k++)
+{
+    select -r $getSelection;
+    for($each in `ls -sl`)
+    {
+        int $nFaces[] = `polyEvaluate -f $each`;
+        int $sFaces = $nFaces[0] * $selectPercent;
+        for($i=0;$i<$sFaces;$i++)
+        {
+            string $rFace = $each + ".f[" + int(`rand 0 $nFaces[0]`) + "]";
+            while(stringArrayContains($rFace, $faces) == 1)
+            {
+                $rFace = $each + ".f[" + int(`rand 0 $nFaces[0]`) + "]";
+            }
+            $faces[size($faces)] = $rFace;
+        }
+    }
+    select -r $faces;
+
+    string $selected[] = `ls -sl`;
+    float $randomNumber;
+
+
+    
+    for($each in $selected)
+    {
+        float $randX = rand($rangeStart,$rangeEnd);
+        float $randY = rand($rangeStart,$rangeEnd);
+        float $randZ = rand($rangeStart,$rangeEnd);
+    
+        //print $randX;
+        //print $randY;
+        //print $randZ;
+        
+        select -r $each;
+        ScaleTool;
+        float $facePivot[] = `manipScaleContext -q -p Scale`;
+
+        string $facePivotX = $facePivot[0] + "cm";
+        string $facePivotY = $facePivot[1] + "cm";
+        string $facePivotZ = $facePivot[2] + "cm";
+
+        //print $facePivotX;
+        //print $facePivotY;
+        //print $facePivotZ;
+
+        scale -r -p $facePivotX $facePivotY $facePivotZ $randX $randY $randZ;
+        $randomNumber = rand($extrusionMin,$extrusionMax);
+        polyExtrudeFacet -constructionHistory 0 -keepFacesTogether 1 -pvx -0.25 -pvy 9.190084101 -pvz -0.25 -divisions 1 -twist 0 -taper 1 -off 0 -thickness $randomNumber -smoothingAngle 30 $each;
+    }
+
+    $selectPercent = $selectPercent * $selectPercentIterationFactor;
+
+    $rangeStart = $rangeStart * $scaleIterationFactor;
+    $rangeEnd = $rangeEnd * $scaleIterationFactor;
+
+    $extrusionMin = $extrusionMin * $extrusionIterationFactor;
+    $extrusionMax = $extrusionMax * $extrusionIterationFactor;
+
+    select -cl;
+}
+
+//constructionHistory -toggle true;

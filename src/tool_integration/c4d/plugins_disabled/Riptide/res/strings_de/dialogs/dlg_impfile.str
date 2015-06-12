@@ -1,0 +1,31 @@
+// C4D-DialogResource
+
+DIALOGSTRINGS DLG_IMPFILE
+{
+  CAPTION_TEXT  "Export Filter Optionen";
+  IDS_DOCMERGE  "In aktuelles Dokument einf\u00FCgen";
+  IDS_DOCNEW    "Neues Dokument erstellen";
+  IDS_DOCOPTS   "Dokument Optionen";
+  IDS_DTITLE    "Export Optionen";
+  IDS_FACEREV   "Flächen umdrehen";
+  IDS_FLIPU2    "UV horizontal drehen";
+  IDS_FLIPV2    "UV vertikal drehen";
+  IDS_GENERALG  "Gruppe";
+  IDS_HTX1      "Red-i Productions Presents";
+  IDS_HTX2      "$"Riptide$"";
+  IDS_HTX3      "Wavefront .obj Filter";
+  IDS_HTX4      "\u00A9 2004 by Keith 'Spanki' Young";
+  IDS_HTX5      "http://www.skinprops.com";
+  IDS_MESHG     "Netz teilen";
+  IDS_MPGRPS    "Gruppierung importieren";
+  IDS_MPMATS    "Materialien importieren";
+  IDS_MPNGONS   "Ngons importieren";
+  IDS_MPRGNS    "Regionen importieren";
+  IDS_MPNRMS    "Import Normals";
+  IDS_MPUVS     "UV Koordinaten importieren";
+  IDS_SCALEF    "Skalierung:";
+  IDS_SPLITG    "Nach Gruppen teilen";
+  IDS_SPLITM    "Nach Material teilen";
+  IDS_SPLITN    "Nicht teilen";
+  IDS_SPLITR    "Nach Regionen teilen";
+}

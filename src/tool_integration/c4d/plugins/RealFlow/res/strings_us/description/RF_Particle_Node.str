@@ -1,0 +1,8 @@
+STRINGTABLE RF_PARTICLE_NODE
+{
+	RFParticleNode "RealFlow Particle Node";
+
+	P_NODE_SETUP			"Setup";
+
+	P_NODE_GROUP			"Group";
+}

@@ -1,0 +1,21 @@
+STRINGTABLE Nblur                   {
+    Nblur                           "cmNodeBlur";
+
+    NBLR_REAL_SIZEX                 "Size X";
+    NBLR_REAL_SIZEY                 "Size Y";
+    NBLR_BOOL_LINKSIZE              "Link Size";
+    NBLR_LONG_DENSITY               "Density";
+    NBLR_REAL_MIX                   "Mix";
+    NBLR_LONG_CUSTOM_DENSITY        "Custom";
+    NBLR_LONG_BLUR_TYPE             "Blur Type";
+
+    NBLR_DENSITY_LOW                "Low";
+    NBLR_DENSITY_MED                "Medium";
+    NBLR_DENSITY_HIGH               "High";
+    NBLR_DENSITY_CUSTOM             "Custom";
+
+    NBLR_TYPE_BOX                   "Box";
+    NBLR_TYPE_SIMPLE                "Simple";
+    NBLR_TYPE_GAUSSIAN              "Gaussian";
+
+}

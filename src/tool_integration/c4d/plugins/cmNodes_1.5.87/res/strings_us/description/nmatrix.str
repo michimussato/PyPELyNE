@@ -1,0 +1,39 @@
+STRINGTABLE Nmatrix                 {
+    Nmatrix                         "cmNodeMatrix";
+
+    NMTX_REAL_DISTANCE              "Radius";
+    NMTX_REAL_ADD                   "Add";
+    NMTX_BOOL_NORMALIZE             "Normalize";
+
+    NMTX_GROUP_MATRIX_5X5           "Matrix";
+
+    NMTX_LONG_MATRIX_01             "Matrix 01" " ";
+    NMTX_LONG_MATRIX_02             "Matrix 02" " ";
+    NMTX_LONG_MATRIX_03             "Matrix 03" " ";
+    NMTX_LONG_MATRIX_04             "Matrix 04" " ";
+    NMTX_LONG_MATRIX_05             "Matrix 05" " ";
+
+    NMTX_LONG_MATRIX_06             "Matrix 06" " ";
+    NMTX_LONG_MATRIX_07             "Matrix 07" " ";
+    NMTX_LONG_MATRIX_08             "Matrix 08" " ";
+    NMTX_LONG_MATRIX_09             "Matrix 09" " ";
+    NMTX_LONG_MATRIX_10             "Matrix 10" " ";
+
+    NMTX_LONG_MATRIX_11             "Matrix 11" " ";
+    NMTX_LONG_MATRIX_12             "Matrix 12" " ";
+    NMTX_LONG_MATRIX_13             "Matrix 13" " ";
+    NMTX_LONG_MATRIX_14             "Matrix 14" " ";
+    NMTX_LONG_MATRIX_15             "Matrix 15" " ";
+
+    NMTX_LONG_MATRIX_16             "Matrix 16" " ";
+    NMTX_LONG_MATRIX_17             "Matrix 17" " ";
+    NMTX_LONG_MATRIX_18             "Matrix 18" " ";
+    NMTX_LONG_MATRIX_19             "Matrix 19" " ";
+    NMTX_LONG_MATRIX_20             "Matrix 20" " ";
+
+    NMTX_LONG_MATRIX_21             "Matrix 21" " ";
+    NMTX_LONG_MATRIX_22             "Matrix 22" " ";
+    NMTX_LONG_MATRIX_23             "Matrix 23" " ";
+    NMTX_LONG_MATRIX_24             "Matrix 24" " ";
+    NMTX_LONG_MATRIX_25             "Matrix 25" " ";
+}

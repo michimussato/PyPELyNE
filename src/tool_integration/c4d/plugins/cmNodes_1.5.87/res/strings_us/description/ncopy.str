@@ -1,0 +1,14 @@
+STRINGTABLE Ncopy                               {
+    Ncopy                                       "cmNodeCopy";
+
+    NCPY_BOOL_RED                               "red";
+    NCPY_LONG_RED                               "";
+    NCPY_BOOL_GREEN                             "green";
+    NCPY_LONG_GREEN                             "";
+    NCPY_BOOL_BLUE                              "blue";
+    NCPY_LONG_BLUE                              "";
+
+    NCPY_CHN_RED                                "red";
+    NCPY_CHN_GREEN                              "green";
+    NCPY_CHN_BLUE                               "blue";
+}

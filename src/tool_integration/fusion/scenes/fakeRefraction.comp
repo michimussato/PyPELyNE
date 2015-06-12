@@ -1,0 +1,362 @@
+Composition {
+	CurrentTime = 51,
+	RenderRange = { 0, 100, },
+	GlobalRange = { 0, 100, },
+	CurrentID = 132,
+	Version = "Fusion 7.5 build 1477",
+	SavedOutputs = 2,
+	HeldTools = 0,
+	DisabledTools = 0,
+	LockedTools = 0,
+	AudioOffset = 0,
+	Resumable = true,
+	OutputClips = {
+	},
+	Tools = {
+		Loader2 = Loader {
+			Clips = {
+				Clip {
+					ID = "Clip1",
+					Filename = "C:\\Users\\michael.mussato.SCHERRERMEDIEN\\Desktop\\colorful_city_lights_at_night-wallpaper-2560x1600.jpg",
+					FormatID = "JpegFormat",
+					StartFrame = 1600,
+					LengthSetManually = true,
+					TrimIn = 0,
+					TrimOut = 0,
+					ExtendFirst = 0,
+					ExtendLast = 0,
+					Loop = 0,
+					AspectMode = 0,
+					Depth = 0,
+					TimeCode = 0,
+					GlobalStart = 0,
+					GlobalEnd = 0,
+				},
+			},
+			Inputs = {
+				["Gamut.SLogVersion"] = Input { Value = FuID { "SLog2", }, },
+			},
+			ViewInfo = OperatorInfo { Pos = { 281.922, 35.6355, }, },
+		},
+		Loader1 = Loader {
+			Clips = {
+				Clip {
+					ID = "Clip1",
+					Filename = "C:\\Users\\michael.mussato.SCHERRERMEDIEN\\Desktop\\checkerboard.png",
+					FormatID = "PNGFormat",
+					StartFrame = -1,
+					LengthSetManually = true,
+					TrimIn = 0,
+					TrimOut = 0,
+					ExtendFirst = 0,
+					ExtendLast = 0,
+					Loop = 0,
+					AspectMode = 0,
+					Depth = 0,
+					TimeCode = 0,
+					GlobalStart = 0,
+					GlobalEnd = 0,
+				},
+			},
+			Inputs = {
+				["Gamut.SLogVersion"] = Input { Value = FuID { "SLog2", }, },
+			},
+			ViewInfo = OperatorInfo { Pos = { 500.105, 31.6306, }, },
+		},
+		PipeRouter3 = PipeRouter {
+			Inputs = {
+				Input = Input {
+					SourceOp = "Loader2",
+					Source = "Output",
+				},
+			},
+			ViewInfo = PipeRouterInfo { Pos = { 281.922, 177.677, }, },
+		},
+		Resize1 = BetterResize {
+			CtrlWZoom = false,
+			Inputs = {
+				Width = Input { Value = 800, },
+				Height = Input { Value = 600, },
+				PixelAspect = Input { Value = { 1, 1, }, },
+				Input = Input {
+					SourceOp = "Loader1",
+					Source = "Output",
+				},
+			},
+			ViewInfo = OperatorInfo { Pos = { 500.105, 74.495, }, },
+		},
+		PipeRouter5 = PipeRouter {
+			Inputs = {
+				Input = Input {
+					SourceOp = "Resize1",
+					Source = "Output",
+				},
+			},
+			ViewInfo = PipeRouterInfo { Pos = { 500.105, 177.677, }, },
+		},
+		Displace1 = Displace {
+			CtrlWZoom = false,
+			Inputs = {
+				Type = Input { Value = 1, },
+				Channel = Input { Value = 0, },
+				XRefraction = Input { Value = 0.03, },
+				YRefraction = Input { Value = 0.03, },
+				Input = Input {
+					SourceOp = "PipeRouter3",
+					Source = "Output",
+				},
+				Foreground = Input {
+					SourceOp = "PipeRouter5",
+					Source = "Output",
+				},
+			},
+			ViewInfo = OperatorInfo { Pos = { 408.64, 177.677, }, },
+		},
+		Merge1 = Merge {
+			Inputs = {
+				Background = Input {
+					SourceOp = "Displace1",
+					Source = "Output",
+				},
+				PerformDepthMerge = Input { Value = 0, },
+			},
+			ViewInfo = OperatorInfo { Pos = { 408.64, 259.317, }, },
+		},
+	},
+	Views = {
+		{
+			FrameTypeID = "ChildFrame",
+			Mode = 3,
+			LayoutPreset = 0,
+			Left = 0,
+			Top = 0,
+			Width = 1566,
+			Height = 758,
+			Views = ordered() {
+				Main = MultiView {
+					Active = "Flow",
+					ViewList = ordered() {
+						Flow = "FlowView",
+						Console = "ConsoleView",
+						Timeline = "TimelineView",
+						Spline = "SplineEditorView",
+						Info = "InfoView",
+						Chat = "ChatView",
+					},
+					Flow = FlowView {
+						Flags = {
+							Navigator = true,
+							ConnectedSnap = true,
+							PipesAlways = true,
+							ShowGrid = false,
+							AutoSnap = true,
+							RemoveRouters = true,
+						},
+						NavigatorSize = { 100, 100, },
+						Direction = "Vertical",
+						PipeStyle = "Direct",
+						Scale = 1.08297,
+						Offset = { 225.31, 175.024, },
+					},
+					Timeline = TimelineView {
+						TreeControlState = {
+						},
+						DisplayMode = "All Tools",
+						ShowCurrentTimeTools = false,
+						Filter = "Show All",
+						ShowSelectedTools = false,
+						ShowAnimatedToolsOnly = false,
+						ShowEditBoxes = false,
+						KeyFrameView = {
+							Position = { Left = 130, Bottom = 559, },
+							ScaleX = 0.75187969924812,
+							OffsetX = -95.4887218045113,
+							OffsetY = 0,
+							AutoScaling = "scroll",
+							AutoSnapTo = "frame",
+							AutoSnapToGuidelines = true,
+							GuidelinesGrabEnabled = true,
+							GuidelinesSnapTo = "none",
+						},
+						Spreadsheet = { LeftPos = 130, Visible = false, },
+					},
+					Spline = SplineEditorView {
+						LeftPos = 225,
+						ScaleX = 0.2,
+						ScaleY = 0.00343642611683849,
+						OffsetX = -4,
+						OffsetY = 3.33676975945017,
+						AutoScaling = "scroll",
+						AutoSnapTo = "frame",
+						AutoSnapToGuidelines = true,
+						GuidelinesSnapTo = "frame",
+						ShowKeyMarkers = false,
+						IndependentHandles = false,
+						ShowNonSplineModifiers = false,
+						GuidelinesGrabEnabled = true,
+						ShowOneToolOnly = false,
+						ShowSelectedTools = false,
+						ShowAllInputs = false,
+						Filter = "Show All",
+					},
+				},
+				Controls = MultiView {
+					Active = "Tools",
+					ViewList = ordered() {
+						Tools = "ControlView",
+						Modifiers = "ModifierView",
+					},
+				},
+				Left = "PreviewContainer",
+				Right = "PreviewContainer",
+				Transport = "TransportView",
+				Time = "TimeView",
+			},
+			Layout = {
+				Columns = 2,
+				RatioX = 1,
+				RatioY = 1,
+				{
+					Rows = 3,
+					RatioX = 0.621359223300971,
+					RatioY = 100.909470752089,
+					{
+						Columns = 2,
+						RatioX = 1,
+						RatioY = 0.429775280898876,
+						{ ID = "Left", RatioX = 0.500522466039708, RatioY = 0.00980392156862745, Pop = true, },
+						{ ID = "Right", RatioX = 0.499477533960293, Pop = true, },
+						Pop = true,
+					},
+					{ ID = "Main", RatioY = 0.49438202247191, Pop = true, },
+					{ ID = "Time", SnapY = 52, Flat = true, },
+				},
+				{
+					Rows = 2,
+					PixelX = 583,
+					{ ID = "Controls", RatioX = 1, RatioY = 1, },
+					{ ID = "Transport", FixedY = -2, },
+				},
+			},
+		},
+	},
+	Prefs = {
+		Comp = {
+			Memory = {
+				FramesAtOnce = 5,
+				Render = {
+					SimultaneousBranching = true,
+				},
+				Interactive = {
+					SimultaneousBranching = true,
+				},
+			},
+			Views = {
+				Right = {
+					Viewer = {
+						Channel = 4294967295,
+					},
+					SideB = {
+						PrevCtrlInactiveColor = 65280,
+						PickW = 1,
+						PickH = 1,
+						PrevCtrlActiveColor = 255,
+						Viewer = {
+							EnableLUTs = false,
+							LUTPlugin = "",
+							FitMarginY = 0,
+							FitMarginX = 0,
+							FitMarginType = 0,
+							FarZ = -1000,
+							NearZ = 0,
+						},
+					},
+				},
+				Left = {
+					Viewer = {
+						LUTPlugin = "7.5",
+						Channel = 4294967295,
+					},
+					SideB = {
+						PrevCtrlInactiveColor = 65280,
+						PickW = 1,
+						PickH = 1,
+						PrevCtrlActiveColor = 255,
+						Viewer = {
+							EnableLUTs = false,
+							LUTPlugin = "Center",
+							FitMarginY = 0,
+							FitMarginX = 0,
+							FitMarginType = 0,
+							FarZ = -1000,
+							NearZ = 0,
+						},
+					},
+				},
+				View1 = {
+					Viewer = {
+						LUTPlugin = "As...",
+					},
+					PrevCtrlInactiveColor = 0,
+					PickW = 0,
+					PickH = 0,
+					SideB = {
+						PrevCtrlInactiveColor = 65280,
+						PickW = 1,
+						PickH = 1,
+						PrevCtrlActiveColor = 255,
+						Viewer = {
+							EnableLUTs = false,
+							LUTPlugin = "HDTV 1080",
+							FitMarginY = 0,
+							FitMarginX = 0,
+							FitMarginType = 0,
+							FarZ = -1000,
+							NearZ = 0,
+						},
+					},
+					PrevCtrlActiveColor = 0,
+				},
+				Defaults = {
+					CtrlWheelZoom = false,
+				},
+			},
+			FrameFormat = {
+				Name = "HDTV 1080",
+				Width = 1920,
+				Height = 1080,
+				Rate = 25,
+				PerFeet = 1,
+				GuideRatio = 1.77777777777778,
+			},
+			LastFile = "Z:\\Kunden\\UBS\\UBS_Artcontent_2014\\tasks\\0010__keying\\shot_0003__A002_C077_0106HO\\output\\PNG_1080\\shot_0003__A002_C077_0106HO.0316.png",
+			PolyKeyListDlg = {
+				Window = {
+					Left = 1920,
+					Top = 42,
+				},
+			},
+			Unsorted = {
+				GlobalEnd = 100,
+			},
+			SplineEditor = {
+				AutoSnap = {
+					Keys = 18,
+				},
+			},
+			Paths = {
+			},
+			FlowView = {
+				Direction = 1,
+				ConnectedSnap = true,
+				ShowGrid = false,
+				ShowNavigator = 1,
+				PipesOnTop = true,
+			},
+			QuickTime = {
+			},
+		},
+	},
+}
+
+ 

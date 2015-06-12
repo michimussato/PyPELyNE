@@ -1,0 +1,17 @@
+STRINGTABLE Nmaterial {
+    Nmaterial                           "cmNodeMaterial";
+
+    NMTL_LINK_MATERIAL                  "Material";
+
+    NMTL_BOOL_COLOR                     "Color";
+    NMTL_BOOL_DIFFUSION                 "Diffusion";
+    NMTL_BOOL_LUMINANCE                 "Luminance";
+    NMTL_BOOL_TRANSPARENCY              "Transparency";
+    NMTL_BOOL_REFLECTION                "Reflection";
+    NMTL_BOOL_ENVIRONMENT               "Environment";
+    NMTL_BOOL_BUMP                      "Bump";
+    NMTL_BOOL_NORMAL                    "Normal";
+    NMTL_BOOL_ALPHA                     "Alpha";
+    NMTL_BOOL_SPECULAR                  "Specular";
+    NMTL_BOOL_DISPLACEMENT              "Displacement";
+}

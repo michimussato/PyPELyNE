@@ -1,0 +1,35 @@
+// C4D-DialogResource
+
+DIALOGSTRINGS DLG_EXPFILE
+{
+  CAPTION_TEXT  "Exportar archivo .Obj";
+  IDS_DTITLE    "Opciones para exportar";
+  IDS_FLIPU     "Voltear UV Horizontalmente";
+  IDS_FLIPV     "Voltear UV Verticalmente";
+  IDS_GTAGN     "Nombres de etiquetas de grupo";
+  IDS_HEIR      "Conservar Jerarquía";
+  IDS_HTX1      "Red-i Productions Presents";
+  IDS_HTX2      "$"Riptide$"";
+  IDS_HTX3      "Wavefront .obj Filter";
+  IDS_HTX4      "\u00A9 2004 by Keith 'Spanki' Young";
+  IDS_HTX5      "http://www.skinprops.com";
+  IDS_MESHN     "Nombres de Mallas";
+  IDS_REVERSEF  "Invertir Carass";
+  IDS_SCALEF    "Factor de Escalar:";
+  IDS_SORTC     "Ordenamiento C4D";
+  IDS_SORTG     "Ordenar por Grupo";
+  IDS_SORTM     "Ordenar por Material";
+  IDS_SORTR     "Ordenar por Región";
+  IDS_TFACE     "Ordenar por caras";
+  IDS_TGNRL     "General";
+  IDS_TGROUP    "Opciones de Agrupado";
+  IDS_XASG      "Como Grupos";
+  IDS_XASR      "Como regiones de mapeo UV";
+  IDS_XPNGONS   "Exportar Ngons";
+  IDS_XPFACES   "Exportar Caras";
+  IDS_XPGROUPS  "Exportar Grupos";
+  IDS_XPMATS    "Exportar Materiales";
+  IDS_XPNORMS   "Exportar Normales";
+  IDS_XPRGNS    "Exportar Regiones";
+  IDS_XPUV      "Exportar Coordenadas UV";
+}

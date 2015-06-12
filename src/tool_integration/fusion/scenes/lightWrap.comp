@@ -1,0 +1,368 @@
+Composition {
+	CurrentTime = 0,
+	RenderRange = { 0, 1000, },
+	GlobalRange = { 0, 1000, },
+	CurrentID = 23,
+	Version = "Fusion 7.5 build 1477",
+	SavedOutputs = 2,
+	HeldTools = 0,
+	DisabledTools = 1,
+	LockedTools = 0,
+	AudioOffset = 0,
+	AutoRenderRange = true,
+	Resumable = true,
+	OutputClips = {
+	},
+	Tools = {
+		Blur2_1 = Blur {
+			PassThrough = true,
+			Inputs = {
+				Filter = Input { Value = FuID { "Multi-box", }, },
+				XBlurSize = Input { Value = 2.238806, },
+			},
+			ViewInfo = OperatorInfo { Pos = { 558.737, 660.367, }, },
+		},
+		PipeRouter1_1 = PipeRouter {
+			Inputs = {
+				Input = Input {
+					SourceOp = "PipeRouter1_2",
+					Source = "Output",
+				},
+			},
+			ViewInfo = PipeRouterInfo { Pos = { 710.22, 500.502, }, },
+		},
+		Merge3 = Merge {
+			Inputs = {
+				PerformDepthMerge = Input { Value = 0, },
+			},
+			ViewInfo = OperatorInfo { Pos = { 710.22, 110.043, }, },
+		},
+		PipeRouter1_2 = PipeRouter {
+			Inputs = {
+				Input = Input {
+					SourceOp = "Merge3",
+					Source = "Output",
+				},
+			},
+			ViewInfo = PipeRouterInfo { Pos = { 710.22, 338.531, }, },
+		},
+		MatteControl1_1 = MatteControl {
+			Inputs = {
+				MatteBlur = Input { Value = 0.5, },
+				Background = Input {
+					SourceOp = "PipeRouter1_2",
+					Source = "Output",
+				},
+			},
+			ViewInfo = OperatorInfo {
+				Pos = { 518.216, 338.531, },
+				Flags = {
+					ShowPic = true,
+				},
+			},
+		},
+		MatteControl2_1 = MatteControl {
+			Inputs = {
+				MatteCombine = Input { Value = 4, },
+				CombineOp = Input { Value = 2, },
+				Background = Input {
+					SourceOp = "PipeRouter1_1",
+					Source = "Output",
+				},
+				Foreground = Input {
+					SourceOp = "MatteControl1_1",
+					Source = "Output",
+				},
+			},
+			ViewInfo = OperatorInfo { Pos = { 518.216, 500.502, }, },
+		},
+		PipeRouter21_2 = PipeRouter {
+			Inputs = {
+				Input = Input {
+					SourceOp = "MatteControl2_1",
+					Source = "Output",
+				},
+			},
+			ViewInfo = PipeRouterInfo { Pos = { 518.216, 559.447, }, },
+		},
+		PipeRouter21_3 = PipeRouter {
+			Inputs = {
+				Input = Input {
+					SourceOp = "PipeRouter21_2",
+					Source = "Output",
+				},
+			},
+			ViewInfo = PipeRouterInfo { Pos = { 710.22, 559.447, }, },
+		},
+		Merge7_1 = Merge {
+			Inputs = {
+				Background = Input {
+					SourceOp = "PipeRouter1_1",
+					Source = "Output",
+				},
+				Foreground = Input {
+					SourceOp = "Blur2_1",
+					Source = "Output",
+				},
+				PerformDepthMerge = Input { Value = 0, },
+				EffectMask = Input {
+					SourceOp = "PipeRouter21_3",
+					Source = "Output",
+				},
+			},
+			ViewInfo = OperatorInfo { Pos = { 710.22, 660.367, }, },
+		},
+		Merge4 = Merge {
+			CtrlWZoom = false,
+			Inputs = {
+				Background = Input {
+					SourceOp = "Merge7_1",
+					Source = "Output",
+				},
+				PerformDepthMerge = Input { Value = 0, },
+			},
+			ViewInfo = OperatorInfo { Pos = { 710.22, 768.899, }, },
+		},
+		Underlay1 = Underlay {
+			ViewInfo = UnderlayInfo {
+				Pos = { 539, 169, },
+				Size = { 573.96, 560.817, },
+			},
+		},
+		Note1_1 = Note {
+			Inputs = {
+				Comments = Input { Value = "Lightwrap", },
+			},
+			ViewInfo = StickyNoteInfo {
+				Pos = { 382.016, 202.195, },
+				Flags = {
+					Expanded = true,
+				},
+				Size = { 423.037, 484.85, },
+			},
+		},
+	},
+	Views = {
+		{
+			FrameTypeID = "ChildFrame",
+			Mode = 3,
+			LayoutPreset = 0,
+			Left = 25,
+			Top = 25,
+			Width = 1570,
+			Height = 762,
+			Views = ordered() {
+				Main = MultiView {
+					Active = "Flow",
+					ViewList = ordered() {
+						Flow = "FlowView",
+						Console = "ConsoleView",
+						Timeline = "TimelineView",
+						Spline = "SplineEditorView",
+						Info = "InfoView",
+						Chat = "ChatView",
+					},
+					Flow = FlowView {
+						Flags = {
+							Navigator = true,
+							ConnectedSnap = true,
+							PipesAlways = true,
+							ShowGrid = false,
+							AutoSnap = true,
+							RemoveRouters = true,
+						},
+						NavigatorSize = { 100, 100, },
+						Direction = "Vertical",
+						PipeStyle = "Direct",
+						Scale = 0.737135,
+						Offset = { 539.958, 111.002, },
+					},
+					Timeline = TimelineView {
+						TreeControlState = {
+						},
+						DisplayMode = "All Tools",
+						ShowCurrentTimeTools = false,
+						Filter = "Show All",
+						ShowSelectedTools = false,
+						ShowAnimatedToolsOnly = false,
+						ShowEditBoxes = false,
+						KeyFrameView = {
+							Position = { Left = 130, Bottom = 719, },
+							ScaleX = 0.75187969924812,
+							OffsetX = -49.624060150376,
+							OffsetY = 0,
+							AutoScaling = "scroll",
+							AutoSnapTo = "frame",
+							AutoSnapToGuidelines = false,
+							GuidelinesGrabEnabled = true,
+							GuidelinesSnapTo = "none",
+						},
+						Spreadsheet = { LeftPos = 130, Visible = false, },
+					},
+					Spline = SplineEditorView {
+						LeftPos = 206,
+						ScaleX = 0.2,
+						ScaleY = 0.00343642611683849,
+						OffsetX = -3.59999999999999,
+						OffsetY = 0,
+						AutoScaling = "scroll",
+						AutoSnapTo = "frame",
+						AutoSnapToGuidelines = true,
+						GuidelinesSnapTo = "frame",
+						ShowKeyMarkers = false,
+						IndependentHandles = false,
+						ShowNonSplineModifiers = false,
+						GuidelinesGrabEnabled = true,
+						ShowOneToolOnly = false,
+						ShowSelectedTools = false,
+						ShowAllInputs = false,
+						Filter = "Show All",
+					},
+				},
+				Controls = MultiView {
+					Active = "Tools",
+					ViewList = ordered() {
+						Tools = "ControlView",
+						Modifiers = "ModifierView",
+					},
+				},
+				Left = "PreviewContainer",
+				Right = "PreviewContainer",
+				Transport = "TransportView",
+				Time = "TimeView",
+			},
+			Layout = {
+				Columns = 2,
+				RatioX = 1,
+				RatioY = 1,
+				{
+					Rows = 3,
+					RatioX = 0.79406068431246,
+					RatioY = 100,
+					{
+						Columns = 2,
+						RatioX = 1,
+						RatioY = 0.282657621707901,
+						{ ID = "Left", RatioX = 0.50040749796251, RatioY = 100, Pop = true, },
+						{ ID = "Right", RatioX = 0.49959250203749, Pop = true, },
+						Pop = true,
+					},
+					{ ID = "Main", RatioY = 0.641923383878691, Pop = true, },
+					{ ID = "Time", SnapY = 52, Flat = true, },
+				},
+				{
+					Rows = 2,
+					PixelX = 317,
+					{ ID = "Controls", RatioX = 1, RatioY = 1, },
+					{ ID = "Transport", FixedY = -2, },
+				},
+			},
+		},
+	},
+	Prefs = {
+		Comp = {
+			Paths = {
+			},
+			FlowView = {
+				ShowNavigator = 1,
+				PipesOnTop = true,
+				Direction = 1,
+				ConnectedSnap = true,
+				ShowGrid = false,
+			},
+			LastFile = "\\\\smsrv-001\\Allgemein\\Kunden\\UBS\\UBS_Artcontent_2014\\tasks\\0010__keying\\shot_0001__A002_C027_0106N1\\output\\PNG_1080\\shot_0001__A002_C027_0106N1.0758.png",
+			FrameFormat = {
+				GuideRatio = 1.77777777777778,
+				PerFeet = 1,
+				Rate = 25,
+				Width = 1920,
+				Name = "HDTV 1080",
+				Height = 1080,
+			},
+			SplineEditor = {
+				AutoSnap = {
+					Keys = 18,
+				},
+			},
+			Memory = {
+				Render = {
+					SimultaneousBranching = true,
+				},
+				FramesAtOnce = 5,
+				Interactive = {
+					SimultaneousBranching = true,
+				},
+			},
+			Views = {
+				Defaults = {
+					CtrlWheelZoom = false,
+				},
+				Right = {
+					SideB = {
+						PrevCtrlInactiveColor = 65280,
+						PickW = 1,
+						PickH = 1,
+						PrevCtrlActiveColor = 255,
+						Viewer = {
+							EnableLUTs = false,
+							LUTPlugin = "",
+							FitMarginY = 0,
+							FitMarginX = 0,
+							FitMarginType = 0,
+							FarZ = -1000,
+							NearZ = 0,
+						},
+					},
+				},
+				View1 = {
+					PrevCtrlInactiveColor = 0,
+					PickW = 0,
+					PickH = 0,
+					SideB = {
+						PrevCtrlInactiveColor = 65280,
+						PickW = 1,
+						PickH = 1,
+						PrevCtrlActiveColor = 255,
+						Viewer = {
+							EnableLUTs = false,
+							LUTPlugin = "HDTV 1080",
+							FitMarginY = 0,
+							FitMarginX = 0,
+							FitMarginType = 0,
+							FarZ = -1000,
+							NearZ = 0,
+						},
+					},
+					Viewer = {
+						LUTPlugin = "As...",
+					},
+					PrevCtrlActiveColor = 0,
+				},
+				Left = {
+					SideB = {
+						PrevCtrlInactiveColor = 65280,
+						PickW = 1,
+						PickH = 1,
+						PrevCtrlActiveColor = 255,
+						Viewer = {
+							EnableLUTs = false,
+							LUTPlugin = "Center",
+							FitMarginY = 0,
+							FitMarginX = 0,
+							FitMarginType = 0,
+							FarZ = -1000,
+							NearZ = 0,
+						},
+					},
+					Viewer = {
+						LUTPlugin = "7.5",
+					},
+				},
+			},
+			QuickTime = {
+			},
+		},
+	},
+}
+
+ 

@@ -1,0 +1,12 @@
+STRINGTABLE Nshadow                 {
+    Nshadow                         "cmNodeShadow";
+
+    NSHD_REAL_INTENSITY             "Intensity";
+    NSHD_BOOL_USEBUMP               "Use Bump";
+    NSHD_BOOL_CLAMP                 "Clamp Output";
+    NSHD_LONG_EXCLUSION_MODE        "Lights";
+    NSHD_INEX_LIGHTS                "";
+
+    NSHD_MODE_INCLUDE               "Include";
+    NSHD_MODE_EXCLUDE               "Exclude";
+}

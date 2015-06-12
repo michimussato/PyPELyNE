@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<valueOutput>
+    <category value="model" abbrev="MDL" color="#B38B8B">
+        <filetype mime="ma"/>
+        <filetype mime="abc"/>
+        <filetype mime="obj"/>
+        <filetype mime="c4d"/>
+    </category>
+    <category value="file sequence" abbrev="SEQ" color="#93A477">
+        <filetype mime="exr"/>
+        <filetype mime="ass"/>
+        <filetype mime="obj"/>
+    </category>
+    <category value="playblast" abbrev="PLB" color="#B3B3B3">
+        <filetype mime="avi"/>
+        <filetype mime="mov"/>
+    </category>
+    <category value="camera" abbrev="CAM" color="#898BB3">
+        <filetype mime="ma"/>
+        <filetype mime="c4d"/>
+        <filetype mime="abc"/>
+    </category>
+    <category value="texture" abbrev="TEX" color="#8297B3">
+        <filetype mime="jpg"/>
+        <filetype mime="tga"/>
+        <filetype mime="exr"/>
+    </category>
+    <category value="cache" abbrev="CCH" color="#B3A78B">
+        <filetype mime="pdc"/>
+    </category>
+    <category value="shader" abbrev="SHD" color="#8C7FB2">
+        <filetype mime="c4d"/>
+        <filetype mime="ma"/>
+    </category>
+    <category value="rig" abbrev="RIG" color="#B3B17B">
+        <filetype mime="ma"/>
+    </category>
+    <category value="fur groom" abbrev="FUR" color="#B286A4">
+        <filetype mime="asd"/>
+    </category>
+	<category value="alembic" abbrev="ABC" color="#7FA9A7">
+        <filetype mime="abc"/>
+    </category>
+    <category value="light setup" abbrev="LIT" color="#77A483">
+        <filetype mime="ma"/>
+        <filetype mime="c4d"/>
+    </category>
+    <category value="zbrush tool" abbrev="ZBR" color="#79A491">
+        <filetype mime="zbr"/>
+    </category>
+    <category value="script" abbrev="SCR" color="#9279A4">
+        <filetype mime="nk"/>
+        <filetype mime="ma"/>
+    </category>
+</valueOutput>

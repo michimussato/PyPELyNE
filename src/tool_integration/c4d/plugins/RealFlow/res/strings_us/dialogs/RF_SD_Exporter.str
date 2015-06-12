@@ -1,0 +1,28 @@
+DIALOGSTRINGS RF_SD_EXPORTER
+{
+	RFSDExporter "RealFlow SD Exporter";
+
+  	SD_EXP_SETUP			"Setup";
+
+	SD_EXP_FILE				"SD File";
+	SD_EXP_START			"Start Frame";
+	SD_EXP_END				"End Frame";
+	SD_EXP_INC				"Inc Frame";
+	SD_EXP_SCALE			"Scene Scale";
+	SD_EXP_ADDCAM			"Add Camera";
+	SD_EXP_CAM				"Camera";
+	SD_EXP_OBJ_TITLE		"Objects";
+	SD_EXP_SDOBJ_TITLE		"Exported Objects";
+	SD_EXP_ADDALLOBJ		"Add All";
+	SD_EXP_ADDOBJ			"Add";
+	SD_EXP_REMOVEOBJ		"Remove";
+	SD_EXP_REMOVEALLOBJ		"Remove All";
+	SD_EXP_ADDMODE			"Add with";
+	SD_EXP_SETMODE			"Set selected to";
+	SD_EXP_MODE_MATRIX		"matrix";
+	SD_EXP_MODE_VERTEX		"vertex";
+	SD_EXP_INFO				"";
+
+	SD_EXP_BUTTON			"Export";
+	SD_EXP_CANCEL			"Cancel";
+}

@@ -1,0 +1,13 @@
+STRINGTABLE Nhighpass               {
+    Nhighpass                       "cmNodeHighPass";
+
+    NHPS_REAL_RADIUS                "Radius";
+    NHPS_LONG_DENSITY               "Density";
+    NHPS_LONG_CUSTOM_DENSITY        "Custom";
+
+    NHPS_DENSITY_LOW                "Low";
+    NHPS_DENSITY_MED                "Medium";
+    NHPS_DENSITY_HIGH               "High";
+    NHPS_DENSITY_CUSTOM             "Custom";
+
+}

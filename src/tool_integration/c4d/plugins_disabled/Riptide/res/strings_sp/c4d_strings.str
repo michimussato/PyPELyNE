@@ -1,0 +1,16 @@
+// C4D-StringResource
+// Identifier	Text 
+
+STRINGTABLE
+{
+  IDS_OEXPORT           "Exportador .OBJ";
+  IDS_OEXPORTHLP        "Filtro exportador mejorado para .OBJ wavefront";
+  IDS_OIMPORT		"Importador .Obj";
+  IDS_OIMPORTHLP	"Filtro Importador mejorado para .OBJ wavefront";
+  IDS_GTAG		"Grupo";
+  IDS_GTAGHELP		"Identifique los Grupos seleccionados del archivo .obj";
+  IDS_RTAG		"Región UVM";
+  IDS_RTAGHELP		"Identifique las Regiones seleccionadas del archivo .obj";
+  IDS_XPTAG		"Export Mask";
+  IDS_XPTAGHLP		"Block Mesh (and children) from being Exported";
+}

@@ -1,0 +1,18 @@
+STRINGTABLE RF_SD_READER
+{
+	RFSDReader "RealFlow SD Reader";
+
+	RF_SD_READER_SETUP			"Setup";
+
+	RF_SD_READER_FILE			"SD File Path";
+	RF_SD_READER_START			"Start Frame";
+	RF_SD_READER_END				"End Frame";
+	RF_SD_READER_OFFSET			"Offset";
+	RF_SD_READER_SCALE			"Scale";
+	RF_SD_READER_LOCK_LAST		"Lock Last Frame";
+	RF_SD_READER_LOCK_CURRENT	"Lock Current Frame";
+	RF_SD_READER_INVERT_SEQUENCE	"Invert Sequence";
+	RF_SD_READER_CREATEKEYS		"Create Motion Keys";
+	RF_SD_READER_REMOVEKEYS		"Delete Motion Keys";
+   RF_SD_READER_SHARE_ASSETS  "Share all frames (Team Render)";
+}

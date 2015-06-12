@@ -1,0 +1,5 @@
+STRINGTABLE Scmnodeforest {
+    Scmnodeforest       "cmNodeForest";
+
+    SNF_BTN_EDITOR      "Launch Editor...";
+}

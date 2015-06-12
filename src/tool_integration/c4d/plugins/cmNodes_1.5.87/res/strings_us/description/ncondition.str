@@ -1,0 +1,17 @@
+STRINGTABLE Ncondition              {
+    Ncondition                      "cmNodeCondition";
+
+    NCND_LONG_CHANNEL               "Channel";
+    NCND_SPLINE_DISTRIBUTION        "Distribution";
+    NCND_REAL_FALLOFF               "Falloff";
+    NCND_BOOL_WRAP                  "Wrap";
+
+    NCND_CHN_SEP                    "";
+    NCND_CHN_LUM                    "Luminance";
+    NCND_CHN_HUE                    "Hue";
+    NCND_CHN_SAT                    "Saturation";
+    NCND_CHN_LGT                    "Lightness";
+    NCND_CHN_RED                    "Red";
+    NCND_CHN_GRN                    "Green";
+    NCND_CHN_BLU                    "Blue";
+}

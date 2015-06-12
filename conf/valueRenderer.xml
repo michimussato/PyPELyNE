@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<valueRenderer>
+    <family value="Arnold" abbrev="">
+        <vendor value="SolidAngle">
+            <version value="0.25.3" template="None">
+                <platform value="Windows">
+                    <x32 value="None">
+                        <flag value="-launch"/>
+                    </x32>
+                    <x64 value="None">
+                    </x64>
+                </platform>
+                <platform value="Darwin">
+                    <x32 value="None">
+                    </x32>
+                    <x64 value="/Applications/MtoA-0.25.3-darwin-2013/bin/kick">
+                    </x64>
+                </platform>
+            </version>
+        </vendor>
+    </family>
+</valueRenderer>

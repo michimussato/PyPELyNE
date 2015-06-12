@@ -1,0 +1,134 @@
+{
+	{
+		FrameTypeID = "ChildFrame",
+		Mode = 3,
+		LayoutPreset = 0,
+		Left = 0,
+		Top = 0,
+		Width = 1566,
+		Height = 758,
+		Views = ordered() {
+			MultiView = MultiView {
+				Active = "Time",
+				ViewList = ordered() {
+					Time = "TimeView",
+				},
+				Names = {
+					Time = "Time",
+				},
+			},
+			LeftTabs = MultiView {
+				Active = "Left",
+				ViewList = ordered() {
+					Left = "PreviewContainer",
+				},
+				Names = {
+					Left = "1",
+				},
+			},
+			RightTabs = MultiView {
+				Active = "Right",
+				ViewList = ordered() {
+					Right = "PreviewContainer",
+				},
+				Names = {
+					Right = "2",
+				},
+			},
+		},
+		Layout = {
+			Rows = 2,
+			RatioX = 1,
+			RatioY = 1,
+			{
+				Columns = 2,
+				RatioX = 1,
+				RatioY = 0.951219512195122,
+				{ ID = "LeftTabs", RatioX = 1, RatioY = 117, Pop = true, },
+				{ ID = "RightTabs", RatioX = -2, Pop = true, },
+				Pop = true,
+			},
+			{ ID = "MultiView", SnapY = 52, Flat = true, },
+		},
+	},
+	{
+		FrameTypeID = "FloatViewFrame",
+		Mode = 3,
+		Left = 690,
+		Top = 204,
+		Width = 916,
+		Height = 733,
+		Views = ordered() {
+			["roto_test.comp"] = MultiView {
+				Active = "Flow",
+				ViewList = ordered() {
+					Flow = "FlowView",
+					Console = "ConsoleView",
+					Spline = "SplineEditorView",
+					Timeline = "TimelineView",
+				},
+			},
+			MultiView = MultiView {
+				Active = "Tools",
+				ViewList = ordered() {
+					Tools = "ControlView",
+					Modifiers = "ModifierView",
+				},
+			},
+			["Image ViewTabs"] = MultiView {
+				Active = "Image View",
+				ViewList = ordered() {
+					["Image View"] = "PreviewContainer",
+				},
+				Names = {
+					["Image View"] = "3",
+				},
+			},
+			["Image View2Tabs"] = MultiView {
+				Active = "Image View2",
+				ViewList = ordered() {
+					["Image View2"] = "PreviewContainer",
+				},
+				Names = {
+					["Image View2"] = "4",
+				},
+			},
+			["Image View3Tabs"] = MultiView {
+				Active = "Image View3",
+				ViewList = ordered() {
+					["Image View3"] = "PreviewContainer",
+				},
+				Names = {
+					["Image View3"] = "Histogram",
+				},
+			},
+		},
+		Layout = {
+			Columns = 2,
+			RatioX = 1,
+			RatioY = 1,
+			{
+				Columns = 2,
+				RatioX = 0.832402234636871,
+				RatioY = 1,
+				{
+					Rows = 2,
+					RatioX = 0.27088948787062,
+					RatioY = 1,
+					{ ID = "Image ViewTabs", RatioX = 1, RatioY = 0.382752761257434, Pop = true, },
+					{
+						Rows = 2,
+						RatioY = 0.617247238742566,
+						{ ID = "Image View2Tabs", RatioX = 1, RatioY = 0.644673275624515, Pop = true, },
+						{ ID = "Image View3Tabs", RatioY = 0.355326724375485, Pop = true, },
+						Pop = true,
+					},
+					Pop = true,
+				},
+				{ ID = "roto_test.comp", RatioX = 0.72911051212938, Pop = true, },
+				Pop = true,
+			},
+			{ ID = "MultiView", RatioX = 0.167597765363128, },
+		},
+	},
+}

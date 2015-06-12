@@ -1,0 +1,15 @@
+STRINGTABLE Ndistort                {
+    Ndistort                        "cmNodeDistort";
+
+    NDST_STATIC_OFFSET              "Offset";
+    NDST_REAL_OFFSET_X              "X";
+    NDST_REAL_OFFSET_Y              "Y";
+
+    NDST_STATIC_SCALE               "Scale";
+    NDST_REAL_SCALE_X               "X";
+    NDST_REAL_SCALE_Y               "Y";
+
+    NDST_REAL_STRENGTH              "Strength";
+    
+    NDST_REAL_MIX                   "Mix";
+}

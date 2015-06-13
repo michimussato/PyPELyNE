@@ -195,6 +195,28 @@ class pypelyneMainWindow( QMainWindow ):
     def getUser( self ):
         return self.user
 
+    def closeEvent( self, event ):
+
+        if len( self.timeTrackers ) > 0 or len( self.screenCasts ) > 0 or len( self.qprocesses ) > 0:
+
+            quit_msg = "Too early to leave. There is still something running..."
+
+            reply = QMessageBox.critical( self, 'Message', quit_msg, QMessageBox.Ok )
+
+
+            #print 'about to close'
+
+        else:
+            quit_msg = "Are you sure you want to exit PyPELyNE?"
+
+            reply = QMessageBox.question( self, 'Message', quit_msg, QMessageBox.Yes, QMessageBox.No )
+
+
+        if reply == QMessageBox.Yes:
+            event.accept()
+        else:
+            event.ignore()
+
 
     def getExclusions( self ):
         return self.exclusions

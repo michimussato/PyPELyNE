@@ -100,6 +100,9 @@ class pypelyneMainWindow( QMainWindow ):
         
         self.nodeWidgets = []
         self.qprocesses = []
+        self.openNodes = []
+        self.timeTrackers = []
+        self.screenCasts = []
 
             
         self.ui = loadUi( os.path.join( self.pypelyneRoot, 'ui', 'pypelyneMainWindow.ui' ), self )
@@ -370,6 +373,238 @@ class pypelyneMainWindow( QMainWindow ):
 
         #print self._tasks
             #print category.items()
+
+    def runTask( self, node, executable, newestFile, *args ):
+
+        #print executable
+
+        makingOfDir = os.path.join( self.getCurrentProject(), 'making_of' )
+
+        #now = str( datetime.datetime.now().strftime( '%Y-%m-%d_%H%M-%S' ) )
+        now = datetime.datetime.now()
+
+        nowSecs = str( now.strftime( '%Y-%m-%d_%H%M-%S' ) )
+        nowMilliSecs = str( now.strftime( '%Y-%m-%d_%H%M-%S_%f' ) )
+
+        #user = self.mainWindow.getUser()
+
+
+        #if not os.path.exists( makingOfDir ):
+        #    os.makedirs( makingOfDir, mode=0777 )
+
+        '''
+        timeTrackerDir = os.path.join( self.project, 'timetracker' )
+        if not os.path.exists( timeTrackerDir ):
+            os.makedirs( timeTrackerDir, mode=0777 )
+        timetrackerCsv = os.path.join( timeTrackerDir, 'timetracker.csv' )
+        if not os.path.exists( timetrackerCsv ):
+            open( timetrackerCsv, 'a' ).close()
+        '''
+
+        #trackThis = timeTracker( os.path.basename( self.asset ), os.path.basename( self.location ), self.project )
+
+        #trackThis.start()
+
+
+        #mp4 = makingOfDir + os.sep + nowSecs + '__' + self.user + '__' + os.path.basename( self.asset ) + '__' + self.label + '.mp4'
+        #print self.mp4
+
+        #print os.path.expanduser('~'), str( 'vlc.sock' + '.' + self.now + '__' + self.user + '__' + self.assetName + '__' + self.taskName )
+
+        #vlcExec = r'/Applications/VLC.app/Contents/MacOS/VLC'
+
+        #vlcSocket = os.path.join( os.path.expanduser('~'), str( 'vlc.sock' + '.' + now + '__' + user + '__' + os.path.basename( self.asset ) + '__' + self.label ) )
+        #vlcSocket = os.path.join( os.path.expanduser('~'), str( 'vlc.sock' + '.' + nowMilliSecs ) )
+
+        #vlcArgs = [ vlcExec, '-I', 'rc', '--rc-fake-tty', '--rc-unix', vlcSocket, 'screen://', '--screen-fps', '4', '--quiet', '--sout', '"#transcode{vcodec=h264,vb=512,scale=0.5}:standard{access=file,mux=mp4,dst=' + mp4 + '}"' ]
+
+        #commandStop = "echo stop | nc -U " + self.vlcSocket
+        #commandQuit = "echo quit | nc -U " + self.vlcSocket
+
+        #print commandStop
+        #print commandQuit
+
+        #time.sleep( 15 )
+
+        #os.system( commandStop )
+        #os.system( commandQuit )
+
+        #print ' '.join( vlcArgs )
+
+        #print args[ 0 ]
+
+
+        #cmdList = []
+
+        #for trackStart in [ "open( timetrackerCsv, 'a' ).write( user + '\t' + self.getLabel() + '\t' + 'START' + str( now.strftime( '%Y-%m-%d_%H%M-%S' ) ) + '\n' ).close()" ]:
+        #    cmdList.append( trackStart )
+
+        #for trackStart in [ '/Library/Frameworks/Python.framework/Versions/2.7/bin/python', '-c', '\"import os;os.chdir(\'' + self.pypelyneRoot + '\');timeTrackerFile=open(\'' + timetrackerCsv + '\',\'a\');timeTrackerFile.write(\'' + user + '\t' + os.path.basename( self.asset ) + '__' + self.label + '\t' + nowSecs + '\t' + '\');timeTrackerFile.close()', '\"', '&' ]:
+        #    cmdList.append( trackStart )
+
+        #for touchLocked in [ '/usr/bin/touch', os.path.join( self.location, 'locked' ), '&&' ]:
+        #    cmdList.append( touchLocked )
+
+        #for vlcStart in [ '/opt/X11/bin/xterm', '-T', 'screenCast_' + self.label, '-e', ' '.join( vlcArgs ), '&' ]:
+        #    cmdList.append( vlcStart )
+
+        #if not os.path.exists( self.trackerData ):
+        #    open( self.trackerData, 'a' ).close()
+
+        '''
+        timeTrackerFile = open( timetrackerCsv, 'a' )
+        timeTrackerFile.write( user + '\t')
+        timeTrackerFile.write( self.getLabel() + '\t' )
+        timeTrackerFile.write( 'START' + '\t' )
+        timeTrackerFile.write( nowSecs + '\t' )
+        timeTrackerFile.write( '\n' )
+        timeTrackerFile.close()
+        '''
+
+        #for nodeExe in [ '/opt/X11/bin/xterm', '-T', self.label, '-e', executable, newestFile ]:
+        #    cmdList.append( nodeExe )
+        #for nodeExeArg in args[ 0 ]:
+        #    cmdList.append( nodeExeArg )
+        #cmdList.append( '&&' )
+
+        #for vlcStop in [ '/bin/echo', '-n', 'stop', '|', 'nc', '-U', vlcSocket, '&&' ]:
+        #    cmdList.append( vlcStop )
+
+        #for vlcQuit in [ '/bin/echo', '-n', 'quit', '|', 'nc', '-U', vlcSocket, '&&' ]:
+        #    cmdList.append( vlcQuit )
+
+        #for rmLocked in [ '/bin/rm', os.path.join( self.location, 'locked' ) ]:
+        #    cmdList.append( rmLocked )
+
+
+
+
+        #cmdList.append( '&&', '/opt/X11/bin/xterm', '-e', ' '.join( vlcArgs ) )
+        #print cmdList
+
+        #newTaskProc = subprocess.Popen( str( ' '.join( [ '/usr/bin/touch', os.path.join( self.location, 'locked' ), '&&', '/opt/X11/bin/xterm', '-e', ' '.join( vlcArgs ), '&', '/opt/X11/bin/xterm', '-e', executable, '&&', '/bin/rm', os.path.join( self.location, 'locked' ) ] ) ), shell=True )
+
+        #print str( ' '.join( cmdList ) )
+
+        arguments = QStringList()
+        #arguments = [  ]
+
+        for nodeExeArg in args[ 0 ]:
+            arguments.append( nodeExeArg )
+
+
+
+        arguments.append( newestFile )
+        #print newestFile
+        #print args[ 0 ]
+        #print str( arguments )
+
+        for i in arguments:
+            print i
+
+
+
+
+        #if executable.startswith('"') and executable.endswith('"'):
+        #print executable[1:-2], arguments
+        executable = executable.replace( '\"', '' )
+        executable = executable.replace( '\'', '' )
+        if executable.endswith( ' ' ):
+            executable = executable[:-1]
+        print executable, arguments
+
+
+
+        newScreenCast = screenCast( os.path.basename( node.getNodeAsset() ), node.getLabel(), node.getNodeProject() )
+        newTimeTracker = timeTracker( os.path.basename( node.getNodeAsset() ), node.getLabel(), node.getNodeProject() )
+
+
+        process = QProcess( self )
+        process.started.connect( lambda: self.onStarted( node, process, newScreenCast, newTimeTracker ) )
+        process.finished.connect( lambda: self.onFinished( node, process, newScreenCast, newTimeTracker ) )
+        process.start( executable, arguments )
+
+
+
+
+        #old way (subprocess, xterm):
+        #subprocess.Popen( str( ' '.join( cmdList ) ), shell=True )
+
+
+
+        '''
+        #self.processNode = node
+        #self.processLabel = self.processNode.getLabel()
+
+        #print args[ 0 ]
+        #print type( args[ 0 ] )
+
+        command = [ executable, newestFile, ' '.join( args[ 0 ] ) ]
+
+        self.process = QProcess( self.mainWindow )
+
+        self.process.readyRead.connect( self.dataReady )
+        #self.mainWindow.sendTextToBox( "%s: starting %s. Enjoy!\n" %( datetime.datetime.now(), self.data( 0 ).toPyObject() ) )
+        self.process.started.connect( self.onStarted )
+        self.process.finished.connect( self.onFinished )
+        self.process.start( ' '.join( command ) )
+        self.pid = self.process.pid()
+        #print self.process
+        #print self.process.state()
+
+        #while self.process.state() == '1':
+        #      print 'active'
+        '''
+
+    def onStarted( self, node, qprocess, screenCast, timeTracker ):
+
+        self.qprocesses.append( qprocess )
+        self.openNodes.append( node )
+        print self.qprocesses
+
+        print '%s started' %node.getLabel()
+        # #self.
+        # #asset = os.path.basename( self.asset )
+        # #print asset
+        #
+        # #self.mainWindow.sendTextToBox( "%s: starting %s (PID %s). Enjoy!\n" %( datetime.datetime.now(), self.data( 0 ).toPyObject(), self.pid ) )
+        #
+
+        lockFilePath = os.path.join( node.getNodeRootDir(), 'locked' )
+        lockFile = open( lockFilePath, 'a' )
+        lockFile.write( self.user )
+        lockFile.close()
+        #
+
+        screenCast.start()
+        self.screenCasts.append( screenCast )
+        #
+
+        timeTracker.start()
+        self.timeTrackers.append( timeTracker )
+
+
+    def onFinished( self, node, qprocess, screenCast, timeTracker ):
+        print '%s finished' %node.getLabel()
+        #
+        # #pid = self.process.pid()
+        #
+        # #self.mainWindow.sendTextToBox( "%s: stopped %s (PID %s).\n" %( datetime.datetime.now(), self.data( 0 ).toPyObject(), self.pid ) )
+        #
+        # #print self.screenCast
+        #
+        screenCast.stop()
+        self.screenCasts.remove( screenCast )
+        #
+        timeTracker.stop()
+        self.timeTrackers.remove( timeTracker )
+        #
+        os.remove( os.path.join( node.getNodeRootDir(), 'locked' ) )
+
+        self.openNodes.remove( node )
+        self.qprocesses.remove( qprocess )
+        print self.qprocesses
+
 
 
 

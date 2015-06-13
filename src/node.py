@@ -116,6 +116,12 @@ class node( QGraphicsItem, QObject ):
         self.setTaskColor()
         self.setApplicationColor()
 
+    def getNodeAsset( self ):
+        return self.asset
+
+    def getNodeProject( self ):
+        return self.project
+
         
     def getInputPort( self ):
         #print 'aaaaaaaaaaaaa %s' %self.inputPort
@@ -303,7 +309,7 @@ class node( QGraphicsItem, QObject ):
 
         if not 'DDL' in self.label:
             newestFile = max( absFiles, key=os.path.getctime )
-            self.runTask( self._tools[ searchIndex ][ 1 ][ 0 ], newestFile, args )
+            self.mainWindow.runTask( self, self._tools[ searchIndex ][ 1 ][ 0 ], newestFile, args )
         else:
             ok, jobArnold = jobArnoldUi.getArnoldData( self.location, self.mainWindow )
             #print self.location
@@ -343,7 +349,7 @@ class node( QGraphicsItem, QObject ):
         cursorBox.insertText( "%s (%s): %s" %( datetime.datetime.now(), self.pid, str( self.process.readAll() ) ) )
         self.mainWindow.statusBox.ensureCursorVisible()
 
-
+    '''
     def runTask( self, executable, newestFile, *args ):
 
         #print executable
@@ -362,14 +368,14 @@ class node( QGraphicsItem, QObject ):
         if not os.path.exists( makingOfDir ):
             os.makedirs( makingOfDir, mode=0777 )
 
-        '''
+
         timeTrackerDir = os.path.join( self.project, 'timetracker' )
         if not os.path.exists( timeTrackerDir ):
             os.makedirs( timeTrackerDir, mode=0777 )
         timetrackerCsv = os.path.join( timeTrackerDir, 'timetracker.csv' )
         if not os.path.exists( timetrackerCsv ):
             open( timetrackerCsv, 'a' ).close()
-        '''
+
 
         #trackThis = timeTracker( os.path.basename( self.asset ), os.path.basename( self.location ), self.project )
 
@@ -421,7 +427,7 @@ class node( QGraphicsItem, QObject ):
         #if not os.path.exists( self.trackerData ):
         #    open( self.trackerData, 'a' ).close()
 
-        '''
+
         timeTrackerFile = open( timetrackerCsv, 'a' )
         timeTrackerFile.write( user + '\t')
         timeTrackerFile.write( self.getLabel() + '\t' )
@@ -429,7 +435,7 @@ class node( QGraphicsItem, QObject ):
         timeTrackerFile.write( nowSecs + '\t' )
         timeTrackerFile.write( '\n' )
         timeTrackerFile.close()
-        '''
+
 
         for nodeExe in [ '/opt/X11/bin/xterm', '-T', self.label, '-e', executable, newestFile ]:
             cmdList.append( nodeExe )
@@ -495,7 +501,6 @@ class node( QGraphicsItem, QObject ):
 
 
 
-        '''
         #self.processNode = node
         #self.processLabel = self.processNode.getLabel()
 
@@ -517,7 +522,7 @@ class node( QGraphicsItem, QObject ):
 
         #while self.process.state() == '1':
         #      print 'active'
-        '''
+
 
     def onStarted( self ):
         print '%s started' %self.label
@@ -553,7 +558,7 @@ class node( QGraphicsItem, QObject ):
         self.timeTracker.stop()
 
         os.remove( self.lockFilePath )
-    
+    '''
 
 
     

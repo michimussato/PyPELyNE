@@ -1,4 +1,4 @@
-import os, sip, sys, subprocess, platform, re, shutil, random, datetime
+import os, sip, sys, subprocess, platform, re, shutil, random, datetime, getpass
 from operator import *
 
 from PyQt4.QtGui import *
@@ -74,6 +74,8 @@ class pypelyneMainWindow( QMainWindow ):
         self.currentPlatform = platform.system()
 
         self.pypelyneRoot = os.getcwd()
+
+        self.user = getpass.getuser()
         #self.projectsRoot = os.path.join( self.pypelyneRoot, 'projects' )
 
 
@@ -107,8 +109,10 @@ class pypelyneMainWindow( QMainWindow ):
         self.statusBox.setVisible( False )
         self.nodeOptionsWindow.setVisible( False )
         self.descriptionWindow.setVisible( False )
-        self.selectPushButton.setVisible( False )
+        self.openPushButton.setVisible( True )
         self.checkBoxDescription.setVisible( False )
+
+        self.openPushButton.setEnabled( False )
 
         
         
@@ -162,7 +166,7 @@ class pypelyneMainWindow( QMainWindow ):
                 self.playerUi.radioButtonStop.setEnabled( False )
                 self.playerUi.buttonSkip.setEnabled( False )
         
-        self.selectPushButton.clicked.connect( self.refreshProjects )
+        
         self.runToolPushButton.clicked.connect( self.runTool )
         
         self.checkBoxConsole.stateChanged.connect( self.toggleConsole )
@@ -176,6 +180,7 @@ class pypelyneMainWindow( QMainWindow ):
         self.configPushButton.clicked.connect( self.configurationWindow )
         self.scene.nodeSelect.connect( self.setNodeWidget )
         self.scene.nodeDeselect.connect( self.clearNodeWidget )
+        self.openPushButton.clicked.connect( lambda: self.locateContent( os.path.join( self.projectsRoot, str( self.projectComboBox.currentText() ) ) ) )
         
         #self.scene = SceneView()
         self.scene.textMessage.connect( self.sendTextToBox )
@@ -183,6 +188,10 @@ class pypelyneMainWindow( QMainWindow ):
         #self.scene.nodeMenu.connect( self.setWidgetMenu )
         
         #self.scene.nodeMenuArea.connect( self.updateNodeMenu )
+
+    def getUser( self ):
+        return self.user
+
 
     def getExclusions( self ):
         return self.exclusions
@@ -423,7 +432,8 @@ class pypelyneMainWindow( QMainWindow ):
                                 flags.append( flag.items()[ 0 ][ 1 ] )
                             if not executable.items()[ 0 ][ 1 ] == 'None' and platform.items()[ 0 ][ 1 ] == self.currentPlatform:
                                 
-                                command = [ "\"" + executable.items()[ 0 ][ 1 ] + "\" " + ' '.join( flags ) ]
+                                #command = [ "\"" + executable.items()[ 0 ][ 1 ] + "\" " + ' '.join( flags ) ]
+                                command = [ "\"" + executable.items()[ 0 ][ 1 ] + "\"" ]
                                 
                                 path = re.findall( r'"([^"]*)"', command[ 0 ] )[ 0 ]
                                 if os.path.exists( os.path.normpath( path ) ):
@@ -439,7 +449,7 @@ class pypelyneMainWindow( QMainWindow ):
 
                                     #self._tools.append( ( vendor.items()[ 0 ][ 1 ] + ' ' + family.items()[ 1 ][ 1 ] + ' ' + version.items()[ 0 ][ 1 ] + ' ' + platform.items()[ 0 ][ 1 ] + ' ' + executable.tag, command, familyAbbreviation ) )
                                     #self._tools.append( ( vendorValue + ' ' + familyValue + ' ' + versionValue + ' ' + platformValue + ' ' + executableArch, command, familyAbbreviation, vendorValue, familyValue, versionValue, executableArch ) )
-                                    self._tools.append( ( vendorValue + ' ' + familyValue + ' ' + versionValue + ' ' + executableArch, command, familyAbbreviation, vendorValue, familyValue, versionValue, executableArch, versionTemplate, directoryList, defaultOutputList ) )
+                                    self._tools.append( ( vendorValue + ' ' + familyValue + ' ' + versionValue + ' ' + executableArch, command, familyAbbreviation, vendorValue, familyValue, versionValue, executableArch, versionTemplate, directoryList, defaultOutputList, flags ) )
                                 else:
                                     print 'path not found: %s. application not added to tools dropdown' %( path )
                                     self.sendTextToBox( 'path not found: %s. application not added to tools dropdown\n' %( path ) )
@@ -463,12 +473,16 @@ class pypelyneMainWindow( QMainWindow ):
     
     
     def locateContent( self, contentFiles ):
-        if self.currentPlatform == 'Windows':
-            subprocess.call( 'explorer.exe %s' %contentFiles, shell=False )
-        elif self.currentPlatform == 'Darwin':
-            subprocess.call( 'open %s' %contentFiles, shell=True )
+        if os.path.exists( contentFiles ):
+            if self.currentPlatform == 'Windows':
+                subprocess.call( 'explorer.exe %s' %contentFiles, shell=False )
+            elif self.currentPlatform == 'Darwin':
+                subprocess.call( 'open %s' %contentFiles, shell=True )
+            else:
+                self.sendTextToBox( 'platform %s not supported\n' %self.currentPlatform )
         else:
-            self.sendTextToBox( 'platform %s not supported\n' %self.currentPlatform )
+
+            print 'project does not exist:', contentFiles
     
     def cloneContent( self, contentFiles ):
         tabIndex = self.assetsShotsTabWidget.currentIndex()
@@ -812,6 +826,8 @@ class pypelyneMainWindow( QMainWindow ):
                 pass
             else:
                 self.propertyNodePathAssets = os.path.join( self.assetsRoot, str( buttonText ), nodeItem, 'propertyNode.xml' )
+                print 'im here'
+                print self.propertyNodePathAssets
                 #print propertyNodePath
                 
                 newNode = node( self, self.scene, self.propertyNodePathAssets )
@@ -1061,6 +1077,8 @@ class pypelyneMainWindow( QMainWindow ):
             self.addContent()
             self.assetsShotsTabWidget.setVisible( True )
             #self.nodeView.setVisible( True )
+            self.openPushButton.setEnabled( True )
+
             
             
         else:
@@ -1068,6 +1086,8 @@ class pypelyneMainWindow( QMainWindow ):
             self.nodeView.setVisible( False )
             self.assetsShotsTabWidget.clear()
             print 'no project selected'
+            self.openPushButton.setEnabled( False )
+            
         
         
         

@@ -25,9 +25,9 @@
        <widget class="QComboBox" name="projectComboBox"/>
       </item>
       <item>
-       <widget class="QPushButton" name="selectPushButton">
+       <widget class="QPushButton" name="openPushButton">
         <property name="text">
-         <string>select</string>
+         <string>open</string>
         </property>
        </widget>
       </item>

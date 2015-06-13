@@ -36,7 +36,10 @@ class node( QGraphicsItem, QObject ):
         #self.exclusions = [ '.DS_Store', 'Thumbs.db' ]
         
         self.propertyNodePath = propertyNodePath
+        #print self.propertyNodePath
         self.mainWindow = mainWindow
+        self.pypelyneRoot = self.mainWindow.getPypelyneRoot()
+        self.user = self.mainWindow.getUser()
 
 
         
@@ -269,10 +272,15 @@ class node( QGraphicsItem, QObject ):
 
         #print self._tools[ searchIndex ][ 1 ][ 0 ]
 
+        #print self._tools[ searchIndex ]
+        args = []
+
+        for arg in self._tools[ searchIndex ][ 10 ]:
+            args.append( arg )
+
         if self.nodeFamily == 'Maya':
-            args = [ '-proj', self.location ]
-        else:
-            args = []
+            for arg in [ '-proj', self.location, '-file' ]:
+                args.append( arg )
 
         projectRoot = os.path.join( self.location, 'project' )
 
@@ -338,6 +346,8 @@ class node( QGraphicsItem, QObject ):
 
     def runTask( self, executable, newestFile, *args ):
 
+        #print executable
+
         makingOfDir = os.path.join( self.project, 'making_of' )
 
         #now = str( datetime.datetime.now().strftime( '%Y-%m-%d_%H%M-%S' ) )
@@ -346,10 +356,25 @@ class node( QGraphicsItem, QObject ):
         nowSecs = str( now.strftime( '%Y-%m-%d_%H%M-%S' ) )
         nowMilliSecs = str( now.strftime( '%Y-%m-%d_%H%M-%S_%f' ) )
         
-        user = getpass.getuser()
+        user = self.mainWindow.getUser()
+
 
         if not os.path.exists( makingOfDir ):
             os.makedirs( makingOfDir, mode=0777 )
+
+        '''
+        timeTrackerDir = os.path.join( self.project, 'timetracker' )
+        if not os.path.exists( timeTrackerDir ):
+            os.makedirs( timeTrackerDir, mode=0777 )
+        timetrackerCsv = os.path.join( timeTrackerDir, 'timetracker.csv' )
+        if not os.path.exists( timetrackerCsv ):
+            open( timetrackerCsv, 'a' ).close()
+        '''
+
+        #trackThis = timeTracker( os.path.basename( self.asset ), os.path.basename( self.location ), self.project )
+
+        #trackThis.start()
+
 
         mp4 = makingOfDir + os.sep + nowSecs + '__' + user + '__' + os.path.basename( self.asset ) + '__' + self.label + '.mp4'
         #print self.mp4
@@ -378,12 +403,33 @@ class node( QGraphicsItem, QObject ):
 
         #print args[ 0 ]
 
+
         cmdList = []
+
+        #for trackStart in [ "open( timetrackerCsv, 'a' ).write( user + '\t' + self.getLabel() + '\t' + 'START' + str( now.strftime( '%Y-%m-%d_%H%M-%S' ) ) + '\n' ).close()" ]:
+        #    cmdList.append( trackStart )
+
+        #for trackStart in [ '/Library/Frameworks/Python.framework/Versions/2.7/bin/python', '-c', '\"import os;os.chdir(\'' + self.pypelyneRoot + '\');timeTrackerFile=open(\'' + timetrackerCsv + '\',\'a\');timeTrackerFile.write(\'' + user + '\t' + os.path.basename( self.asset ) + '__' + self.label + '\t' + nowSecs + '\t' + '\');timeTrackerFile.close()', '\"', '&' ]:
+        #    cmdList.append( trackStart )
+
         for touchLocked in [ '/usr/bin/touch', os.path.join( self.location, 'locked' ), '&&' ]:
             cmdList.append( touchLocked )
 
         for vlcStart in [ '/opt/X11/bin/xterm', '-T', 'screenCast_' + self.label, '-e', ' '.join( vlcArgs ), '&' ]:
             cmdList.append( vlcStart )
+
+        #if not os.path.exists( self.trackerData ):
+        #    open( self.trackerData, 'a' ).close()
+
+        '''
+        timeTrackerFile = open( timetrackerCsv, 'a' )
+        timeTrackerFile.write( user + '\t')
+        timeTrackerFile.write( self.getLabel() + '\t' )
+        timeTrackerFile.write( 'START' + '\t' )
+        timeTrackerFile.write( nowSecs + '\t' )
+        timeTrackerFile.write( '\n' )
+        timeTrackerFile.close()
+        '''
 
         for nodeExe in [ '/opt/X11/bin/xterm', '-T', self.label, '-e', executable, newestFile ]:
             cmdList.append( nodeExe )
@@ -408,9 +454,46 @@ class node( QGraphicsItem, QObject ):
 
         #newTaskProc = subprocess.Popen( str( ' '.join( [ '/usr/bin/touch', os.path.join( self.location, 'locked' ), '&&', '/opt/X11/bin/xterm', '-e', ' '.join( vlcArgs ), '&', '/opt/X11/bin/xterm', '-e', executable, '&&', '/bin/rm', os.path.join( self.location, 'locked' ) ] ) ), shell=True )
 
-        print str( ' '.join( cmdList ) )
+        #print str( ' '.join( cmdList ) )
 
-        newTaskProc = subprocess.Popen( str( ' '.join( cmdList ) ), shell=True )
+        arguments = QStringList()
+        #arguments = [  ]
+
+        for nodeExeArg in args[ 0 ]:
+            arguments.append( nodeExeArg )
+            
+        
+
+        arguments.append( newestFile )
+        #print newestFile
+        #print args[ 0 ]
+        #print str( arguments )
+        
+        #for i in arguments:
+        #    print i
+        
+        
+
+
+        #if executable.startswith('"') and executable.endswith('"'):
+        #print executable[1:-2], arguments
+        executable = executable.replace( '\"', '' )
+        executable = executable.replace( '\'', '' )
+        if executable.endswith( ' ' ):
+            executable = executable[:-1]
+        print executable, arguments
+
+
+        self.process = QProcess( self.mainWindow )
+        self.process.started.connect( self.onStarted )
+        self.process.finished.connect( self.onFinished )
+        self.process.start( executable, arguments )
+
+
+        #old way (subprocess, xterm):
+        #subprocess.Popen( str( ' '.join( cmdList ) ), shell=True )
+
+
 
         '''
         #self.processNode = node
@@ -442,13 +525,18 @@ class node( QGraphicsItem, QObject ):
         #asset = os.path.basename( self.asset )
         #print asset
 
-        self.mainWindow.sendTextToBox( "%s: starting %s (PID %s). Enjoy!\n" %( datetime.datetime.now(), self.data( 0 ).toPyObject(), self.pid ) )
+        #self.mainWindow.sendTextToBox( "%s: starting %s (PID %s). Enjoy!\n" %( datetime.datetime.now(), self.data( 0 ).toPyObject(), self.pid ) )
+
+        self.lockFilePath = os.path.join( self.location, 'locked' )
+        self.lockFile = open( self.lockFilePath, 'a' )
+        self.lockFile.write( self.user )
+        self.lockFile.close()
 
         self.screenCast = screenCast( os.path.basename( self.asset ), self.label, self.project )
-        self.screenCast.startCast()
+        self.screenCast.start()
 
         self.timeTracker = timeTracker( os.path.basename( self.asset ), self.label, self.project )
-        self.timeTracker.trackStart()
+        self.timeTracker.start()
 
 
     def onFinished( self ):
@@ -456,13 +544,15 @@ class node( QGraphicsItem, QObject ):
 
         #pid = self.process.pid()
 
-        self.mainWindow.sendTextToBox( "%s: stopped %s (PID %s).\n" %( datetime.datetime.now(), self.data( 0 ).toPyObject(), self.pid ) )
+        #self.mainWindow.sendTextToBox( "%s: stopped %s (PID %s).\n" %( datetime.datetime.now(), self.data( 0 ).toPyObject(), self.pid ) )
 
         #print self.screenCast
 
-        self.screenCast.stopCast()
+        self.screenCast.stop()
 
-        self.timeTracker.trackStop()
+        self.timeTracker.stop()
+
+        os.remove( self.lockFilePath )
     
 
 

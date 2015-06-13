@@ -46,7 +46,7 @@ class screenCast( QProcess ):
 
 
 
-	def startCast( self ):
+	def start( self ):
 		'''
 		self.process = QProcess()
 		self.process.start( self.vlcExec, self.vlcArgs )
@@ -78,7 +78,7 @@ class screenCast( QProcess ):
 		#self.stopCast( self.process )
 		#self.process.start( self.vlcExec )
 
-	def stopCast( self ):
+	def stop( self ):
 
 		#commandStop = [ 'echo', 'stop', '|', 'nc', '-U', '/Users/michaelmussato/vlc.sock' ]
 		#commandQuit = [ 'echo', 'quit', '|', 'nc', '-U', '/Users/michaelmussato/vlc.sock' ]
@@ -112,12 +112,12 @@ class screenCast( QProcess ):
 def main():
 	app = QApplication( sys.argv )
 	screenCastInstance = screenCast( 'asset01', 'task_01')
-	screenCastInstance.startCast()
+	screenCastInstance.start()
 	
 	#screenCastInstance.stopCast()
 	#print 'fuck it'
 	time.sleep( 15 )
-	screenCastInstance.stopCast()
+	screenCastInstance.stop()
 	screenCastInstance.quit()
 
 	return app.exec_()

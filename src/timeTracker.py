@@ -4,7 +4,7 @@ class timeTracker:
     def __init__( self, assetName, taskName, projectPath ):
         #super( timeTracker ).__init__( None )
 
-        self.trackerRoot = os.path.join( projectPath, 'time_tracker' )
+        self.trackerRoot = os.path.join( projectPath, 'timetracker' )
 
         self.user = getpass.getuser()
         self.assetName = assetName
@@ -19,7 +19,7 @@ class timeTracker:
             open( self.trackerData, 'a' ).close()
 
 
-    def trackStart( self ):
+    def start( self ):
 
         self.timeStartObject = datetime.datetime.now()
         self.timeStart = self.timeStartObject.strftime( '%Y-%m-%d_%H%M-%S' )
@@ -35,7 +35,7 @@ class timeTracker:
         printf "${USER}\t${asset}__${task}\tSTART\t${task_start}\n" >> "${timetracker_data}";
         '''
 
-    def trackStop( self ):
+    def stop( self ):
 
         self.timeStopObject = datetime.datetime.now()
         self.timeStop = self.timeStopObject.strftime( '%Y-%m-%d_%H%M-%S' )
@@ -51,8 +51,8 @@ class timeTracker:
 
         csv = open( self.trackerData, 'a' )
 
-        csv.write( self.user + '\t' + self.assetName + '__' + self.taskName + '\t' + 'STOP' + '\t' + self.timeStop + '\t' + '\n' )
-        csv.write( '\t' + '\t' + '\t' + self.duration + '\t' + '\n' )
+        csv.write( self.user + '\t' + self.assetName + '__' + self.taskName + '\t' + 'STOP' + '\t' + self.timeStop + '\n' )
+        csv.write( self.user + '\t' + self.assetName + '__' + self.taskName + '\t' + 'DURATION' + '\t' + '\t' + self.duration + '\n' )
 
         csv.close()
 
@@ -67,8 +67,8 @@ class timeTracker:
 
 def main():
     tracker = timeTracker()
-    tracker.trackStart()
-    tracker.trackStop()
+    tracker.start()
+    tracker.stop()
 
 
 

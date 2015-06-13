@@ -23,10 +23,12 @@ class timeTracker:
 
         self.timeStartObject = datetime.datetime.now()
         self.timeStart = self.timeStartObject.strftime( '%Y-%m-%d_%H%M-%S' )
+        self.timeStartDate = self.timeStartObject.strftime( '%Y.%m.%d' )
+        self.timeStartTime = self.timeStartObject.strftime( '%H:%M:%S' )
 
         csv = open( self.trackerData, 'a' )
 
-        csv.write( self.user + '\t' + self.assetName + '__' + self.taskName + '\t' + 'START' + '\t' + self.timeStart + '\n' )
+        csv.write( self.user + '\t' + self.assetName + '__' + self.taskName + '\t' + 'START' + '\t' + self.timeStartDate + '\t' + self.timeStartTime + '\n' )
 
         csv.close()
 
@@ -39,6 +41,8 @@ class timeTracker:
 
         self.timeStopObject = datetime.datetime.now()
         self.timeStop = self.timeStopObject.strftime( '%Y-%m-%d_%H%M-%S' )
+        self.timeStopDate = self.timeStopObject.strftime( '%Y.%m.%d' )
+        self.timeStopTime = self.timeStopObject.strftime( '%H:%M:%S' )
 
 
 
@@ -46,13 +50,14 @@ class timeTracker:
 
         self.timeDelta = self.timeStopObject - self.timeStartObject
         self.duration = str( self.timeDelta ).split(".")[0]
+
         #print 'duration = %s' %self.duration
         #microseconds=delta.microseconds
 
         csv = open( self.trackerData, 'a' )
 
-        csv.write( self.user + '\t' + self.assetName + '__' + self.taskName + '\t' + 'STOP' + '\t' + self.timeStop + '\n' )
-        csv.write( self.user + '\t' + self.assetName + '__' + self.taskName + '\t' + 'DURATION' + '\t' + '\t' + self.duration + '\n' )
+        csv.write( self.user + '\t' + self.assetName + '__' + self.taskName + '\t' + 'STOP' + '\t' + self.timeStopDate + '\t' + self.timeStopTime + '\n' )
+        csv.write( self.user + '\t' + self.assetName + '__' + self.taskName + '\t' + 'DURATION' + '\t' + '\t' + '\t' + self.duration + '\n' )
 
         csv.close()
 

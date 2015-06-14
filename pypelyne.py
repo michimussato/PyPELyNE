@@ -84,8 +84,8 @@ class pypelyneMainWindow( QMainWindow ):
             self.audioFolder = r'C:\audio'
             self.screenCastExec = r''
         elif self.currentPlatform == "Linux" or self.currentPlatform == "Darwin":
-            self.projectsRoot = os.path.join( r'/Volumes/pili/pypelyne_projects' )
-            #self.projectsRoot = os.path.join( r'/Volumes/osx_production/pypelyne_projects' )
+            #self.projectsRoot = os.path.join( r'/Volumes/pili/pypelyne_projects' )
+            self.projectsRoot = os.path.join( r'/Volumes/osx_production/pypelyne_projects' )
             self.audioFolder = r'/Volumes/pili/library/audio'
             self.screenCastExec = r'/Applications/VLC.app/Contents/MacOS/VLC'
             self.sequenceExec = r'/Applications/RV64.app/Contents/MacOS/RV'
@@ -542,9 +542,14 @@ class pypelyneMainWindow( QMainWindow ):
 
 
         process = QProcess( self )
+        #process.readyRead.connect( lambda: self.dataReady( process ) )
+        process.readyReadStandardOutput.connect( lambda: self.dataReadyStd( process ) )
+        process.readyReadStandardError.connect( lambda: self.dataReadyErr( process ) )
         process.started.connect( lambda: self.onStarted( node, process, newScreenCast, newTimeTracker ) )
+        #process.started.connect( lambda:  )
         process.finished.connect( lambda: self.onFinished( node, process, newScreenCast, newTimeTracker ) )
         process.start( executable, arguments )
+
 
 
 
@@ -1512,10 +1517,24 @@ class pypelyneMainWindow( QMainWindow ):
         cursorBox.insertText( str( text ) )
         self.statusBox.ensureCursorVisible()
     
-    def dataReady( self ):
-        cursorBox = self.statusBox.textCursor()
+    def dataReadyStd( self, process ):
+        #color = QColor( 0, 255, 0 )
+        box = self.statusBox
+        #box.setTextColor( color )
+        cursorBox = box.textCursor()
         cursorBox.movePosition( cursorBox.End )
-        cursorBox.insertText( "%s: %s" %( datetime.datetime.now(), str( self.process.readAll() ) ) )
+        cursorBox.insertText( "%s (std):   %s" %( datetime.datetime.now(), str( process.readAllStandardOutput() ) ) )
+
+        self.statusBox.ensureCursorVisible()
+
+    def dataReadyErr( self, process ):
+        #color = QColor( 255, 0, 0 )
+        box = self.statusBox
+        #box.setTextColor( color )
+        cursorBox = box.textCursor()
+        cursorBox.movePosition( cursorBox.End )
+        cursorBox.insertText( "%s (err):   %s" %( datetime.datetime.now(), str( process.readAllStandardError() ) ) )
+
         self.statusBox.ensureCursorVisible()
 
     def toggleContentBrowser( self ):

@@ -111,7 +111,7 @@
     <item row="4" column="0">
      <layout class="QVBoxLayout" name="verticalLayout_4">
       <item>
-       <widget class="QPlainTextEdit" name="statusBox">
+       <widget class="QTextEdit" name="statusBox">
         <property name="enabled">
          <bool>true</bool>
         </property>
@@ -138,15 +138,6 @@
           <family>Monaco</family>
           <pointsize>10</pointsize>
          </font>
-        </property>
-        <property name="readOnly">
-         <bool>true</bool>
-        </property>
-        <property name="overwriteMode">
-         <bool>false</bool>
-        </property>
-        <property name="centerOnScroll">
-         <bool>false</bool>
         </property>
        </widget>
       </item>

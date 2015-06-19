@@ -97,7 +97,8 @@ class jobArnoldUi( QDialog ):
 		# /Users/michaelmussato/Dropbox/development/workspace/PyPELyNE/projects/proj1/content/assets/test/RND_CIN__asdfgsd
 		self.projectName = os.path.basename( os.path.dirname( os.path.dirname( os.path.dirname( os.path.dirname( self.taskRoot ) ) ) ) )
 		self.assetName = os.path.basename( os.path.dirname( self.taskRoot ) )
-		self.startupDirectory = self.taskRoot
+		self.startupDirectory = r'/Applications/MtoA-1.2.2.0-darwin-2014/bin'
+		#self.startupDirectory = self.taskRoot
 		self.taskName = os.path.basename( self.taskRoot )
 
 		inputContent = os.listdir( os.path.join( self.taskRoot, 'input' ) )
@@ -153,6 +154,8 @@ class jobArnoldUi( QDialog ):
 
 		self.ui = loadUi( os.path.join( self.pypelyneRoot, 'ui', 'jobArnold.ui' ), self )
 
+
+
 		self.propWidgets = []
 		self.argWidgets = []
 
@@ -163,7 +166,7 @@ class jobArnoldUi( QDialog ):
 		self.submissionCmd = r'/Applications/Deadline/Resources/bin/deadlinecommand'
 		
 
-		self.plugin = r'/Applications/MtoA/bin/kick'
+		self.plugin = r'kick'
 		
 		self.props = [ ( 'Comment', 'Arnold' ), ( 'Interruptible', 'true' ), ( 'ForceReloadPlugin', 'false' ), ( 'OutputDirectory0', self.output + os.sep + self.outputVersion ), ( 'OutputFilename0', self.outputName + '.####.exr' ), ( 'Name', self.projectName + '  |  ' + self.assetName + '  |  ' + self.taskName + '  |  ' + self.outputName + '  |  ' + self.outputVersion ) ]
 		#self.props = [ ( 'Comment', 'Arnold' ) ]
@@ -191,7 +194,7 @@ class jobArnoldUi( QDialog ):
 
 	def setValues( self ):
 		#print 'setValues'
-		self.labelExecutable.setText( self.plugin )
+		self.labelExecutable.setText( os.path.join( self.startupDirectory, self.plugin ) )
 		self.labelStartupDirectory.setText( self.startupDirectory )
 		self.labelJobName.setText( self.taskName )
 		self.labelInput.setText( os.path.basename( self.input ) + ' (' + os.path.basename( self.inputLink ) + ')' )
@@ -284,7 +287,7 @@ class jobArnoldUi( QDialog ):
 		#print 'test'
 		self.submissionCmdArgs.append( '-executable ' + '"' + self.plugin + '"' )
 		self.submissionCmdArgs.append( '-startupdirectory ' + '"' + startupDirectory + '"' )
-		self.submissionCmdArgs.append( '-chunksize ' + '"' + chunkSize + '"' )
+		#self.submissionCmdArgs.append( '-chunksize ' + '"' + chunkSize + '"' )
 		self.submissionCmdArgs.append( '-arguments ' + '"' + argsString + '"' )
 		self.submissionCmdArgs.append( '-frames ' + '"' + frames + '"' )
 		self.submissionCmdArgs.append( '-initialstatus ' + '"' + initialStatus + '"' )

@@ -84,8 +84,8 @@ class pypelyneMainWindow( QMainWindow ):
             self.audioFolder = r'C:\audio'
             self.screenCastExec = r''
         elif self.currentPlatform == "Linux" or self.currentPlatform == "Darwin":
-            #self.projectsRoot = os.path.join( r'/Volumes/pili/pypelyne_projects' )
-            self.projectsRoot = os.path.join( r'/Volumes/osx_production/pypelyne_projects' )
+            self.projectsRoot = os.path.join( r'/Volumes/pili/pypelyne_projects' )
+            #self.projectsRoot = os.path.join( r'/Volumes/osx_production/pypelyne_projects' )
             self.audioFolder = r'/Volumes/pili/library/audio'
             self.screenCastExec = r'/Applications/VLC.app/Contents/MacOS/VLC'
             self.sequenceExec = r'/Applications/RV64.app/Contents/MacOS/RV'
@@ -521,8 +521,8 @@ class pypelyneMainWindow( QMainWindow ):
         #print args[ 0 ]
         #print str( arguments )
 
-        for i in arguments:
-            print i
+        #for i in arguments:
+        #    print i
 
 
 
@@ -533,7 +533,7 @@ class pypelyneMainWindow( QMainWindow ):
         executable = executable.replace( '\'', '' )
         if executable.endswith( ' ' ):
             executable = executable[:-1]
-        print executable, arguments
+        #print executable, arguments
 
 
 
@@ -548,7 +548,11 @@ class pypelyneMainWindow( QMainWindow ):
         process.started.connect( lambda: self.onStarted( node, process, newScreenCast, newTimeTracker ) )
         #process.started.connect( lambda:  )
         process.finished.connect( lambda: self.onFinished( node, process, newScreenCast, newTimeTracker ) )
+        currentDir = os.getcwd()
+        os.chdir( node.getNodeRootDir() )
         process.start( executable, arguments )
+        os.chdir( currentDir )
+        #print os.getcwd()
 
 
 
@@ -587,7 +591,7 @@ class pypelyneMainWindow( QMainWindow ):
 
         self.qprocesses.append( qprocess )
         self.openNodes.append( node )
-        print self.qprocesses
+        #print self.qprocesses
 
         print '%s started' %node.getLabel()
         # #self.
@@ -630,7 +634,7 @@ class pypelyneMainWindow( QMainWindow ):
 
         self.openNodes.remove( node )
         self.qprocesses.remove( qprocess )
-        print self.qprocesses
+        #print self.qprocesses
 
 
 

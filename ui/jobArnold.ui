@@ -312,9 +312,12 @@
       </layout>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_6">
+      <layout class="QHBoxLayout" name="layoutChunkSize">
        <item>
         <widget class="QLabel" name="label_5">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="text">
           <string>chunk size</string>
          </property>
@@ -335,6 +338,9 @@
        </item>
        <item>
         <widget class="QSpinBox" name="spinBoxChunkSize">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>

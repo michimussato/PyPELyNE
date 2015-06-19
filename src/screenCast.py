@@ -14,7 +14,7 @@ class screenCast( QProcess ):
 
 		self.vlcExec = r'/Applications/VLC.app/Contents/MacOS/VLC'
 
-		self.now = datetime.datetime.now().strftime( '%Y-%m-%d_%H%M-%S' )
+		self.now = datetime.datetime.now().strftime( '%Y-%m-%d_%H%M-%S-%f' )
 
 		self.projectPath = projectPath
 		self.assetName = assetName
@@ -32,7 +32,8 @@ class screenCast( QProcess ):
 
 		#print os.path.expanduser('~'), str( 'vlc.sock' + '.' + self.now + '__' + self.user + '__' + self.assetName + '__' + self.taskName )
 
-		self.vlcSocket = os.path.join( os.path.expanduser('~'), str( 'vlc.sock' + '.' + self.now + '__' + self.user + '__' + self.assetName + '__' + self.taskName ) )
+		#self.vlcSocket = os.path.join( os.path.expanduser('~'), str( 'vlc.sock' + '.' + self.now + '__' + self.user + '__' + self.assetName + '__' + self.taskName ) )
+		self.vlcSocket = os.path.join( os.path.expanduser('~'), str( 'vlc.sock' + '.' + self.now ) )
 
 		self.vlcArgs = [ r'/Applications/VLC.app/Contents/MacOS/VLC', '-I', 'rc', '--rc-fake-tty', '--rc-unix', self.vlcSocket, 'screen://', '--screen-fps', '4', '--quiet', '--sout', '#transcode{vcodec=h264,vb=512,scale=0.5}:standard{access=file,mux=mp4,dst=' + self.mp4 + '}' ]
 

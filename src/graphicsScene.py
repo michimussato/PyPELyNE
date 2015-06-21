@@ -268,14 +268,60 @@ class SceneView( QGraphicsScene ):
                     #print outputDir
                     #print version
                     menuMakeLive.addAction( 'open directory', lambda: self.mainWindow.locateContent( os.path.join( outputDir, version ) ) )
-                    menuMakeLive.addAction( 'delete version', self.deleteContentCallback( os.path.join( outputDir, version ) ) )
+                    deleteVersionAction = menuMakeLive.addAction( 'delete version', self.deleteContentCallback( os.path.join( outputDir, version ) ) )
+
+                    #print os.path.join( outputDir, version )
+                    makeCurrentAction = menuMakeLive.addAction( 'make current', self.makeCurrentCallback( os.path.join( outputDir, version ) ) )
+
+                    #print os.path.join( outputDir, version )
+                    #print os.path.join( outputDir, os.readlink( os.path.join( outputDir, 'current' ) ) )
+
+                    if os.path.join( outputDir, version ) == os.path.join( outputDir, os.readlink( os.path.join( outputDir, 'current' ) ) ):
+                        deleteVersionAction.setEnabled( False )
+                    else:
+                        deleteVersionAction.setEnabled( True )
+
+
 
                     makeLiveAction = menuMakeLive.addAction( 'make live', self.makeLiveCallback( versionPath ) )
 
-                    if  len( outputDirContent ) > 0:
+
+                    #print liveDir
+                    #print outputLabel
+                    #print 'test', os.path.join( os.path.dirname( os.path.dirname( liveDir ) ), 'output', outputLabel, version )
+                    #print os.path.basename( os.readlink( liveDir ) )
+                    #print 'livedir   =', os.path.join( outputDir, os.path.basename( os.readlink( liveDir ) ) )
+                    #print 'outputdir =', os.path.join( outputDir, version )
+
+
+
+                    if len( outputDirContent ) > 0:
                         makeLiveAction.setEnabled( True )
+
+
+                        #outputDir = objectClicked.getOutputDir()
+
+                        #outputLabel = objectClicked.getLabel()
+
+                        #liveDir = objectClicked.getLiveDir()
                     else:
                         makeLiveAction.setEnabled( False )
+                        makeLiveAction.setText( makeLiveAction.text() + ' (no content)' )
+
+                    try:
+
+                        if os.path.join( outputDir, os.path.basename( os.readlink( liveDir ) ) ) == os.path.join( outputDir, version ):
+                            makeLiveAction.setEnabled( False )
+                            makeLiveAction.setText( makeLiveAction.text() + ' (already live)' )
+                            deleteVersionAction.setEnabled( False )
+
+                    except:
+                        print 'no live version found'
+                        #makeLiveAction.setEnabled( True )
+
+                    if os.path.join( outputDir, version ) == os.path.join( outputDir, os.path.basename( os.readlink( os.path.join( outputDir, 'current' ) ) ) ):
+                        makeCurrentAction.setEnabled( False )
+
                 
         #except:
         #    print 'not working'
@@ -369,17 +415,15 @@ class SceneView( QGraphicsScene ):
 
         return callback
 
-    def createNewVersion( self, fullOutputDir ):
-        #print 'testing'
-        newVersion = datetime.datetime.now().strftime( '%Y-%m-%d_%H%M-%S' )
-        #print os.path.join( fullOutputDir, newVersion )
+    def makeCurrentCallback( self, currentDir ):
+        def callback():
+            self.makeCurrent( currentDir )
+        return callback
 
-        #versions = self.getVersions( fullOutputDir )
-        newVersionDir = os.path.join( fullOutputDir, newVersion )
-        os.makedirs( newVersionDir, mode=0777 )
-        open( os.path.join( fullOutputDir, newVersion, os.path.basename( fullOutputDir ) ), 'a' ).close()
-
-
+    def makeCurrent( self, currentDir ):
+        fullOutputDir = os.path.dirname( currentDir )
+        #print currentDir
+        #print fullOutputDir
 
         try:
             if self.currentPlatform == "Darwin":
@@ -393,30 +437,83 @@ class SceneView( QGraphicsScene ):
 
 
         cwd = os.getcwd()
-        os.chdir( os.path.join( os.path.dirname( newVersionDir ) ) )
+        os.chdir( os.path.join( os.path.dirname( currentDir ) ) )
 
         if self.currentPlatform == "Darwin":
 
             # TODO: need to create relative links
             #print os.path.relpath( newVersionDir, os.path.dirname( newVersionDir ) )
-            
-            os.symlink( os.path.basename( newVersionDir ), 'current' )
+
+            os.symlink( os.path.basename( currentDir ), 'current' )
 
 
         elif self.currentPlatform == "Windows":
 
 
 
-            cmdstring = "mklink /D " + os.path.join( os.path.dirname( newVersionDir ), 'current' ) + " " + newVersionDir
+            cmdstring = "mklink /D " + os.path.join( os.path.dirname( currentDir ), 'current' ) + " " + currentDir
             #print 'Win cmdstring = %s' %( cmdstring )
             #os.chdir( os.path.dirname( endItemInputDir ) )
             os.system( cmdstring )
             #os.chdir( cwd )
-            
+
             #endItems[ 0 ].setInputDir( inputLink )
             #print 'Windows: endItems[ 0 ].getInputDir() = %s' %endItems[ 0 ].getInputDir()
 
         os.chdir( cwd )
+
+    def createNewVersion( self, fullOutputDir ):
+
+
+        #print 'testing'
+        newVersion = datetime.datetime.now().strftime( '%Y-%m-%d_%H%M-%S' )
+        #print os.path.join( fullOutputDir, newVersion )
+
+        #versions = self.getVersions( fullOutputDir )
+        newVersionDir = os.path.join( fullOutputDir, newVersion )
+        os.makedirs( newVersionDir, mode=0777 )
+        open( os.path.join( fullOutputDir, newVersion, os.path.basename( fullOutputDir ) ), 'a' ).close()
+
+
+        self.makeCurrent( newVersionDir )
+
+
+        # try:
+        #     if self.currentPlatform == "Darwin":
+        #         os.unlink( os.path.join( fullOutputDir, 'current' ) )
+        #     elif self.currentPlatform == "Windows":
+        #         os.rmdir( os.path.join( fullOutputDir, 'current' ) )
+        # except:
+        #     #print os.path.join( fullOutputDir, 'current' )
+        #     print 'cannot remove symlink or not available'
+        #
+        #
+        #
+        # cwd = os.getcwd()
+        # os.chdir( os.path.join( os.path.dirname( newVersionDir ) ) )
+        #
+        # if self.currentPlatform == "Darwin":
+        #
+        #     # TODO: need to create relative links
+        #     #print os.path.relpath( newVersionDir, os.path.dirname( newVersionDir ) )
+        #
+        #     os.symlink( os.path.basename( newVersionDir ), 'current' )
+        #
+        #
+        # elif self.currentPlatform == "Windows":
+        #
+        #
+        #
+        #     cmdstring = "mklink /D " + os.path.join( os.path.dirname( newVersionDir ), 'current' ) + " " + newVersionDir
+        #     #print 'Win cmdstring = %s' %( cmdstring )
+        #     #os.chdir( os.path.dirname( endItemInputDir ) )
+        #     os.system( cmdstring )
+        #     #os.chdir( cwd )
+        #
+        #     #endItems[ 0 ].setInputDir( inputLink )
+        #     #print 'Windows: endItems[ 0 ].getInputDir() = %s' %endItems[ 0 ].getInputDir()
+        #
+        # os.chdir( cwd )
 
 
 

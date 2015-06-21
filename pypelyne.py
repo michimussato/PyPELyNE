@@ -84,8 +84,8 @@ class pypelyneMainWindow( QMainWindow ):
             self.audioFolder = r'C:\audio'
             self.screenCastExec = r''
         elif self.currentPlatform == "Linux" or self.currentPlatform == "Darwin":
-            self.projectsRoot = os.path.join( r'/Volumes/pili/pypelyne_projects' )
-            #self.projectsRoot = os.path.join( r'/Volumes/osx_production/pypelyne_projects' )
+            #self.projectsRoot = os.path.join( r'/Volumes/pili/pypelyne_projects' )
+            self.projectsRoot = os.path.join( r'/Volumes/osx_production/pypelyne_projects' )
             self.audioFolder = r'/Volumes/pili/library/audio'
             self.screenCastExec = r'/Applications/VLC.app/Contents/MacOS/VLC'
             self.sequenceExec = r'/Applications/RV64.app/Contents/MacOS/RV'

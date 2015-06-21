@@ -211,7 +211,7 @@ class jobArnoldUi( QDialog ):
 			newProp = self.addProp( propValue )
 			#print str( prop[ 0 ] + '=' + prop[ 1 ] )
 
-		
+
 			
 
 

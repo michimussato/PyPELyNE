@@ -320,7 +320,8 @@ class node( QGraphicsItem, QObject ):
 
                 for element in jobArnold:
                     jobFile.write( element )
-                    jobFile.write( ' \\\n' )
+                    jobFile.write( ' ' )
+                    #jobFile.write( ' \\\n' )
 
                 jobFile.close()
 
@@ -796,7 +797,7 @@ class node( QGraphicsItem, QObject ):
         #positionY = self.valueApplications.findall( './positionY' )
         
         try:
-            print 'new style positioning...'
+            #print 'new style positioning...'
             nodePosition = propertyNodeRoot.find( 'node' )
 
             nodePosition.set( 'positionX', '%s' %pos.x() )
@@ -804,7 +805,7 @@ class node( QGraphicsItem, QObject ):
 
 
         except:
-            print 'old style positioning...'
+            #print 'old style positioning...'
             positionX = propertyNodeRoot.find( 'positionX' )
             positionY = propertyNodeRoot.find( 'positionY' )
 

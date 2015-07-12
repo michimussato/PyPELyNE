@@ -10,4 +10,6 @@
 	<shelfItem icon="uvlayout-info.xpm" cmds="import maya.mel as mm;mm.eval( 'uvlayout_open();' );" ann="Open UVLayout interface"/>
 	<shelfItem icon="HdrlsLive.bmp" cmds="import HdrlsLiveUI;reload(HdrlsLiveUI);HdrlsLiveUI.HdrlsLiveUI()" ann="Live integration with supported IPR renderers"/>
 	<shelfItem icon="HdrlsPushScene.bmp" cmds="import HdrlsPushScriptUI;reload(HdrlsPushScriptUI);HdrlsPushScriptUI.HdrlsPushScriptUI()" ann="Push scene data to running instance of HDR Light Studio"/>
+	<shelfItem icon="ShotMaskUi.png" cmds="from shot_mask import ShotMaskUi;ShotMaskUi.display()" ann="ShotMask UI"/>
+	<shelfItem icon="czDockableOutputWindow.png" cmds="import maya.mel as mm;mm.eval( 'czDockableOutputWindow();' );" ann="Dock output windows"/>
 </scriptsShelf>

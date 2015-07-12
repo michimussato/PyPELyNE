@@ -12,7 +12,7 @@ from circlesInOut import *
 from screenCast import *
 from timeTracker import *
 from PyQt4.uic import *
-from jobArnold import *
+from jobDeadline import *
 
 import xml.etree.ElementTree as ET
 
@@ -26,8 +26,7 @@ class node( QGraphicsItem, QObject ):
     #clickedSignal = pyqtSignal( QObject )
     nodeClicked = pyqtSignal()
     #textMessage = pyqtSignal( str )
-    
-    
+
     def __init__( self, mainWindow, scene, propertyNodePath ):
         super( node, self ).__init__( None, scene )
 
@@ -311,14 +310,14 @@ class node( QGraphicsItem, QObject ):
             newestFile = max( absFiles, key=os.path.getctime )
             self.mainWindow.runTask( self, self._tools[ searchIndex ][ 1 ][ 0 ], newestFile, args )
         else:
-            ok, jobArnold = jobArnoldUi.getArnoldData( self.location, self.mainWindow )
+            ok, jobDeadline = jobDeadlineUi.getDeadlineJobData( self.location, self.mainWindow )
             #print self.location
 
             if ok:
                 txtFile = os.path.join( self.location, 'project', 'deadlineJob.txt' )
                 jobFile = open( txtFile, 'w' )
 
-                for element in jobArnold:
+                for element in jobDeadline:
                     jobFile.write( element )
                     jobFile.write( ' ' )
                     #jobFile.write( ' \\\n' )

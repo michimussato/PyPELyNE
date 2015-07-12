@@ -147,7 +147,7 @@ class portOutput( QGraphicsItem ):
         #self.gradient.setColorAt( 1, Qt.green )
 
         #self.palette = QPalette
-        
+
 
         if len( str( self.data( 0 ).toPyObject() ).split( '.' ) ) > 1:
 
@@ -163,7 +163,7 @@ class portOutput( QGraphicsItem ):
         #print self.nodeOutput
         #print self._outputs
 
-        
+
         #print self._tasks[ 0 ].index( ('value', 'modelling') )
         index = 0
         found = False

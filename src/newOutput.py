@@ -40,8 +40,13 @@ class newOutputUI( QDialog ):
         
     
     def createUI( self ):
+
+        mimeTypes = [ ( 'arbitrary', None ), ( '.ass', 'ASS' ), ( '.exr', 'EXR' ), ( '.tga', 'TGA' ) ]
+
         self.comboBoxOutput.addItem( 'select' )
-        self.comboBoxMime.addItem( 'arbitrary' )
+
+        for mime in mimeTypes:
+            self.comboBoxMime.addItem( mime[ 0 ] )
         
         #self.comboBoxVersion.addItem( 'select' )
         #self.comboBoxVersion.setEnabled( False )
@@ -133,6 +138,7 @@ class newOutputUI( QDialog ):
     def onOk( self ):
         self.outputName = self.outputs[ self.comboBoxOutput.currentIndex() - 1 ][ 0 ][ 1 ][ 1 ] + '__' + self.lineEditOutputName.text()
         self.outputIndex = self.comboBoxOutput.currentIndex() - 1
+        self.mimeIndex = self.comboBoxMime.currentIndex()
         #self.taskIndex = self.comboBoxTask.currentIndex() - 1
         #print self.nodeName
         self.accept()

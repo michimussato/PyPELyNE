@@ -84,8 +84,10 @@ class pypelyneMainWindow( QMainWindow ):
             self.audioFolder = r'C:\audio'
             self.screenCastExec = r''
         elif self.currentPlatform == "Linux" or self.currentPlatform == "Darwin":
-            #self.projectsRoot = os.path.join( r'/Volumes/pili/pypelyne_projects' )
-            self.projectsRoot = os.path.join( r'/Volumes/osx_production/pypelyne_projects' )
+            if os.path.exists( os.path.join( r'/Volumes/pili/pypelyne_projects' ) ):
+                self.projectsRoot = os.path.join( r'/Volumes/pili/pypelyne_projects' )
+            else:
+                self.projectsRoot = os.path.join( r'/Volumes/osx_production/pypelyne_projects' )
             self.audioFolder = r'/Volumes/pili/library/audio'
             self.screenCastExec = r'/Applications/VLC.app/Contents/MacOS/VLC'
             self.sequenceExec = r'/Applications/RV64.app/Contents/MacOS/RV'
@@ -114,6 +116,7 @@ class pypelyneMainWindow( QMainWindow ):
         self.descriptionWindow.setVisible( False )
         self.openPushButton.setVisible( True )
         self.checkBoxDescription.setVisible( False )
+        self.configPushButton.setVisible( False )
 
         self.openPushButton.setEnabled( False )
 
@@ -408,106 +411,6 @@ class pypelyneMainWindow( QMainWindow ):
         nowSecs = str( now.strftime( '%Y-%m-%d_%H%M-%S' ) )
         nowMilliSecs = str( now.strftime( '%Y-%m-%d_%H%M-%S_%f' ) )
 
-        #user = self.mainWindow.getUser()
-
-
-        #if not os.path.exists( makingOfDir ):
-        #    os.makedirs( makingOfDir, mode=0777 )
-
-        '''
-        timeTrackerDir = os.path.join( self.project, 'timetracker' )
-        if not os.path.exists( timeTrackerDir ):
-            os.makedirs( timeTrackerDir, mode=0777 )
-        timetrackerCsv = os.path.join( timeTrackerDir, 'timetracker.csv' )
-        if not os.path.exists( timetrackerCsv ):
-            open( timetrackerCsv, 'a' ).close()
-        '''
-
-        #trackThis = timeTracker( os.path.basename( self.asset ), os.path.basename( self.location ), self.project )
-
-        #trackThis.start()
-
-
-        #mp4 = makingOfDir + os.sep + nowSecs + '__' + self.user + '__' + os.path.basename( self.asset ) + '__' + self.label + '.mp4'
-        #print self.mp4
-
-        #print os.path.expanduser('~'), str( 'vlc.sock' + '.' + self.now + '__' + self.user + '__' + self.assetName + '__' + self.taskName )
-
-        #vlcExec = r'/Applications/VLC.app/Contents/MacOS/VLC'
-
-        #vlcSocket = os.path.join( os.path.expanduser('~'), str( 'vlc.sock' + '.' + now + '__' + user + '__' + os.path.basename( self.asset ) + '__' + self.label ) )
-        #vlcSocket = os.path.join( os.path.expanduser('~'), str( 'vlc.sock' + '.' + nowMilliSecs ) )
-
-        #vlcArgs = [ vlcExec, '-I', 'rc', '--rc-fake-tty', '--rc-unix', vlcSocket, 'screen://', '--screen-fps', '4', '--quiet', '--sout', '"#transcode{vcodec=h264,vb=512,scale=0.5}:standard{access=file,mux=mp4,dst=' + mp4 + '}"' ]
-
-        #commandStop = "echo stop | nc -U " + self.vlcSocket
-        #commandQuit = "echo quit | nc -U " + self.vlcSocket
-
-        #print commandStop
-        #print commandQuit
-
-        #time.sleep( 15 )
-
-        #os.system( commandStop )
-        #os.system( commandQuit )
-
-        #print ' '.join( vlcArgs )
-
-        #print args[ 0 ]
-
-
-        #cmdList = []
-
-        #for trackStart in [ "open( timetrackerCsv, 'a' ).write( user + '\t' + self.getLabel() + '\t' + 'START' + str( now.strftime( '%Y-%m-%d_%H%M-%S' ) ) + '\n' ).close()" ]:
-        #    cmdList.append( trackStart )
-
-        #for trackStart in [ '/Library/Frameworks/Python.framework/Versions/2.7/bin/python', '-c', '\"import os;os.chdir(\'' + self.pypelyneRoot + '\');timeTrackerFile=open(\'' + timetrackerCsv + '\',\'a\');timeTrackerFile.write(\'' + user + '\t' + os.path.basename( self.asset ) + '__' + self.label + '\t' + nowSecs + '\t' + '\');timeTrackerFile.close()', '\"', '&' ]:
-        #    cmdList.append( trackStart )
-
-        #for touchLocked in [ '/usr/bin/touch', os.path.join( self.location, 'locked' ), '&&' ]:
-        #    cmdList.append( touchLocked )
-
-        #for vlcStart in [ '/opt/X11/bin/xterm', '-T', 'screenCast_' + self.label, '-e', ' '.join( vlcArgs ), '&' ]:
-        #    cmdList.append( vlcStart )
-
-        #if not os.path.exists( self.trackerData ):
-        #    open( self.trackerData, 'a' ).close()
-
-        '''
-        timeTrackerFile = open( timetrackerCsv, 'a' )
-        timeTrackerFile.write( user + '\t')
-        timeTrackerFile.write( self.getLabel() + '\t' )
-        timeTrackerFile.write( 'START' + '\t' )
-        timeTrackerFile.write( nowSecs + '\t' )
-        timeTrackerFile.write( '\n' )
-        timeTrackerFile.close()
-        '''
-
-        #for nodeExe in [ '/opt/X11/bin/xterm', '-T', self.label, '-e', executable, newestFile ]:
-        #    cmdList.append( nodeExe )
-        #for nodeExeArg in args[ 0 ]:
-        #    cmdList.append( nodeExeArg )
-        #cmdList.append( '&&' )
-
-        #for vlcStop in [ '/bin/echo', '-n', 'stop', '|', 'nc', '-U', vlcSocket, '&&' ]:
-        #    cmdList.append( vlcStop )
-
-        #for vlcQuit in [ '/bin/echo', '-n', 'quit', '|', 'nc', '-U', vlcSocket, '&&' ]:
-        #    cmdList.append( vlcQuit )
-
-        #for rmLocked in [ '/bin/rm', os.path.join( self.location, 'locked' ) ]:
-        #    cmdList.append( rmLocked )
-
-
-
-
-        #cmdList.append( '&&', '/opt/X11/bin/xterm', '-e', ' '.join( vlcArgs ) )
-        #print cmdList
-
-        #newTaskProc = subprocess.Popen( str( ' '.join( [ '/usr/bin/touch', os.path.join( self.location, 'locked' ), '&&', '/opt/X11/bin/xterm', '-e', ' '.join( vlcArgs ), '&', '/opt/X11/bin/xterm', '-e', executable, '&&', '/bin/rm', os.path.join( self.location, 'locked' ) ] ) ), shell=True )
-
-        #print str( ' '.join( cmdList ) )
-
         arguments = QStringList()
         #arguments = [  ]
 
@@ -553,39 +456,6 @@ class pypelyneMainWindow( QMainWindow ):
         process.start( executable, arguments )
         os.chdir( currentDir )
         #print os.getcwd()
-
-
-
-
-
-        #old way (subprocess, xterm):
-        #subprocess.Popen( str( ' '.join( cmdList ) ), shell=True )
-
-
-
-        '''
-        #self.processNode = node
-        #self.processLabel = self.processNode.getLabel()
-
-        #print args[ 0 ]
-        #print type( args[ 0 ] )
-
-        command = [ executable, newestFile, ' '.join( args[ 0 ] ) ]
-
-        self.process = QProcess( self.mainWindow )
-
-        self.process.readyRead.connect( self.dataReady )
-        #self.mainWindow.sendTextToBox( "%s: starting %s. Enjoy!\n" %( datetime.datetime.now(), self.data( 0 ).toPyObject() ) )
-        self.process.started.connect( self.onStarted )
-        self.process.finished.connect( self.onFinished )
-        self.process.start( ' '.join( command ) )
-        self.pid = self.process.pid()
-        #print self.process
-        #print self.process.state()
-
-        #while self.process.state() == '1':
-        #      print 'active'
-        '''
 
     def onStarted( self, node, qprocess, screenCast, timeTracker ):
 
@@ -1371,81 +1241,91 @@ class pypelyneMainWindow( QMainWindow ):
             
             item = self.toolsComboBox.addItem( i[ 0 ] )
             #item.setFlags( Qt.ItemIsSelectable( False ) )
-            
-        
-        #self.toolsComboBox.activated.connect( self.runTool )
 
 
-
-    '''  
-    def runTask( self, executable, newestFile, asset, label, project, *args ):
-
-        #self.processNode = node
-        #self.processLabel = self.processNode.getLabel()
-
-        #print args[ 0 ]
-        #print type( args[ 0 ] )  
-
-        command = [ executable, newestFile, ' '.join( args[ 0 ] ) ]
-
-        newProcess = QProcess( self )
-
-        self.qprocesses.append( newProcess )
-        
-        newProcess.readyRead.connect( self.dataReady )
-        #self.mainWindow.sendTextToBox( "%s: starting %s. Enjoy!\n" %( datetime.datetime.now(), self.data( 0 ).toPyObject() ) )
-        
-        #newProcess.started.connect( self.onStarted( newProcess, asset, label, project ) )
-        #newProcess.finished.connect( self.onFinished( newProcess, asset, label, project ) )
-        
-        newProcess.started.connect( lambda: self.onStarted( newProcess.pid(), asset, label, project ) )
-        newProcess.finished.connect( lambda: self.onFinished( newProcess.pid(), asset, label, project ) )
-        
-
-        newProcess.start( ' '.join( command ) )
-        #newProcess.pid = newProcess.pid()
-        #print self.process
-        #print self.process.state()
-
-        #while self.process.state() == '1':
-        #      print 'active'
-
-    def onStarted( self, pid, asset, label, project ):
-        #print '%s started' %self.label
-        #self.
-        #asset = os.path.basename( self.asset )
-        #print asset
-
-        #self.sendTextToBox( "%s: starting %s (PID %s). Enjoy!\n" %( datetime.datetime.now(), self.data( 0 ).toPyObject(), self.pid ) )
-        self.sendTextToBox( "%s: starting PID %s. Enjoy!\n" %( datetime.datetime.now(), pid ) )
-        #print os.path.basename( asset )
-        #print label
-        #print project
-        
-        self.screenCast = screenCast( os.path.basename( asset ), label, project )
-        self.screenCast.startCast()
-
-        self.timeTracker = timeTracker( os.path.basename( asset ), label, project )
-        self.timeTracker.trackStart()
-
-
-
-
-    def onFinished( self, pid, asset, label, project ):
-        #print '%s finished' %self.label
-
-        #pid = self.process.pid()
-
-        self.sendTextToBox( "%s: stopped PID %s).\n" %( datetime.datetime.now(), pid ) )
-
-        #print self.screenCast
-
-        self.screenCast.stopCast()
-
-        self.timeTracker.trackStop()
-    '''
 
     def runTool( self ):
+
+        index = self.toolsComboBox.currentIndex() - 2
+
+        if index < 0:
+            self.sendTextToBox( "%s: nothing to run\n" %datetime.datetime.now() )
+
+        else:
+
+            path = re.findall( r'"([^"]*)"', self._tools[ index ][ 1 ][ 0 ] )[ 0 ]
+
+            if os.path.exists( os.path.normpath( path ) ):
+                self.sendTextToBox( "%s: starting %s. Enjoy!\n" %( datetime.datetime.now(), self._tools[ index ][ 0 ] ) )
+
+                process = QProcess( self )
+
+                process.readyReadStandardOutput.connect( lambda: self.dataReadyStd( process ) )
+                process.readyReadStandardError.connect( lambda: self.dataReadyErr( process ) )
+                process.started.connect( lambda: self.toolOnStarted( process ) )
+                #process.started.connect( lambda:  )
+                process.finished.connect( lambda: self.toolOnFinished( process ) )
+
+
+                try:
+                    toolTemplate = self._tools[ index ][ 7 ]
+                except:
+                    toolTemplate = 'None'
+
+                #print toolTemplate
+
+
+
+                tempDir = os.path.join( os.path.expanduser( '~' ), 'pypelyne_temp' )
+                currentDir = os.getcwd()
+                #print tempDir
+                if not os.path.exists( tempDir ):
+                    os.makedirs( tempDir, mode=0777 )
+
+                if not toolTemplate == 'None':
+                    src = os.path.join( 'src', 'template_documents', toolTemplate )
+                    dst = os.path.join( tempDir, str( os.path.splitext( toolTemplate )[ 0 ] + '.' + '0000' + os.path.splitext( toolTemplate )[ 1 ] ) )
+                    print dst
+                    shutil.copyfile( src, dst )
+
+
+                    os.chdir( tempDir )
+
+                    #print self._tools[ index ][ 1 ][ 0 ]
+
+                    executable = self._tools[ index ][ 1 ][ 0 ]
+
+                    executable = executable.replace( '\"', '' )
+                    executable = executable.replace( '\'', '' )
+                    if executable.endswith( ' ' ):
+                        executable = executable[:-1]
+
+                    arguments = QStringList()
+                    arguments.append( dst )
+
+                    print arguments
+                    process.start( executable, arguments )
+                    os.chdir( currentDir )
+                else:
+                    os.chdir( tempDir )
+                    executable = self._tools[ index ][ 1 ][ 0 ]
+                    process.start( executable )
+                    os.chdir( currentDir )
+
+            else:
+                self.sendTextToBox( "%s: cannot start %s. is it installed?\n" %( datetime.datetime.now(), self._tools[index][0] ) )
+
+
+        self.toolsComboBox.setCurrentIndex( 0 )
+
+    def toolOnStarted( self, qprocess ):
+        self.qprocesses.append( qprocess )
+
+    def toolOnFinished( self, qprocess ):
+        self.qprocesses.remove( qprocess )
+
+
+    def runToolOld( self ):
         # QProcess object for external app
         #self.process = QProcess( self )
         # QProcess emits `readyRead` when there is data to be read

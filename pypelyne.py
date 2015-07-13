@@ -448,16 +448,16 @@ class pypelyneMainWindow( QMainWindow ):
         #process.readyRead.connect( lambda: self.dataReady( process ) )
         process.readyReadStandardOutput.connect( lambda: self.dataReadyStd( process ) )
         process.readyReadStandardError.connect( lambda: self.dataReadyErr( process ) )
-        process.started.connect( lambda: self.onStarted( node, process, newScreenCast, newTimeTracker ) )
+        process.started.connect( lambda: self.taskOnStarted( node, process, newScreenCast, newTimeTracker ) )
         #process.started.connect( lambda:  )
-        process.finished.connect( lambda: self.onFinished( node, process, newScreenCast, newTimeTracker ) )
+        process.finished.connect( lambda: self.taskOnFinished( node, process, newScreenCast, newTimeTracker ) )
         currentDir = os.getcwd()
         os.chdir( node.getNodeRootDir() )
         process.start( executable, arguments )
         os.chdir( currentDir )
         #print os.getcwd()
 
-    def onStarted( self, node, qprocess, screenCast, timeTracker ):
+    def taskOnStarted( self, node, qprocess, screenCast, timeTracker ):
 
         self.qprocesses.append( qprocess )
         self.openNodes.append( node )
@@ -485,7 +485,7 @@ class pypelyneMainWindow( QMainWindow ):
         self.timeTrackers.append( timeTracker )
 
 
-    def onFinished( self, node, qprocess, screenCast, timeTracker ):
+    def taskOnFinished( self, node, qprocess, screenCast, timeTracker ):
         print '%s finished' %node.getLabel()
         #
         # #pid = self.process.pid()
@@ -1263,47 +1263,37 @@ class pypelyneMainWindow( QMainWindow ):
                 process.readyReadStandardOutput.connect( lambda: self.dataReadyStd( process ) )
                 process.readyReadStandardError.connect( lambda: self.dataReadyErr( process ) )
                 process.started.connect( lambda: self.toolOnStarted( process ) )
-                #process.started.connect( lambda:  )
                 process.finished.connect( lambda: self.toolOnFinished( process ) )
-
 
                 try:
                     toolTemplate = self._tools[ index ][ 7 ]
                 except:
                     toolTemplate = 'None'
 
-                #print toolTemplate
-
-
-
                 tempDir = os.path.join( os.path.expanduser( '~' ), 'pypelyne_temp' )
                 currentDir = os.getcwd()
-                #print tempDir
+
                 if not os.path.exists( tempDir ):
                     os.makedirs( tempDir, mode=0777 )
 
                 if not toolTemplate == 'None':
+                    dateTime = datetime.datetime.now().strftime( '%Y-%m-%d_%H%M-%S' )
                     src = os.path.join( 'src', 'template_documents', toolTemplate )
-                    dst = os.path.join( tempDir, str( os.path.splitext( toolTemplate )[ 0 ] + '.' + '0000' + os.path.splitext( toolTemplate )[ 1 ] ) )
-                    print dst
+                    dst = os.path.join( tempDir, str( os.path.splitext( toolTemplate )[ 0 ] + '.' + dateTime + os.path.splitext( toolTemplate )[ 1 ] ) )
                     shutil.copyfile( src, dst )
 
-
                     os.chdir( tempDir )
-
-                    #print self._tools[ index ][ 1 ][ 0 ]
 
                     executable = self._tools[ index ][ 1 ][ 0 ]
 
                     executable = executable.replace( '\"', '' )
                     executable = executable.replace( '\'', '' )
                     if executable.endswith( ' ' ):
-                        executable = executable[:-1]
+                        executable = executable[ :-1 ]
 
                     arguments = QStringList()
                     arguments.append( dst )
 
-                    print arguments
                     process.start( executable, arguments )
                     os.chdir( currentDir )
                 else:

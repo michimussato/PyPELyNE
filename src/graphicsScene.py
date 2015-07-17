@@ -22,18 +22,13 @@ import shutil, os, subprocess
 #     trigger = pyqtSignal( str )
 
 class SceneView( QGraphicsScene ):
-    
-    
     textMessage = pyqtSignal( str )
     nodeSelect = pyqtSignal( object )
-    #nodeSelect = pyqtSignal()
     nodeDeselect = pyqtSignal()
-    #nodeWidget = pyqtSignal( QWidget )
     
     def __init__( self, mainWindow, parent=None ):
         super( SceneView, self ).__init__( parent )
-        
-        #self.signals = Signals()
+
         self.mainWindow = mainWindow
         self.pypelyneRoot = self.mainWindow.getPypelyneRoot()
         self.currentPlatform = self.mainWindow.getCurrentPlatform()
@@ -48,19 +43,10 @@ class SceneView( QGraphicsScene ):
         rect = self.setSceneRect( QRectF( 0, 0, 0, 0 ) )
         
         self.nodeList = []
-        
-        #self.boundary = self.setSceneRect( QRectF( -1000, -1000, 1000, 1000 ) )
-        
-        
-    '''
-    def getMainWindow( self ):
-        return self.mainWindow
-    '''
 
     def addToNodeList( self, node ):
         self.nodeList.append( node )
-        #print 'node appended to self.nodeList'
-        
+
     def getNodeList( self ):
         return self.nodeList
         
@@ -70,13 +56,10 @@ class SceneView( QGraphicsScene ):
     def keyPressEvent( self, event ):
         if event.key() == Qt.Key_Delete:
             for item in self.selectedItems():
-                #print 'selection: %s' %item
                 if item.inputs > 1:
-                    #print 'item has inputs. cannot delete'
                     item.sendFromNodeToBox( 'item has inputs. cannot delete.\n' )
                 elif item.inputs == 1:
                     self.removeItem(item)
-                    #print 'removed: %s' %item
 
         super( SceneView, self ).keyPressEvent( event )
 
@@ -90,8 +73,6 @@ class SceneView( QGraphicsScene ):
 
     def viewVersion( self, imgFile ):
         def callback():
-            #print self.sequenceExec
-            #print imgFile
             subprocess.Popen( [ self.sequenceExec, imgFile ], shell=False )
         return callback
 

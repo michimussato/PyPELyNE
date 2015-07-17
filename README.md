@@ -4,14 +4,22 @@
 
 under development...
 
-Projected features:
+Project features:
 - versioning
-- project visualization
 - time tracking
-- task locking
 - shot-/asset-based node trees
-- tool independent (flexible)
 - use of central asset library
+- automatic screen recording (i. e. for making of's/breakdowns)
+- task locking (when it's in use by someone else)
+- data flow visualization (re-useable data and dependencies)
+- most tools can be integrated (flexible)
+- written for os x and windows (windows not fully functional)
+- arnold (ASS) render jobs can be sent directly from the pipeline to deadline render farm manager
+- mantra (IFD) render jobs can be sent directly from the pipeline to deadline render farm manager
+- meaningful usage of referenced data where possible (maya, nuke etc.)
+- maya loads pipeline inputs automatically (always work with latest data)
+- double click in task starts the task with the latest project file (i. e. photoshop with the latest .psd-file)
+- make users stick to a naming convention
 
 Supports:
 - Maya

@@ -7,20 +7,14 @@ from PyQt4.uic import *
 from PyQt4.QtOpenGL import *
 
 from src.pypelyneConfigurationWindow import *
-#from src.node import *
-#from src.circlesInOut import *
 from src.bezierLine import *
 from src.graphicsScene import *
 from src.screenCast import *
-#from screenCast import *
 from src.timeTracker import *
-
-#from src.parseApplications import *
 
 import xml.etree.ElementTree as ET
 
 from src.vlc import *
-#let's see
 
 
 
@@ -35,12 +29,6 @@ class nodeWidgetUi( QWidget ):
         self.mainWindow = mainWindow
         self.pypelyneRoot = self.mainWindow.getPypelyneRoot()
         self.currentPlatform = self.mainWindow.getCurrentPlatform()
-        '''
-        if self.currentPlatform == "Windows":
-            self.ui = loadUi( r'C:\Users\michael.mussato.SCHERRERMEDIEN\Dropbox\development\workspace\PyPELyNE\ui\nodeWidget.ui', self )
-        elif self.currentPlatform == "Linux" or self.currentPlatform == "Darwin":
-            self.ui = loadUi( r'/Users/michaelmussato/Dropbox/development/workspace/PyPELyNE/ui/nodeWidget.ui', self )
-        '''
 
         self.ui = loadUi( os.path.join( self.pypelyneRoot, 'ui', 'nodeWidget.ui' ), self )
 
@@ -52,13 +40,6 @@ class playerWidgetUi( QWidget ):
         self.mainWindow = mainWindow
         self.pypelyneRoot = self.mainWindow.getPypelyneRoot()
         self.currentPlatform = self.mainWindow.getCurrentPlatform()
-        '''
-        if self.currentPlatform == "Windows":
-            self.ui = loadUi( r'C:\Users\michael.mussato.SCHERRERMEDIEN\Dropbox\development\workspace\PyPELyNE\ui\player.ui', self )
-        elif self.currentPlatform == "Linux" or self.currentPlatform == "Darwin":
-            print self.pypelyneRoot
-            self.ui = loadUi( os.path.join( self.pypelyneRoot, 'ui', 'player.ui' ), self )
-        '''
 
         self.ui = loadUi( os.path.join( self.pypelyneRoot, 'ui', 'player.ui' ), self )
 
@@ -68,6 +49,7 @@ class pypelyneMainWindow( QMainWindow ):
         super( pypelyneMainWindow, self ).__init__( parent )
         
         self.exclusions = [ '.DS_Store', 'Thumbs.db' ]
+
         self.imageExtensions = [ '.jpg', '.exr', '.tga', '.png' ]
         self.movieExtensions = [ '.mov', '.avi' ]
         
@@ -76,7 +58,6 @@ class pypelyneMainWindow( QMainWindow ):
         self.pypelyneRoot = os.getcwd()
 
         self.user = getpass.getuser()
-        #self.projectsRoot = os.path.join( self.pypelyneRoot, 'projects' )
 
 
         if self.currentPlatform == "Windows":
@@ -92,13 +73,6 @@ class pypelyneMainWindow( QMainWindow ):
             self.screenCastExec = r'/Applications/VLC.app/Contents/MacOS/VLC'
             self.sequenceExec = r'/Applications/RV64.app/Contents/MacOS/RV'
 
-
-        
-        #self.audioFolder = r'/Volumes/pili/library/audio'
-        #print self.projectsRoot
-        
-        #self.shotsRoot = os.path.join( self.projectsRoot, currentProject, 'content', 'shots' )
-        #self.assetsRoot = os.path.join( self.projectsRoot, currentProject, 'content', 'assets' )
         
         self.nodeWidgets = []
         self.qprocesses = []
@@ -156,9 +130,6 @@ class pypelyneMainWindow( QMainWindow ):
 
         # Projects
         self.addProjects()
-        
-        
-        #self.addContent()
         
         # Tools
         self.addTools()
@@ -440,7 +411,7 @@ class pypelyneMainWindow( QMainWindow ):
 
 
 
-        newScreenCast = screenCast( os.path.basename( node.getNodeAsset() ), node.getLabel(), node.getNodeProject() )
+        newScreenCast = screenCast( self, os.path.basename( node.getNodeAsset() ), node.getLabel(), node.getNodeProject() )
         newTimeTracker = timeTracker( os.path.basename( node.getNodeAsset() ), node.getLabel(), node.getNodeProject() )
 
 
@@ -748,8 +719,6 @@ class pypelyneMainWindow( QMainWindow ):
         #        print 'node found at index %s' %( nodeList.index( node ) )
         for node in nodeList:
             currentNode = node
-            #if node.data( 0 ).toPyObject() == 'fnuzjr':
-            #    print 'found it...eeeeeeeeeeeeee'
             print 'processing %s (%s)' %( node.data( 0 ).toPyObject(), node )
             nodeRootDir = node.getNodeRootDir()
             nodeInputDir = os.sep.join( [ str( nodeRootDir ), 'input' ] )
@@ -757,114 +726,55 @@ class pypelyneMainWindow( QMainWindow ):
             inputs = os.listdir( nodeInputDir )
             if len( inputs ) > 0:
                 for input in inputs:
-                	#tempList = []
-                    #print input
                     if not input in self.exclusions:
                         string = input.split( '.' )
-                        print 'string', string
-                        #print string
-                        #print 'string = %s' %string
                         
                         for node in nodeList:
                             print 'nodeList:', nodeList
-                            #print node.data( 0 ).toPyObject()
-
-                            #if str( node.data( 0 ).toPyObject() ).startswith( 'LDR' ):
-
-
-                            #print 'hurrrraaaa', node.getLabel()
-                            #print node.data( 0 ).toPyObject()
-                            #print string
                             if node.data( 0 ).toPyObject() == string[ 2 ] or str( node.data( 0 ).toPyObject() ).startswith( 'LDR' ):
-                                #print 'source node %s found at index %s' %( node.data( 0 ).toPyObject(), nodeList.index( node ) )
+
                                 sourceNodeIndex = nodeList.index( node )
-                                #print 'node name = %s' %( node.data( 0 ).toPyObject() )
+
                                 sourceNode = node
-                                #tempList.append( node )
+
                                 outputList = node.outputList
-                                #print 'outputs: %s' %( outputList )
+
                                 for output in outputList:
                                     print 'processing =', output.data( 0 ).toPyObject()
-                                    #print output.data( 0 ).toPyObject()
-                                    #print 'output.data( 0 ).toPyObject()', output.data( 0 ).toPyObject()
-                                    #print 'str( output.data( 0 ).toPyObject() ).split( . )', str( output.data( 0 ).toPyObject() ).split( '.' )
-
                                     if len( str( output.data( 0 ).toPyObject() ).split( '.' ) ) == 1:
-
                                         if output.data( 0 ).toPyObject() == string[ 3 ]:
-                                            #print 'source output of %s found at index %s' %( output.data( 0 ).toPyObject(), outputList.index( output ) )
-                                            #print 'output', output
                                             startItem = output
                                             print 'if: startItem =', startItem
 
                                     else:
                                         if str( output.data( 0 ).toPyObject() ).split( '.' )[ 3 ] == string[ 3 ]:
                                             startItem = output
-                                            #loader
-                                            print 'else: startItem =', startItem
-                                            #startItem = outputList[ outputList.index( output ) ]
-                                            #print 'startItem = %s' %( startItem )
-                                            #print 'startItem = %s (%s)' %( startItem, startItem.data( 0 ).toPyObject() )
-                                        
-                                
-                        
-                        #print string
-                        #newInput = node.newInput( self.scene )
-                        #endItem:
-                        #print 'bezier needed to: %s ( node.data( 0 ): %s)' %( node, node.data( 0 ).toPyObject() )
-                        #print nodeList
-                        #print 'tempList = %s' %( tempList )
-                        #print 'sourceNodeIndex: %s' %( sourceNodeIndex )
-                        #print 'sourceNode: %s' %( sourceNode.data( 0 ).toPyObject() )
-                        #endItem = node.inputList[ 0 ]
-                        #endItem = nodeList.index( node )
-                        
-                        #endItem = sourceNode.inputList[ len( node.inputs ) ]
-                        #endItem = nodeList[ sourceNodeIndex ].inputList[ len( node.inputs ) ]
+
                         endItem = currentNode.inputList[ len( currentNode.inputs ) ]
-                        #print 'endItem = %s' %( node.inputList[ 0 ] )
-                        #print 'endNode = %s' %( node.data( 0 ).toPyObject() )
-                        #print 'endItem = %s' %( endItem )
-                        #print 'endItemInputDir = %s' %endItem.getInputDir()
-                        #endItem = node
-                        #print 'need to create input with name: %s on node: %s' %( input, node.data( 0 ).toPyObject() )
-                        #newInput.addText( input )
 
                         print 'new line from to:', startItem, endItem
                         
                         connectionLine = bezierLine( self, self.scene, startItem, endItem )
-                        
-                        
-                        
-                        
+
                         endItem.parentItem().inputs.append( endItem )
                         endItem.connection.append( connectionLine )
                         endItem.output.append( startItem )
                         endItem.parentItem().incoming.append( startItem )
                         startItem.inputs.append( endItem )
-                        
-                        
-                        
+
                         startItemRootDir = startItem.parentItem().getNodeRootDir()
                         endItemRootDir = endItem.parentItem().getNodeRootDir()
                         
                         startItemOutputLabel = startItem.getLabel()
-                        
-                        
-                        #startItemOutputDir = os.path.join( str( startItemRootDir ), 'output', str( startItemOutputLabel ) )
+
                         endItemInputDir = os.path.join( str( endItemRootDir ), 'input', str( input ) )
                         
                         endItem.setInputDir( endItemInputDir )
-                        
-                        
-                        
-                        
+
                         self.scene.addItem( connectionLine )
-                        
-                        
 
                         endItem.parentItem().newInput( self.scene )
-                        #print 'endItemInputDir = %s' %endItem.getInputDir()
+
                     else:
                         print 'input data is in exclusions list'
                     
@@ -888,41 +798,27 @@ class pypelyneMainWindow( QMainWindow ):
         self.shotsRoot = os.path.join( self.projectsRoot, currentProject, 'content', 'shots' )
         shotContent = os.listdir( os.path.join( self.shotsRoot, str( buttonText ) ) )
         
-        
-        #self.shotsGroupBox.setTitle( '%s/shots/%s' %( currentProject, buttonText ) )
-        #self.assetsGroupBox.setTitle( '%s/shots/%s' %( currentProject, buttonText ) )
-        
-        #self.currentContent = '%s/content/shots/%s' %( currentProject, buttonText )
-        
         self.shotsGroupBox.setTitle( 'looking at ' + currentProject + os.sep + 'shots' + os.sep + buttonText )
         self.assetsGroupBox.setTitle( 'looking at ' + currentProject + os.sep + 'shots' + os.sep + buttonText )
         
         self.currentContent = currentProject + os.sep + 'content' + os.sep + 'shots' + os.sep + buttonText
-        
-        
-#         try:
+
         for nodeItem in shotContent:
             if nodeItem in self.exclusions:
                 pass
             else:
                 self.propertyNodePathShots = os.path.join( self.shotsRoot, str( buttonText ), nodeItem, 'propertyNode.xml' )
-                #self.propertyNode = ET.parse( propertyNodePath )
-
                 
                 newNode = node( self, self.scene, self.propertyNodePathShots )
                 newNode.addText( self.scene, nodeItem )
                 self.scene.addToNodeList( newNode )
                 
         self.computeConnections()
-
-#         except:
-#             print 'shot contains no tasks'
             
         
     def getCurrentProject( self ):
         currentProject = str( self.projectComboBox.currentText() )
         self.assetsRoot = os.path.join( self.projectsRoot, currentProject )
-        #print currentProject
         return currentProject
         
             
@@ -932,55 +828,30 @@ class pypelyneMainWindow( QMainWindow ):
         self.nodeView.setVisible( True )
         
         buttonText = assetButton.text()
-        
-        
-        
+
         self.scene.clear()
         self.addRectangular()
         self.scene.clearNodeList()
         currentProject = str( self.projectComboBox.currentText() )
         self.assetsRoot = os.path.join( self.projectsRoot, currentProject, 'content', 'assets' )
         assetContent = os.listdir( os.path.join( str( self.assetsRoot ), str( buttonText ) ) )
-        
-        #self.assetsGroupBox.setTitle( '%s/assets/%s' %( currentProject, buttonText ) )
-        #self.shotsGroupBox.setTitle( '%s/assets/%s' %( currentProject, buttonText ) )
-        
-        #self.currentContent = '%s/content/assets/%s' %( currentProject, buttonText )
-        
+
         self.shotsGroupBox.setTitle( 'looking at ' + currentProject + os.sep + 'assets' + os.sep + buttonText )
         self.assetsGroupBox.setTitle( 'looking at ' + currentProject + os.sep + 'assets' + os.sep + buttonText )
         
         self.currentContent = currentProject + os.sep + 'content' + os.sep + 'assets' + os.sep + buttonText
-        
-        #try:
-        #positionX = 0
-        #positionY = 0
-        
 
         for nodeItem in assetContent:
             if nodeItem in self.exclusions:
                 pass
             else:
                 self.propertyNodePathAssets = os.path.join( self.assetsRoot, str( buttonText ), nodeItem, 'propertyNode.xml' )
-                print 'im here'
-                print self.propertyNodePathAssets
-                #print propertyNodePath
                 
                 newNode = node( self, self.scene, self.propertyNodePathAssets )
                 newNode.addText( self.scene, nodeItem )
                 self.scene.addToNodeList( newNode )
                 
         self.computeConnections()
-                        
-                    
-                    
-                    
-                    
-                    
-                    #posX = positionX + 100
-                    #posY = positionY + 100
-#         except:
-#             print 'asset contains no tasks'
 
 
     def addContent( self ):
@@ -992,7 +863,6 @@ class pypelyneMainWindow( QMainWindow ):
         self.assetsRoot = os.path.join( self.projectsRoot, currentProject, 'content', 'assets' )
         self.shotsRoot = os.path.join( self.projectsRoot, currentProject, 'content', 'shots' )
         try:
-            #print os.listdir( self.assetsRoot )
             for i in os.listdir( self.assetsRoot ):
                 if not i in self.exclusions:
                     assets.append( i )
@@ -1004,7 +874,6 @@ class pypelyneMainWindow( QMainWindow ):
             print 'no assetsRoot found'
         try:
             for i in os.listdir( self.shotsRoot ):
-                #print i
                 if not i in self.exclusions:
                     shots.append( i )
                 else:
@@ -1014,9 +883,6 @@ class pypelyneMainWindow( QMainWindow ):
     
     
         #Assets
-        
-        #print shots
-        #print assets
 
         self.assetsGroupBox = QGroupBox( currentProject )
         layoutAssets = QHBoxLayout()
@@ -1031,8 +897,6 @@ class pypelyneMainWindow( QMainWindow ):
             assetPushButton = QPushButton( i )
             assetPushButton.setContextMenuPolicy( Qt.CustomContextMenu )
             self.connect( assetPushButton, SIGNAL( 'customContextMenuRequested( const QPoint& )' ), self.contentContextMenu )
-            #print os.path.join( self.assetsRoot, i ) 
-            #assetPushButton.clicked.connect( lambda: self.scene.clear() )
             layoutAssets.addWidget( assetPushButton )
             self.assetButtonGroup.addButton( assetPushButton )
             
@@ -1055,7 +919,6 @@ class pypelyneMainWindow( QMainWindow ):
         
         
         #Shots
-        #self.contentShotUi = loadUi( os.path.join( self.pypelyneRoot, 'ui', 'contentShot.ui' ), self )
         
         self.shotsGroupBox = QGroupBox( currentProject )
         layoutShots = QHBoxLayout()
@@ -1068,18 +931,9 @@ class pypelyneMainWindow( QMainWindow ):
         self.shotButtonGroup.buttonClicked[ QAbstractButton ].connect( self.getShotContent )
         
         for i in shots:
-            #shotContent = self.getShotContent( i )
-            #print shotContent
             shotPushButton = QPushButton( i )
             shotPushButton.setContextMenuPolicy( Qt.CustomContextMenu )
             self.connect( shotPushButton, SIGNAL( 'customContextMenuRequested( const QPoint& )' ), self.contentContextMenu )
-            #print i
-            #print 'getShotContent = %s' %self.getShotContent( i )
-            #shotLocation = os.path.join( self.shotsRoot, i )
-            #print shotLocation
-            #print os.path.join( self.shotsRoot, i )
-            #shotPushButton.clicked.connect( self.listContent( i ) )
-            #shotPushButton.clicked.connect( lambda: self.scene.clear() )
             layoutShots.addWidget( shotPushButton )
             self.shotButtonGroup.addButton( shotPushButton )
         
@@ -1110,7 +964,6 @@ class pypelyneMainWindow( QMainWindow ):
         
         for i in range( 30 ):
             createTestPushButton = QPushButton( '%d' %i )
-            #createTestPushButton.clicked.connect( lambda: self.printShit( i ) )
             layoutTest.addWidget( createTestPushButton )
             self.testButtonGroup.addButton( createTestPushButton )
             
@@ -1127,25 +980,17 @@ class pypelyneMainWindow( QMainWindow ):
         
         widgetTest = QWidget()
         widgetTest.setLayout( layoutTestScroll )
-        
-        
-        
+
         self.assetsShotsTabWidget.clear()
         
         self.assetsShotsTabWidget.addTab( widgetAssets, 'assets' )
         self.assetsShotsTabWidget.addTab( widgetShots, 'shots' )
-#         self.assetsShotsTabWidget.insertTab( 0, widgetAssets, 'assets' )
-#         self.assetsShotsTabWidget.insertTab( 1, widgetShots, 'shots' )
-        #self.assetsShotsTabWidget.addTab( widgetTest, 'test' )
-        
-        #self.assetsTab.addWidget( QPushButton )
 
     def contentContextMenu( self, point ):
         
         sendingButton = self.sender()
         sendingButtonText = sendingButton.text()
-        
-        #currentProject = str( self.projectComboBox.currentText() )
+
         tabIndex = self.assetsShotsTabWidget.currentIndex()
         
         if tabIndex == 0:
@@ -1155,22 +1000,15 @@ class pypelyneMainWindow( QMainWindow ):
             currentTarget = self.shotsRoot
             
         contentLocation = os.path.join( str( currentTarget ), str( sendingButtonText ) )
-        #print contentLocation
-        
-        
-        #print point
-        #print sending_button.pos
+
         popMenu = QMenu( self )
         popMenu.addAction( 'open directory', lambda: self.locateContent( contentLocation ) )
         popMenu.addAction( 'clone', lambda: self.cloneContent( contentLocation ) )
         popMenu.addAction( 'disable', self.foo )
         popMenu.addSeparator()
-        #popMenu.addAction( 'delete', self.removeContent( contentLocation, sendingButton ) )
         popMenu.addAction( 'delete', lambda: self.removeContent( contentLocation ) )
-        
-        #popMenu.exec_( sending_button.pos )
-        popMenu.exec_( sendingButton.mapToGlobal( point ) )  
-        #popMenu.exec_( self.mapToGlobal( point ) ) 
+
+        popMenu.exec_( sendingButton.mapToGlobal( point ) )
         
 
     def foo( self ):
@@ -1179,7 +1017,6 @@ class pypelyneMainWindow( QMainWindow ):
     
     def printShit( self, button ):
         print button.text()
-        #return value
     
     
     def addProjects( self ):
@@ -1240,9 +1077,6 @@ class pypelyneMainWindow( QMainWindow ):
         for i in self._tools:
             
             item = self.toolsComboBox.addItem( i[ 0 ] )
-            #item.setFlags( Qt.ItemIsSelectable( False ) )
-
-
 
     def runTool( self ):
 
@@ -1313,77 +1147,6 @@ class pypelyneMainWindow( QMainWindow ):
 
     def toolOnFinished( self, qprocess ):
         self.qprocesses.remove( qprocess )
-
-
-    def runToolOld( self ):
-        # QProcess object for external app
-        #self.process = QProcess( self )
-        # QProcess emits `readyRead` when there is data to be read
-        #self.process.readyRead.connect( self.dataReady )
-        index = self.toolsComboBox.currentIndex() - 2
-        #print index
-        if index < 0:
-            self.sendTextToBox( "%s: nothing to run\n" %datetime.datetime.now() )
-            #print "nothing to run"
-        else:
-            #print self._tools[ index ][ 1 ][ 0 ]
-            path = re.findall( r'"([^"]*)"', self._tools[ index ][ 1 ][ 0 ] )[ 0 ]
-            #print path
-            #print
-            if os.path.exists( os.path.normpath( path ) ):
-                self.sendTextToBox( "%s: starting %s. Enjoy!\n" %( datetime.datetime.now(), self._tools[ index ][ 0 ] ) )
-                #self.process.start( self._tools[ index ][ 1 ][ 0 ] )
-                #newToolProc = QProcess( self ).start( ' '.join( [ '/opt/X11/bin/xterm', '-e', self._tools[ index ][ 1 ][ 0 ] ] ) )
-                #print str( ' '.join( [ '/opt/X11/bin/xterm', '-e', 'touch /Users/michaelmussato/hello', '&&', self._tools[ index ][ 1 ][ 0 ], '&&', 'touch /Users/michaelmussato/bye' ] ) )
-                #newToolProc = QProcess( self )
-                
-                #newToolProc.start( str( ' '.join( [ '/opt/X11/bin/xterm', '-e', 'touch /Users/michaelmussato/hello', '&&', '/opt/X11/bin/xterm', '-e', self._tools[ index ][ 1 ][ 0 ], '&&', 'touch /Users/michaelmussato/bye' ] ) ) )
-                #newToolProc.start( str( ' '.join( [ '/opt/X11/bin/xterm', '-e', '/opt/X11/bin/xterm', '-e', self._tools[ index ][ 1 ][ 0 ] ] ) ) )
-                #print str( ' '.join( [ '/opt/X11/bin/xterm', '-e', 'touch /Users/michaelmussato/hello', '&&', '/opt/X11/bin/xterm', '-e', self._tools[ index ][ 1 ][ 0 ], '&&', '/opt/X11/bin/xterm', '-e', 'touch /Users/michaelmussato/bye' ] ) )
-                #newToolProc.start( str( ' '.join( [ '/opt/X11/bin/xterm', '-e', 'touch /Users/michaelmussato/hello', '&&', '/opt/X11/bin/xterm', '-e', self._tools[ index ][ 1 ][ 0 ], '&&', '/opt/X11/bin/xterm', '-e', 'touch /Users/michaelmussato/bye' ] ) ) )
-                
-                #os.system( str( ' '.join( [ '/opt/X11/bin/xterm', '-e', 'touch /Users/michaelmussato/hello', '&&', '/opt/X11/bin/xterm', '-e', self._tools[ index ][ 1 ][ 0 ], '&&', '/opt/X11/bin/xterm', '-e', 'touch /Users/michaelmussato/bye' ] ) ) )
-                
-                #self.process.start( ' '.join( [ '/bin/bash', '-c', self._tools[ index ][ 1 ][ 0 ] ] ) )
-                #newToolProc.start( '/bin/bash', [ '-c', '/opt/X11/bin/xterm' , '-e', 'touch', '/Users/michaelmussato/hello', '&&', 'sleep', '5', '&&', 'touch', '/Users/michaelmussato/bye' ] )
-                #print self._tools[ index ][ 1 ][ 0 ]
-                command = str( self._tools[ index ][ 1 ][ 0 ] )[:-1]
-                
-                #print command
-                #command = re.sub( r'^"|"$', '', command )
-                #print command
-
-                #commandList = 
-
-
-                #proc = subprocess.Popen( [ '/opt/X11/bin/xterm', '-e' ], stdin=subprocess.PIPE, stdout=subprocess.PIPE )
-                
-                #out, err = proc.communicate
-                
-                newToolProc = subprocess.Popen( str( ' '.join( [ '/opt/X11/bin/xterm', '-e', self._tools[ index ][ 1 ][ 0 ] ] ) ), shell=True )
-                #self.sendTextToBox( newToolProc.communicate()[ 0 ] )
-
-                #newToolProc.start( str( ' '.join( [ '/usr/bin/touch', '/Users/michaelmussato/hello', '&&', command, '&&', '/usr/bin/touch', '/Users/michaelmussato/bye' ] ) ) )
-                #newToolProc.readyRead.connect( self.dataReady )
-                
-                
-                #subprocess.Popen( [ '/opt/X11/bin/xterm', '-e', 'touch', '/Users/michaelmussato/hello mike', '&&', '/opt/X11/bin/xterm', '-e', command, '&&', '/opt/X11/bin/xterm', '-e', 'touch', '/Users/michaelmussato/bye' ], shell=False )
-                #subprocess.Popen( [ 'touch', '/Users/michaelmussato/hellomike', '&&', command ], shell=True )
-                #subprocess.check_call( [ command ], shell=True )
-                #print ' '.join( [ 'xterm', '-e', self._tools[ index ][ 1 ][ 0 ] ] )
-
-                #os.system( ' '.join( [ '/opt/X11/bin/xterm', '-e', self._tools[ index ][ 1 ][ 0 ] ] ) )
-                
-                #s.system( '/opt/X11/bin/xterm -e "/Applications/MAXON/CINEMA 4D R15/CINEMA 4D.app/Contents/MacOS/CINEMA 4D" ' )
-                #os.system( str( ' '.join( [ 'xterm', '-e', self._tools[ index ][ 1 ][ 0 ] ] ) ) )
-            else:
-                self.sendTextToBox( "%s: cannot start %s. is it installed?\n" %( datetime.datetime.now(), self._tools[index][0] ) )
-
-        
-        self.toolsComboBox.setCurrentIndex( 0 )
-        
-#     def updateNodeMenu( self ):
-#         self.nodeMenuArea.setWidget( item.getWidgetMenu() )
     
     def sendTextToBox( self, text ):
         cursorBox = self.statusBox.textCursor()

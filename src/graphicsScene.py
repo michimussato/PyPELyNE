@@ -344,30 +344,7 @@ class SceneView( QGraphicsScene ):
         except:
             #print 'fuuuuuuuuck'
             pass
-        '''
-        try:
-            if isinstance( objectClicked, QGraphicsTextItem ):
-                #items.append( 'fucking text' )
-                self.menu.addAction( 'fucking text' )
-                print objectClicked.parentItem().parentItem()
-        except:
-            pass
-        '''
 
-#         try:
-#             if isinstance( objectClicked.parentItem(), node ):
-#                 items.append( 'gooood' )
-#         except:
-#             pass
-
-                
-                
-#         for item in items:
-# 
-#             self.menu.addAction( item, self.removeObject( objectClicked ) )
-        
-
-        
         self.menu.move( QCursor.pos() )
         self.menu.show()
 
@@ -387,10 +364,7 @@ class SceneView( QGraphicsScene ):
             if os.path.islink( outputDir ):
                 os.unlink( outputDir )
 
-            #print os.path.relpath( versionDir, liveDir )
-
             os.symlink( os.path.relpath( versionDir, liveDir ), outputDir )
-
 
             os.chdir( cwd )
 
@@ -412,10 +386,7 @@ class SceneView( QGraphicsScene ):
             elif self.currentPlatform == "Windows":
                 os.rmdir( os.path.join( fullOutputDir, 'current' ) )
         except:
-            #print os.path.join( fullOutputDir, 'current' )
             print 'cannot remove symlink or not available'
-
-
 
         cwd = os.getcwd()
         os.chdir( os.path.join( os.path.dirname( currentDir ) ) )
@@ -427,10 +398,7 @@ class SceneView( QGraphicsScene ):
 
             os.symlink( os.path.basename( currentDir ), 'current' )
 
-
         elif self.currentPlatform == "Windows":
-
-
 
             cmdstring = "mklink /D " + os.path.join( os.path.dirname( currentDir ), 'current' ) + " " + currentDir
             #print 'Win cmdstring = %s' %( cmdstring )
@@ -445,7 +413,6 @@ class SceneView( QGraphicsScene ):
 
     def createNewVersion( self, fullOutputDir ):
 
-
         #print 'testing'
         newVersion = datetime.datetime.now().strftime( '%Y-%m-%d_%H%M-%S' )
         #print os.path.join( fullOutputDir, newVersion )
@@ -455,53 +422,7 @@ class SceneView( QGraphicsScene ):
         os.makedirs( newVersionDir, mode=0777 )
         open( os.path.join( fullOutputDir, newVersion, os.path.basename( fullOutputDir ) ), 'a' ).close()
 
-
         self.makeCurrent( newVersionDir )
-
-
-        # try:
-        #     if self.currentPlatform == "Darwin":
-        #         os.unlink( os.path.join( fullOutputDir, 'current' ) )
-        #     elif self.currentPlatform == "Windows":
-        #         os.rmdir( os.path.join( fullOutputDir, 'current' ) )
-        # except:
-        #     #print os.path.join( fullOutputDir, 'current' )
-        #     print 'cannot remove symlink or not available'
-        #
-        #
-        #
-        # cwd = os.getcwd()
-        # os.chdir( os.path.join( os.path.dirname( newVersionDir ) ) )
-        #
-        # if self.currentPlatform == "Darwin":
-        #
-        #     # TODO: need to create relative links
-        #     #print os.path.relpath( newVersionDir, os.path.dirname( newVersionDir ) )
-        #
-        #     os.symlink( os.path.basename( newVersionDir ), 'current' )
-        #
-        #
-        # elif self.currentPlatform == "Windows":
-        #
-        #
-        #
-        #     cmdstring = "mklink /D " + os.path.join( os.path.dirname( newVersionDir ), 'current' ) + " " + newVersionDir
-        #     #print 'Win cmdstring = %s' %( cmdstring )
-        #     #os.chdir( os.path.dirname( endItemInputDir ) )
-        #     os.system( cmdstring )
-        #     #os.chdir( cwd )
-        #
-        #     #endItems[ 0 ].setInputDir( inputLink )
-        #     #print 'Windows: endItems[ 0 ].getInputDir() = %s' %endItems[ 0 ].getInputDir()
-        #
-        # os.chdir( cwd )
-
-
-
-
-
-
-
 
     def createNewVersionCallback( self, fullOutputDir ):
         #print 'test'

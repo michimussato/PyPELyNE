@@ -37,7 +37,7 @@ class screenCast( QProcess ):
             self.mainWindow.sendTextToBox( '%s: screencast for %s started\n' %( datetime.datetime.now(), self.taskName ) )
             print 'screencast for %s started' %( self.taskName )
         except:
-            self.mainWindow.sendTextToBox( '%s: startCast failed\n'%( datetime.datetime.now() )
+            self.mainWindow.sendTextToBox( '%s: startCast failed\n'%( datetime.datetime.now() ) )
             print 'startCast failed'
 
     def stop( self ):
@@ -48,6 +48,7 @@ class screenCast( QProcess ):
         os.system( commandQuit )
         self.mainWindow.sendTextToBox( '%s: screenCast on %s finished\n' %( datetime.datetime.now(), self.taskName ) )
         self.mainWindow.sendTextToBox( '%s: video created at %s\n' %( datetime.datetime.now(), self.mp4 ) )
+
         print 'screenCast on %s finished' %( self.taskName )
         print 'video created at %s' %( self.mp4 )
 

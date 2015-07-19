@@ -16,7 +16,7 @@ Project features:
 - written for os x and windows (windows not fully functional)
 - arnold (ASS) render jobs can be sent directly from the pipeline to deadline render farm manager
 - mantra (IFD) render jobs can be sent directly from the pipeline to deadline render farm manager
-- meaningful usage of referenced data where possible (maya, nuke etc.)
+- meaningful usage of referenced data where possible (Maya, Cinema 4D, Nuke, Premiere etc.)
 - maya loads pipeline inputs automatically (always work with latest data)
 - double click in task starts the task with the latest project file (i. e. photoshop with the latest .psd-file)
 - make users stick to a naming convention

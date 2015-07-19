@@ -5,6 +5,7 @@ from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 from PyQt4.uic import *
 from PyQt4.QtOpenGL import *
+from random import *
 
 from src.pypelyneConfigurationWindow import *
 from src.bezierLine import *
@@ -416,9 +417,16 @@ class pypelyneMainWindow( QMainWindow ):
 
 
         process = QProcess( self )
+
+        pColorR = random.randint( 20, 235 )
+        pColorG = random.randint( 20, 235 )
+        pColorB = random.randint( 20, 235 )
+
+        pColor = ( QColor( pColorR, pColorG, pColorB ) )
+
         #process.readyRead.connect( lambda: self.dataReady( process ) )
-        process.readyReadStandardOutput.connect( lambda: self.dataReadyStd( process ) )
-        process.readyReadStandardError.connect( lambda: self.dataReadyErr( process ) )
+        process.readyReadStandardOutput.connect( lambda: self.dataReadyStd( process, pColor ) )
+        process.readyReadStandardError.connect( lambda: self.dataReadyErr( process, pColor ) )
         process.started.connect( lambda: self.taskOnStarted( node, process, newScreenCast, newTimeTracker ) )
         #process.started.connect( lambda:  )
         process.finished.connect( lambda: self.taskOnFinished( node, process, newScreenCast, newTimeTracker ) )
@@ -1094,8 +1102,14 @@ class pypelyneMainWindow( QMainWindow ):
 
                 process = QProcess( self )
 
-                process.readyReadStandardOutput.connect( lambda: self.dataReadyStd( process ) )
-                process.readyReadStandardError.connect( lambda: self.dataReadyErr( process ) )
+                pColorR = random.randint( 20, 235 )
+                pColorG = random.randint( 20, 235 )
+                pColorB = random.randint( 20, 235 )
+
+                pColor = ( QColor( pColorR, pColorG, pColorB ) )
+
+                process.readyReadStandardOutput.connect( lambda: self.dataReadyStd( process, pColor ) )
+                process.readyReadStandardError.connect( lambda: self.dataReadyErr( process, pColor ) )
                 process.started.connect( lambda: self.toolOnStarted( process ) )
                 process.finished.connect( lambda: self.toolOnFinished( process ) )
 
@@ -1154,23 +1168,70 @@ class pypelyneMainWindow( QMainWindow ):
         cursorBox.insertText( str( text ) )
         self.statusBox.ensureCursorVisible()
     
-    def dataReadyStd( self, process ):
+    def dataReadyStd( self, process, pColor ):
+        #palette = QPalette()
         #color = QColor( 0, 255, 0 )
         box = self.statusBox
+        #palette.setColor( QPalette.Foreground, Qt.red )
+        #box.setPalette( palette )
         #box.setTextColor( color )
         cursorBox = box.textCursor()
         cursorBox.movePosition( cursorBox.End )
-        cursorBox.insertText( "%s (std):   %s" %( datetime.datetime.now(), str( process.readAllStandardOutput() ) ) )
+
+        # get the current format
+        stdFormat = cursorBox.charFormat()
+        newFormat = cursorBox.charFormat()
+
+        stdFormat.setBackground( Qt.white )
+        stdFormat.setForeground( Qt.black )
+
+        # modify it
+        newFormat.setBackground( pColor )
+        newFormat.setForeground( pColor.lighter( 160 ) )
+        # apply it
+        cursorBox.setCharFormat( newFormat )
+
+        cursorBox.insertText( '%s (std):   %s' %( datetime.datetime.now(), str( process.readAllStandardOutput() ) ) )
+
+        cursorBox.movePosition( cursorBox.End )
+        format = cursorBox.charFormat()
+        format.setBackground( Qt.white )
+        format.setForeground( Qt.black )
+        cursorBox.setCharFormat( stdFormat )
+
+        cursorBox.insertText( '\n' )
 
         self.statusBox.ensureCursorVisible()
 
-    def dataReadyErr( self, process ):
+    def dataReadyErr( self, process, pColor ):
         #color = QColor( 255, 0, 0 )
         box = self.statusBox
         #box.setTextColor( color )
         cursorBox = box.textCursor()
         cursorBox.movePosition( cursorBox.End )
+
+        # get the current format
+        stdFormat = cursorBox.charFormat()
+        newFormat = cursorBox.charFormat()
+
+        stdFormat.setBackground( Qt.white )
+        stdFormat.setForeground( Qt.black )
+
+        # modify it
+        newFormat.setBackground( pColor )
+        newFormat.setForeground( pColor.darker( 160 ) )
+        # apply it
+        cursorBox.setCharFormat( newFormat )
+
         cursorBox.insertText( "%s (err):   %s" %( datetime.datetime.now(), str( process.readAllStandardError() ) ) )
+
+        cursorBox.movePosition( cursorBox.End )
+        format = cursorBox.charFormat()
+        format.setBackground( Qt.white )
+        format.setForeground( Qt.black )
+        cursorBox.setCharFormat( stdFormat )
+
+        cursorBox.insertText( '\n' )
 
         self.statusBox.ensureCursorVisible()
 
@@ -1203,13 +1264,6 @@ class pypelyneMainWindow( QMainWindow ):
             self.nodesWindow.setVisible( False )
         else:
             self.nodesWindow.setVisible( True )
-
-
-        
-
-    
-
-
 
     def graphicsView_wheelEvent( self, event ):
         
@@ -1247,17 +1301,12 @@ class pypelyneMainWindow( QMainWindow ):
     def graphicsView_resizeEvent( self, event ):
 
         pass
-    
-    
-    
+
     def setNodeMenuWidget( self ):
         print "duude"
         #self.nodeMenuArea.takeWidget()
         #self.nodeMenuArea.setWidget(item.getWidgetMenu())
         #self.nodeOptionsWindow.setTitle(item.displayText.toPlainText())
-    
-        
-
 
 if __name__ == "__main__":
     
@@ -1271,6 +1320,3 @@ if __name__ == "__main__":
     pypelyneWindow.resize( int( screenSize.width() ), int( screenSize.height() ) )
     pypelyneWindow.show()
     app.exec_()
-    
-
-

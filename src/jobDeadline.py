@@ -52,10 +52,6 @@ class jobAddPropUi( QWidget ):
         self.deleteLater()
 
 
-
-
-
-
 class jobDeadlineUi( QDialog ):
     def __init__( self, taskRoot, mainWindow = None, parent = None ):
         super( jobDeadlineUi, self ).__init__( parent )
@@ -93,7 +89,6 @@ class jobDeadlineUi( QDialog ):
         if len( self.inputContent ) > 0:
             self.jobExtension = os.path.splitext( self.inputContent[ 0 ] )[ 1 ]
             self.range = self.getRange( self.inputContent )
-
 
         self.inputLink = os.path.realpath( self.input )
         self.inputName = getattr( os.path.basename( self.input ).split( '.' ), '__getitem__' )( -1 )
@@ -170,11 +165,11 @@ class jobDeadlineUi( QDialog ):
                         ( 'Name', self.projectName + '  |  ' + self.assetName + '  |  ' + self.taskName + '  |  ' + self.outputName + '  |  ' + self.outputVersion ) \
                         ]
         self.args = [ \
-                        ( '-V', '4a' ), \
                         ( '-j', '0' ), \
                         ( '-f', '<QUOTE>' + self.inputLink + os.sep + self.inputName + '.' + '<STARTFRAME%4>' + '.ifd' + '<QUOTE>' ), \
                         ( '', '<QUOTE>' + self.output + os.sep + self.outputVersion + os.sep + self.outputName + '.' + '<STARTFRAME%4>' + '.exr' + '<QUOTE>' ) \
                         ]
+        # ( '-V', '4a' ), \
 
     def getRange( self, fileList ):
         arrayLength = len( fileList[ 0 ].split( '.' ) )

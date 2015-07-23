@@ -538,7 +538,7 @@
                     </x64>
 				</platform>
 			</version>
-<!--			<version value="5.2.4949 (Slave)" template="None">
+			<version value="5.2.4949 (Slave)" template="None">
 				<platform value="Windows">
 					<x32 value="None">
                     </x32>
@@ -551,7 +551,7 @@
 					<x64 value="/Applications/Deadline/Resources/bin/deadlineslave">
                     </x64>
 				</platform>
-			</version> -->
+			</version>
 			<version value="5.2.4949 (Submitter)" template="None">
 				<platform value="Windows">
 					<x32 value="None">

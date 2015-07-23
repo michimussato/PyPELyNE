@@ -174,7 +174,14 @@ class pypelyneMainWindow( QMainWindow ):
 
         if len( self.timeTrackers ) > 0 or len( self.screenCasts ) > 0 or len( self.qprocesses ) > 0:
 
-            quit_msg = "Too early to leave. There is still something running..."
+            if len( self.qprocesses ) > 0:
+                qprocesses = []
+                for qprocess in self.qprocesses:
+                    qprocesses.append( qprocess.pid() )
+
+            pids = ', '.join( [ str( qprocess )[ :-1 ] for qprocess in qprocesses ] )
+
+            quit_msg = "Too early to leave. There is still something running...\n\nPID(s): %s" %( pids )
 
             reply = QMessageBox.critical( self, 'Message', quit_msg, QMessageBox.Ok )
 
@@ -371,6 +378,15 @@ class pypelyneMainWindow( QMainWindow ):
         #print self._tasks
             #print category.items()
 
+    def newProcessColor( self ):
+        pColorR = random.randint( 20, 235 )
+        pColorG = random.randint( 20, 235 )
+        pColorB = random.randint( 20, 235 )
+
+        pColor = ( QColor( pColorR, pColorG, pColorB ) )
+
+        return pColor
+
     def runTask( self, node, executable, newestFile, *args ):
 
         #print executable
@@ -418,11 +434,7 @@ class pypelyneMainWindow( QMainWindow ):
 
         process = QProcess( self )
 
-        pColorR = random.randint( 20, 235 )
-        pColorG = random.randint( 20, 235 )
-        pColorB = random.randint( 20, 235 )
-
-        pColor = ( QColor( pColorR, pColorG, pColorB ) )
+        pColor = self.newProcessColor()
 
         #process.readyRead.connect( lambda: self.dataReady( process ) )
         process.readyReadStandardOutput.connect( lambda: self.dataReadyStd( process, pColor ) )
@@ -1086,6 +1098,34 @@ class pypelyneMainWindow( QMainWindow ):
             
             item = self.toolsComboBox.addItem( i[ 0 ] )
 
+    def submitDeadlineJob( self, jobFile ):
+
+        executable = '/bin/bash'
+
+        executable = executable.replace( '\"', '' )
+        executable = executable.replace( '\'', '' )
+        if executable.endswith( ' ' ):
+            executable = executable[:-1]
+
+        now = datetime.datetime.now()
+
+        arguments = QStringList()
+
+        arguments.append( jobFile )
+
+        process = QProcess( self )
+
+        pColor = self.newProcessColor()
+
+        process.readyReadStandardOutput.connect( lambda: self.dataReadyStd( process, pColor ) )
+        process.readyReadStandardError.connect( lambda: self.dataReadyErr( process, pColor ) )
+        process.started.connect( lambda: self.toolOnStarted( process ) )
+        process.finished.connect( lambda: self.toolOnFinished( process ) )
+
+        process.start( executable, arguments )
+
+
+
     def runTool( self ):
 
         index = self.toolsComboBox.currentIndex() - 2
@@ -1102,11 +1142,7 @@ class pypelyneMainWindow( QMainWindow ):
 
                 process = QProcess( self )
 
-                pColorR = random.randint( 20, 235 )
-                pColorG = random.randint( 20, 235 )
-                pColorB = random.randint( 20, 235 )
-
-                pColor = ( QColor( pColorR, pColorG, pColorB ) )
+                pColor = self.newProcessColor()
 
                 process.readyReadStandardOutput.connect( lambda: self.dataReadyStd( process, pColor ) )
                 process.readyReadStandardError.connect( lambda: self.dataReadyErr( process, pColor ) )

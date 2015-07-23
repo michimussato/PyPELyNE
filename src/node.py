@@ -213,7 +213,9 @@ class node( QGraphicsItem, QObject ):
 
                 jobFile.close()
 
-                os.system( 'bash ' + txtFile )
+                self.mainWindow.submitDeadlineJob( txtFile )
+
+                #os.system( 'bash ' + txtFile )
 
 
     def dataReady( self ):

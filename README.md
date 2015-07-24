@@ -48,7 +48,7 @@ Windows (not yet functional):
 
 
 Images:
-Overview
+Overview\n
 ![Overview](/gitImg/overview.png)
 
 A node example with some in- and outputs
@@ -71,7 +71,7 @@ Arnold and Mantra jobs are supported (automatic detection)
 Automatic frame range detection
 ![deadlineSubmitter](/gitImg/deadlineSubmitter.png)
 
-Youtube Preview:
+Youtube Preview:\n
 [![Demo](/gitImg/demo.png)](https://www.youtube.com/watch?v=E1eQKEq-fcQ)
 
 My demo reel:

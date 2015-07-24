@@ -48,8 +48,26 @@ Windows (not yet functional):
 
 
 Images:
+Overview
 ![Overview](/gitImg/overview.png)
+
+A node example with some in- and outputs
 ![Node](/gitImg/node.png)
+
+A full asset (model, textures, shaders)
 ![Asset](/gitImg/asset.png)
+
+Above asset is being impored into another asset
 ![Re-used asset](/gitImg/reusedAsset.png)
+
+A simple example of per process color coded output
 ![console](/gitImg/console.png)
+
+Youtube Preview:
+[![Demo](/gitImg/demo.png)](https://www.youtube.com/watch?v=E1eQKEq-fcQ)
+
+My demo reel:
+[Reel](https://www.dropbox.com/s/lrhukj3f9l35c7a/MussatoMichael_DemoReel.mov?dl=0)
+
+Contact:
+[Michi Mussato](mailto:michimussato@gmail.com?subject=PyPELyNE)

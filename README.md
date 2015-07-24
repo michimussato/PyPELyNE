@@ -48,6 +48,8 @@ Windows (not yet functional):
 - pywin32-219.win32-py2.7.exe
 - qt-opensource-windows-x86-mingw482-4.8.6-1.exe
 
+Documentation:
+- To do :(
 
 Images:
 Overview

@@ -4,6 +4,8 @@
 
 under development...
 
+Use it, but I'd be happy to get credited if you finish a project using PyPELyNE ;)
+
 Project features:
 - versioning
 - time tracking

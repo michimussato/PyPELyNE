@@ -54,6 +54,9 @@ Overview
 A node example with some in- and outputs
 ![Node](/gitImg/node.png)
 
+A dialog of a nodes' output port
+![dialog](/gitImg/dialog.png)
+
 A completed asset (model, textures, shaders, rigs)
 The yellow node is the asset output
 ![Asset](/gitImg/asset.png)

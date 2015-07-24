@@ -45,3 +45,11 @@ Windows (not yet functional):
 - PyQt4-4.11.3-gpl-Py2.7-Qt4.8.6-x32.exe
 - pywin32-219.win32-py2.7.exe
 - qt-opensource-windows-x86-mingw482-4.8.6-1.exe
+
+
+Images:
+![Overview](/gitImg/overview.png)
+![Node](/gitImg/node.png)
+![Asset](/gitImg/asset.png)
+![Re-used asset](/gitImg/reusedAsset.png)
+![console](/gitImg/console.png)

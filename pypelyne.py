@@ -236,10 +236,6 @@ class pypelyneMainWindow( QMainWindow ):
 
         elif self.playerExists == False:
 
-
-
-
-
             print 'playing'
             
             self.audioFolderContent = os.listdir( self.audioFolder )
@@ -1107,7 +1103,7 @@ class pypelyneMainWindow( QMainWindow ):
         if executable.endswith( ' ' ):
             executable = executable[:-1]
 
-        now = datetime.datetime.now()
+        #now = datetime.datetime.now()
 
         arguments = QStringList()
 

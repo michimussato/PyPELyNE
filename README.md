@@ -61,7 +61,9 @@ A completed asset (model, textures, shaders, rigs).
 The yellow node is the asset output
 ![Asset](/gitImg/asset.png)
 
-Above asset is being impored into another asset/shot i. e. for animation.
+Above asset is being imported into another asset/shot i. e. for animation.
+The yellow input node is the output node from above asset.
+Re-usable data.
 ![Re-used asset](/gitImg/reusedAsset.png)
 
 A simple example of per process color coded output

@@ -57,21 +57,20 @@ A node example with some in- and outputs
 A dialog of a nodes' output port
 ![dialog](/gitImg/dialog.png)
 
-A completed asset (model, textures, shaders, rigs)
+A completed asset (model, textures, shaders, rigs).
 The yellow node is the asset output
 ![Asset](/gitImg/asset.png)
 
-Above asset is being impored into another asset/shot
-i. e. for animation
+Above asset is being impored into another asset/shot i. e. for animation.
 ![Re-used asset](/gitImg/reusedAsset.png)
 
 A simple example of per process color coded output
 i. e. if you're running several tasks/applications simultaneously
 ![console](/gitImg/console.png)
 
-Deadline (render management software by Thinkbox) submitter
-Arnold and Mantra jobs are supported (automatic detection)
-Automatic frame range detection
+Deadline (render management software by Thinkbox) submitter.
+Arnold and Mantra jobs are supported (automatic detection).
+Automatic frame range detection.
 ![deadlineSubmitter](/gitImg/deadlineSubmitter.png)
 
 Youtube Preview:

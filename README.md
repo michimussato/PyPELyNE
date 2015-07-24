@@ -39,6 +39,8 @@ Requires (tested with):
 - VLC 2.5.1
 - Python 2.7.6
 - Qt 4.8.5
+- RV 4.0
+- Thinkbox Deadline 5.2
 
 Windows (not yet functional):
 - python-2.7.8.msi

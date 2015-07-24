@@ -1,4 +1,4 @@
-# pypelyne
+# PyPELyNE
 
 3D animation pipeline software written in Python and Qt
 
@@ -84,6 +84,3 @@ Youtube Preview:
 
 My demo reel:
 [Reel](https://www.dropbox.com/s/lrhukj3f9l35c7a/MussatoMichael_DemoReel.mov?dl=0)
-
-Contact:
-[Michi Mussato](mailto:michimussato@gmail.com?subject=PyPELyNE)

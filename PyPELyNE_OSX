@@ -1,0 +1,5 @@
+#!/bin/sh
+
+pypelyneRoot="$( cd -P "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
+cd ${pypelyneRoot};
+python pypelyne.py;

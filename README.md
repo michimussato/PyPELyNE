@@ -22,6 +22,8 @@ Project features:
 - maya loads task inputs automatically (always work with latest data)
 - double click in task starts the task with the latest project file (i. e. PhotoShop with the latest .psd-file)
 - make users stick to a naming convention
+- create custom default scene/project files for each application version
+- integrated MP3 player :)
 
 Supports:
 - Maya

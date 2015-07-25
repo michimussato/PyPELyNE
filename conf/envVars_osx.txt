@@ -1,0 +1,121 @@
+##########
+# Custom #
+##########
+
+# export DYLD_LIBRARY_PATH="/Applications/Autodesk/maya2013/Maya.app/Contents/MacOS"
+# export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:"/Applications/MtoA/bin"
+
+# export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:"/Applications/Autodesk/maya2013/Maya.app/Contents/MacOS"
+# export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:"/Applications/MtoA/bin"
+
+export MAYA_MODULE_PATH="/Applications/MtoA"
+export MAYA_MODULE_PATH=$MAYA_MODULE_PATH:"/Applications/Yeti"
+export MAYA_MODULE_PATH=$MAYA_MODULE_PATH:"/Applications/HDRLightStudio.app/"
+
+export MAYA_RENDER_DESC_PATH="/Applications/MtoA"
+
+export MTOA_EXTENSIONS_PATH="/Applications/MtoA/extensions"
+export MTOA_EXTENSIONS_PATH=$MTOA_EXTENSIONS_PATH:"/Applications/Yeti/plug-ins"
+
+export MTOA_EXTENSIONS=$MTOA_EXTENSIONS:"/Applications/MtoA/extensions"
+export MTOA_EXTENSIONS="/Applications/Yeti/plug-ins"
+
+export ARNOLD_PROC_PATH="/Applications/Yeti/bin"
+
+export ARNOLD_PLUGIN_PATH="/Applications/Yeti/bin"
+export ARNOLD_PLUGIN_PATH=$ARNOLD_PLUGIN_PATH:"/Applications/MtoA/shaders"
+
+export YETI_HOME="/Applications/Yeti"
+
+# Maya 2014
+export PATH=$PATH:"/Applications/Autodesk/maya2014/Maya.app/Contents/bin"
+export PATH=$PATH:"/Applications/MtoA/bin"
+export PATH=$PATH:"/Applications/Yeti/bin"
+
+# Mudbox 2015
+export PATH=$PATH:"/Applications/Autodesk/Mudbox2015/Mudbox.app/Contents/MacOS"
+
+# Deadline
+export PATH=$PATH:"/Applications/Deadline/Resources/bin"
+
+# DeadlineSlave 5.2
+export PATH=$PATH:"/Applications/Deadline/DeadlineSlave.app/Contents/MacOS"
+
+# Cinema 4D R15
+export PATH=$PATH:"/Applications/MAXON/CINEMA 4D R15/CINEMA 4D.app/Contents/MacOS"
+
+# UV-Layout
+export PATH=$PATH:"/Applications/headus-UVLayout-Pro.app/Contents/MacOS"
+
+# Nuke
+export PATH=$PATH:"/Applications/Nuke7.0v8/Nuke7.0v8.app/Contents/MacOS"
+
+# HDRLightStudio
+export PATH=$PATH:"/Applications/HDRLightStudio.app/Contents/MacOS"
+
+# Yeti license server
+export peregrinel_LICENSE="5054@localhost"
+
+export YETI_DOCS="/Applications/Yeti/docs"
+
+##############
+# Houdini    #
+##############
+
+
+export HOUDINI_MAJOR_RELEASE=13
+export HOUDINI_MINOR_RELEASE=0
+export HOUDINI_BUILD_VERSION=314
+export HOUDINI_VERSION="${HOUDINI_MAJOR_RELEASE}.${HOUDINI_MINOR_RELEASE}.${HOUDINI_BUILD_VERSION}"
+
+export HFS="/Library/Frameworks/Houdini.framework/Versions/${HOUDINI_VERSION}/Resources"
+
+#
+#  The following are some handy shortcuts:
+#
+export H="${HFS}"
+export HB="${H}/bin"
+export HDSO="${H}/../Libraries"
+export HD="${H}/demo"
+export HH="${H}/houdini"
+export HHC="${HH}/config"
+export HT="${H}/toolkit"
+export HSB="${HH}/sbin"
+
+#
+#  The following is used as the generic /tmp path.  This is also
+# set on Windows to the temporary directory, so can be used for
+# system independent .hip files.
+#
+export TEMP=/tmp
+
+#
+# Look for java.
+#
+export JAVA_HOME=/Library/Java/Home
+
+PATH="${HB}:${HSB}:$PATH"
+export PATH
+
+
+
+# Build machine related stuff
+export HOUDINI_BUILD_KERNEL=XXX_BUILD_KERNEL_XXX
+export HOUDINI_BUILD_PLATFORM=XXX_BUILD_PLATFORM_XXX
+export HOUDINI_BUILD_COMPILER=XXX_BUILD_COMPILER_XXX
+
+# Override for our own version of Python with QT (see below)
+export HOUDINI_PYTHON_BIN="/usr/bin/"
+
+
+# End Houdini  #
+##############
+
+
+# End Custom #
+##############
+
+# Setting PATH for Python 2.7
+# The orginal version is saved in .bash_profile.pysave
+PATH="/Library/Frameworks/Python.framework/Versions/2.7/bin:${PATH}"
+export PATH

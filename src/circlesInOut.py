@@ -127,18 +127,16 @@ class portOutput( QGraphicsItem ):
                     self.portOutputRingColorItem.setNamedColor( '#00FF00' )
 
             else:
-                #special case for loader/saver
+                outputName = os.path.basename( os.path.abspath( os.readlink( self.liveDir ) ) )
+                srcPath = os.path.dirname( os.path.dirname( os.path.abspath( os.readlink( self.liveDir ) ) ) )
 
-                if not os.readlink( self.liveDir ) == os.readlink( self.outputDir ):
-                    #right now, this case doesn't occur because if not is 
-                    #always false: os.readlink( self.liveDir ) is always == os.readlink( self.outputDir )
-                    if len( os.listdir( self.outputDir ) ) <= 1:
+                if not os.readlink( os.path.join( srcPath, 'output', outputName, 'current' ) ) == os.path.basename( os.readlink( os.path.join( srcPath, 'live', outputName ) ) ):
+                    if len( os.listdir( os.path.join( srcPath, 'output', outputName, 'current' ) ) ) <= 1:
                         self.portOutputRingColorItem.setNamedColor( '#FF0000' )
                     else:
-                        self.portOutputRingColorItem.setNamedColor( '#FF6000' )
+                        self.portOutputRingColorItem.setNamedColor( '#FFFF00' )
 
                 else:
-                    #right now, this is the only case that occurs (if node is a loader)
                     self.portOutputRingColorItem.setNamedColor( '#00FF00' )
         else:
             #output with no live data found

@@ -784,7 +784,7 @@ class SceneView( QGraphicsScene ):
                 
                 xmlDoc.close()
                 
-                newNode = node( self,mainWindow, self, propertyNodePath )
+                newNode = node( self.mainWindow, self, propertyNodePath )
                 newNode.addText( self, newSaverName )
 
             else:

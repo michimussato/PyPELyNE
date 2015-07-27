@@ -261,7 +261,7 @@ class bezierLine( QGraphicsPathItem ):
                     #    if self.nodeTask in i:
                     #        print i
                         if [ item for item in j if self.nodeOutput in item and not 'mime' in item ]:
-                            print 'found'
+                            #print 'found'
                             found = True
                             outputIndex = index
                             #print item

@@ -725,10 +725,143 @@ class pypelyneMainWindow( QMainWindow ):
     def configurationWindow( self ):
         self.configWindow = pypelyneConfigurationWindow()
         self.configWindow.show()
-        
+
     def computeConnections( self ):
+        print '\ncomputeConnections...'
+        # get all nodes
+        nodeList = self.scene.getNodeList()
+        # for each node
+        for nodeDst in nodeList:
+            print '\nnodeDst = %s' %( nodeDst.data( 0 ).toPyObject() )
+            # get node inputs
+            nodeRootDir = nodeDst.getNodeRootDir()
+            nodeInputDir = os.sep.join( [ str( nodeRootDir ), 'input' ] )
+            #endItems =
+            inputs = os.listdir( nodeInputDir )
+            #print inputs
+            # for each input
+
+            for input in  inputs:
+
+
+
+                if len( inputs ) > 0 and not input in self.exclusions:
+                    print '\tprocessing input %s' %( input )
+                    # input circle = endItem
+                    endItem = nodeDst.inputList[ len( nodeDst.inputs ) ]
+                    # find connected node (string[ 2 ])
+                    inputString = input.split( '.' )
+                    #print inputString
+                    inputContent = inputString[ 0 ]
+                    inputAsset = inputString[ 1 ]
+                    inputNode = inputString[ 2 ]
+                    inputOutput = inputString[ 3 ]
+
+                    nodeDstAssetDir = nodeDst.getNodeAsset()
+                    #print nodeDst.getNodeAsset()
+                    for nodeSrc in nodeList:
+                        #print input.getInputDir()
+                        #print nodeSrc.getNodeRootDir()
+                        nodeSrcRootDir = nodeSrc.getNodeRootDir()
+                        nodeSrcRootDirBasename = os.path.basename( nodeSrcRootDir )
+
+                        #print nodeSrcRootDir
+                        #print os.path.join( nodeDstAssetDir, inputNode )
+
+                        if inputContent == 'assets':
+                            content = 'AST'
+                        elif inputContent == 'shots':
+                            content = 'SHT'
+
+                        outputItems = nodeSrc.outputList
+
+
+                        if nodeSrcRootDir == os.path.join( nodeDstAssetDir, inputNode ):
+                            print '\t\tnodeSrc is a task'
+                            print '\t\tnodeSrc is %s' %( nodeSrc.data( 0 ).toPyObject() )
+                            print '\t\tlooking for output called %s' %( inputOutput )
+                            for outputItem in outputItems:
+                                print '\t\t\tprocessing output %s' %( outputItem.data( 0 ).toPyObject() )
+                                if outputItem.data( 0 ).toPyObject() == inputOutput:
+                                    print '\t\t\t\t found output %s' %( outputItem.data( 0 ).toPyObject() )
+                                    startItem = outputItem
+                                    #startItem =
+                                    #break
+                                #else:
+                                #    print '\t\t\t\tnot found'
+
+                        elif nodeSrcRootDir == os.path.join( nodeDstAssetDir, 'LDR_' + content + '__' + inputAsset ):
+                            print '\t\tnodeSrc is a loader'
+                            print '\t\tnodeSrc is %s' %( nodeSrc.data( 0 ).toPyObject() )
+                            print '\t\tlooking for output called %s' %( inputOutput )
+                            for outputItem in outputItems:
+                                print '\t\t\tprocessing output %s' %( outputItem.data( 0 ).toPyObject().split( '.' )[ 3 ] )
+                                #print nodeSrc.data( 0 ).toPyObject()
+                                print '\t\tlooking for output called %s' %( inputOutput )
+                                searchString = outputItem.data( 0 ).toPyObject().split( '.' )[ 3 ]
+                                if searchString == inputOutput:
+                                    print '\t\t\t\t found output %s' %( outputItem.data( 0 ).toPyObject().split( '.' )[ 3 ] )
+                                    startItem = outputItem
+                                    #endItem = nodeDst.inputList[ len( nodeDst.inputs ) ]
+                                    #connectionLine = bezierLine( self, self.scene, startItem, endItem )
+                                    #break
+                                #else:
+                                #    print '\t\t\t\tnot found'
+
+                    endItem = nodeDst.inputList[ len( nodeDst.inputs ) ]
+
+                    connectionLine = bezierLine( self, self.scene, startItem, endItem )
+
+                    endItem.parentItem().inputs.append( endItem )
+                    endItem.connection.append( connectionLine )
+                    endItem.output.append( startItem )
+                    endItem.parentItem().incoming.append( startItem )
+                    startItem.inputs.append( endItem )
+
+                    startItemRootDir = startItem.parentItem().getNodeRootDir()
+                    endItemRootDir = endItem.parentItem().getNodeRootDir()
+
+                    startItemOutputLabel = startItem.getLabel()
+
+                    endItemInputDir = os.path.join( str( endItemRootDir ), 'input', str( input ) )
+
+                    endItem.setInputDir( endItemInputDir )
+
+                    self.scene.addItem( connectionLine )
+
+                    endItem.parentItem().newInput( self.scene )
+
+
+                elif input in self.exclusions:
+                    print 'input data is in exclusions list'
+
+                else:
+                    print 'node %s has no input' %( node.data( 0 ).toPyObject() )
+
+
+
+
+
+        
+    def computeConnectionsOld( self ):
+        '''
+        - get all nodes
+        - for each node
+            - get node inputs
+            - for each input
+                - input circle = endItem
+                - find connected node (string[ 2 ])
+                    - find corresponding output circle (string[ 3 ])
+                        - output circle = startItem
+        :return:
+        '''
+        '''
+        :return:
+        '''
         print 'computeConnections...'
         nodeList = self.scene.getNodeList()
+        for node in nodeList:
+            print node.data( 0 ).toPyObject()
         #print any( node for node in nodeList if node.data( 0 ).toPyObject() == 'fnuzjr' )
         #for node in nodeList:
         #    if node.data( 0 ).toPyObject() == 'fnuzjr':
@@ -744,9 +877,12 @@ class pypelyneMainWindow( QMainWindow ):
                 for input in inputs:
                     if not input in self.exclusions:
                         string = input.split( '.' )
-                        
+                        x = 0
                         for node in nodeList:
-                            print 'nodeList:', nodeList
+                            print x, node.data( 0 ).toPyObject()
+                            x += 1
+                            print 'nodeList 123:', nodeList
+                            print string[ 2 ]
                             if node.data( 0 ).toPyObject() == string[ 2 ] or str( node.data( 0 ).toPyObject() ).startswith( 'LDR' ):
 
                                 sourceNodeIndex = nodeList.index( node )
@@ -763,33 +899,41 @@ class pypelyneMainWindow( QMainWindow ):
                                             print 'if: startItem =', startItem
 
                                     else:
+                                        print 'hallo'
                                         if str( output.data( 0 ).toPyObject() ).split( '.' )[ 3 ] == string[ 3 ]:
+                                            print 'velo'
                                             startItem = output
 
                         endItem = currentNode.inputList[ len( currentNode.inputs ) ]
 
-                        print 'new line from to:', startItem, endItem
-                        
+                        print 'new line from %s to %s' %( startItem.data( 0 ).toPyObject(), endItem )
+
+
+
                         connectionLine = bezierLine( self, self.scene, startItem, endItem )
 
+                        '''
+
                         endItem.parentItem().inputs.append( endItem )
-                        endItem.connection.append( connectionLine )
+                        #endItem.connection.append( connectionLine )
                         endItem.output.append( startItem )
                         endItem.parentItem().incoming.append( startItem )
                         startItem.inputs.append( endItem )
 
                         startItemRootDir = startItem.parentItem().getNodeRootDir()
                         endItemRootDir = endItem.parentItem().getNodeRootDir()
-                        
+
                         startItemOutputLabel = startItem.getLabel()
 
                         endItemInputDir = os.path.join( str( endItemRootDir ), 'input', str( input ) )
-                        
+
                         endItem.setInputDir( endItemInputDir )
 
                         self.scene.addItem( connectionLine )
 
                         endItem.parentItem().newInput( self.scene )
+
+                        '''
 
                     else:
                         print 'input data is in exclusions list'

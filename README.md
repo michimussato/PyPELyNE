@@ -27,10 +27,14 @@ Project features:
 
 Supports:
 - Maya
+- Mudbox
 - Houdini
+- Blender
 - Cinema4D
 - RealFlow
+- Headus UVLayout
 - Nuke
+- ZBrush
 - Fusion
 - After Effects
 - Premiere

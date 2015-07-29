@@ -21,6 +21,8 @@ class portOutput( QGraphicsItem ):
 
         self.mainWindow = mainWindow
         self.exclusions = self.mainWindow.getExclusions()
+        self.pypelyneRoot = self.mainWindow.getPypelyneRoot()
+        self.projectsRoot = self.mainWindow.getProjectsRoot()
 
         self._outputs = self.mainWindow.getOutputs()
 
@@ -30,8 +32,13 @@ class portOutput( QGraphicsItem ):
         self.outputDir = os.path.normpath( os.path.join( node.getNodeRootDir(), 'output', name ) )
         self.liveDir = os.path.normpath( os.path.join( node.getNodeRootDir(), 'live', name ) )
 
-        print self.outputDir
-        print self.liveDir
+        #print self.outputDir
+        #print self.liveDir
+
+        self.outputColorOnline = '#00FF00'
+        self.outputColorNearline = '#FFFF00'
+        self.outputColorEmpty = '#FF0000'
+        self.outputcolorNoLive = '#FFFFFF'
         
         self.connectedTo = []
         
@@ -90,6 +97,8 @@ class portOutput( QGraphicsItem ):
 
     def setPortOutputColor( self ):
 
+
+
         if len( str( self.data( 0 ).toPyObject() ).split( '.' ) ) > 1:
             self.nodeOutput = str( self.data( 0 ).toPyObject() ).split( '.' )[ 3 ].split( '__' )[ 0 ]
 
@@ -120,27 +129,31 @@ class portOutput( QGraphicsItem ):
                 #
                 if not os.path.basename( os.readlink( self.liveDir ) ) == os.readlink( os.path.join( self.outputDir, 'current' ) ):
                     if len( os.listdir( os.path.join( self.outputDir, 'current' ) ) ) <= 1:
-                        self.portOutputRingColorItem.setNamedColor( '#FF0000' )
+                        self.portOutputRingColorItem.setNamedColor( self.outputColorEmpty )
                     else:
-                        self.portOutputRingColorItem.setNamedColor( '#FFFF00' )
+                        self.portOutputRingColorItem.setNamedColor( self.outputColorNearline )
                 else:
-                    self.portOutputRingColorItem.setNamedColor( '#00FF00' )
+                    self.portOutputRingColorItem.setNamedColor( self.outputColorOnline )
 
             else:
                 outputName = os.path.basename( os.path.abspath( os.readlink( self.liveDir ) ) )
-                srcPath = os.path.dirname( os.path.dirname( os.path.abspath( os.readlink( self.liveDir ) ) ) )
+                srcPath = os.path.dirname( os.path.dirname( os.path.abspath( os.readlink( self.liveDir ) ) ) )[ 1: ]
 
-                if not os.readlink( os.path.join( srcPath, 'output', outputName, 'current' ) ) == os.path.basename( os.readlink( os.path.join( srcPath, 'live', outputName ) ) ):
-                    if len( os.listdir( os.path.join( srcPath, 'output', outputName, 'current' ) ) ) <= 1:
-                        self.portOutputRingColorItem.setNamedColor( '#FF0000' )
+                #print os.path.basename( os.path.join( srcPath, 'live', outputName ) )
+                #print self.projectsRoot
+                #print os.path.join( self.projectsRoot, srcPath, 'output', outputName, 'current' )
+
+                if not os.readlink( os.path.join( self.projectsRoot, srcPath, 'output', outputName, 'current' ) ) == os.path.basename( os.readlink( os.path.join( self.projectsRoot, srcPath, 'live', outputName ) ) ):
+                    if len( os.listdir( os.path.join( self.projectsRoot, srcPath, 'output', outputName, 'current' ) ) ) <= 1:
+                        self.portOutputRingColorItem.setNamedColor( self.outputColorEmpty )
                     else:
-                        self.portOutputRingColorItem.setNamedColor( '#FFFF00' )
+                        self.portOutputRingColorItem.setNamedColor( self.outputColorNearline )
 
                 else:
-                    self.portOutputRingColorItem.setNamedColor( '#00FF00' )
+                    self.portOutputRingColorItem.setNamedColor( self.outputColorOnline )
         else:
             #output with no live data found
-            self.portOutputRingColorItem.setNamedColor( '#FFFFFF' )
+            self.portOutputRingColorItem.setNamedColor( self.outputcolorNoLive )
 
         self.portOutputColorItem.setNamedColor( self.portOutputColor )
 

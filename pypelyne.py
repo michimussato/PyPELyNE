@@ -81,8 +81,8 @@ class pypelyneMainWindow( QMainWindow ):
         self.timeTrackers = []
         self.screenCasts = []
 
-            
         self.ui = loadUi( os.path.join( self.pypelyneRoot, 'ui', 'pypelyneMainWindow.ui' ), self )
+        self.valueApplicationsXML = os.path.join( self.pypelyneRoot, 'conf', 'valueApplications.xml' )
         
         self.nodeView.setVisible( False )
         self.assetsShotsTabWidget.setVisible( False )
@@ -497,9 +497,12 @@ class pypelyneMainWindow( QMainWindow ):
 
 
     def computeValueApplications( self ):
-        self.valueApplications = ET.parse( os.path.join( self.pypelyneRoot, 'conf', 'valueApplications.xml' ) )
+
+        self.sendTextToBox( 'registering applications for current platform (%s) found at %s:\n' %( self.currentPlatform, self.valueApplicationsXML ) )
+
+        self.valueApplications = ET.parse( self.valueApplicationsXML )
         self.valueApplicationsRoot = self.valueApplications.getroot()
-        
+
         #print 'hallo'
 #         families = self.valueApplications.findall( './family' )
 #         for i in families:
@@ -559,23 +562,28 @@ class pypelyneMainWindow( QMainWindow ):
                                 command = [ "\"" + executable.items()[ 0 ][ 1 ] + "\"" ]
                                 
                                 path = re.findall( r'"([^"]*)"', command[ 0 ] )[ 0 ]
-                                if os.path.exists( os.path.normpath( path ) ):
 
-                                    familyValue = family.items()[ 1 ][ 1 ]
-                                    familyAbbreviation = family.items()[ 0 ][ 1 ]
-                                    vendorValue = vendor.items()[ 0 ][ 1 ]
-                                    versionValue = version.items()[ 0 ][ 1 ]
-                                    versionTemplate = version.items()[ 1 ][ 1 ]
-                                    #print 'versionTemplate = %s' % version.items()[ 1 ][ 1 ]
-                                    platformValue = platform.items()[ 0 ][ 1 ]
-                                    executableArch = executable.tag
+                                familyValue = family.items()[ 1 ][ 1 ]
+                                familyAbbreviation = family.items()[ 0 ][ 1 ]
+                                vendorValue = vendor.items()[ 0 ][ 1 ]
+                                versionValue = version.items()[ 0 ][ 1 ]
+                                versionTemplate = version.items()[ 1 ][ 1 ]
+                                #print 'versionTemplate = %s' % version.items()[ 1 ][ 1 ]
+                                platformValue = platform.items()[ 0 ][ 1 ]
+                                executableArch = executable.tag
+
+                                if os.path.exists( os.path.normpath( path ) ):
 
                                     #self._tools.append( ( vendor.items()[ 0 ][ 1 ] + ' ' + family.items()[ 1 ][ 1 ] + ' ' + version.items()[ 0 ][ 1 ] + ' ' + platform.items()[ 0 ][ 1 ] + ' ' + executable.tag, command, familyAbbreviation ) )
                                     #self._tools.append( ( vendorValue + ' ' + familyValue + ' ' + versionValue + ' ' + platformValue + ' ' + executableArch, command, familyAbbreviation, vendorValue, familyValue, versionValue, executableArch ) )
                                     self._tools.append( ( vendorValue + ' ' + familyValue + ' ' + versionValue + ' ' + executableArch, command, familyAbbreviation, vendorValue, familyValue, versionValue, executableArch, versionTemplate, directoryList, defaultOutputList, flags ) )
+                                    self.sendTextToBox( '\t' + vendorValue + ' ' + familyValue + ' ' + versionValue + ' ' + executableArch + ' found.\n' )
+
                                 else:
                                     print 'path not found: %s. application not added to tools dropdown' %( path )
-                                    self.sendTextToBox( 'path not found: %s. application not added to tools dropdown\n' %( path ) )
+                                    self.sendTextToBox( '\t' + vendorValue + ' ' + familyValue + ' ' + versionValue + ' ' + executableArch + ' not found.\n' )
+
+        self.sendTextToBox( 'initialization done.\n\n' )
 
         #print self._tools
     
@@ -1180,6 +1188,7 @@ class pypelyneMainWindow( QMainWindow ):
     
     
     def addProjects( self ):
+        self.sendTextToBox( 'looking for projects in %s:\n' %( self.projectsRoot ) )
         self.projectComboBox.clear()
         
         self.projectComboBox.addItem( 'select project' )
@@ -1188,10 +1197,11 @@ class pypelyneMainWindow( QMainWindow ):
             for i in os.listdir( self.projectsRoot ):
                 if os.path.isdir( os.path.join( self.projectsRoot, i ) ):
                     self.projectComboBox.addItem( i )
+                    self.sendTextToBox( '\tproject found: %s\n' %( i ) )
         except:
-            pass
+            self.sendTextToBox( 'no project found.\n' )
         
-        
+        self.sendTextToBox( 'all projects added.\n\n' )
         self.projectComboBox.activated.connect( self.refreshProjects )
         
         

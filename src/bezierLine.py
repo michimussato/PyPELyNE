@@ -68,13 +68,16 @@ class bezierLine( QGraphicsPathItem ):
         #print 'bezierLine.parentWidget() = %s' %self.parentWidget()
         
     def hoverEnterEvent( self, event ):
-        print 'bezierLine.hoverEnterEvent'
+        pass
+        #print 'bezierLine.hoverEnterEvent'
         
     def hoverLeaveEvent( self, event ):
-        print 'bezierLine.hoverLeaveEvent'
+        pass
+        #print 'bezierLine.hoverLeaveEvent'
         
     def mouseMoveEvent( self, event ):
-        print 'mouseMove'
+        pass
+        #print 'mouseMove'
     '''
     def paintOld( self, painter, option, widget ):
         line = self.getLine()

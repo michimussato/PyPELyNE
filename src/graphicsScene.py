@@ -1236,7 +1236,7 @@ class SceneView( QGraphicsScene ):
         #self.nodeDeselect.emit()
 
         
-        print 'mousePressEvent'
+        #print 'mousePressEvent'
         
         pos = event.scenePos()
         
@@ -1297,7 +1297,7 @@ class SceneView( QGraphicsScene ):
         
 
     def mouseReleaseEvent( self, event ):
-        print 'mouseReleaseEvent'
+        #print 'mouseReleaseEvent'
         
         
         

@@ -1213,8 +1213,9 @@ class SceneView( QGraphicsScene ):
     
     def printContextMenuAction( self, item ):
         def callback():
+            pass
             # from http://stackoverflow.com/questions/6682688/python-dynamic-function-generation
-            print item
+            #print item
         return callback
         
     
@@ -1239,6 +1240,8 @@ class SceneView( QGraphicsScene ):
         #print 'mousePressEvent'
         
         pos = event.scenePos()
+
+        print 'pos = %s' %pos
         
         if event.button() == Qt.MidButton:
             print 'MidButton'
@@ -1256,8 +1259,9 @@ class SceneView( QGraphicsScene ):
                 self.newOutputDialog( item.parentItem() )
                 
             elif event.button() == Qt.LeftButton and ( isinstance( item, node ) ):
+                pass
                 #self.nodeSelect.emit( item )
-                print item
+                #print item
                 #print item.getWidgetMenu()
                 #print self.parentItem()
                 #self.scene.nodeMenuArea.setWidget( self.widget )
@@ -1274,11 +1278,12 @@ class SceneView( QGraphicsScene ):
 
 
             else:
-                print "Click: (%d, %d)" % (pos.x(), pos.y())
+                pass
+                #print "Click: (%d, %d)" % (pos.x(), pos.y())
 
         elif event.button() == Qt.RightButton:
             print 'RightButton'
-            print 'pos = %s' %pos
+
             self.contextMenu( pos )
 
         else:

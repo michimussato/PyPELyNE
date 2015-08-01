@@ -656,14 +656,22 @@ class pypelyneMainWindow( QMainWindow ):
             newContentPath = self.shotsRoot
             
         newContent = os.path.join( newContentPath, str( text ) )
-        
+
+
+        #for char in list( text ):
+        #    if not char in [ r'.', r' ', r',', r'/', r'\\' ]:
+
         if ok:
-            os.makedirs( newContent, mode=0777 )
-            self.addContent()
-            self.sendTextToBox( 'content created on filesystem: %s\n' %newContent )
-            
-        else:
-            pass
+            if not os.path.exists( newContent ):
+                os.makedirs( newContent, mode=0777 )
+                self.addContent()
+                self.sendTextToBox( 'content created on filesystem: %s\n' %newContent )
+            else:
+                self.sendTextToBox( 'content not created because it already exists (%s)\n' %newContent )
+                self.sendTextToBox( 'choose different name.\n' %newContent )
+
+        #    else:
+        #        self.sendTextToBox( 'invalid characters: %s\n' %text )
             
         
         #self.createNewContent()

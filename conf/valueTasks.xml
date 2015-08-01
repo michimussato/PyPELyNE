@@ -1,21 +1,25 @@
 <?xml version="1.0"?>
+<!--Template:
+	<category value="type" abbrev="TYP" color="#FFC6C6"/>
+-->
 <valueTask>
-    <category value="modelling" abbrev="MDL" color="#FFC6C6"/>
-    <category value="uv layout" abbrev="UVL" color="#CAC1FF"/>
-    <category value="camera" abbrev="CAM" color="#C4C7FF"/>
-    <category value="lighting" abbrev="LIT" color="#F5BEFF"/>
-    <category value="shading" abbrev="SHD" color="#C7B4FF"/>
-    <category value="animation" abbrev="ANM" color="#C6FFC6"/>
-    <category value="simulation" abbrev="SIM" color="#FFEFC7"/>
-    <category value="rendering" abbrev="RND" color="#BCFFED"/>
-    <category value="texturing" abbrev="TEX" color="#B9D7FF"/>
-    <category value="sculpting" abbrev="SPT" color="#E6FFBE"/>
-    <category value="rigging" abbrev="RIG" color="#FFFCB0"/>
-    <category value="compositing" abbrev="CMP" color="#C4FFD6"/>
-    <category value="fur and hair" abbrev="FUR" color="#FFBEE9"/>
-    <category value="cutting" abbrev="CUT" color="#BBE0F9"/>
-    <category value="tracking" abbrev="TRK" color="#C8FFD0"/>
-    <category value="skinning" abbrev="SKN" color="#BFFDF9"/>
-    <category value="file reader" abbrev="FRD" color="#D9D9D9"/>
-    <category value="motion graphics" abbrev="MOG" color="#FFC1D7"/>
+	<category value="modelling" abbrev="MDL" color="#FFC6C6"/>
+	<category value="uv layout" abbrev="UVL" color="#CAC1FF"/>
+	<category value="camera" abbrev="CAM" color="#C4C7FF"/>
+	<category value="lighting" abbrev="LIT" color="#F5BEFF"/>
+	<category value="shading" abbrev="SHD" color="#C7B4FF"/>
+	<category value="animation" abbrev="ANM" color="#C6FFC6"/>
+	<category value="simulation" abbrev="SIM" color="#FFEFC7"/>
+	<category value="rendering" abbrev="RND" color="#BCFFED"/>
+	<category value="texturing" abbrev="TEX" color="#B9D7FF"/>
+	<category value="sculpting" abbrev="SPT" color="#E6FFBE"/>
+	<category value="rigging" abbrev="RIG" color="#FFFCB0"/>
+	<category value="compositing" abbrev="CMP" color="#C4FFD6"/>
+	<category value="fur and hair" abbrev="FUR" color="#FFBEE9"/>
+	<category value="cutting" abbrev="CUT" color="#BBE0F9"/>
+	<category value="tracking" abbrev="TRK" color="#C8FFD0"/>
+	<category value="skinning" abbrev="SKN" color="#BFFDF9"/>
+	<category value="file reader" abbrev="FRD" color="#D9D9D9"/>
+	<category value="motion graphics" abbrev="MOG" color="#FFC1D7"/>
+	<category value="tutorial" abbrev="TUT" color="#333333"/>
 </valueTask>

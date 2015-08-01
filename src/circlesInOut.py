@@ -20,6 +20,7 @@ class portOutput( QGraphicsItem ):
         self.setFlags( QGraphicsItem.ItemIsSelectable )
 
         self.mainWindow = mainWindow
+        #print mainWindow.exclusions
         self.exclusions = self.mainWindow.getExclusions()
         self.pypelyneRoot = self.mainWindow.getPypelyneRoot()
         self.projectsRoot = self.mainWindow.getProjectsRoot()

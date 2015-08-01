@@ -244,7 +244,7 @@ class bezierLine( QGraphicsPathItem ):
         
 
 
-        print 'bezierLine.label = %s' %self.label.split( '__' )
+        #print 'bezierLine.label = %s' %self.label.split( '__' )
 
         self.nodeOutput = self.label.split( '__' )[ 0 ]
         #print self.nodeOutput

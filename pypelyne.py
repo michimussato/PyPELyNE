@@ -15,7 +15,10 @@ from src.timeTracker import *
 
 import xml.etree.ElementTree as ET
 
-from src.vlc import *
+try:
+    from src.vlc import *
+except:
+    raise ImportError( 'failed to import vlc' )
 
 
 
@@ -49,7 +52,7 @@ class pypelyneMainWindow( QMainWindow ):
     def __init__( self, parent = None ):
         super( pypelyneMainWindow, self ).__init__( parent )
         
-        self.exclusions = [ '.DS_Store', 'Thumbs.db' ]
+        self.exclusions = [ '.DS_Store', 'Thumbs.db', '.com.apple.timemachine.supported', 'desktop.ini' ]
 
         self.imageExtensions = [ '.jpg', '.exr', '.tga', '.png' ]
         self.movieExtensions = [ '.mov', '.avi' ]
@@ -60,21 +63,23 @@ class pypelyneMainWindow( QMainWindow ):
 
         self.user = getpass.getuser()
 
-
         if self.currentPlatform == "Windows":
-            self.projectsRoot = os.path.join( r'C:\pypelyne_projects' )
+            if os.path.exists( os.path.join( r'\\192.168.0.12\pypelyne_projects' ) ):
+                self.projectsRoot = os.path.join( r'\\192.168.0.12\pypelyne_projects' )
+            else:
+                self.projectsRoot = r'C:\pypelyne_projects'
             self.audioFolder = r'C:\audio'
             self.screenCastExec = r''
+            self.sequenceExec = os.path.join( self.pypelyneRoot, r'payload/vlc/win64/vlc.exe' )
         elif self.currentPlatform == "Linux" or self.currentPlatform == "Darwin":
             if os.path.exists( os.path.join( r'/Volumes/pili/pypelyne_projects' ) ):
                 self.projectsRoot = os.path.join( r'/Volumes/pili/pypelyne_projects' )
             else:
                 self.projectsRoot = os.path.join( r'/Volumes/osx_production/pypelyne_projects' )
             self.audioFolder = r'/Volumes/pili/library/audio'
-            self.screenCastExec = r'/Applications/VLC.app/Contents/MacOS/VLC'
+            self.screenCastExec = os.path.join( self.pypelyneRoot, r'payload/vlc/darwin/VLC' )
             self.sequenceExec = r'/Applications/RV64.app/Contents/MacOS/RV'
 
-        
         self.nodeWidgets = []
         self.qprocesses = []
         self.openNodes = []
@@ -95,9 +100,6 @@ class pypelyneMainWindow( QMainWindow ):
 
         self.openPushButton.setEnabled( False )
 
-        
-        
-        
         self.computeValueApplications()
         self.computeValueTasks()
         self.computeValueOutputs()
@@ -134,7 +136,6 @@ class pypelyneMainWindow( QMainWindow ):
         
         # Tools
         self.addTools()
-        
 
         if os.path.exists( self.audioFolder ):
             self.addPlayer()
@@ -1010,7 +1011,7 @@ class pypelyneMainWindow( QMainWindow ):
         self.scene.clearNodeList()
         currentProject = str( self.projectComboBox.currentText() )
         self.assetsRoot = os.path.join( self.projectsRoot, currentProject, 'content', 'assets' )
-        assetContent = os.listdir( os.path.join( str( self.assetsRoot ), str( buttonText ) ) )
+        assetContent = os.listdir( os.path.normpath( os.path.join( str( self.assetsRoot ), str( buttonText ) ) ) )
 
         self.shotsGroupBox.setTitle( 'looking at ' + currentProject + os.sep + 'assets' + os.sep + buttonText )
         self.assetsGroupBox.setTitle( 'looking at ' + currentProject + os.sep + 'assets' + os.sep + buttonText )

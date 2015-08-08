@@ -44,7 +44,7 @@ Supports:
 
 Requires (tested with):
 - Mac OS 10.6
-- VLC 2.5.1
+- VLC 2.1.5 (included)
 - Python 2.7.6
 - Qt 4.8.5
 - RV 4.0

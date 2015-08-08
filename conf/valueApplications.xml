@@ -466,6 +466,7 @@
 		<directory value="otls"/>
 		<directory value="desktop"/>
 		<directory value="toolbar"/>
+		<directory value="gallery"/>
 		<vendor value="Side Effects Software">
 			<version value="13.0.314" template="null_sidefx_houdini_130260.hip">
 				<platform value="Windows">
@@ -542,7 +543,7 @@
 	</family>
 	<family value="Fusion" abbrev="FSN">
 		<vendor value="Blackmagicdesign">
-			<version value="7.5" template="None">
+			<version value="7" template="null_blackmagicdesign_fusion7.comp">
 				<platform value="Windows">
 					<x32 value="None">
 					</x32>

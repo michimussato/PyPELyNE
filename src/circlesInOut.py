@@ -129,7 +129,17 @@ class portOutput( QGraphicsItem ):
             if os.path.exists( os.path.join( self.outputDir, 'current' ) ):
                 #
                 if not os.path.basename( os.readlink( self.liveDir ) ) == os.readlink( os.path.join( self.outputDir, 'current' ) ):
-                    if len( os.listdir( os.path.join( self.outputDir, 'current' ) ) ) <= 1:
+                    path = os.path.join( self.outputDir, 'current' )
+                    content = os.listdir( path )
+                    for exclusion in self.exclusions:
+                        if exclusion in content:
+                            content.remove( exclusion )
+                            try:
+                                os.remove( os.path.join( path, exclusion ) )
+                                print 'exclusion removed: %s' %( os.path.join( path, exclusion ) )
+                            except:
+                                print 'could not remove: %s' %( os.path.join( path, exclusion ) )
+                    if len( content ) <= 1:
                         self.portOutputRingColorItem.setNamedColor( self.outputColorEmpty )
                     else:
                         self.portOutputRingColorItem.setNamedColor( self.outputColorNearline )
@@ -145,7 +155,18 @@ class portOutput( QGraphicsItem ):
                 #print os.path.join( self.projectsRoot, srcPath, 'output', outputName, 'current' )
 
                 if not os.readlink( os.path.join( self.projectsRoot, srcPath, 'output', outputName, 'current' ) ) == os.path.basename( os.readlink( os.path.join( self.projectsRoot, srcPath, 'live', outputName ) ) ):
-                    if len( os.listdir( os.path.join( self.projectsRoot, srcPath, 'output', outputName, 'current' ) ) ) <= 1:
+                    path = os.path.join( self.projectsRoot, srcPath, 'output', outputName, 'current' )
+                    content = os.listdir( path )
+                    for exclusion in self.exclusions:
+                        if exclusion in content:
+                            content.remove( exclusion )
+                            try:
+                                os.remove( os.path.join( path, exclusion ) )
+                                print 'exclusion removed: %s' %( os.path.join( path, exclusion ) )
+                            except:
+                                print 'could not remove: %s' %( os.path.join( path, exclusion ) )
+
+                    if len( content ) <= 1:
                         self.portOutputRingColorItem.setNamedColor( self.outputColorEmpty )
                     else:
                         self.portOutputRingColorItem.setNamedColor( self.outputColorNearline )

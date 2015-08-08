@@ -115,7 +115,7 @@ class SceneView( QGraphicsScene ):
         try:
             if isinstance( objectClicked, portInput ):
                 #items.append( 'delete this input' )
-                self.menu.addAction( 'delete this input', self.removeObject( objectClicked ) )
+                self.menu.addAction( 'delete this input', self.removeObjectCallback( objectClicked ) )
         except:
             pass
 
@@ -123,7 +123,7 @@ class SceneView( QGraphicsScene ):
         #try:
         if isinstance( objectClicked, portOutput ):
             #items.append( 'delete this output' )
-            self.menu.addAction( 'delete this output', self.removeObject( objectClicked ) )
+            self.menu.addAction( 'delete this output', self.removeObjectCallback( objectClicked ) )
 
 
 
@@ -249,7 +249,7 @@ class SceneView( QGraphicsScene ):
                     #print outputDir
                     #print version
                     menuMakeLive.addAction( 'open directory', lambda: self.mainWindow.locateContent( os.path.join( outputDir, version ) ) )
-                    deleteVersionAction = menuMakeLive.addAction( 'delete version', self.deleteContentCallback( os.path.join( outputDir, version ) ) )
+                    deleteVersionAction = menuMakeLive.addAction( 'delete version', lambda: self.deleteContentCallback( os.path.join( outputDir, version ) ) )
 
                     #print os.path.join( outputDir, version )
                     makeCurrentAction = menuMakeLive.addAction( 'make current', self.makeCurrentCallback( os.path.join( outputDir, version ) ) )
@@ -312,7 +312,8 @@ class SceneView( QGraphicsScene ):
             if isinstance( objectClicked, node ) or isinstance( objectClicked.parentItem(), node ) or isinstance( objectClicked.parentItem().parentItem(), node ):
                 if isinstance( objectClicked, node ):
                     if not os.path.exists( os.path.join( objectClicked.getNodeRootDir(), 'locked' ) ):
-                        self.menu.addAction( 'delete this node', self.removeObject( objectClicked ) )
+                        self.menu.addAction( 'delete this node', self.removeObjectCallback( objectClicked ) )
+                    self.menu.addAction( 'clone', lambda: self.cloneNodeCallback( objectClicked ) )
                     #self.menu.addAction( 'none', lambda: None )
                     #items.append( 'delete this node' )
                     #print objectClicked.getNodeRootDir()
@@ -325,7 +326,8 @@ class SceneView( QGraphicsScene ):
                 elif isinstance( objectClicked.parentItem(), node ):
                     #print os.path.join( objectClicked.parentItem().getNodeRootDir(), 'locked' )
                     if not os.path.exists( os.path.join( objectClicked.parentItem().getNodeRootDir(), 'locked' ) ):
-                        self.menu.addAction( 'delete this node', self.removeObject( objectClicked.parentItem() ) )
+                        self.menu.addAction( 'delete this node', self.removeObjectCallback( objectClicked.parentItem() ) )
+                    self.menu.addAction( 'clone', lambda: self.cloneNodeCallback( objectClicked.parentItem() ) )
                     #print objectClicked.parentItem().getNodeRootDir()
 
                     #location = self.mainWindow.locateContent( objectClicked.parentItem().getNodeRootDir( objectClicked.parentItem() ) )
@@ -334,7 +336,8 @@ class SceneView( QGraphicsScene ):
 
                 elif isinstance( objectClicked.parentItem().parentItem(), node ):
                     if not os.path.exists( os.path.join( objectClicked.parentItem().parentItem(), node.getNodeRootDir(), 'locked' ) ):
-                        self.menu.addAction( 'delete this node', self.removeObject( objectClicked.parentItem().parentItem() ) )
+                        self.menu.addAction( 'delete this node', self.removeObjectCallback( objectClicked.parentItem().parentItem() ) )
+                    self.menu.addAction( 'clone', lambda: self.cloneNodeCallback( objectClicked.parentItem().parentItem() ) )
                     #print objectClicked.parentItem().getNodeRootDir()
 
                     #location = self.mainWindow.locateContent( objectClicked.parentItem().getNodeRootDir( objectClicked.parentItem() ) )
@@ -347,6 +350,15 @@ class SceneView( QGraphicsScene ):
 
         self.menu.move( QCursor.pos() )
         self.menu.show()
+
+    def cloneNodeCallback( self, node ):
+        def callback():
+            self.cloneNode( node )
+
+        return callback()
+
+    def cloneNode( self, node ):
+        print 'clone node not yet working'
 
     def makeLiveCallback( self, versionDir ):
         def callback():
@@ -1041,84 +1053,82 @@ class SceneView( QGraphicsScene ):
 
 
 
+    def removeObject( self, item ):
 
+        reply = QMessageBox.warning( self.mainWindow, 'about to delete item', str( 'are you sure to delete %s item and its contents?' %( item.data( 0 ).toPyObject() ) ), QMessageBox.Yes | QMessageBox.No, QMessageBox.No )
+
+        #print yes
+
+        if reply == QMessageBox.Yes:
+
+            if isinstance( item, node ) :
+
+                #print 'self.children() = %s' %self.children()
+                #node.outputList
+                tempOutputList = item.outputList
+                #node.inputList
+                tempInputList = item.inputList
+
+
+                for output in tempOutputList:
+                    try:
+                        self.removeOutput( output )
+                    except:
+                        pass
+
+                for input in tempInputList:
+                    self.removeInput( input )
+
+
+                del tempOutputList
+                del tempInputList
+
+
+                nodeRootDir = item.getNodeRootDir()
+                #print 'nodeRootDir = %s' %nodeRootDir
+                shutil.rmtree( nodeRootDir )
+                self.removeItem( item )
+
+                #print 'self.children() = %s' %self.children()
+
+
+
+
+            elif isinstance( item, portOutput ):
+                self.removeOutput( item )
+
+
+
+
+            elif isinstance( item, portInput ):
+                ###
+                #print 'shit'
+                #print item.getInputDir()
+                #print 'another shit'
+                inputDir = item.getInputDir()
+
+                #shutil.rmtree( inputDir ) #removes link and contents
+                #os.unlink( inputDir ) #access denied error
+                #os.remove( inputDir ) #access denied error
+                try:
+                    if self.currentPlatform == "Darwin":
+                        os.unlink( inputDir )
+                    elif self.currentPlatform == "Windows":
+                        os.rmdir( inputDir )
+                        #windows removes the contents of the connected output folder as well using shutil.rmtree :(((
+                        #and if inputDir is not empty, it cannot remove the link/directory because it's not empty :(((
+                        #shutil.rmtree( inputDir )
+                except:
+                    print 'cannot remove symlink 1234'
+
+                #os.rmdir( inputDir )
+                self.removeInput( item )
 
     
-    def removeObject( self, item ):
+    def removeObjectCallback( self, item ):
         def callback():
-            
-            reply = QMessageBox.warning( self.mainWindow, 'about to delete item', str( 'are you sure to delete %s item and its contents?' %( item.data( 0 ).toPyObject() ) ), QMessageBox.Yes | QMessageBox.No, QMessageBox.No )
-            
-            #print yes
+            self.removeObject( item )
 
-            if reply == QMessageBox.Yes:
-
-                if isinstance( item, node ) :
-
-                    
-                    
-                    #print 'self.children() = %s' %self.children()
-                    #node.outputList
-                    tempOutputList = item.outputList
-                    #node.inputList
-                    tempInputList = item.inputList
-                    
-                    
-                    for output in tempOutputList:
-                        try:
-                            self.removeOutput( output )
-                        except:
-                            pass
-                    
-                    for input in tempInputList:
-                        self.removeInput( input )
-                    
-                    
-                    del tempOutputList
-                    del tempInputList
-
-                    
-                    nodeRootDir = item.getNodeRootDir()
-                    #print 'nodeRootDir = %s' %nodeRootDir
-                    shutil.rmtree( nodeRootDir )
-                    self.removeItem( item )
-                    
-                    #print 'self.children() = %s' %self.children()
-                    
-                        
-                        
-                        
-                elif isinstance( item, portOutput ):
-                    self.removeOutput( item )
-                    
-                    
-
-                    
-                elif isinstance( item, portInput ):
-                    ###
-                    #print 'shit'
-                    #print item.getInputDir()
-                    #print 'another shit'
-                    inputDir = item.getInputDir()
-                    
-                    #shutil.rmtree( inputDir ) #removes link and contents
-                    #os.unlink( inputDir ) #access denied error
-                    #os.remove( inputDir ) #access denied error
-                    try:
-                        if self.currentPlatform == "Darwin":
-                            os.unlink( inputDir )
-                        elif self.currentPlatform == "Windows":
-                            os.rmdir( inputDir )
-                            #windows removes the contents of the connected output folder as well using shutil.rmtree :(((
-                            #and if inputDir is not empty, it cannot remove the link/directory because it's not empty :(((
-                            #shutil.rmtree( inputDir )
-                    except:
-                        print 'cannot remove symlink 1234'
-                    
-                    #os.rmdir( inputDir )
-                    self.removeInput( item )
-                
-            
         return callback
     
     def removeOutput( self, item ):

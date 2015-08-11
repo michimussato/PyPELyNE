@@ -25,6 +25,8 @@ class portOutput( QGraphicsItem ):
         self.pypelyneRoot = self.mainWindow.getPypelyneRoot()
         self.projectsRoot = self.mainWindow.getProjectsRoot()
 
+        self.node = node
+
         self._outputs = self.mainWindow.getOutputs()
 
         self.portOutputColorItem = QColor( 0, 0, 0 )
@@ -32,6 +34,8 @@ class portOutput( QGraphicsItem ):
 
         self.outputDir = os.path.normpath( os.path.join( node.getNodeRootDir(), 'output', name ) )
         self.liveDir = os.path.normpath( os.path.join( node.getNodeRootDir(), 'live', name ) )
+        self.nodeRoot = self.node.getNodeRootDir()
+        self.nodeProject = self.node.getNodeProject()
 
         #print self.outputDir
         #print self.liveDir
@@ -53,6 +57,11 @@ class portOutput( QGraphicsItem ):
 
         self.gradient = QLinearGradient( self.rect.topLeft(), self.rect.topRight() )
 
+    def getOutputRootDir( self ):
+        return self.nodeRoot
+
+    def getOutputProjectDir( self ):
+        return self.nodeProject
 
     def getOutputDir( self ):
         return self.outputDir

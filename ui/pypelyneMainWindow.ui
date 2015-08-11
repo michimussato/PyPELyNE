@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>949</width>
+    <width>1008</width>
     <height>697</height>
    </rect>
   </property>
@@ -96,6 +96,13 @@
         </property>
         <property name="text">
          <string>run</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="screenCastsPushButton">
+        <property name="text">
+         <string>screencasts</string>
         </property>
        </widget>
       </item>
@@ -340,7 +347,7 @@ p, li { white-space: pre-wrap; }
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>949</width>
+     <width>1008</width>
      <height>22</height>
     </rect>
    </property>

@@ -12,6 +12,7 @@ from src.bezierLine import *
 from src.graphicsScene import *
 from src.screenCast import *
 from src.timeTracker import *
+from src.listScreenCasts import *
 
 import xml.etree.ElementTree as ET
 
@@ -85,6 +86,7 @@ class pypelyneMainWindow( QMainWindow ):
         self.openNodes = []
         self.timeTrackers = []
         self.screenCasts = []
+        self.screenCastsWindowOpen = None
 
         self.ui = loadUi( os.path.join( self.pypelyneRoot, 'ui', 'pypelyneMainWindow.ui' ), self )
         self.valueApplicationsXML = os.path.join( self.pypelyneRoot, 'conf', 'valueApplications.xml' )
@@ -157,9 +159,12 @@ class pypelyneMainWindow( QMainWindow ):
         
         # configuration window
         self.configPushButton.clicked.connect( self.configurationWindow )
+        self.screenCastsPushButton.clicked.connect( self.screenCastsWindow )
         self.scene.nodeSelect.connect( self.setNodeWidget )
         self.scene.nodeDeselect.connect( self.clearNodeWidget )
         self.openPushButton.clicked.connect( lambda: self.locateContent( os.path.join( self.projectsRoot, str( self.projectComboBox.currentText() ) ) ) )
+
+        self.clipBoard = QApplication.clipboard()
         
         #self.scene = SceneView()
         self.scene.textMessage.connect( self.sendTextToBox )
@@ -167,6 +172,24 @@ class pypelyneMainWindow( QMainWindow ):
         #self.scene.nodeMenu.connect( self.setWidgetMenu )
         
         #self.scene.nodeMenuArea.connect( self.updateNodeMenu )
+
+
+    def screenCastsWindow( self ):
+
+        if self.screenCastsWindowOpen == None:
+            self.screenCastsUI = listScreenCastsUI( self, self )
+            self.screenCastsUI.show()
+            self.screenCastsWindowOpen = self.screenCastsUI
+            self.screenCastsUI.listScreenCastsUIClosed.connect( self.resetScreenCastsWindowOpen )
+
+        else:
+            self.screenCastsUI.activateWindow()
+            self.screenCastsUI.raise_()
+        print 'hallo'
+
+    def resetScreenCastsWindowOpen( self ):
+        #print 'emitted'
+        self.screenCastsWindowOpen = None
 
     def getUser( self ):
         return self.user
@@ -217,10 +240,12 @@ class pypelyneMainWindow( QMainWindow ):
 
         self.playerUi = playerWidgetUi( self )
         self.horizontalLayout.addWidget( self.playerUi )
-        self.playerUi.radioButtonPlay.clicked.connect( self.playAudio )
-        self.playerUi.radioButtonStop.clicked.connect( self.stopAudio )
+        #self.playerUi.radioButtonPlay.clicked.connect( self.playAudio )
+        self.playerUi.pushButtonPlayStop.clicked.connect( self.playAudio )
+        #self.playerUi.radioButtonStop.clicked.connect( self.stopAudio )
         self.playerUi.buttonSkip.clicked.connect(self.skipAudio)
 
+        self.playerUi.pushButtonPlayStop.setText( 'play' )
         self.playerExists = False
         
 
@@ -297,7 +322,25 @@ class pypelyneMainWindow( QMainWindow ):
 
             '''
 
+            #self.playerUi.pushButtonPlayStop.setText( 'skip' )
+
+
+
             self.playerExists = True
+
+
+            self.playerUi.pushButtonPlayStop.setText( 'stop' )
+
+        elif self.playerExists == True:
+            try:
+                self.mp.stop()
+                self.mp.release()
+                self.mlp.release()
+                self.playerExists = False
+                self.playerUi.pushButtonPlayStop.setText( 'play' )
+                print 'stopped'
+            except:
+                print 'error or not playing'
 
         else:
             print 'already on air'
@@ -441,6 +484,7 @@ class pypelyneMainWindow( QMainWindow ):
         process.finished.connect( lambda: self.taskOnFinished( node, process, newScreenCast, newTimeTracker ) )
         currentDir = os.getcwd()
         os.chdir( node.getNodeRootDir() )
+        print node.getNodeRootDir()
         process.start( executable, arguments )
         os.chdir( currentDir )
         #print os.getcwd()
@@ -482,8 +526,9 @@ class pypelyneMainWindow( QMainWindow ):
         #
         # #print self.screenCast
         #
-        screenCast.stop()
-        self.screenCasts.remove( screenCast )
+        if screenCast in self.screenCasts:
+            screenCast.stop()
+            self.screenCasts.remove( screenCast )
         #
         timeTracker.stop()
         self.timeTrackers.remove( timeTracker )

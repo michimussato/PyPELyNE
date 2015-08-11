@@ -6,67 +6,33 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>120</width>
-    <height>61</height>
+    <width>146</width>
+    <height>44</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>player</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <item>
-      <layout class="QVBoxLayout" name="verticalLayout">
-       <item>
-        <widget class="QRadioButton" name="radioButtonStop">
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>18</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>stop</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QRadioButton" name="radioButtonPlay">
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>18</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>play</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <layout class="QVBoxLayout" name="verticalLayout_2">
-       <item>
-        <widget class="QPushButton" name="buttonSkip">
-         <property name="maximumSize">
-          <size>
-           <width>30</width>
-           <height>23</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>skip</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-    </layout>
+  <layout class="QHBoxLayout" name="horizontalLayout">
+   <item>
+    <widget class="QPushButton" name="pushButtonPlayStop">
+     <property name="text">
+      <string>&lt;player&gt;</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="buttonSkip">
+     <property name="maximumSize">
+      <size>
+       <width>30</width>
+       <height>23</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>skip</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

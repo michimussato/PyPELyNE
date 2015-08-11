@@ -94,6 +94,15 @@ class SceneView( QGraphicsScene ):
     def deleteContent( self, path ):
         #print path
         shutil.rmtree( path )
+
+    def copyToClipboard( self, text ):
+        self.mainWindow.clipBoard.setText( text )
+        print '%s copied to clipboard' %( text )
+
+    def copyToClipboardCallback( self, text ):
+        def callback():
+            self.copyToClipboard( text )
+        return callback
         
     def contextMenu( self, pos ):
         
@@ -116,6 +125,19 @@ class SceneView( QGraphicsScene ):
             if isinstance( objectClicked, portInput ):
                 #items.append( 'delete this input' )
                 self.menu.addAction( 'delete this input', self.removeObjectCallback( objectClicked ) )
+                self.menuPathOps = self.menu.addMenu( 'clipboard' )
+
+
+                inputLabel = objectClicked.getLabel()
+                inputDir = objectClicked.getInputDir()
+
+                outputNode = objectClicked.parentItem()
+                outputNodeRootDir = outputNode.getNodeRootDir()
+
+                self.menuPathOps.addAction( 'copy input name', self.copyToClipboardCallback( inputLabel ) )
+                self.menuPathOps.addAction( 'copy absolute input path',  self.copyToClipboardCallback( os.path.join( inputDir, inputLabel ) ) )
+                self.menuPathOps.addAction( 'copy relative input path',  self.copyToClipboardCallback( os.path.relpath( os.path.join( inputDir, inputLabel ), os.path.join( outputNodeRootDir ) ) ) )
+
         except:
             pass
 
@@ -129,6 +151,7 @@ class SceneView( QGraphicsScene ):
 
 
             self.menuVersion = self.menu.addMenu( 'versions' )
+            self.menuPathOps = self.menu.addMenu( 'clipboard' )
 
             #print objectClicked.getOutputDir()
 
@@ -138,6 +161,7 @@ class SceneView( QGraphicsScene ):
             #print outputLabel
             liveDir = objectClicked.getLiveDir()
             #print liveDir
+            outputNodeRootDir = objectClicked.getOutputRootDir()
 
 
 
@@ -172,10 +196,20 @@ class SceneView( QGraphicsScene ):
             #except:
             #    raise 'shizzle'
 
+            self.menuPathOps.addAction( 'copy output name', self.copyToClipboardCallback( outputLabel ) )
+            self.menuPathOps.addAction( 'copy absolute output path',  self.copyToClipboardCallback( os.path.join( outputDir, 'current', outputLabel ) ) )
+            self.menuPathOps.addAction( 'copy relative output path',  self.copyToClipboardCallback( os.path.relpath( os.path.join( outputDir, 'current', outputLabel ), os.path.join( outputNodeRootDir ) ) ) )
+
 
             if os.path.exists( liveDir ):
 
                 #liveVersion = os.path.basename( os.readlink( liveDir ) )
+
+
+                #self.menuPathOps.addAction( 'to clipboard 1234', self.copyToClipboardCallback( '1234' ) )
+                #self.menuPathOps.addAction( 'to clipboard 5678', self.copyToClipboardCallback( '5678' ) )
+                #self.menuPathOps.addAction( 'copy relative path', self.foo(  ) )
+                #self.menuPathOps()
 
                 self.menuVersion.addAction( 'remove pipe', self.unmakeLiveCallback( liveDir ) )
                 #print 'added'
@@ -447,6 +481,9 @@ class SceneView( QGraphicsScene ):
         return versions
 
     def foo( self, arg ):
+        print arg
+
+    def fooCallback( self, arg ):
         def callback():
             print arg
         return callback

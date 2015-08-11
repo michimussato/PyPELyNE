@@ -1,4 +1,4 @@
-import os, sip, sys, subprocess, platform, re, shutil, random, datetime, getpass
+import os, sip, sys, subprocess, platform, re, shutil, random, datetime, getpass, threading
 from operator import *
 
 from PyQt4.QtGui import *
@@ -143,9 +143,9 @@ class pypelyneMainWindow( QMainWindow ):
             self.addPlayer()
             if len( os.listdir( self.audioFolder ) ) == 0:
                 #print 'no audio files found'
-                self.playerUi.radioButtonPlay.setEnabled( False )
-                self.playerUi.radioButtonStop.setEnabled( False )
-                self.playerUi.buttonSkip.setEnabled( False )
+                self.playerUi.pushButtonPlayStop.setEnabled( False )
+                #self.playerUi.radioButtonStop.setEnabled( False )
+                #self.playerUi.buttonSkip.setEnabled( False )
         
         
         self.runToolPushButton.clicked.connect( self.runTool )
@@ -243,7 +243,7 @@ class pypelyneMainWindow( QMainWindow ):
         #self.playerUi.radioButtonPlay.clicked.connect( self.playAudio )
         self.playerUi.pushButtonPlayStop.clicked.connect( self.playAudio )
         #self.playerUi.radioButtonStop.clicked.connect( self.stopAudio )
-        self.playerUi.buttonSkip.clicked.connect(self.skipAudio)
+        #self.playerUi.buttonSkip.clicked.connect( self.skipAudio )
 
         self.playerUi.pushButtonPlayStop.setText( 'play' )
         self.playerExists = False
@@ -329,10 +329,44 @@ class pypelyneMainWindow( QMainWindow ):
             self.playerExists = True
 
 
+
+
+
+            self.playerUi.pushButtonPlayStop.clicked.disconnect( self.playAudio )
+            self.playerUi.pushButtonPlayStop.clicked.connect( self.stopAudio )
+            self.playerUi.pushButtonPlayStop.setText( 'stop' )
+            #self.playerUi.pushButtonPlayStop.clicked.disconnect( self.playAudio )
+            #self.playerUi.pushButtonPlayStop.clicked.connect( self.skipAudio )
+            print 'timer start'
+            threading.Timer( 0.5, self.fromStopToSkip ).start()
+
+        else:
+            print 'already on air'
+
+
+
+    def fromStopToSkip( self ):
+        if self.playerExists == True:
+            self.playerUi.pushButtonPlayStop.clicked.disconnect( self.stopAudio )
+            self.playerUi.pushButtonPlayStop.clicked.connect( self.skipAudio )
+            self.playerUi.pushButtonPlayStop.setText( 'skip' )
+
+
+    def fromSkipToStop( self ):
+        if self.playerExists == True:
+            self.playerUi.pushButtonPlayStop.clicked.disconnect( self.skipAudio )
+            self.playerUi.pushButtonPlayStop.clicked.connect( self.stopAudio )
             self.playerUi.pushButtonPlayStop.setText( 'stop' )
 
-        elif self.playerExists == True:
+
+
+
+
+    def stopAudio( self ):
+        if self.playerExists == True:
             try:
+                self.playerUi.pushButtonPlayStop.clicked.disconnect( self.stopAudio )
+                self.playerUi.pushButtonPlayStop.clicked.connect( self.playAudio )
                 self.mp.stop()
                 self.mp.release()
                 self.mlp.release()
@@ -342,23 +376,19 @@ class pypelyneMainWindow( QMainWindow ):
             except:
                 print 'error or not playing'
 
-        else:
-            print 'already on air'
+
 
     def skipAudio( self ):
-        self.mlp.next()
+        if self.playerExists == True:
+            self.mlp.next()
+            self.playerUi.pushButtonPlayStop.clicked.disconnect( self.skipAudio )
+            self.playerUi.pushButtonPlayStop.clicked.connect( self.stopAudio )
+            self.playerUi.pushButtonPlayStop.setText( 'stop' )
+            threading.Timer( 0.5, self.fromStopToSkip ).start()
+            #threading.Timer( 1, self.fromStopToSkipChangeUi ).start()
 
 
-    def stopAudio( self ):
-        
-        try:
-            self.mp.stop()
-            self.mp.release()
-            self.mlp.release()
-            self.playerExists = False
-            print 'stopped'
-        except:
-            print 'error or not playing'
+
 
         
     def getCurrentPlatform( self ):

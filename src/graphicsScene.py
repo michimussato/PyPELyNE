@@ -222,7 +222,7 @@ class SceneView( QGraphicsScene ):
 
                     versionPath = os.path.join( outputDir, version )
                     print versionPath
-                    
+
                     outputDirContent = os.listdir( versionPath )
                     outputDirContent.remove( outputLabel )
 

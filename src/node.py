@@ -13,6 +13,7 @@ from circlesInOut import *
 from timeTracker import *
 from PyQt4.uic import *
 from jobDeadline import *
+#from errorClasses import *
 
 import xml.etree.ElementTree as ET
 
@@ -48,7 +49,11 @@ class node( QGraphicsItem, QObject ):
         self.outputs = []
         self.setFlags( QGraphicsItem.ItemIsSelectable | QGraphicsItem.ItemIsMovable )
         self.setData( 1, self.now )
-        self.setNodePosition()
+        try:
+            self.setNodePosition()
+        except:
+            print '===> fix corrupt %s' %( self.propertyNodePath )
+
         self.scene.clearSelection()
         self.labelBoundingRect = 0.0
         
@@ -115,7 +120,7 @@ class node( QGraphicsItem, QObject ):
 
     def setNodePosition( self ):
         self.propertyNode = ET.parse( self.propertyNodePath )
-        
+
         try:
             print 'new style reading'
             nodePosition = self.propertyNode.findall( './node' )
@@ -130,7 +135,7 @@ class node( QGraphicsItem, QObject ):
 
             positionX = positionX[ 0 ].items()[ 0 ][ 1 ]
             positionY = positionY[ 0 ].items()[ 0 ][ 1 ]
-        
+
         self.setPos( QPointF( float( positionX ), float( positionY ) ) )
 
         self.getApplicationInfo( self.propertyNode )
@@ -437,7 +442,7 @@ class node( QGraphicsItem, QObject ):
         else:
 
             for i in self._tasks:
-                if [item for item in i if self.nodeTask in item]:
+                if [ item for item in i if self.nodeTask in item ]:
                     print 'found'
                     self.taskColor = self._tasks[ index ][ 0 ][ 1 ]
                     break

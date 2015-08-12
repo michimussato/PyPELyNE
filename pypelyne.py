@@ -677,14 +677,20 @@ class pypelyneMainWindow( QMainWindow ):
         
     def getTools( self ):
         return self._tools
+
+    def locateContentCallback( self, contentFiles ):
+        def callback():
+            self.locateContent( contentFiles )
+        return callback
     
     
     def locateContent( self, contentFiles ):
+        #print contentFiles
         if os.path.exists( contentFiles ):
             if self.currentPlatform == 'Windows':
                 subprocess.call( 'explorer.exe %s' %contentFiles, shell=False )
             elif self.currentPlatform == 'Darwin':
-                subprocess.call( 'open %s' %contentFiles, shell=True )
+                subprocess.Popen( [ '/usr/bin/open', contentFiles ], shell=False )
             else:
                 self.sendTextToBox( 'platform %s not supported\n' %self.currentPlatform )
         else:

@@ -103,6 +103,7 @@ class SceneView( QGraphicsScene ):
         def callback():
             self.copyToClipboard( text )
         return callback
+
         
     def contextMenu( self, pos ):
         
@@ -218,31 +219,17 @@ class SceneView( QGraphicsScene ):
             
             for version in versions:
                 if not version == 'current' and not version in self.exclusions:
-                    versionPath = os.path.join( outputDir, version )
-                    #self.menuMakeLive.addAction( version, self.foo( versionPath ) )
 
-                    outputDirContent = os.listdir( os.path.join( outputDir, version ) )
-                    #print liveDirContent
+                    versionPath = os.path.join( outputDir, version )
+                    print versionPath
+                    
+                    outputDirContent = os.listdir( versionPath )
                     outputDirContent.remove( outputLabel )
 
-                    #action = self.menuMakeLive.addAction( version, self.makeLiveCallback( versionPath ) )
-                    
                     menuMakeLive = self.menuVersion.addMenu( version )
 
-
-                    #menuMakeLive.addAction( 'view', self.viewLive( os.path.join( outputDir, version, outputDirContent[ 0 ] ) ) )
-                    
-                    #action.triggered().connect( self.makeLiveCallback( versionPath ) )
-
-                    #rint liveDir
-                    #print 'basename liveDir = %s' %os.path.basename( os.readlink( liveDir ) )
-                    #if os.path.islink( liveDir ) or os.path.isfile( liveDir ):
                     if os.path.exists( liveDir ):
                         if os.path.basename( os.readlink( liveDir ) ) == version:
-
-                            #liveVersion = version
-                            #print liveVersion
-
                             menuMakeLive.setIcon( QIcon( 'src/icons/dotActive.png' ) )
                         else:
                             menuMakeLive.setIcon( QIcon( 'src/icons/dotInactive.png' ) )
@@ -252,24 +239,16 @@ class SceneView( QGraphicsScene ):
                     #print 'here we are'
 
                     if outputLabel.startswith( 'SEQ' ) or outputLabel.startswith( 'TEX' ) or outputLabel.startswith( 'PLB' ):
-                        #print 'hallo'
-                        #print os.path.join( outputDir, version )
-                        #outputDirContent = os.listdir( os.path.join( outputDir, version ) )
-                        #print liveDirContent
-                        #outputDirContent.remove( outputLabel )
                         for exclusion in self.exclusions:
                             try:
                                 outputDirContent.remove( exclusion )
                             except:
                                 pass
-                        #print liveDirContent
-                        #print os.path.join( liveDir, liveDirContent[ 0 ] )
-                        #if len( outputDirContent ) > 0:
                         try:
-                            menuMakeLive.addAction( 'view', self.viewVersion( os.path.join( outputDir, version, outputDirContent[ 0 ] ) ) )
+                            menuMakeLive.addAction( 'view', self.viewVersion( os.path.join( versionPath, outputDirContent[ 0 ] ) ) )
                             try:
-                                menuMakeLive.addAction( 'compare to live', self.compareVersion( os.path.join( outputDir, version, outputDirContent[ 0 ] ), os.path.join( liveDir, outputDirContent[ 0 ] ) ) )
-                                menuMakeLive.addAction( 'difference to live', self.differenceVersion( os.path.join( outputDir, version, outputDirContent[ 0 ] ), os.path.join( liveDir, outputDirContent[ 0 ] ) ) )
+                                menuMakeLive.addAction( 'compare to live', self.compareVersion( os.path.join( versionPath, outputDirContent[ 0 ] ), os.path.join( liveDir, outputDirContent[ 0 ] ) ) )
+                                menuMakeLive.addAction( 'difference to live', self.differenceVersion( os.path.join( versionPath, outputDirContent[ 0 ] ), os.path.join( liveDir, outputDirContent[ 0 ] ) ) )
                             except:
                                 print 'compare/difference to live version not possible'
                         except:
@@ -280,16 +259,11 @@ class SceneView( QGraphicsScene ):
 
                         #self.versionMenu.addAction( 'view live', self.viewLive( os.path.join( liveDir, liveDirContent[ 0 ] ) ) )
 
-                    #print outputDir
-                    #print version
-                    menuMakeLive.addAction( 'open directory', lambda: self.mainWindow.locateContent( os.path.join( outputDir, version ) ) )
-                    deleteVersionAction = menuMakeLive.addAction( 'delete version', lambda: self.deleteContentCallback( os.path.join( outputDir, version ) ) )
+                    menuMakeLive.addAction( 'open directory', self.mainWindow.locateContentCallback( versionPath ) )
 
-                    #print os.path.join( outputDir, version )
-                    makeCurrentAction = menuMakeLive.addAction( 'make current', self.makeCurrentCallback( os.path.join( outputDir, version ) ) )
+                    deleteVersionAction = menuMakeLive.addAction( 'delete version', self.deleteContentCallback( versionPath ) )
 
-                    #print os.path.join( outputDir, version )
-                    #print os.path.join( outputDir, os.readlink( os.path.join( outputDir, 'current' ) ) )
+                    makeCurrentAction = menuMakeLive.addAction( 'make current', self.makeCurrentCallback( versionPath ) )
 
                     if os.path.join( outputDir, version ) == os.path.join( outputDir, os.readlink( os.path.join( outputDir, 'current' ) ) ):
                         deleteVersionAction.setEnabled( False )
@@ -334,7 +308,7 @@ class SceneView( QGraphicsScene ):
                         print 'no live version found'
                         #makeLiveAction.setEnabled( True )
 
-                    if os.path.join( outputDir, version ) == os.path.join( outputDir, os.path.basename( os.readlink( os.path.join( outputDir, 'current' ) ) ) ):
+                    if versionPath == os.path.join( outputDir, os.path.basename( os.readlink( os.path.join( outputDir, 'current' ) ) ) ):
                         makeCurrentAction.setEnabled( False )
 
                 
@@ -485,6 +459,8 @@ class SceneView( QGraphicsScene ):
 
     def fooCallback( self, arg ):
         def callback():
+
+
             print arg
         return callback
 

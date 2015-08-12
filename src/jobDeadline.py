@@ -132,6 +132,7 @@ class jobDeadlineUi( QDialog ):
     def setArnoldProps( self ):
         self.startupDirectory = r'/Applications/MtoA/bin'
         self.plugin = r'kick'
+        self.helpCommand = os.path.join( self.startupDirectory, self.plugin ) + ' --help'
         self.getAASamples( self.inputContent[ 0 ] )
         self.props = [ \
                         ( 'Comment', 'Arnold' ), \
@@ -156,6 +157,7 @@ class jobDeadlineUi( QDialog ):
     def setMantraProps( self ):
         self.startupDirectory = r'/Library/Frameworks/Houdini.framework/Versions/Current/Resources/bin'
         self.plugin = r'mantra'
+        self.helpCommand = os.path.join( self.startupDirectory, self.plugin ) + ' -h'
         self.props = [ \
                         ( 'Comment', 'Mantra' ), \
                         ( 'Interruptible', 'true' ), \
@@ -165,8 +167,9 @@ class jobDeadlineUi( QDialog ):
                         ( 'Name', self.projectName + '  |  ' + self.assetName + '  |  ' + self.taskName + '  |  ' + self.outputName + '  |  ' + self.outputVersion ) \
                         ]
         self.args = [ \
+                        ( '-V', '4a' ), \
                         ( '-j', '0' ), \
-                        ( '-f', '<QUOTE>' + self.inputLink + os.sep + self.inputName + '.' + '<STARTFRAME%4>' + '.ifd' + '<QUOTE>' ), \
+                        ( '-F', '<QUOTE>' + self.inputLink + os.sep + self.inputName + '.' + '<STARTFRAME%4>' + '.ifd' + '<QUOTE>' ), \
                         ( '', '<QUOTE>' + self.output + os.sep + self.outputVersion + os.sep + self.outputName + '.' + '<STARTFRAME%4>' + '.exr' + '<QUOTE>' ) \
                         ]
         # ( '-V', '4a' ), \
@@ -203,6 +206,7 @@ class jobDeadlineUi( QDialog ):
     def setValues( self ):
 
         self.labelExecutable.setText( self.plugin )
+        self.lineEditHelp.setText( self.helpCommand )
         self.lineEditFrames.setText( self.range[ 0 ] + '-' + self.range[ 1 ] )
         self.labelStartupDirectory.setText( os.path.realpath( self.startupDirectory ) )
         self.labelJobName.setText( self.taskName )
@@ -274,7 +278,7 @@ class jobDeadlineUi( QDialog ):
 
         props.append( 'ConcurrentTasks=' + concurrentTasks )
 
-        self.submissionCmdArgs.append( '-executable ' + '"' + self.plugin + '"' )
+        self.submissionCmdArgs.append( '-executable ' + '"' + os.path.join( self.startupDirectory, self.plugin ) + '"' )
         self.submissionCmdArgs.append( '-startupdirectory ' + '"' + startupDirectory + '"' )
         #self.submissionCmdArgs.append( '-chunksize ' + '"' + chunkSize + '"' )
         self.submissionCmdArgs.append( '-arguments ' + '"' + argsString + '"' )

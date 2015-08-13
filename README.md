@@ -4,26 +4,28 @@
 
 under development...
 
+I'm not a programmer, so the code structure might be a complete turn off for you...
 Use it, but I'd be happy to get credited if you finish a project using PyPELyNE ;)
 
 Project features:
 - versioning
+- quick cleanup of a project (i.e. removal of versions that are not being used anymore) (not yet functional)
 - time tracking
 - shot-/asset-based node trees
 - single console for all processes with color coded output
-- use of central asset library
+- use of central asset library (not yet functional)
 - automatic screen recording (i. e. for making of's/breakdowns with high compression)
 - task locking (when it's in use by someone else)
 - data flow visualization (reusable data and dependencies)
-- most tools can be integrated (flexible)
-- written for OS X and Windows (Windows not fully functional)
+- most tools (with different version) can be integrated (flexible)
+- written for OS X and Windows (Windows not yet functional)
 - direct job submission to Deadline render farm for Arnold (ASS) and Mantra (IFD)
 - meaningful usage of referenced data where possible (Maya, Cinema 4D, Nuke, Premiere etc.)
 - maya loads task inputs automatically (always work with latest data)
 - double click in task starts the task with the latest project file (i. e. PhotoShop with the latest .psd-file)
 - make users stick to a naming convention
 - create custom default scene/project files for each application version
-- integrated MP3 player :)
+- simple one button MP3 player :)
 
 Supports:
 - Maya
@@ -41,6 +43,7 @@ Supports:
 - PhotoShop
 - Direct job submission to ThinkBox Deadline
 - Possibly any other tool can be integrated
+- Different tool versions at the same time
 
 Requires (tested with):
 - Mac OS 10.6

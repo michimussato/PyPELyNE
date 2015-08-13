@@ -88,6 +88,7 @@ i. e. if you're running several tasks/applications simultaneously
 Deadline (render management software by Thinkbox) submitter.
 Arnold and Mantra jobs are supported (automatic detection).
 Automatic frame range detection.
+All fields are filled in automatically, but can be altered if desired.
 ![deadlineSubmitter](/gitImg/deadlineSubmitter.png)
 
 Youtube Preview:

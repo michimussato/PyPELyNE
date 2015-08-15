@@ -77,7 +77,7 @@ The yellow node is the asset output
 ![Asset](/gitImg/asset.png)
 
 Above asset is being imported into another asset/shot i. e. for animation.
-The yellow input node is the output node from above asset.
+The yellow loader node is the output node from above asset (yellow saver).
 Re-usable data.
 ![Re-used asset](/gitImg/reusedAsset.png)
 

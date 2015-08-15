@@ -49,6 +49,7 @@ class node( QGraphicsItem, QObject ):
         self.outputs = []
         self.setFlags( QGraphicsItem.ItemIsSelectable | QGraphicsItem.ItemIsMovable )
         self.setData( 1, self.now )
+        self.setData( 2, 'node' )
         try:
             self.setNodePosition()
         except:

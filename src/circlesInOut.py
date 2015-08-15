@@ -52,6 +52,7 @@ class portOutput( QGraphicsItem ):
         self.rect = QRectF( 0, 0, 20, 20 )
         
         self.setData( 0, name )
+        self.setData( 2, 'output' )
 
         self.label = None
 
@@ -213,6 +214,7 @@ class portInput( QGraphicsItem ):
         self.icon.append( QLine( 10, 14, 14, 10 ) )
         
         self.label = None
+        self.setData( 2, 'input' )
         
         self.inputDir = None
 

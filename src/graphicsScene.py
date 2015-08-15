@@ -1211,13 +1211,23 @@ class SceneView( QGraphicsScene ):
         del tempInputsList
         
         item.parentItem().outputs.remove( item )
+
+        #if os.path.exists( os.path.join( item.getLiveDir, outputLabel ) )
         
         
-        outputLabel = item.getLabel()
-        nodeRootDir = item.parentItem().getNodeRootDir()
-        outputDir = os.path.join( str( nodeRootDir ), 'output', str( outputLabel ) )
+        #outputLabel = item.getLabel()
+        #nodeRootDir = item.parentItem().getNodeRootDir()
+        #outputDir = os.path.join( str( nodeRootDir ), 'output', str( outputLabel ) )
+        outputDir = item.getOutputDir()
+        #print outputDir
+        liveDir = item.getLiveDir()
+        #print liveDir
+        if os.path.exists( liveDir ):
+            #########
+            os.unlink( liveDir )
         #print outputDir
         shutil.rmtree( outputDir )
+
         #item.parentItem().resize()
         #print item.parentItem().boundingRect()
         self.removeItem( item )

@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scriptsShelf>
-	<shelfItem icon="website.xpm" cmds="import maya.cmds as cmds;cmds.launch(webPage='http://etoia.free.fr')" ann="Launch website exemple."/>
-	<shelfItem icon="pythonPolySphere.xpm" cmds="import maya.cmds as cmds;cmds.polySphere()" ann="Create a polySphere."/>
-	<shelfItem icon="melPolySphere.xpm" cmds="import maya.mel as mel;mel.eval('polySphere;')" ann="Create a polySphere with a MEL command wrapped in python."/>
-	<shelfItem icon="helloWorld.xpm" cmds="import helloWorld;helloWorld.helloWorldClass.__init__()" ann="Launch a python script with an UI."/>
-</scriptsShelf>

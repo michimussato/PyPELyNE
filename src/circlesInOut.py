@@ -60,15 +60,19 @@ class portOutput( QGraphicsItem ):
 
     def getOutputRootDir( self ):
         return self.nodeRoot
+        #returns /path/to/projects/project/content/assets/asset/node
 
     def getOutputProjectDir( self ):
         return self.nodeProject
+    #returns /path/to/projects/project
 
     def getOutputDir( self ):
         return self.outputDir
+        #returns /path/to/projects/project/content/assets/asset/node/output/outputLabel
 
     def getLiveDir( self ):
         return self.liveDir
+        #returns /path/to/projects/project/content/assets/asset/node/live/outputLabel
         
     def arrange( self, node ):
         self.setPos( node.boundingRect().width() - self.rect.width(), ( ( self.boundingRect().height() * ( len( node.outputList ) + 1 ) ) ) )

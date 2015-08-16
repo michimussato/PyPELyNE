@@ -130,12 +130,15 @@ def find_lib():
                 pass
             if plugin_path is None:
                  # try some standard locations.
+                ''' 
                 for p in ('Program Files\\VideoLan\\', 'VideoLan\\',
                           'Program Files\\',           ''):
                     p = 'C:\\' + p + 'VLC\\libvlc.dll'
                     if os.path.exists(p):
                         plugin_path = os.path.dirname(p)
                         break
+                '''
+                p = 'payload\\vlc\\win64\\libvlc.dll'
             if plugin_path is not None:  # try loading
                 p = os.getcwd()
                 os.chdir(plugin_path)
@@ -151,7 +154,8 @@ def find_lib():
 
     elif sys.platform.startswith('darwin'):
         # FIXME: should find a means to configure path
-        d = '/Applications/VLC.app/Contents/MacOS/'
+        #d = '/Applications/VLC.app/Contents/MacOS/'
+        d = 'payload/vlc/darwin/'
         p = d + 'lib/libvlc.dylib'
         if os.path.exists(p):
             dll = ctypes.CDLL(p)

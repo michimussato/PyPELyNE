@@ -322,12 +322,13 @@ class pypelyneMainWindow( QMainWindow ):
 
             self.ml = MediaList()
 
-            for track in self.audioFolderContent:
-                self.ml.add_media( os.path.join( self.audioFolder, track ) )
+            for file in self.audioFolderContent:
+                self.ml.add_media( os.path.join( self.audioFolder, file ) )
 
             self.mlp.set_media_list( self.ml )
 
             if not track == False:
+                print trackID
                 self.mlp.play_item_at_index( trackID )
 
             else:

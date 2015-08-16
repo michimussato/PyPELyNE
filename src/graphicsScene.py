@@ -172,16 +172,26 @@ class SceneView( QGraphicsScene ):
                     nodeClicked = objectClicked.parentItem().parentItem().parentItem()
 
 
+                self.menuNode = self.menu.addMenu( 'node' )
 
-                self.menu.addAction( 'open node directory', lambda: self.mainWindow.locateContent( nodeClicked.getNodeRootDir() ) )
+                if not nodeClicked.label.startswith( 'LDR' ) and not nodeClicked.label.startswith( 'SVR' ):
+                    self.menuNode.addAction( 'open node directory', lambda: self.mainWindow.locateContent( nodeClicked.getNodeRootDir() ) )
 
-                self.menu.addSeparator()
+                elif nodeClicked.label.startswith( 'LDR_AST' ):
+                    self.menuNode.addAction( 'open asset', lambda: self.foo( nodeClicked.getNodeRootDir() ) )
+
+                elif nodeClicked.label.startswith( 'LDR_SHT' ):
+                    self.menuNode.addAction( 'open shot', lambda: self.foo( nodeClicked.getNodeRootDir() ) )
+
+                self.menuNode.addSeparator()
                 #self.menu.addAction( 'cleanup node', self.fooCallback( 'cleanup node' ) )
                 if not os.path.exists( os.path.join( nodeClicked.getNodeRootDir(), 'locked' ) ):
 
-                    self.menu.addAction( 'delete node', self.removeObjectCallback( nodeClicked ) )
+                    self.menuNode.addAction( 'delete node', self.removeObjectCallback( nodeClicked ) )
 
-                self.menu.addSeparator()
+
+
+                #self.menu.addSeparator()
 
 
                 #self.menu.addAction( 'clone', lambda: self.cloneNodeCallback( objectClicked ) ).setActive ( 'False' )
@@ -200,12 +210,15 @@ class SceneView( QGraphicsScene ):
 
             #input specific context menu items
             if isinstance( objectClicked, portInput ) and not objectClicked.label == None:
+                self.menuInput = self.menu.addMenu( 'input' )
 
-                self.menu.addAction( 'delete input', self.removeObjectCallback( objectClicked ) )
-                self.menu.addSeparator()
+
+
                 #items.append( 'delete this input' )
 
-                self.menuPathOps = self.menu.addMenu( 'clipboard' )
+                self.menuPathOps = self.menuInput.addMenu( 'clipboard' )
+                self.menuInput.addSeparator()
+                self.menuInput.addAction( 'delete input', self.removeObjectCallback( objectClicked ) )
 
 
                 inputLabel = objectClicked.getLabel()
@@ -223,20 +236,22 @@ class SceneView( QGraphicsScene ):
 
 
             #output specific context menu items
-            if isinstance( objectClicked, portOutput ):
+            if isinstance( objectClicked, portOutput ) and not objectClicked.parentItem().label.startswith( 'LDR' ):
                 #items.append( 'delete this output' )
 
-                self.menu.addSeparator()
-                self.menu.addAction( 'cleanup output', self.cleanUpOutputCallback( objectClicked ) )
-                self.menu.addAction( 'delete output', self.removeObjectCallback( objectClicked ) )
-
-                self.menu.addSeparator()
+                #self.menu.addSeparator()
 
 
 
+                #self.menu.addSeparator()
 
-                self.menuVersion = self.menu.addMenu( 'versions' )
-                self.menuPathOps = self.menu.addMenu( 'clipboard' )
+
+
+
+                self.menuOutput = self.menu.addMenu( 'output' )
+
+                self.menuPathOps = self.menuOutput.addMenu( 'clipboard' )
+                self.menuOutput.addSeparator()
 
                 #print objectClicked.getOutputDir()
 
@@ -265,14 +280,15 @@ class SceneView( QGraphicsScene ):
                 versions = self.getVersions( outputDir )
                 #print outputDir
 
-                self.menuVersion.addAction( 'open output directory', lambda: self.mainWindow.locateContent( outputDir ) )
+                self.menuOutput.addAction( 'open output directory', lambda: self.mainWindow.locateContent( outputDir ) )
 
                 #self.menuVersion.addAction( 'cleanup', lambda: self.foo( 'cleanup' ) )
 
 
 
-                self.menuVersion.addAction( 'create new version', self.createNewVersionCallback( outputDir ) )
-                self.menuVersion.addSeparator()
+
+
+                self.menuOutput.addSeparator()
 
                 #self.menuMakeLive = self.menuVersion.addMenu( 'make live' )
 
@@ -286,6 +302,10 @@ class SceneView( QGraphicsScene ):
                 self.menuPathOps.addAction( 'copy relative output path',  self.copyToClipboardCallback( os.path.relpath( os.path.join( outputDir, 'current', outputLabel ), os.path.join( outputNodeRootDir ) ) ) )
 
 
+
+
+
+                self.menuOutput.addAction( 'cleanup output', self.cleanUpOutputCallback( objectClicked ) )
                 if os.path.exists( liveDir ):
 
                     #liveVersion = os.path.basename( os.readlink( liveDir ) )
@@ -296,11 +316,14 @@ class SceneView( QGraphicsScene ):
                     #self.menuPathOps.addAction( 'copy relative path', self.foo(  ) )
                     #self.menuPathOps()
 
-                    self.menuVersion.addAction( 'remove pipe', self.unmakeLiveCallback( liveDir ) )
+                    self.menuOutput.addAction( 'remove pipe (live)', self.unmakeLiveCallback( liveDir ) )
+                self.menuOutput.addAction( 'delete output', self.removeObjectCallback( objectClicked ) )
+                self.menuOutput.addSeparator()
+
+                self.menuOutput.addAction( 'create new version', self.createNewVersionCallback( outputDir ) )
+
                     #print 'added'
-                    self.menuVersion.addSeparator()
-
-
+                self.menuOutput.addSeparator()
                 for version in versions:
                     if not version == 'current' and not version in self.exclusions:
 
@@ -310,7 +333,7 @@ class SceneView( QGraphicsScene ):
                         outputDirContent = os.listdir( versionPath )
                         outputDirContent.remove( outputLabel )
 
-                        menuMakeLive = self.menuVersion.addMenu( version )
+                        menuMakeLive = self.menuOutput.addMenu( version )
 
                         if os.path.exists( liveDir ):
                             if os.path.basename( os.readlink( liveDir ) ) == version:
@@ -396,6 +419,8 @@ class SceneView( QGraphicsScene ):
                             makeCurrentAction.setEnabled( False )
 
 
+
+
             #except:
             #    print 'not working'
                 #pass
@@ -416,36 +441,49 @@ class SceneView( QGraphicsScene ):
         return callback
 
     def cleanUpOutput( self, portOutput ):
-        outputDir = portOutput.getOutputDir()
-        outputVersions = os.listdir( outputDir )
-        #print outputVersions
-        outputVersions.remove( 'current' )
-        #print outputVersions
-        currentVersion = os.path.realpath( os.path.join( outputDir, 'current' ) )
-        outputVersions.remove( os.path.basename( currentVersion ) )
-        #print outputVersions
-        #print currentVersion
-        liveDir = portOutput.getLiveDir()
-        #print liveDir
 
-        if os.path.exists( liveDir ):
-            liveDirDest = os.path.realpath( liveDir )
-            liveVersion = os.path.basename( liveDirDest )
-            #print liveDirDest
-            #print liveVersion
-            try:
-                outputVersions.remove( liveVersion )
-            except:
-                print 'outputCurrent = live'
+        #print portOutput.getLabel()
 
-        else:
-            print 'no liveDir'
+        reply = QMessageBox.warning( self.mainWindow, str( 'about to cleanup item' ), str( 'are you sure to \ncleanup %s?' %( portOutput.getLabel() ) ), QMessageBox.Yes | QMessageBox.No, QMessageBox.No )
 
-        for outputVersion in outputVersions:
-            #print 'need to delete %s' %( os.path.join( outputDir, outputVersion ) )
-            self.deleteContent( os.path.join( outputDir, outputVersion ) )
-            print '%s removed' %( os.path.join( outputDir, outputVersion ) )
-        print 'output %s cleaned up' %( portOutput.getLabel() )
+        #print yes
+
+        if reply == QMessageBox.Yes:
+            outputDir = portOutput.getOutputDir()
+            outputVersions = os.listdir( outputDir )
+            #print outputVersions
+            outputVersions.remove( 'current' )
+            for exclusion in self.exclusions:
+                try:
+                    outputVersions.remove( exclusion )
+                except:
+                    pass
+            #print outputVersions
+            currentVersion = os.path.realpath( os.path.join( outputDir, 'current' ) )
+            outputVersions.remove( os.path.basename( currentVersion ) )
+            #print outputVersions
+            #print currentVersion
+            liveDir = portOutput.getLiveDir()
+            #print liveDir
+
+            if os.path.exists( liveDir ):
+                liveDirDest = os.path.realpath( liveDir )
+                liveVersion = os.path.basename( liveDirDest )
+                #print liveDirDest
+                #print liveVersion
+                try:
+                    outputVersions.remove( liveVersion )
+                except:
+                    print 'outputCurrent = live'
+
+            else:
+                print 'no liveDir'
+
+            for outputVersion in outputVersions:
+                #print 'need to delete %s' %( os.path.join( outputDir, outputVersion ) )
+                self.deleteContent( os.path.join( outputDir, outputVersion ) )
+                print '%s removed' %( os.path.join( outputDir, outputVersion ) )
+            print 'output %s cleaned up' %( portOutput.getLabel() )
 
     def cloneNodeCallback( self, node ):
         def callback():

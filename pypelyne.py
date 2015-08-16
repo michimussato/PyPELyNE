@@ -49,6 +49,17 @@ class playerWidgetUi( QWidget ):
         self.ui = loadUi( os.path.join( self.pypelyneRoot, 'ui', 'player.ui' ), self )
 
 
+        #self.connect( self.pushButtonPlayStop, SIGNAL( 'customContextMenuRequested( const QPoint& )' ), self.playerContextMenu )
+        #self.contextMenu =QMenu()
+        #self.contextMenu.addSeparator()
+
+    #def playerContextMenu( self, point ):
+        #sendingButton = self.sender()
+        #self.contextMenu.exec_( sendingButton.mapToGlobal( point ) )
+
+
+
+
 class pypelyneMainWindow( QMainWindow ):
     def __init__( self, parent = None ):
         super( pypelyneMainWindow, self ).__init__( parent )
@@ -140,10 +151,22 @@ class pypelyneMainWindow( QMainWindow ):
         self.addTools()
 
         if os.path.exists( self.audioFolder ):
+            self.audioFolderContent = os.listdir( self.audioFolder )
+
+
+            for exclusion in self.exclusions:
+                try:
+                    self.audioFolderContent.remove( exclusion )
+                    print 'exclusion %s removed from audioFolderContent' %( exclusion )
+                except:
+                    pass
+
             self.addPlayer()
+
             if len( os.listdir( self.audioFolder ) ) == 0:
                 #print 'no audio files found'
                 self.playerUi.pushButtonPlayStop.setEnabled( False )
+
                 #self.playerUi.radioButtonStop.setEnabled( False )
                 #self.playerUi.buttonSkip.setEnabled( False )
         
@@ -242,17 +265,41 @@ class pypelyneMainWindow( QMainWindow ):
         self.horizontalLayout.addWidget( self.playerUi )
         #self.playerUi.radioButtonPlay.clicked.connect( self.playAudio )
         self.playerUi.pushButtonPlayStop.clicked.connect( self.playAudio )
+
+        self.playerUi.pushButtonPlayStop.setContextMenuPolicy( Qt.CustomContextMenu )
+        self.connect( self.playerUi.pushButtonPlayStop, SIGNAL( 'customContextMenuRequested( const QPoint& )' ), self.playerContextMenu )
+
+        self.playerContextMenu = QMenu()
+        #self.audioFolderContent = os.listdir( self.audioFolder )
+
+        #if any( self.exclusions for track in self.audioFolderContent ):
+        #    print 'exclusion found'
+
+        for track in self.audioFolderContent:
+            self.playerContextMenu.addAction( track, self.playAudioCallback( track ) )
+        self.playerContextMenu.addSeparator()
+
+
+
         #self.playerUi.radioButtonStop.clicked.connect( self.stopAudio )
         #self.playerUi.buttonSkip.clicked.connect( self.skipAudio )
 
         self.playerUi.pushButtonPlayStop.setText( 'play' )
         self.playerExists = False
-        
+
+    def playerContextMenu( self, point ):
+        self.playerContextMenu.exec_( self.playerUi.pushButtonPlayStop.mapToGlobal( point ) )
 
     def cb( self, event ):
         print 'cb:', event.type, event.u
 
-    def playAudio( self ):
+    def playAudioCallback( self, track = None ):
+        def callback():
+            self.playAudio( track )
+        return callback
+
+    def playAudio( self, track = None ):
+        print track
 
         # https://forum.videolan.org/viewtopic.php?t=107039
 
@@ -261,27 +308,17 @@ class pypelyneMainWindow( QMainWindow ):
             self.playerUi.radioButtonPlay.setEnabled( False )
 
         elif self.playerExists == False:
+            random.shuffle( self.audioFolderContent, random.random )
+
+            if not track == False:
+                trackID = self.audioFolderContent.index( track )
 
             print 'playing'
-            
-            self.audioFolderContent = os.listdir( self.audioFolder )
-            #print self.audioFolderContent
-            random.shuffle( self.audioFolderContent, random.random )
-            #print self.audioFolderContent
-
 
             self.mlp = MediaListPlayer()
             self.mp = MediaPlayer()
             self.mlp.set_media_player( self.mp )
 
-            '''
-            self.mlp_em = self.mlp.event_manager()
-            self.mlp_em.event_attach( EventType.MediaListPlayerNextItemSet, self.cb )
-
-            self.mp_em = self.mp.event_manager
-            self.mp_em.event_attach( EventType.MediaPlayerEndReached, self.cb )
-            self.mp_em.event_attach( EventType.MediaPlayerMediaChanged, self.cb )
-            '''
 
             self.ml = MediaList()
 
@@ -290,47 +327,16 @@ class pypelyneMainWindow( QMainWindow ):
 
             self.mlp.set_media_list( self.ml )
 
-            self.mlp.play()
+            if not track == False:
+                self.mlp.play_item_at_index( trackID )
 
+            else:
+                self.mlp.play()
 
-
-
-
-
-
-
-
-            '''
-            self.vlcInstance = Instance()
-            self.player = self.vlcInstance.media_player_new()
-
-
-            #print self.audioFolderContent
-            self.randValue = random.randint( 0, len( self.audioFolderContent ) - 1 )
-
-            print 'max = %s' %len( self.audioFolderContent )
-            print self.randValue
-            self.track = os.path.join( self.audioFolder, self.audioFolderContent[ self.randValue ] )
-            print 'playing: %s' %self.track
-
-            self.media = self.vlcInstance.media_new( self.track )
-
-            self.player.set_media( self.media )
-            #self.player.set_media( self.track )
-            #print 'playing %s' %( os.path.join( self.audioFolder, self.audioFolderContent[ random.randint( 0, len( self.audioFolderContent ) ) ] ) )
-            self.player.play()
-
-            '''
 
             #self.playerUi.pushButtonPlayStop.setText( 'skip' )
 
-
-
             self.playerExists = True
-
-
-
-
 
             self.playerUi.pushButtonPlayStop.clicked.disconnect( self.playAudio )
             self.playerUi.pushButtonPlayStop.clicked.connect( self.stopAudio )
@@ -339,6 +345,22 @@ class pypelyneMainWindow( QMainWindow ):
             #self.playerUi.pushButtonPlayStop.clicked.connect( self.skipAudio )
             print 'timer start'
             threading.Timer( 0.5, self.fromStopToSkip ).start()
+
+
+        elif self.playerExists == True and not track == False:
+
+            print 'playing %s' %( track )
+
+            #random.shuffle( self.audioFolderContent, random.random )
+            trackID = self.audioFolderContent.index( track )
+
+
+            #self.audioFolderContent.remove( track )
+            #self.audioFolderContent.insert( 0, track )
+            self.skipAudio( trackID )
+
+
+
 
         else:
             print 'already on air'
@@ -378,14 +400,21 @@ class pypelyneMainWindow( QMainWindow ):
 
 
 
-    def skipAudio( self ):
+    def skipAudio( self, trackID = None ):
         if self.playerExists == True:
-            self.mlp.next()
+            if not trackID == False:
+                self.mlp.play_item_at_index( trackID )
+
+            else:
+                self.mlp.next()
+
             self.playerUi.pushButtonPlayStop.clicked.disconnect( self.skipAudio )
             self.playerUi.pushButtonPlayStop.clicked.connect( self.stopAudio )
             self.playerUi.pushButtonPlayStop.setText( 'stop' )
             threading.Timer( 0.5, self.fromStopToSkip ).start()
             #threading.Timer( 1, self.fromStopToSkipChangeUi ).start()
+
+
 
 
 
@@ -1269,8 +1298,17 @@ class pypelyneMainWindow( QMainWindow ):
         popMenu.exec_( sendingButton.mapToGlobal( point ) )
         
 
-    def foo( self ):
-        pass
+    def fooCallback( self, arg = None ):
+        def callback():
+            self.foo( arg )
+        return callback
+
+
+    def foo( self, arg = None ):
+        try:
+            print arg
+        except:
+            pass
     
     
     def printShit( self, button ):

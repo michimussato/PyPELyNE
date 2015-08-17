@@ -178,10 +178,12 @@ class SceneView( QGraphicsScene ):
                     self.menuNode.addAction( 'open node directory', lambda: self.mainWindow.locateContent( nodeClicked.getNodeRootDir() ) )
 
                 elif nodeClicked.label.startswith( 'LDR_AST' ):
-                    self.menuNode.addAction( 'open asset', lambda: self.foo( nodeClicked.getNodeRootDir() ) )
+                    self.menuNode.addAction( 'open asset', lambda: self.mainWindow.getAssetContent( None, nodeClicked.getLabel() ) )
 
                 elif nodeClicked.label.startswith( 'LDR_SHT' ):
-                    self.menuNode.addAction( 'open shot', lambda: self.foo( nodeClicked.getNodeRootDir() ) )
+                    #self.menuNode.addAction( 'open shot', lambda: self.foo( nodeClicked.getNodeRootDir() ) )
+                    self.menuNode.addAction( 'open shot', lambda: self.mainWindow.getShotContent( None, nodeClicked.getLabel() ) )
+                    #self.mainWindow.getShotContent( None, nodeClicked.getLabel() )
 
                 self.menuNode.addSeparator()
                 #self.menu.addAction( 'cleanup node', self.fooCallback( 'cleanup node' ) )

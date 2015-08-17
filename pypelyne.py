@@ -1073,11 +1073,25 @@ class pypelyneMainWindow( QMainWindow ):
     def getPropertyPaths( self ):
         return self.propertyNodePathAssets, self.propertyNodePathShots
 
-    def getShotContent( self, shotButton ):
+
+    def getShotContent( self, shotButton = None, nodeShtLabel = None ):
+        print shotButton
+        print nodeShtLabel
+
+        if not shotButton == None:
+            print shotButton.text()
+            buttonText = shotButton.text()
+        elif not nodeShtLabel == None:
+            buttonText = nodeShtLabel.split( '__' )[ 1 ]
+            #print buttonText
+
+
+
         
         self.nodeView.setVisible( True )
-        
-        buttonText = shotButton.text()
+
+
+
 
         self.scene.clear()
         self.addRectangular()
@@ -1111,11 +1125,16 @@ class pypelyneMainWindow( QMainWindow ):
         
             
     
-    def getAssetContent( self, assetButton ):
-        
+    def getAssetContent( self, assetButton = None, nodeAstLabel = None ):
+
+
+        if not assetButton == None:
+            buttonText = assetButton.text()
+        elif not nodeAstLabel == None:
+            buttonText = nodeAstLabel.split( '__' )[ 1 ]
+
         self.nodeView.setVisible( True )
-        
-        buttonText = assetButton.text()
+
 
         self.scene.clear()
         self.addRectangular()

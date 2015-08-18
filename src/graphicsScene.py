@@ -178,17 +178,17 @@ class SceneView( QGraphicsScene ):
                     self.menuNode.addAction( 'open node directory', lambda: self.mainWindow.locateContent( nodeClicked.getNodeRootDir() ) )
 
                 elif nodeClicked.label.startswith( 'LDR_AST' ):
-                    self.menuNode.addAction( 'open asset', lambda: self.mainWindow.getAssetContent( None, nodeClicked.getLabel() ) )
+                    self.menuNode.addAction( 'open asset tree', lambda: self.mainWindow.getAssetContent( None, nodeClicked.getLabel() ) )
 
                 elif nodeClicked.label.startswith( 'LDR_SHT' ):
                     #self.menuNode.addAction( 'open shot', lambda: self.foo( nodeClicked.getNodeRootDir() ) )
-                    self.menuNode.addAction( 'open shot', lambda: self.mainWindow.getShotContent( None, nodeClicked.getLabel() ) )
+                    self.menuNode.addAction( 'open shot tree', lambda: self.mainWindow.getShotContent( None, nodeClicked.getLabel() ) )
                     #self.mainWindow.getShotContent( None, nodeClicked.getLabel() )
 
                 self.menuNode.addSeparator()
                 #self.menu.addAction( 'cleanup node', self.fooCallback( 'cleanup node' ) )
                 if not os.path.exists( os.path.join( nodeClicked.getNodeRootDir(), 'locked' ) ):
-
+                    self.menuNode.addAction( 'cleanup node', self.cleanUpNodeCallback( nodeClicked ) )
                     self.menuNode.addAction( 'delete node', self.removeObjectCallback( nodeClicked ) )
 
 
@@ -308,6 +308,7 @@ class SceneView( QGraphicsScene ):
 
 
                 self.menuOutput.addAction( 'cleanup output', self.cleanUpOutputCallback( objectClicked ) )
+
                 if os.path.exists( liveDir ):
 
                     #liveVersion = os.path.basename( os.readlink( liveDir ) )
@@ -432,10 +433,61 @@ class SceneView( QGraphicsScene ):
 
 
         except:
-            print 'context menu fuck up'
+            print 'context menu fuck up or objectClicked == None (QGraphicsScene)'
 
         self.menu.move( QCursor.pos() )
         self.menu.show()
+
+    def cleanUpOutputProc( self, portOutput ):
+        outputDir = portOutput.getOutputDir()
+        outputVersions = self.getVersions( outputDir )
+        #print outputVersions
+        outputVersions.remove( 'current' )
+        for exclusion in self.exclusions:
+            try:
+                outputVersions.remove( exclusion )
+            except:
+                pass
+        #print outputVersions
+        currentVersion = os.path.realpath( os.path.join( outputDir, 'current' ) )
+        outputVersions.remove( os.path.basename( currentVersion ) )
+        #print outputVersions
+        #print currentVersion
+        liveDir = portOutput.getLiveDir()
+        #print liveDir
+
+        if os.path.exists( liveDir ):
+            liveDirDest = os.path.realpath( liveDir )
+            liveVersion = os.path.basename( liveDirDest )
+            #print liveDirDest
+            #print liveVersion
+            try:
+                outputVersions.remove( liveVersion )
+            except:
+                print 'outputCurrent = live'
+
+        else:
+            print 'no liveDir'
+
+        for outputVersion in outputVersions:
+            #print 'need to delete %s' %( os.path.join( outputDir, outputVersion ) )
+            self.deleteContent( os.path.join( outputDir, outputVersion ) )
+            print '%s removed' %( os.path.join( outputDir, outputVersion ) )
+        print 'output %s cleaned up' %( portOutput.getLabel() )
+
+    def cleanUpNodeCallback( self, node ):
+        def callback():
+            self.cleanUpNode( node )
+        return callback
+
+    def cleanUpNode( self, node ):
+        reply = QMessageBox.warning( self.mainWindow, str( 'about to cleanup item' ), str( 'are you sure to \ncleanup all outputs of %s?' %( node.getLabel() ) ), QMessageBox.Yes | QMessageBox.No, QMessageBox.No )
+
+        if reply == QMessageBox.Yes:
+            for output in node.outputList:
+                self.cleanUpOutputProc( output )
+            #print node.outputs
+            #print node.outputList
 
     def cleanUpOutputCallback( self, portOutput ):
         def callback():
@@ -450,42 +502,9 @@ class SceneView( QGraphicsScene ):
 
         #print yes
 
+
         if reply == QMessageBox.Yes:
-            outputDir = portOutput.getOutputDir()
-            outputVersions = os.listdir( outputDir )
-            #print outputVersions
-            outputVersions.remove( 'current' )
-            for exclusion in self.exclusions:
-                try:
-                    outputVersions.remove( exclusion )
-                except:
-                    pass
-            #print outputVersions
-            currentVersion = os.path.realpath( os.path.join( outputDir, 'current' ) )
-            outputVersions.remove( os.path.basename( currentVersion ) )
-            #print outputVersions
-            #print currentVersion
-            liveDir = portOutput.getLiveDir()
-            #print liveDir
-
-            if os.path.exists( liveDir ):
-                liveDirDest = os.path.realpath( liveDir )
-                liveVersion = os.path.basename( liveDirDest )
-                #print liveDirDest
-                #print liveVersion
-                try:
-                    outputVersions.remove( liveVersion )
-                except:
-                    print 'outputCurrent = live'
-
-            else:
-                print 'no liveDir'
-
-            for outputVersion in outputVersions:
-                #print 'need to delete %s' %( os.path.join( outputDir, outputVersion ) )
-                self.deleteContent( os.path.join( outputDir, outputVersion ) )
-                print '%s removed' %( os.path.join( outputDir, outputVersion ) )
-            print 'output %s cleaned up' %( portOutput.getLabel() )
+            self.cleanUpOutputProc( portOutput )
 
     def cloneNodeCallback( self, node ):
         def callback():

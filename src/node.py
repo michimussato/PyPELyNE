@@ -146,82 +146,88 @@ class node( QGraphicsItem, QObject ):
         self.scene.nodeSelect.emit( self )
 
     def mouseDoubleClickEvent( self, event ):
-        searchString = self.nodeVendor + ' ' + self.nodeFamily + ' ' + self.nodeVersion + ' ' + self.nodeArch
-        searchIndex = self.mainWindow.toolsComboBox.findText( QString( searchString ), Qt.MatchContains ) - 2
+        if self.label.startswith( 'LDR_AST' ):
+            self.mainWindow.getAssetContent( None, self.label )
+        elif self.label.startswith( 'LDR_SHT' ):
+            self.mainWindow.getShotContent( None, self.label )
 
-        if searchIndex < 0:
-            if not str( self.nodeFamily + ' ' + self.nodeVersion ) in [ self.mainWindow.toolsComboBox.itemText( i ) for i in range( self.mainWindow.toolsComboBox.count() ) ]:
-                print 'application family not available'
-                QMessageBox.critical( self.mainWindow, 'application warning', str( '%s not available.' %str( self.nodeFamily + ' ' + self.nodeVersion ) ), QMessageBox.Abort, QMessageBox.Abort )
+        else:
+            searchString = self.nodeVendor + ' ' + self.nodeFamily + ' ' + self.nodeVersion + ' ' + self.nodeArch
+            searchIndex = self.mainWindow.toolsComboBox.findText( QString( searchString ), Qt.MatchContains ) - 2
+
+            if searchIndex < 0:
+                if not str( self.nodeFamily + ' ' + self.nodeVersion ) in [ self.mainWindow.toolsComboBox.itemText( i ) for i in range( self.mainWindow.toolsComboBox.count() ) ]:
+                    print 'application family not available'
+                    QMessageBox.critical( self.mainWindow, 'application warning', str( '%s not available.' %str( self.nodeFamily + ' ' + self.nodeVersion ) ), QMessageBox.Abort, QMessageBox.Abort )
+                    return
+
+                elif self.nodeArch == 'x64':
+                    reply = QMessageBox.warning( self.mainWindow, 'architecture warning', str( 'x64 version of %s not available. continue using x32?' %self.nodeFamily ), QMessageBox.Yes | QMessageBox.No, QMessageBox.No )
+
+                    if reply == QMessageBox.Yes:
+                        searchString = str( self.nodeVendor + ' ' + self.nodeFamily + ' ' + self.nodeVersion + ' ' + 'x32' )
+                        searchIndex = self.mainWindow.toolsComboBox.findText( QString( searchString ), Qt.MatchContains ) - 2
+                        print 'x64 not available. using x32 version.'
+                    else:
+                        return
+                elif self.nodeArch == 'x32':
+                    reply = QMessageBox.warning( self.mainWindow, 'architecture warning', str( 'x32 version of %s not available. continue using x64?' %self.nodeFamily ), QMessageBox.Yes | QMessageBox.No, QMessageBox.No )
+
+                    if reply == QMessageBox.Yes:
+                        searchString = str( self.nodeVendor + ' ' + self.nodeFamily + ' ' + self.nodeVersion + ' ' + 'x64' )
+                        searchIndex = self.mainWindow.toolsComboBox.findText( QString( searchString ), Qt.MatchContains ) - 2
+                        print 'x32 not available. using x64 version.'
+                    else:
+                        return
+                else:
+                    print 'some weird shit'
+
+            elif os.path.exists( os.path.join( self.location, 'locked' ) ):
+                QMessageBox.critical( self.mainWindow, 'node warning', str( '%s is currently in use.' %str( self.label ) ), QMessageBox.Abort, QMessageBox.Abort )
                 return
 
-            elif self.nodeArch == 'x64':
-                reply = QMessageBox.warning( self.mainWindow, 'architecture warning', str( 'x64 version of %s not available. continue using x32?' %self.nodeFamily ), QMessageBox.Yes | QMessageBox.No, QMessageBox.No )
 
-                if reply == QMessageBox.Yes:
-                    searchString = str( self.nodeVendor + ' ' + self.nodeFamily + ' ' + self.nodeVersion + ' ' + 'x32' )
-                    searchIndex = self.mainWindow.toolsComboBox.findText( QString( searchString ), Qt.MatchContains ) - 2
-                    print 'x64 not available. using x32 version.'
-                else:
-                    return
-            elif self.nodeArch == 'x32':
-                reply = QMessageBox.warning( self.mainWindow, 'architecture warning', str( 'x32 version of %s not available. continue using x64?' %self.nodeFamily ), QMessageBox.Yes | QMessageBox.No, QMessageBox.No )
-                
-                if reply == QMessageBox.Yes:
-                    searchString = str( self.nodeVendor + ' ' + self.nodeFamily + ' ' + self.nodeVersion + ' ' + 'x64' )
-                    searchIndex = self.mainWindow.toolsComboBox.findText( QString( searchString ), Qt.MatchContains ) - 2
-                    print 'x32 not available. using x64 version.'
-                else:
-                    return
-            else:
-                print 'some weird shit'
+            args = []
 
-        elif os.path.exists( os.path.join( self.location, 'locked' ) ):
-            QMessageBox.critical( self.mainWindow, 'node warning', str( '%s is currently in use.' %str( self.label ) ), QMessageBox.Abort, QMessageBox.Abort )
-            return
-
-
-        args = []
-
-        for arg in self._tools[ searchIndex ][ 10 ]:
-            args.append( arg )
-
-        if self.nodeFamily == 'Maya':
-            for arg in [ '-proj', self.location, '-file' ]:
+            for arg in self._tools[ searchIndex ][ 10 ]:
                 args.append( arg )
 
-        projectRoot = os.path.join( self.location, 'project' )
+            if self.nodeFamily == 'Maya':
+                for arg in [ '-proj', self.location, '-file' ]:
+                    args.append( arg )
 
-        extension = os.path.splitext( self._tools[ searchIndex ][ 7 ] )[ 1 ]
+            projectRoot = os.path.join( self.location, 'project' )
 
-        files = glob.glob1( projectRoot, str( '*' + extension ) )
+            extension = os.path.splitext( self._tools[ searchIndex ][ 7 ] )[ 1 ]
 
-        absFiles = []
+            files = glob.glob1( projectRoot, str( '*' + extension ) )
 
-        for relFile in files:
-            if not relFile in self.exclusions:
-                absFiles.append( os.path.join( projectRoot, relFile ) )
+            absFiles = []
+
+            for relFile in files:
+                if not relFile in self.exclusions:
+                    absFiles.append( os.path.join( projectRoot, relFile ) )
 
 
-        if not 'DDL' in self.label:
-            newestFile = max( absFiles, key=os.path.getctime )
-            self.mainWindow.runTask( self, self._tools[ searchIndex ][ 1 ][ 0 ], newestFile, args )
-        else:
-            ok, jobDeadline = jobDeadlineUi.getDeadlineJobData( self.location, self.mainWindow )
+            if not 'DDL' in self.label:
+                newestFile = max( absFiles, key=os.path.getctime )
+                self.mainWindow.runTask( self, self._tools[ searchIndex ][ 1 ][ 0 ], newestFile, args )
+            else:
+                ok, jobDeadline = jobDeadlineUi.getDeadlineJobData( self.location, self.mainWindow )
 
-            if ok:
-                txtFile = os.path.join( self.location, 'project', 'deadlineJob.txt' )
-                jobFile = open( txtFile, 'w' )
+                if ok:
+                    txtFile = os.path.join( self.location, 'project', 'deadlineJob.txt' )
+                    jobFile = open( txtFile, 'w' )
 
-                for element in jobDeadline:
-                    jobFile.write( element )
-                    jobFile.write( ' ' )
+                    for element in jobDeadline:
+                        jobFile.write( element )
+                        jobFile.write( ' ' )
 
-                jobFile.close()
+                    jobFile.close()
 
-                self.mainWindow.submitDeadlineJob( txtFile )
+                    self.mainWindow.submitDeadlineJob( txtFile )
 
-                #os.system( 'bash ' + txtFile )
+                    #os.system( 'bash ' + txtFile )
 
 
     def dataReady( self ):

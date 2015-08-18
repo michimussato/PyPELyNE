@@ -166,7 +166,11 @@ class portOutput( QGraphicsItem ):
 
                 #print os.path.basename( os.path.join( srcPath, 'live', outputName ) )
                 #print self.projectsRoot
-                #print os.path.join( self.projectsRoot, srcPath, 'output', outputName, 'current' )
+                print self.projectsRoot
+                print srcPath
+                print os.path.join( self.projectsRoot, srcPath, 'output', outputName, 'current' )
+                print os.path.join( self.projectsRoot, srcPath, 'live', outputName )
+
 
                 if not os.readlink( os.path.join( self.projectsRoot, srcPath, 'output', outputName, 'current' ) ) == os.path.basename( os.readlink( os.path.join( self.projectsRoot, srcPath, 'live', outputName ) ) ):
                     path = os.path.join( self.projectsRoot, srcPath, 'output', outputName, 'current' )

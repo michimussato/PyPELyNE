@@ -61,6 +61,8 @@ class playerWidgetUi( QWidget ):
 
 
 class pypelyneMainWindow( QMainWindow ):
+    addNewScreenCast = pyqtSignal()
+
     def __init__( self, parent = None ):
         super( pypelyneMainWindow, self ).__init__( parent )
         
@@ -87,7 +89,8 @@ class pypelyneMainWindow( QMainWindow ):
             if os.path.exists( os.path.join( r'/Volumes/pili/pypelyne_projects' ) ):
                 self.projectsRoot = os.path.join( r'/Volumes/pili/pypelyne_projects' )
             else:
-                self.projectsRoot = os.path.join( r'/Volumes/osx_production/pypelyne_projects' )
+                #self.projectsRoot = os.path.join( r'/Volumes/osx_production/pypelyne_projects' )
+                self.projectsRoot = os.path.join( r'/test' )
             self.audioFolder = r'/Volumes/pili/library/audio'
             self.screenCastExec = os.path.join( self.pypelyneRoot, r'payload/vlc/darwin/VLC' )
             self.sequenceExec = r'/Applications/RV64.app/Contents/MacOS/RV'
@@ -571,6 +574,7 @@ class pypelyneMainWindow( QMainWindow ):
 
         screenCast.start()
         self.screenCasts.append( screenCast )
+        self.addNewScreenCast.emit()
         #
 
         timeTracker.start()
@@ -589,6 +593,7 @@ class pypelyneMainWindow( QMainWindow ):
         if screenCast in self.screenCasts:
             screenCast.stop()
             self.screenCasts.remove( screenCast )
+            self.addNewScreenCast.emit()
         #
         timeTracker.stop()
         self.timeTrackers.remove( timeTracker )
@@ -768,6 +773,7 @@ class pypelyneMainWindow( QMainWindow ):
             newContentPath = self.shotsRoot
             
         newContent = os.path.join( newContentPath, str( text ) )
+        print 'newContent = %s' %( newContent )
 
 
         #for char in list( text ):

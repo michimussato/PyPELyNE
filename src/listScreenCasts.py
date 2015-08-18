@@ -38,6 +38,7 @@ class addScreenCastUI( QWidget ):
 
 class listScreenCastsUI( QDialog ):
     listScreenCastsUIClosed = pyqtSignal()
+    #newScreenCast = pyqtSignal()
 
 
 
@@ -63,14 +64,17 @@ class listScreenCastsUI( QDialog ):
     def createUI( self ):
         self.ui = loadUi( os.path.join( self.pypelyneRoot, 'ui', 'screenCasts.ui' ), self )
         self.spacer = QSpacerItem( 0, 0, QSizePolicy.Minimum, QSizePolicy.Expanding )
+        self.refreshPushButton.setVisible( False )
         #self.spacer.expandingDirections( Qt.Vertical )
 
     def createConnects( self ):
         self.refreshPushButton.clicked.connect( self.refresh )
+        self.mainWindow.addNewScreenCast.connect( self.refresh )
 
 
 
     def refresh( self ):
+        #self.mainWindow.addNewScreenCast.connect( self.refresh )
         #self.timer = threading.Timer( 1, self.refresh ).start()
         print 'refresh'
         for item in reversed( range( self.vLayoutScreenCasts.count() ) ):

@@ -1,9 +1,0 @@
-InputFile=
-OutputFile=
-PluginFolder1=
-PluginFolder2=
-PluginFolder3=
-Threads=
-Build=None
-CommandLineOptions=
-Verbose=

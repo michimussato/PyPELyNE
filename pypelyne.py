@@ -14,12 +14,15 @@ from src.screenCast import *
 from src.timeTracker import *
 from src.listScreenCasts import *
 
+from conf.valuePyPELyNE import *
+
 import xml.etree.ElementTree as ET
 
 try:
     from src.vlc import *
 except:
-    raise ImportError( 'failed to import vlc' )
+    print 'failed to import vlc'
+    #raise ImportError( 'failed to import vlc' )
 
 
 
@@ -65,35 +68,60 @@ class pypelyneMainWindow( QMainWindow ):
 
     def __init__( self, parent = None ):
         super( pypelyneMainWindow, self ).__init__( parent )
-        
-        self.exclusions = [ '.DS_Store', 'Thumbs.db', '.com.apple.timemachine.supported', 'desktop.ini' ]
-
-        self.imageExtensions = [ '.jpg', '.exr', '.tga', '.png' ]
-        self.movieExtensions = [ '.mov', '.avi' ]
-        
-        self.currentPlatform = platform.system()
 
         self.pypelyneRoot = os.getcwd()
-
+        self.currentPlatform = platform.system()
         self.user = getpass.getuser()
+        
+        self.exclusions = exclusions
+        self.imageExtensions = imageExtensions
+        self.movieExtensions = movieExtensions
 
         if self.currentPlatform == "Windows":
-            if os.path.exists( os.path.join( r'\\192.168.0.12\pypelyne_projects' ) ):
-                self.projectsRoot = os.path.join( r'\\192.168.0.12\pypelyne_projects' )
+            print 'platform not fully supported'
+            self.projectsRoot = projectsRootWin
+            self.audioFolder = audioFolderWin
+            if screenCastExecWin[ 1: ].startswith( ':' + os.sep ):
+                self.screenCastExec = screenCastExecWin
             else:
-                self.projectsRoot = r'C:\pypelyne_projects'
-            self.audioFolder = r'C:\audio'
-            self.screenCastExec = r''
-            self.sequenceExec = os.path.join( self.pypelyneRoot, r'payload/vlc/win64/vlc.exe' )
-        elif self.currentPlatform == "Linux" or self.currentPlatform == "Darwin":
-            if os.path.exists( os.path.join( r'/Volumes/pili/pypelyne_projects' ) ):
-                self.projectsRoot = os.path.join( r'/Volumes/pili/pypelyne_projects' )
+                self.screenCastExec = os.path.join( self.pypelyneRoot, screenCastExecWin )
+            if len( sequenceExecRvWin ) <= 0:
+                self.sequenceExec = sequenceExecWin
+                self.rv = False
             else:
-                #self.projectsRoot = os.path.join( r'/Volumes/osx_production/pypelyne_projects' )
-                self.projectsRoot = os.path.join( r'/test' )
-            self.audioFolder = r'/Volumes/pili/library/audio'
-            self.screenCastExec = os.path.join( self.pypelyneRoot, r'payload/vlc/darwin/VLC' )
-            self.sequenceExec = r'/Applications/RV64.app/Contents/MacOS/RV'
+                self.sequenceExec = sequenceExecRvWin
+                self.rv = True
+        elif self.currentPlatform == "Darwin":
+            self.projectsRoot = projectsRootDarwin
+            self.audioFolder = audioFolderDarwin
+            if screenCastExecDarwin.startswith( os.sep ):
+                self.screenCastExec = screenCastExecDarwin
+            else:
+                self.screenCastExec = os.path.join( self.pypelyneRoot, screenCastExecDarwin )
+            if len( sequenceExecRvDarwin ) <= 0:
+                self.sequenceExec = sequenceExecDarwin
+                self.rv = False
+            else:
+                self.sequenceExec = sequenceExecRvDarwin
+                self.rv = True
+        elif self.currentPlatform == "Linux":
+            print 'platform not supported. bye.'
+            quit()
+            self.projectsRoot = projectsRootLinux
+            self.audioFolder = audioFolderLinux
+            if screenCastExecLinux.startswith( os.sep ):
+                self.screenCastExec = screenCastExecLinux
+            else:
+                self.screenCastExec = os.path.join( self.pypelyneRoot, screenCastExecLinux )
+            if len( sequenceExecRvLinux ) <= 0:
+                self.sequenceExec = sequenceExecLinux
+                self.rv = False
+            else:
+                self.sequenceExec = sequenceExecRvLinux
+                self.rv = True
+        else:
+            print 'platform unknown. not supported. bye.'
+            quit()
 
         self.nodeWidgets = []
         self.qprocesses = []
@@ -155,8 +183,6 @@ class pypelyneMainWindow( QMainWindow ):
 
         if os.path.exists( self.audioFolder ):
             self.audioFolderContent = os.listdir( self.audioFolder )
-
-
             for exclusion in self.exclusions:
                 try:
                     self.audioFolderContent.remove( exclusion )
@@ -876,9 +902,6 @@ class pypelyneMainWindow( QMainWindow ):
             # for each input
 
             for input in  inputs:
-
-
-
                 if len( inputs ) > 0 and not input in self.exclusions:
                     print '\tprocessing input %s' %( input )
                     # input circle = endItem

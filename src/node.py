@@ -26,7 +26,7 @@ class node( QGraphicsItem, QObject ):
         
         self.propertyNodePath = propertyNodePath
         self.mainWindow = mainWindow
-        self.pypelyneRoot = self.mainWindow.getPypelyneRoot()
+        self.pypelyneRoot = self.mainWindow.pypelyneRoot
         self.user = self.mainWindow.getUser()
         self.location = self.getNodeRootDir()
         self.loaderSaver = os.path.basename( self.location )[ :7 ]
@@ -50,6 +50,7 @@ class node( QGraphicsItem, QObject ):
         self.setFlags( QGraphicsItem.ItemIsSelectable | QGraphicsItem.ItemIsMovable )
         self.setData( 1, self.now )
         self.setData( 2, 'node' )
+        #self.setToolTip( 'haha' )
         try:
             self.setNodePosition()
         except:

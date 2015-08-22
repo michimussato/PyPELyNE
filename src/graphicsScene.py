@@ -357,8 +357,10 @@ class SceneView( QGraphicsScene ):
                             try:
                                 menuMakeLive.addAction( 'view', self.viewVersion( os.path.join( versionPath, outputDirContent[ 0 ] ) ) )
                                 try:
-                                    menuMakeLive.addAction( 'compare to live', self.compareVersion( os.path.join( versionPath, outputDirContent[ 0 ] ), os.path.join( liveDir, outputDirContent[ 0 ] ) ) )
-                                    menuMakeLive.addAction( 'difference to live', self.differenceVersion( os.path.join( versionPath, outputDirContent[ 0 ] ), os.path.join( liveDir, outputDirContent[ 0 ] ) ) )
+                                    if self.mainWindow.rv == True:
+                                        menuMakeLive.addAction( 'compare to live', self.compareVersion( os.path.join( versionPath, outputDirContent[ 0 ] ), os.path.join( liveDir, outputDirContent[ 0 ] ) ) )
+                                        menuMakeLive.addAction( 'difference to live', self.differenceVersion( os.path.join( versionPath, outputDirContent[ 0 ] ), os.path.join( liveDir, outputDirContent[ 0 ] ) ) )
+
                                 except:
                                     print 'compare/difference to live version not possible'
                             except:

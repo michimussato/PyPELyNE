@@ -1,0 +1,16 @@
+#!/bin/sh
+
+#start deadline slave with the correct env variables
+
+currentDir="$( cd -P "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
+cd ${currentDir};
+cd ../../../../;
+pypelyneDir=$(pwd);
+
+deadlineSlaveExe="/Applications/Deadline/DeadlineSlave.app/Contents/MacOS/DeadlineSlave";
+
+envVars=${pypelyneDir}/conf/envVars_osx.txt;
+source ${envVars};
+printf "\n\n${envVars} sourced...\n";
+printf "launching slave\n\n";
+${deadlineSlaveExe};

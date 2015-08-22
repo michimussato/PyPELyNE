@@ -1,0 +1,223 @@
+//////////////////////////////////////////////////////
+//kfWheelRotation
+//////////////////////////
+//Written by Kiel Figgins
+//www.3dfiggins.com
+//////////////////////////
+//Use to calculation rotation of an object, based on distance traveled over time
+//////////////////////////
+//Version History
+//////////////////////////
+//1.01 (02-21-2013) - Set default value to z, cleaned up UI, minor touch ups
+//1.00 (02-20-2013) - Orginal version
+//////////////////////////
+//Coming Soon
+/*
+
+*/
+
+
+
+global proc kfWheelRotation()
+{
+
+if (`window -q -ex kfWheelRotationWin`)
+    	{
+    	showWindow kfWheelRotationWin ;
+    	return ;
+    	}
+
+
+window -w 230 -h 600 -t "Wheel Rotation" kfWheelRotationWin ;
+formLayout mainSaveForm ;
+
+//UI pieces
+text -l "1. Define Tire Object:" txWRDefTire;
+textField -w 160 -tx "" tfWRDefTire;
+button -l " < " -w 20 -ann "Fills in field based off selection" -c ("kfWRDefTireFill();") btnWRDefTireFill; 
+
+text -l "2. Tire Circumference:" txWRCircum;
+floatField -pre 1 -w 60 -v 12.0 floatWRCircum;
+text -l "c = 2 * 3.14159 * r" txWRCircumEq;
+
+text -l "3. Forward Axis:" txWRAxis;
+radioButtonGrp -cw3 40 40 40 -numberOfRadioButtons 3 -labelArray3 "X" "Y" "Z" -select 3 radWRAxis;
+
+text -l "4. Define Spin Channel:" txWRDefChan;
+textField -w 160 -tx "TireSpin.rx" tfWRDefChan;
+
+button -l "Calculate" -w 300 -ann "Fills in field based off selection" -c ("kfWRExec();") btnWRExec; 
+
+//UI FormLayout
+formLayout -e
+    
+    	-af txWRDefTire "top" 8 
+    	-an txWRDefTire "bottom" 
+    	-af txWRDefTire "left" 5 
+    	-an txWRDefTire "right" 
+    
+    	-af tfWRDefTire "top" 8 
+    	-an tfWRDefTire "bottom" 
+    	-ac tfWRDefTire "left" 5 txWRDefTire
+    	-an tfWRDefTire "right" 
+    
+    	-af btnWRDefTireFill "top" 8 
+    	-an btnWRDefTireFill "bottom" 
+    	-ac btnWRDefTireFill "left" 5 tfWRDefTire
+    	-an btnWRDefTireFill "right" 
+    
+    	-ac txWRCircum "top" 8 btnWRDefTireFill
+    	-an txWRCircum "bottom" 
+    	-af txWRCircum "left" 5 
+    	-an txWRCircum "right" 
+    
+    	-ac floatWRCircum "top" 8 btnWRDefTireFill
+    	-an floatWRCircum "bottom" 
+    	-ac floatWRCircum "left" 5 txWRCircum
+    	-an floatWRCircum "right" 
+    
+    	-ac txWRCircumEq "top" 15 btnWRDefTireFill
+    	-an txWRCircumEq "bottom" 
+    	-ac txWRCircumEq "left" 20 floatWRCircum
+    	-an txWRCircumEq "right" 
+
+    
+    	-ac txWRAxis "top" 8 floatWRCircum
+    	-an txWRAxis "bottom" 
+    	-af txWRAxis "left" 5 
+    	-an txWRAxis "right" 
+    
+    	-ac radWRAxis "top" 8 floatWRCircum
+    	-an radWRAxis "bottom" 
+    	-ac radWRAxis "left" 5 txWRAxis
+    	-an radWRAxis "right" 
+    
+    	-ac txWRDefChan "top" 8 radWRAxis
+    	-an txWRDefChan "bottom" 
+    	-af txWRDefChan "left" 5 
+    	-an txWRDefChan "right" 
+    
+    	-ac tfWRDefChan "top" 8 radWRAxis
+    	-an tfWRDefChan "bottom" 
+    	-ac tfWRDefChan "left" 5 txWRDefChan
+    	-an tfWRDefChan "right" 
+    
+    	-ac btnWRExec "top" 8 tfWRDefChan
+    	-an btnWRExec "bottom" 
+    	-af btnWRExec "left" 5 
+    	-an btnWRExec "right" 
+
+
+    	mainSaveForm ;
+
+    showWindow kfWheelRotationWin ;
+
+    //Resize the main window
+    window -e -widthHeight 310 150 kfWheelRotationWin;
+
+}//end of proc kfWheelRotation
+
+////////////////////
+//UI Specific Procs
+
+
+
+//////////////////////////////////////////////////////////////////
+global proc kfWRDefTireFill()
+{
+	string $selText[] = `ls -sl`; 
+	
+	if(`size($selText)` == 1)
+	{textField -e -tx $selText tfWRDefTire;}
+	else
+	{print "\nFAIL: Please Select (1) Object"; textField -e -tx "" tfWRDefTire;}
+}//end of global proc kfWRDefTireFill
+
+
+
+
+
+//////////////////////////////////////////////////////////////////
+global proc kfWRExec()
+{
+
+//Variables
+string $text = `textField -q -tx tfWRDefTire`;
+select $text;
+string $userWheel[] = `ls -sl`;
+
+string $userCtrlChannel = `textField -q -tx tfWRDefChan`;
+
+//x=1, y=2, z=3
+int $forwardDirection = `radioButtonGrp -q -select radWRAxis`;
+
+//Circumference ( c = 2 * 3.14159 * r)
+float $userCircum = `floatField -q -v floatWRCircum`;
+
+
+float $timeMin = `playbackOptions -q -min`; 
+float $timeMax = `playbackOptions -q -max`; 
+float $range = ($timeMax - $timeMin);
+
+//set time to playback first frame
+currentTime -e $timeMin;
+
+//remove existing keys
+selectKey -add -k $userCtrlChannel;
+cutKey -animation keys -clear;
+setKeyframe $userCtrlChannel;
+
+int $counter;
+int $sizer = $range;
+
+group -empty;
+string $wheelOrg[] = `ls -sl`;
+parentConstraint $userWheel $wheelOrg;
+
+
+group -empty;
+string $wheelNext[] = `ls -sl`;
+
+for ($counter = 0; $counter < $sizer; $counter++)
+{
+	
+	//$counter = 0;
+	currentTime -e ($timeMin + $counter);
+	string $delme[] = `parentConstraint $userWheel $wheelOrg`;
+	delete $delme;
+	
+	currentTime -e ($timeMin + $counter + 1);
+	string $delme[] = `parentConstraint $userWheel $wheelNext`;
+	delete $delme;
+	
+	parent $wheelOrg $wheelNext;
+	
+	float $theDist;
+	
+	if($forwardDirection == 1){$theDist = `getAttr ($wheelOrg[0] + ".tx")`;};
+	if($forwardDirection == 2){$theDist = `getAttr ($wheelOrg[0] + ".ty")`;};
+	if($forwardDirection == 3){$theDist = `getAttr ($wheelOrg[0] + ".tz")`;};
+	
+	float $curAmount = `getAttr $userCtrlChannel`;
+	
+	float $finAmount = ( (-(($theDist / $userCircum) * 360)) + $curAmount);
+	
+	setAttr $userCtrlChannel $finAmount;
+	setKeyframe $userCtrlChannel;
+	
+	parent -w $wheelOrg;
+}//end of loop through all frames
+
+//Finalize
+delete $wheelOrg $wheelNext;
+currentTime -e $timeMin;
+select $userWheel;
+
+print "\nSUCCESS: Wheel Rotation Calculated.";
+
+
+
+
+
+
+}//end of global proc kfMUListCommand

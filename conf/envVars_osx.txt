@@ -33,22 +33,22 @@ export PATH=$PATH:"/Applications/MtoA/bin"
 export PATH=$PATH:"/Applications/Yeti/bin"
 
 # Mudbox 2015
-export PATH=$PATH:"/Applications/Autodesk/Mudbox2015/Mudbox.app/Contents/MacOS"
+#export PATH=$PATH:"/Applications/Autodesk/Mudbox2015/Mudbox.app/Contents/MacOS"
 
 # Deadline
-export PATH=$PATH:"/Applications/Deadline/Resources/bin"
+#export PATH=$PATH:"/Applications/Deadline/Resources/bin"
 
 # DeadlineSlave 5.2
-export PATH=$PATH:"/Applications/Deadline/DeadlineSlave.app/Contents/MacOS"
+#export PATH=$PATH:"/Applications/Deadline/DeadlineSlave.app/Contents/MacOS"
 
 # Cinema 4D R15
-export PATH=$PATH:"/Applications/MAXON/CINEMA 4D R15/CINEMA 4D.app/Contents/MacOS"
+#export PATH=$PATH:"/Applications/MAXON/CINEMA 4D R15/CINEMA 4D.app/Contents/MacOS"
 
 # UV-Layout
-export PATH=$PATH:"/Applications/headus-UVLayout-Pro.app/Contents/MacOS"
+#export PATH=$PATH:"/Applications/headus-UVLayout-Pro.app/Contents/MacOS"
 
 # Nuke
-export PATH=$PATH:"/Applications/Nuke7.0v8/Nuke7.0v8.app/Contents/MacOS"
+#export PATH=$PATH:"/Applications/Nuke7.0v8/Nuke7.0v8.app/Contents/MacOS"
 
 # HDRLightStudio
 export PATH=$PATH:"/Applications/HDRLightStudio.app/Contents/MacOS"

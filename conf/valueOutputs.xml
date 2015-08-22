@@ -1,12 +1,13 @@
 <?xml version="1.0"?>
-<!--Template:
+<valueOutput>
+    <!--
+    Template:
     <category value="type" abbrev="TYP" color="#B38B8B">
         <filetype mime="ext1"/>
         <filetype mime="ext2"/>
         <filetype mime="ext3"/>
     </category>
--->
-<valueOutput>
+    -->
     <category value="model" abbrev="MDL" color="#B38B8B">
         <filetype mime="ma"/>
         <filetype mime="abc"/>

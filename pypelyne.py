@@ -1483,19 +1483,26 @@ class pypelyneMainWindow( QMainWindow ):
 
                 tempDir = os.path.join( os.path.expanduser( '~' ), 'pypelyne_temp' )
                 currentDir = os.getcwd()
+                dateTime = datetime.datetime.now().strftime( '%Y-%m-%d_%H%M-%S' )
+                executable = self._tools[ index ][ 1 ][ 0 ]
 
                 if not os.path.exists( tempDir ):
                     os.makedirs( tempDir, mode=0777 )
 
                 if not toolTemplate == 'None':
-                    dateTime = datetime.datetime.now().strftime( '%Y-%m-%d_%H%M-%S' )
+
+                    tempProject = str( os.path.splitext( toolTemplate )[ 0 ] + '.' + dateTime + os.path.splitext( toolTemplate )[ 1 ] )
+                    tempProjectDir = str( os.path.splitext( toolTemplate )[ 0 ] + '.' + dateTime )
                     src = os.path.join( 'src', 'template_documents', toolTemplate )
-                    dst = os.path.join( tempDir, str( os.path.splitext( toolTemplate )[ 0 ] + '.' + dateTime + os.path.splitext( toolTemplate )[ 1 ] ) )
+                    dst = os.path.join( tempDir, tempProjectDir, tempProject )
+
+                    os.makedirs( os.path.join( tempDir, tempProjectDir ), mode=0777 )
+
                     shutil.copyfile( src, dst )
 
-                    os.chdir( tempDir )
+                    os.chdir( os.path.join( tempDir, tempProjectDir ) )
 
-                    executable = self._tools[ index ][ 1 ][ 0 ]
+                    #executable = self._tools[ index ][ 1 ][ 0 ]
 
                     executable = executable.replace( '\"', '' )
                     executable = executable.replace( '\'', '' )
@@ -1507,9 +1514,18 @@ class pypelyneMainWindow( QMainWindow ):
 
                     process.start( executable, arguments )
                     os.chdir( currentDir )
-                else:
+
+                elif self._tools[ index ][ 4 ].lower() == 'deadline':
+                    #executable = self._tools[ index ][ 1 ][ 0 ]
                     os.chdir( tempDir )
-                    executable = self._tools[ index ][ 1 ][ 0 ]
+                    process.start( executable )
+                    os.chdir( currentDir )
+                else:
+                    #executable = self._tools[ index ][ 1 ][ 0 ]
+                    #print self._tools[ index ]
+                    os.makedirs( os.path.join( tempDir, 'no_template_' + self._tools[ index ][ 4 ] + '_' + self._tools[ index ][ 5 ] + '.' +  dateTime ), mode=0777 )
+                    os.chdir( tempDir )
+
                     process.start( executable )
                     os.chdir( currentDir )
 

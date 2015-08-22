@@ -15,9 +15,11 @@ projectsRootWin = r'C:\pypelyne_projects'
 audioFolderWin = r'C:\audio'
 screenCastExecWin = r'payload\vlc\win64\vlc.exe'
 sequenceExecWin = r''
+sequenceExecRvWin = r''
 
 #Linux
 projectsRootLinux = r''
 audioFolderLinux = r''
 screenCastExecLinux = r''
 sequenceExecLinux = r''
+sequenceExecRvLinux = r''

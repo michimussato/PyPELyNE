@@ -85,7 +85,7 @@ class pypelyneMainWindow( QMainWindow ):
                 self.screenCastExec = screenCastExecWin
             else:
                 self.screenCastExec = os.path.join( self.pypelyneRoot, screenCastExecWin )
-            if len( sequenceExecRvWin ) <= 0:
+            if len( sequenceExecRvWin ) <= 0 or not os.path.exists( sequenceExecRvWin ):
                 self.sequenceExec = sequenceExecWin
                 self.rv = False
             else:
@@ -98,7 +98,7 @@ class pypelyneMainWindow( QMainWindow ):
                 self.screenCastExec = screenCastExecDarwin
             else:
                 self.screenCastExec = os.path.join( self.pypelyneRoot, screenCastExecDarwin )
-            if len( sequenceExecRvDarwin ) <= 0:
+            if len( sequenceExecRvDarwin ) <= 0 or not os.path.exists( sequenceExecRvDarwin ):
                 self.sequenceExec = sequenceExecDarwin
                 self.rv = False
             else:
@@ -113,7 +113,7 @@ class pypelyneMainWindow( QMainWindow ):
                 self.screenCastExec = screenCastExecLinux
             else:
                 self.screenCastExec = os.path.join( self.pypelyneRoot, screenCastExecLinux )
-            if len( sequenceExecRvLinux ) <= 0:
+            if len( sequenceExecRvLinux ) <= 0 or not os.path.exists( sequenceExecRvLinux ):
                 self.sequenceExec = sequenceExecLinux
                 self.rv = False
             else:

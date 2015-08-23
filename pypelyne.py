@@ -76,6 +76,7 @@ class pypelyneMainWindow( QMainWindow ):
         self.exclusions = exclusions
         self.imageExtensions = imageExtensions
         self.movieExtensions = movieExtensions
+        self.tarSep = archiveSeparator
 
         if self.currentPlatform == "Windows":
             print 'platform not fully supported'
@@ -92,6 +93,7 @@ class pypelyneMainWindow( QMainWindow ):
                 self.sequenceExec = sequenceExecRvWin
                 self.rv = True
         elif self.currentPlatform == "Darwin":
+            self.tarExec = tarExec
             self.projectsRoot = projectsRootDarwin
             self.audioFolder = audioFolderDarwin
             if screenCastExecDarwin.startswith( os.sep ):
@@ -577,6 +579,79 @@ class pypelyneMainWindow( QMainWindow ):
         process.start( executable, arguments )
         os.chdir( currentDir )
         #print os.getcwd()
+
+    def checkOutCallback( self, node ):
+        def callback():
+            self.checkOut( node )
+        return callback
+
+    def checkOut( self, node ):
+        #self.tarSep = '_____'
+        dateTime = datetime.datetime.now().strftime( '%Y-%m-%d_%H%M-%S' )
+        #executable = self.tarExec
+        pigz = os.path.join( self.pypelyneRoot, 'payload', 'pigz', 'darwin', 'pigz' )
+        tarDirRoot = os.path.join( self.projectsRoot, self.getCurrentProject(), 'check_out' )
+        #print self.getCurrentContent()
+        tarName = dateTime + self.tarSep + self.getCurrentProject() + self.tarSep +os.path.basename( os.path.dirname( node.getNodeAsset() ) ) + self.tarSep + os.path.basename( node.getNodeAsset() ) + self.tarSep + node.label + '.tar.gz'
+
+        if not os.path.exists( tarDirRoot ):
+            os.makedirs( tarDirRoot, mode=0777 )
+
+        #print tarDirRoot
+        #print os.getcwd()
+
+
+        arguments = []
+        arguments.append( 'cvL' )
+        arguments.append( '--exclude' )
+        arguments.append( 'checkedOut' )
+        #exclude all non-current folders
+        arguments.append( '--exclude' )
+        arguments.append( 'output/*/2*' )
+        arguments.append( '--exclude' )
+        arguments.append( 'output/*.*' )
+        arguments.append( '--exclude' )
+        arguments.append( 'live' )
+        arguments.append( '--exclude' )
+        arguments.append( 'propertyNode.xml' )
+        arguments.append( '--use-compress-program' )
+        arguments.append( pigz )
+        arguments.append( '-f' )
+        arguments.append( os.path.join( tarDirRoot, tarName ) )
+        arguments.append( '--directory' )
+        arguments.append( node.getNodeRootDir() )
+        arguments.append( '.' )
+
+        pColor = self.newProcessColor()
+
+        process = QProcess( self )
+        process.readyReadStandardOutput.connect( lambda: self.dataReadyStd( process, pColor ) )
+        process.readyReadStandardError.connect( lambda: self.dataReadyErr( process, pColor ) )
+        process.started.connect( lambda: self.toolOnStarted( process ) )
+        process.finished.connect( lambda: self.toolOnFinished( process ) )
+
+        process.start( self.tarExec, arguments )
+
+
+        '''
+        checkOutFilePath = os.path.join( node.getNodeRootDir(), 'checkedOut' )
+        checkOutFile = open( checkOutFilePath, 'a' )
+        checkOutFile.write( self.user )
+        checkOutFile.close()
+        '''
+
+    def checkInCallback( self, node ):
+        def callback():
+            self.checkIn( node )
+        return callback
+
+    def checkIn( self, node ):
+        try:
+            checkOutFilePath = os.path.join( node.getNodeRootDir(), 'checkedOut' )
+            os.remove( checkOutFilePath )
+        except:
+            print 'check in failed'
+
 
     def taskOnStarted( self, node, qprocess, screenCast, timeTracker ):
 

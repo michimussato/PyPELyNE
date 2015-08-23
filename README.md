@@ -14,6 +14,7 @@ Project features:
 - project traceability
 - project documentation
 - project achiving/unarchiving
+- task check-in/check-out (i.e. to send tasks to home office freelancers) (not yet functional)
 - connecting individual tools
 - shot-/asset-based node trees
 - single console for all processes with color coded output

@@ -191,6 +191,12 @@ class SceneView( QGraphicsScene ):
                     self.menuNode.addAction( 'cleanup node', self.cleanUpNodeCallback( nodeClicked ) )
                     self.menuNode.addAction( 'delete node', self.removeObjectCallback( nodeClicked ) )
 
+                if os.path.exists( os.path.join( nodeClicked.getNodeRootDir(), 'checkedOut' ) ):
+                    self.menuNode.addAction( 'check in node', self.mainWindow.checkInCallback( nodeClicked ) )
+
+                else:
+                    self.menuNode.addAction( 'check out node', self.mainWindow.checkOutCallback( nodeClicked ) )
+
 
 
                 #self.menu.addSeparator()

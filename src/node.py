@@ -187,6 +187,10 @@ class node( QGraphicsItem, QObject ):
                 QMessageBox.critical( self.mainWindow, 'node warning', str( '%s is currently in use.' %str( self.label ) ), QMessageBox.Abort, QMessageBox.Abort )
                 return
 
+            elif os.path.exists( os.path.join( self.location, 'checkedOut' ) ):
+                QMessageBox.critical( self.mainWindow, 'node warning', str( '%s is currently checked out.' %str( self.label ) ), QMessageBox.Abort, QMessageBox.Abort )
+                return
+
 
             args = []
 
@@ -272,6 +276,9 @@ class node( QGraphicsItem, QObject ):
         if os.path.exists( os.path.join( self.location, 'locked' ) ):
             self.gradient.setColorAt( 0, self.taskColorItem )
             self.gradient.setColorAt( 1, Qt.red )
+        elif os.path.exists( os.path.join( self.location, 'checkedOut' ) ):
+            self.gradient.setColorAt( 0, self.taskColorItem )
+            self.gradient.setColorAt( 1, Qt.white )
         else:
             self.gradient.setColorAt( 0, self.taskColorItem )
             self.gradient.setColorAt( 1, self.applicationColorItem.darker( 160 ) )

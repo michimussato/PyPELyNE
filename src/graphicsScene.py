@@ -191,11 +191,11 @@ class SceneView( QGraphicsScene ):
                     self.menuNode.addAction( 'cleanup node', self.cleanUpNodeCallback( nodeClicked ) )
                     self.menuNode.addAction( 'delete node', self.removeObjectCallback( nodeClicked ) )
 
-                if os.path.exists( os.path.join( nodeClicked.getNodeRootDir(), 'checkedOut' ) ):
-                    self.menuNode.addAction( 'check in node', self.mainWindow.checkInCallback( nodeClicked ) )
+                    if os.path.exists( os.path.join( nodeClicked.getNodeRootDir(), 'checkedOut' ) ):
+                        self.menuNode.addAction( 'check in node', self.mainWindow.checkInCallback( nodeClicked ) )
 
-                else:
-                    self.menuNode.addAction( 'check out node', self.mainWindow.checkOutCallback( nodeClicked ) )
+                    else:
+                        self.menuNode.addAction( 'check out node', self.mainWindow.checkOutCallback( nodeClicked ) )
 
 
 
@@ -1092,7 +1092,7 @@ class SceneView( QGraphicsScene ):
 
             try:
                 toolNode = tools[ toolIndex ]
-                #print toolNode
+                print toolNode
             except:
                 #print 'deadline job'
                 toolNode = ('Thinkbox Software Deadline 5.2 x64', ['"deadlinecommand" -SubmitCommandLineJob'], 'DDL', 'Thinkbox Software', 'Deadline', '5.2', 'x64', 'None', [], [])
@@ -1112,8 +1112,10 @@ class SceneView( QGraphicsScene ):
             toolTemplate = toolNode[ 7 ]
             toolDirectories = toolNode[ 8 ]
             toolDefaultOutputList = toolNode[ 9 ]
+            toolFlags = toolNode[ 10 ]
+            workspaceTemplate = toolNode[ 11 ]
 
-            #print  toolFamily, toolVendor, toolVersion, toolArch, toolTask, toolTemplate, toolDirectories, toolDefaultOutputList
+            #print  toolFamily, toolVendor, toolVersion, toolArch, toolTask, toolTemplates, toolDirectories, toolDefaultOutputList
             
             
             
@@ -1176,8 +1178,15 @@ class SceneView( QGraphicsScene ):
                 
 
                 if not toolTemplate == 'None':
+                    #print toolTemplates
 
                     shutil.copyfile( os.path.join( 'src', 'template_documents', toolTemplate ), os.path.join( newNodePath, 'project', str( text + '.' + '0000' + os.path.splitext( toolTemplate )[ 1 ] ) ) )
+                    #toolTemplates.remove( toolTemplates[ 0 ] )
+
+                    if not workspaceTemplate == 'None':
+                        print str( workspaceTemplate )
+                        print str( workspaceTemplate ).split( '_' )
+                        shutil.copyfile( os.path.join( 'src', 'template_documents', workspaceTemplate ), os.path.join( newNodePath, str( workspaceTemplate ).split( '_' )[ -1 ] ) )
 
 
                 

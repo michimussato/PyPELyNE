@@ -765,16 +765,20 @@ class pypelyneMainWindow( QMainWindow ):
 
             for vendor in family:
                 for version in vendor:
+                    #templates = []
+                    #workspace = version.findall( './workspace' )
+                    #for template in version:
+                    #    templates.append( template.items()[ 0 ][ 1 ] )
                     for platform in version:
                         for executable in platform:
                             flags = []
                             for flag in executable:
                                 flags.append( flag.items()[ 0 ][ 1 ] )
                             if not executable.items()[ 0 ][ 1 ] == 'None' and platform.items()[ 0 ][ 1 ] == self.currentPlatform:
-                                
+
                                 #command = [ "\"" + executable.items()[ 0 ][ 1 ] + "\" " + ' '.join( flags ) ]
                                 command = [ "\"" + executable.items()[ 0 ][ 1 ] + "\"" ]
-                                
+
                                 path = re.findall( r'"([^"]*)"', command[ 0 ] )[ 0 ]
 
                                 familyValue = family.items()[ 1 ][ 1 ]
@@ -782,6 +786,9 @@ class pypelyneMainWindow( QMainWindow ):
                                 vendorValue = vendor.items()[ 0 ][ 1 ]
                                 versionValue = version.items()[ 0 ][ 1 ]
                                 versionTemplate = version.items()[ 1 ][ 1 ]
+                                versionWorkspace = version.items()[ 2 ][ 1 ]
+                                #versionTemplates = templates
+                                #versionWorkspaceTemplate = version.items()[ 2 ][ 1 ]
                                 #print 'versionTemplate = %s' % version.items()[ 1 ][ 1 ]
                                 platformValue = platform.items()[ 0 ][ 1 ]
                                 executableArch = executable.tag
@@ -790,12 +797,13 @@ class pypelyneMainWindow( QMainWindow ):
 
                                     #self._tools.append( ( vendor.items()[ 0 ][ 1 ] + ' ' + family.items()[ 1 ][ 1 ] + ' ' + version.items()[ 0 ][ 1 ] + ' ' + platform.items()[ 0 ][ 1 ] + ' ' + executable.tag, command, familyAbbreviation ) )
                                     #self._tools.append( ( vendorValue + ' ' + familyValue + ' ' + versionValue + ' ' + platformValue + ' ' + executableArch, command, familyAbbreviation, vendorValue, familyValue, versionValue, executableArch ) )
-                                    self._tools.append( ( vendorValue + ' ' + familyValue + ' ' + versionValue + ' ' + executableArch, command, familyAbbreviation, vendorValue, familyValue, versionValue, executableArch, versionTemplate, directoryList, defaultOutputList, flags ) )
+                                    self._tools.append( ( vendorValue + ' ' + familyValue + ' ' + versionValue + ' ' + executableArch, command, familyAbbreviation, vendorValue, familyValue, versionValue, executableArch, versionTemplate, directoryList, defaultOutputList, flags, versionWorkspace ) )
                                     self.sendTextToBox( '\t' + vendorValue + ' ' + familyValue + ' ' + versionValue + ' ' + executableArch + ' found.\n' )
 
                                 else:
                                     print 'path not found: %s. application not added to tools dropdown' %( path )
                                     self.sendTextToBox( '\t' + vendorValue + ' ' + familyValue + ' ' + versionValue + ' ' + executableArch + ' not found.\n' )
+
 
         self.sendTextToBox( 'initialization done.\n\n' )
 

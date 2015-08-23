@@ -199,11 +199,14 @@ class node( QGraphicsItem, QObject ):
 
             if self.nodeFamily == 'Maya':
                 for arg in [ '-proj', self.location, '-file' ]:
+                    print self.location
                     args.append( arg )
 
             projectRoot = os.path.join( self.location, 'project' )
 
+            #print self._tools[ searchIndex ][ 7 ]
             extension = os.path.splitext( self._tools[ searchIndex ][ 7 ] )[ 1 ]
+
 
             files = glob.glob1( projectRoot, str( '*' + extension ) )
 

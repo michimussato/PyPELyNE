@@ -13,6 +13,8 @@
         </directory>
         <vendor value="Vendor">
             <version value="Version1" template="null_vendor_application_version1.ext">
+                <template value="null_vendor_application_version1.ext"/>
+                <template value="null_vendor_application_version1.ext"/>
                 <platform value="Windows">
                     <x32 value="None">
                         <flag value="-flag1winx32"/>
@@ -53,7 +55,7 @@
     -->
     <family value="CINEMA 4D" abbrev="CIN">
         <vendor value="MAXON">
-            <version value="R 13" template="None">
+            <version value="R 13" template="None" workspace="None">
                 <platform value="Windows">
                     <x32 value="None">
                     </x32>
@@ -68,7 +70,7 @@
                     </x64>
                 </platform>
             </version>
-            <version value="R 14" template="None">
+            <version value="R 14" template="None" workspace="None">
                 <platform value="Windows">
                     <x32 value="C:\Program Files\MAXON\CINEMA 4D R14\CINEMA 4D.exe">
                         <flag value="-parallel"/>
@@ -84,7 +86,7 @@
                     </x64>
                 </platform>
             </version>
-            <version value="R 15" template="null_maxon_cinema4d_r15.c4d">
+            <version value="R 15" template="null_maxon_cinema4d_r15.c4d" workspace="None">
                 <platform value="Windows">
                     <x32 value="None">
                     </x32>
@@ -99,7 +101,7 @@
                     </x64>
                 </platform>
             </version>
-            <version value="R 16" template="None">
+            <version value="R 16" template="None" workspace="None">
                 <platform value="Windows">
                     <x32 value="None">
                     </x32>
@@ -128,7 +130,7 @@
         </directory>
         <directory value="uvLayout"/>
         <vendor value="Autodesk">
-            <version value="2013" template="null_autodesk_maya2013.ma">
+            <version value="2013" template="null_autodesk_maya2013.ma" workspace="null_autodesk_maya2013_workspace.mel">
                 <platform value="Windows">
                     <x32 value="C:\Program Files (x86)\Autodesk\Maya2013\bin\maya.exe">
                     </x32>
@@ -142,7 +144,7 @@
                     </x64>
                 </platform>
             </version>
-            <version value="2014" template="null_autodesk_maya2014.ma">
+            <version value="2014" template="null_autodesk_maya2014.ma" workspace="null_autodesk_maya2014_workspace.mel">
                 <platform value="Windows">
                     <x32 value="C:\Program Files (x86)\Autodesk\Maya2014\bin\maya.exe">
                     </x32>
@@ -160,7 +162,7 @@
     </family>
     <family value="UVLayout" abbrev="UVL">
         <vendor value="Headus">
-            <version value="2.08.01" template="None">
+            <version value="2.08.01" template="None" workspace="None">
                 <platform value="Windows">
                     <x32 value="C:\Program Files (x86)\headus UVLayout v2 Professional\howin32.exe">
                         <flag value="-launch"/>
@@ -179,7 +181,7 @@
     </family>
     <family value="Photoshop" abbrev="PSH">
         <vendor value="Adobe">
-            <version value="CS6" template="null_adobe_photoshop_CS6.psd">
+            <version value="CS6" template="null_adobe_photoshop_CS6.psd" workspace="None">
                 <platform value="Windows">
                     <x32 value="None">
                     </x32>
@@ -193,7 +195,7 @@
                     </x64>
                 </platform>
             </version>
-            <version value="CC12" template="null_adobe_photoshop_CC12.psd">
+            <version value="CC12" template="null_adobe_photoshop_CC12.psd" workspace="None">
                 <platform value="Windows">
                     <x32 value="None">
                     </x32>
@@ -211,7 +213,7 @@
     </family>
     <family value="After Effects" abbrev="AFX">
         <vendor value="Adobe">
-            <version value="CS6" template="null_adobe_aftereffects_CS6.aep">
+            <version value="CS6" template="null_adobe_aftereffects_CS6.aep" workspace="None">
                 <platform value="Windows">
                     <x32 value="None">
                     </x32>
@@ -225,7 +227,7 @@
                     </x64>
                 </platform>
             </version>
-            <version value="CC12" template="null_adobe_aftereffects_CC12.aep">
+            <version value="CC12" template="null_adobe_aftereffects_CC12.aep" workspace="None">
                 <platform value="Windows">
                     <x32 value="None">
                     </x32>
@@ -243,7 +245,7 @@
     </family>
     <family value="Premiere" abbrev="PRM">
         <vendor value="Adobe">
-            <version value="CS6" template="null_adobe_premiere_CS6.prproj">
+            <version value="CS6" template="null_adobe_premiere_CS6.prproj" workspace="None">
                 <platform value="Windows">
                     <x32 value="None">
                     </x32>
@@ -257,7 +259,7 @@
                     </x64>
                 </platform>
             </version>
-            <version value="CC12" template="null_adobe_premiere_CC12.prproj">
+            <version value="CC12" template="null_adobe_premiere_CC12.prproj" workspace="None">
                 <platform value="Windows">
                     <x32 value="None">
                     </x32>
@@ -275,7 +277,7 @@
     </family>
     <family value="InDesign" abbrev="IND">
         <vendor value="Adobe">
-            <version value="CS6" template="null_adobe_indesign_CS6.indd">
+            <version value="CS6" template="null_adobe_indesign_CS6.indd" workspace="None">
                 <platform value="Windows">
                     <x32 value="None">
                     </x32>
@@ -289,7 +291,7 @@
                     </x64>
                 </platform>
             </version>
-            <version value="CC12" template="null_adobe_indesign_CC12.indd">
+            <version value="CC12" template="null_adobe_indesign_CC12.indd" workspace="None">
                 <platform value="Windows">
                     <x32 value="None">
                     </x32>
@@ -307,7 +309,7 @@
     </family>
     <family value="Illustrator" abbrev="ILU">
         <vendor value="Adobe">
-            <version value="CS6" template="None">
+            <version value="CS6" template="None" workspace="None">
                 <platform value="Windows">
                     <x32 value="None">
                     </x32>
@@ -321,7 +323,7 @@
                     </x64>
                 </platform>
             </version>
-            <version value="CC12" template="null_adobe_illustrator_CC12.ai">
+            <version value="CC12" template="null_adobe_illustrator_CC12.ai" workspace="None">
                 <platform value="Windows">
                     <x32 value="None">
                     </x32>
@@ -353,7 +355,7 @@
             <subdirectory value="images"/>
         </directory>
         <vendor value="Next Limit">
-            <version value="6.0.0.0055" template="null_nextlimit_realflow_6000055.flw">
+            <version value="6.0.0.0055" template="null_nextlimit_realflow_6000055.flw" workspace="None">
                 <platform value="Windows">
                     <x32 value="None">
                     </x32>
@@ -367,7 +369,7 @@
                     </x64>
                 </platform>
             </version>
-            <version value="7.0.1.0131" template="null_nextlimit_realflow_7010131.flw">
+            <version value="7.0.1.0131" template="null_nextlimit_realflow_7010131.flw" workspace="None">
                 <platform value="Windows">
                     <x32 value="None">
                     </x32>
@@ -385,7 +387,7 @@
     </family>
     <family value="ZBrush" abbrev="ZBR">
         <vendor value="Pixologic">
-            <version value="4R5" template="null_pixologic_zbrush_4r5.zpr">
+            <version value="4R5" template="null_pixologic_zbrush_4r5.zpr" workspace="None">
                 <platform value="Windows">
                     <x32 value="None">
                     </x32>
@@ -399,7 +401,7 @@
                     </x64>
                 </platform>
             </version>
-            <version value="4R6" template="null_pixologic_zbrush_4r6.ZPR">
+            <version value="4R6" template="null_pixologic_zbrush_4r6.ZPR" workspace="None">
                 <platform value="Windows">
                     <x32 value="None">
                     </x32>
@@ -417,7 +419,7 @@
     </family>
     <family value="Mudbox" abbrev="MUD">
         <vendor value="Autodesk">
-            <version value="2013" template="null_autodesk_mudbox_2013.mud">
+            <version value="2013" template="null_autodesk_mudbox_2013.mud" workspace="None">
                 <platform value="Windows">
                     <x32 value="None">
                     </x32>
@@ -431,7 +433,7 @@
                     </x64>
                 </platform>
             </version>
-            <version value="2015" template="null_autodesk_mudbox_2015.mud">
+            <version value="2015" template="null_autodesk_mudbox_2015.mud" workspace="None">
                 <platform value="Windows">
                     <x32 value="None">
                     </x32>
@@ -449,7 +451,7 @@
     </family>
     <family value="Blender" abbrev="BLD">
         <vendor value="Blender Foundation">
-            <version value="2.6.9" template="null_blenderfoundation_blender_269.blend">
+            <version value="2.6.9" template="null_blenderfoundation_blender_269.blend" workspace="None">
                 <platform value="Windows">
                     <x32 value="None">
                     </x32>
@@ -472,7 +474,7 @@
         <directory value="toolbar"/>
         <directory value="gallery"/>
         <vendor value="Side Effects Software">
-            <version value="13.0.314" template="null_sidefx_houdini_130260.hip">
+            <version value="13.0.314" template="null_sidefx_houdini_130260.hip" workspace="None">
                 <platform value="Windows">
                     <x32 value="None">
                     </x32>
@@ -490,7 +492,7 @@
     </family>
     <family value="Nuke" abbrev="NUK">
         <vendor value="The Foundry">
-            <version value="7.0v8" template="null_thefoundry_nuke_708.nk">
+            <version value="7.0v8" template="null_thefoundry_nuke_708.nk" workspace="None">
                 <platform value="Windows">
                     <x32 value="None">
                     </x32>
@@ -506,7 +508,7 @@
                     </x64>
                 </platform>
             </version>
-            <version value="8.0v3" template="None">
+            <version value="8.0v3" template="None" workspace="None">
                 <platform value="Windows">
                     <x32 value="None">
                     </x32>
@@ -526,7 +528,7 @@
     </family>
     <family value="NukeX" abbrev="NUX">
         <vendor value="The Foundry">
-            <version value="7.0v8" template="null_thefoundry_nukex_708.nk">
+            <version value="7.0v8" template="null_thefoundry_nukex_708.nk" workspace="None">
                 <platform value="Windows">
                     <x32 value="None">
                     </x32>
@@ -547,7 +549,7 @@
     </family>
     <family value="Fusion" abbrev="FSN">
         <vendor value="Blackmagicdesign">
-            <version value="7" template="null_blackmagicdesign_fusion7.comp">
+            <version value="7" template="null_blackmagicdesign_fusion7.comp" workspace="None">
                 <platform value="Windows">
                     <x32 value="None">
                     </x32>
@@ -565,7 +567,7 @@
     </family>
     <family value="HDRLightStudio" abbrev="LST">
         <vendor value="Lightmap">
-            <version value="4" template="None">
+            <version value="4" template="None" workspace="None">
                 <platform value="Windows">
                     <x32 value="None">
                     </x32>
@@ -583,7 +585,7 @@
     </family>
     <family value="Deadline" abbrev="DDL">
         <vendor value="Thinkbox Software">
-            <version value="5.2.4949 (Monitor)" template="None">
+            <version value="5.2.4949 (Monitor)" template="None" workspace="None">
                 <platform value="Windows">
                     <x32 value="None">
                     </x32>
@@ -597,7 +599,7 @@
                     </x64>
                 </platform>
             </version>
-            <version value="5.2.4949 (Job Monitor)" template="None">
+            <version value="5.2.4949 (Job Monitor)" template="None" workspace="None">
                 <platform value="Windows">
                     <x32 value="None">
                     </x32>
@@ -611,7 +613,7 @@
                     </x64>
                 </platform>
             </version>
-            <version value="5.2.4949 (Slave)" template="None">
+            <version value="5.2.4949 (Slave)" template="None" workspace="None">
                 <platform value="Windows">
                     <x32 value="None">
                     </x32>
@@ -625,7 +627,7 @@
                     </x64>
                 </platform>
             </version>
-            <version value="5.2.4949 (Submitter)" template="None">
+            <version value="5.2.4949 (Submitter)" template="None" workspace="None">
                 <platform value="Windows">
                     <x32 value="None">
                     </x32>

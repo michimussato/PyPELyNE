@@ -80,6 +80,7 @@ class pypelyneMainWindow( QMainWindow ):
 
         if self.currentPlatform == "Windows":
             print 'platform not fully supported'
+            self.tarExec = tarExecWin
             self.projectsRoot = projectsRootWin
             self.audioFolder = audioFolderWin
             if screenCastExecWin[ 1: ].startswith( ':' + os.sep ):
@@ -93,7 +94,7 @@ class pypelyneMainWindow( QMainWindow ):
                 self.sequenceExec = sequenceExecRvWin
                 self.rv = True
         elif self.currentPlatform == "Darwin":
-            self.tarExec = tarExec
+            self.tarExec = tarExecDarwin
             self.projectsRoot = projectsRootDarwin
             self.audioFolder = audioFolderDarwin
             if screenCastExecDarwin.startswith( os.sep ):
@@ -109,6 +110,7 @@ class pypelyneMainWindow( QMainWindow ):
         elif self.currentPlatform == "Linux":
             print 'platform not supported. bye.'
             quit()
+            self.tarExec = tarExecLinux
             self.projectsRoot = projectsRootLinux
             self.audioFolder = audioFolderLinux
             if screenCastExecLinux.startswith( os.sep ):

@@ -51,7 +51,7 @@ Supports:
 - Different tool versions at the same time
 
 Requires (tested with):
-- Mac OS 10.6
+- Mac OS 10.8
 - VLC 2.1.5 (included)
 - Python 2.7.6
 - Qt 4.8.5

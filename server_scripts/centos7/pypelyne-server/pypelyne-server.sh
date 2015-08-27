@@ -3,7 +3,8 @@
 # TTS Server for Speech Synthesis
 # https://wolfpaulus.com/journal/software/pythonlauncher/
 #
-workdir='/pypelyne/PyPELyNE'
+pypelyneRoot='/pypelyne/PyPELyNE'
+logDir='${pypelyneRoot}/logs'
 
 
 # Wait for Network to be available.
@@ -20,18 +21,26 @@ do
         sleep 5
     fi
 done
-echo 'If you see this message, then Network was successfully loaded.'
+#echo 'If you see this message, then Network was successfully loaded.'
 
 
  
 start() {
-    cd $workdir
-    /usr/bin/python ${workdir}/pypelyne-server.py >> /pypelyne/log/pypelyne-server.log 2>&1 &
+    #cd $workdir
+    if [ ! -d '${logDir}' ]; then
+        mkdir '${logDir}'
+        chown nobody:nobody '${logDir}'
+        chmod 777 '${logDir}'
+        echo 'logDir created'
+    fi
+
+
+    /usr/bin/python ${pypelyneRoot}/pypelyne_server.py >> ${logDir}/pypelyne_server.log 2>&1 &
     echo "Server started."
 }
  
 stop() {
-    pid=`ps -ef | grep '[p]ython ${workdir}/pypelyne-server.py' | awk '{ print $2 }'`
+    pid=`ps -ef | grep '[p]ython ${pypelyneRoot}/pypelyne_server.py' | awk '{ print $2 }'`
     echo $pid
     kill $pid
     sleep 2
@@ -50,7 +59,7 @@ case "$1" in
     start
     ;;
   *)
-    echo "Usage: /etc/init.d/pypelyne-server {start|stop|restart}"
+    echo "Usage: /etc/init.d/pypelyne_server {start|stop|restart}"
     exit 1
 esac
 exit 0

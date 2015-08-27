@@ -71,15 +71,15 @@ reboot
 #ln -s /pypelyne/royalrender_repository/lx__rrServerconsole.sh /etc/init.d/lx__rrServerconsole
 #ln -s /etc/init.d/lx__rrServerconsole /etc/rc3.d/S99lx__rrServerconsole
 
-chmod a+x /pypelyne/PyPELyNE/server_scripts/centos7/rr-server/rr-server.sh
-ln -s /pypelyne/PyPELyNE/server_scripts/centos7/rr-server/rr-server.sh /etc/init.d/rr-server
-#ln -s /etc/init.d/rr-server /etc/rc3.d/S90rr-server
-chkconfig rr-server on
+chmod a+x /pypelyne/PyPELyNE/server_scripts/centos7/rr_server/rr_server.sh
+ln -s /pypelyne/PyPELyNE/server_scripts/centos7/rr_server/rr_server.sh /etc/init.d/rr_server
+#ln -s /etc/init.d/rr_server /etc/rc3.d/S90rr_server
+chkconfig rr_server on
 
-chmod a+x /pypelyne/PyPELyNE/server_scripts/centos7/pypelyne-server/pypelyne-server.sh
-ln -s /pypelyne/PyPELyNE/server_scripts/centos7/pypelyne-server/pypelyne-server.sh /etc/init.d/pypelyne-server
-#ln -s /etc/init.d/pypelyne-server /etc/rc3.d/S90pypelyne-server
-chkconfig pypelyne-server on
+chmod a+x /pypelyne/PyPELyNE/server_scripts/centos7/pypelyne_server/pypelyne_server.sh
+ln -s /pypelyne/PyPELyNE/server_scripts/centos7/pypelyne_server/pypelyne_server.sh /etc/init.d/pypelyne_server
+#ln -s /etc/init.d/pypelyne_-server /etc/rc3.d/S90pypelyne_server
+chkconfig pypelyne_server on
 
 
 

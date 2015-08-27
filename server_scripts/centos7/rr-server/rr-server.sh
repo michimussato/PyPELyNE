@@ -4,16 +4,21 @@
 # https://wolfpaulus.com/journal/software/pythonlauncher/
 #
 workdir='/pypelyne/royalrender_repository/'
- 
+
+pypelyneRoot='/pypelyne/PyPELyNE'
+rrRoot='/pypelyne/royalrender_repository'
+logDir='${pypelyneRoot}/logs'
+
+
 start() {
     if [ -z ${RR_ROOT} ]; 
         then {
-        export RR_ROOT="/pypelyne/royalrender_repository"
+        export RR_ROOT='${rrRoot}'
         echo 'RR_ROOT successfully exported'
         }
     fi
-    cd $workdir
-    ${workdir}/bin/lx64/rrServerconsole >> /pypelyne/log/rr-server.log 2>&1 &
+    #cd $workdir
+    ${rrRoot}/bin/lx64/rrServerconsole >> ${logDir}/rr-server.log 2>&1 &
     echo "Server started."
 }
  

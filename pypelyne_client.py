@@ -35,13 +35,13 @@ app = None
 class pypelyneMainWindow( QMainWindow ):
     addNewScreenCast = pyqtSignal()
 
-    def __init__( self, parent = None ):
+    def __init__( self, parent = None, server = '', port = 50001 ):
         super( pypelyneMainWindow, self ).__init__( parent )
 
         #logging.basicConfig( level = logging.INFO )
 
-        self.serverHost = ''
-        self.serverPort = 50001
+        self.serverHost = server
+        self.serverPort = port
         self.serverAlive = False
 
         self.socket = socket.socket( socket.AF_INET, socket.SOCK_STREAM )
@@ -97,6 +97,7 @@ class pypelyneMainWindow( QMainWindow ):
             self.fileExplorer = fileExplorerDarwin
             self.tarExec = tarExecDarwin
 
+            self.projectsRoot = projectsRootDarwin
             self.audioFolder = audioFolderDarwin
             if screenCastExecDarwin.startswith( os.sep ):
                 self.screenCastExec = screenCastExecDarwin
@@ -110,10 +111,10 @@ class pypelyneMainWindow( QMainWindow ):
                 self.rv = True
         elif self.currentPlatform == "Linux":
             logging.info( 'linux not fully supported' )
-            if os.path.exists( fileExplorerLinux ):
-                self.fileExplorer = fileExplorerLinux
-            elif os.path.exists( fileExplorerLinux ):
-                self.fileExplorer = fileExplorerLinuxAlt
+            if os.path.exists( fileExplorerLinuxGnome ):
+                self.fileExplorer = fileExplorerLinuxGnome
+            elif os.path.exists( fileExplorerLinuxKDE ):
+                self.fileExplorer = fileExplorerLinuxKDE
             else:
                 logging.warning( 'no valid file explorer found for linux' )
             #quit()
@@ -378,12 +379,12 @@ class pypelyneMainWindow( QMainWindow ):
 
 
         if reply == QMessageBox.Yes:
-            #if self.serverAlive == True:
-            self.socket.sendall( 'bye' )
-            byeMsg = self.receiveSerialized( self.socket )
-            print byeMsg
-            self.socket.close()
-            self.serverAlive = False
+            if self.serverAlive == True:
+                self.socket.sendall( 'bye' )
+                byeMsg = self.receiveSerialized( self.socket )
+                print byeMsg
+                self.socket.close()
+                self.serverAlive = False
             event.accept()
         else:
             event.ignore()
@@ -703,7 +704,7 @@ class pypelyneMainWindow( QMainWindow ):
         pigz = os.path.join( self.pypelyneRoot, 'payload', 'pigz', 'darwin', 'pigz' )
         tarDirRoot = os.path.join( self.projectsRoot, self.getCurrentProject(), 'check_out' )
         #print self.getCurrentContent()
-        tarName = dateTime + self.tarSep + self.getCurrentProject() + self.tarSep +os.path.basename( os.path.dirname( node.getNodeAsset() ) ) + self.tarSep + os.path.basename( node.getNodeAsset() ) + self.tarSep + node.label + '.tar.gz'
+        tarName = dateTime + self.tarSep + self.getCurrentProject() + self.tarSep + os.path.basename( os.path.dirname( node.getNodeAsset() ) ) + self.tarSep + os.path.basename( node.getNodeAsset() ) + self.tarSep + node.label + '.tar.gz'
 
         if not os.path.exists( tarDirRoot ):
             os.makedirs( tarDirRoot, mode=0777 )
@@ -738,8 +739,8 @@ class pypelyneMainWindow( QMainWindow ):
         process = QProcess( self )
         process.readyReadStandardOutput.connect( lambda: self.dataReadyStd( process, pColor ) )
         process.readyReadStandardError.connect( lambda: self.dataReadyErr( process, pColor ) )
-        process.started.connect( lambda: self.toolOnStarted( process ) )
-        process.finished.connect( lambda: self.toolOnFinished( process ) )
+        process.started.connect( lambda: self.checkOutOnStarted( process ) )
+        process.finished.connect( lambda: self.checkoutOnFinished( process, node, tarName ) )
 
         process.start( self.tarExec, arguments )
 
@@ -1593,7 +1594,7 @@ class pypelyneMainWindow( QMainWindow ):
                     logging.info( 'project %s found' %( i ) )
         except:
             self.sendTextToBox( 'no project found.\n' )
-            logging.warning( 'no project found' )
+            logging.warning( 'no project found at %s' %( self.projectsRoot ) )
         
         self.sendTextToBox( 'all projects added.\n\n' )
         self.projectComboBox.activated.connect( self.refreshProjects )
@@ -1752,6 +1753,24 @@ class pypelyneMainWindow( QMainWindow ):
 
 
         self.toolsComboBox.setCurrentIndex( 0 )
+
+    def checkOutOnStarted( self, qprocess ):
+        self.qprocesses.append( qprocess )
+
+    def checkoutOnFinished( self, qprocess, node, tarName ):
+        tarNameSplit = tarName.split( self.tarSep )
+        #        0                1        2          3           4
+        #2015-08-27_1134-42_____test_____assets_____asdf_____SVR_AST__asdf.tar.gz
+        #projectName = os.path.basename( os.path.dirname( node.getNodeAsset() ) )
+        projectName = tarNameSplit[ 1 ]
+        contentFamily = tarNameSplit[ 2 ][ :-1 ]
+        #contentName = os.path.basename( node.getNodeAsset() )
+        contentName = tarNameSplit[ 3 ]
+        nodeName = tarNameSplit[ 4 ].split( '.' )[ 0 ]
+        #nodeName = node.label
+        self.qprocesses.remove( qprocess )
+        QMessageBox.information( self, 'check out finished', str( 'node %s successfully checked out\nproject:\t%s\n%s:\t%s\n\narchive file: %s' %( nodeName, projectName, contentFamily, contentName, tarName ) ), QMessageBox.Ok, QMessageBox.Ok )
+        return
 
     def toolOnStarted( self, qprocess ):
         self.qprocesses.append( qprocess )
@@ -1913,7 +1932,7 @@ if __name__ == "__main__":
     #app.aboutToQuit.connect(deleteGLWidget)
     screenSize = QApplication.desktop().availableGeometry()
     logging.info( 'screen resolution is %ix%i' %( int( screenSize.width() ), int( screenSize.height() ) ) )
-    pypelyneWindow = pypelyneMainWindow()
+    pypelyneWindow = pypelyneMainWindow( server = '192.168.0.22' )
     #screenSize = QApplication.desktop().availableGeometry()
     pypelyneWindow.resize( int( screenSize.width() ), int( screenSize.height() ) )
     pypelyneWindow.show()

@@ -153,6 +153,8 @@ class SceneView( QGraphicsScene ):
         else:
             print 'content already has a saver'
         self.menu.addSeparator()
+
+        self.menu.addAction( 'from library...', self.fooCallback( 'from library item' ) )
         
         try:
 
@@ -177,25 +179,46 @@ class SceneView( QGraphicsScene ):
                 if not nodeClicked.label.startswith( 'LDR' ) and not nodeClicked.label.startswith( 'SVR' ):
                     self.menuNode.addAction( 'open node directory', lambda: self.mainWindow.locateContent( nodeClicked.getNodeRootDir() ) )
 
+                    if not os.path.exists( os.path.join( nodeClicked.getNodeRootDir(), 'locked' ) ):
+                        self.menuNode.addSeparator()
+                        self.menuNode.addAction( 'cleanup node', self.cleanUpNodeCallback( nodeClicked ) )
+                        self.menuNode.addAction( 'delete node', self.removeObjectCallback( nodeClicked ) )
+
+                        if os.path.exists( os.path.join( nodeClicked.getNodeRootDir(), 'checkedOut' ) ):
+                            self.menuNode.addSeparator()
+                            self.menuNode.addAction( 'check in node', self.mainWindow.checkInCallback( nodeClicked ) )
+
+                        else:
+                            self.menuNode.addSeparator()
+                            self.menuNode.addAction( 'check out node', self.mainWindow.checkOutCallback( nodeClicked ) )
+
                 elif nodeClicked.label.startswith( 'LDR_AST' ):
+
                     self.menuNode.addAction( 'open asset tree', lambda: self.mainWindow.getAssetContent( None, nodeClicked.getLabel() ) )
+                    self.menuNode.addSeparator()
+                    self.menuNode.addAction( 'delete asset loader', self.removeObjectCallback( nodeClicked ) )
 
                 elif nodeClicked.label.startswith( 'LDR_SHT' ):
                     #self.menuNode.addAction( 'open shot', lambda: self.foo( nodeClicked.getNodeRootDir() ) )
                     self.menuNode.addAction( 'open shot tree', lambda: self.mainWindow.getShotContent( None, nodeClicked.getLabel() ) )
+                    self.menuNode.addSeparator()
+                    self.menuNode.addAction( 'delete shot loader', self.removeObjectCallback( nodeClicked ) )
+
+                elif nodeClicked.label.startswith( 'SVR_AST' ):
+                    self.menuNode.addAction( 'delete asset saver', self.removeObjectCallback( nodeClicked ) )
+                    self.menuNode.addSeparator()
+                    self.menuNode.addAction( 'check out asset', self.mainWindow.checkOutCallback( nodeClicked ) )
+
+                elif nodeClicked.label.startswith( 'SVR_SHT' ):
+                    self.menuNode.addAction( 'delete shot saver', self.removeObjectCallback( nodeClicked ) )
+                    self.menuNode.addSeparator()
+                    self.menuNode.addAction( 'check out shot', self.mainWindow.checkOutCallback( nodeClicked ) )
+
                     #self.mainWindow.getShotContent( None, nodeClicked.getLabel() )
 
                 self.menuNode.addSeparator()
                 #self.menu.addAction( 'cleanup node', self.fooCallback( 'cleanup node' ) )
-                if not os.path.exists( os.path.join( nodeClicked.getNodeRootDir(), 'locked' ) ):
-                    self.menuNode.addAction( 'cleanup node', self.cleanUpNodeCallback( nodeClicked ) )
-                    self.menuNode.addAction( 'delete node', self.removeObjectCallback( nodeClicked ) )
 
-                    if os.path.exists( os.path.join( nodeClicked.getNodeRootDir(), 'checkedOut' ) ):
-                        self.menuNode.addAction( 'check in node', self.mainWindow.checkInCallback( nodeClicked ) )
-
-                    else:
-                        self.menuNode.addAction( 'check out node', self.mainWindow.checkOutCallback( nodeClicked ) )
 
 
 
@@ -333,13 +356,31 @@ class SceneView( QGraphicsScene ):
 
                     #print 'added'
                 self.menuOutput.addSeparator()
+                #print versions
                 for version in versions:
-                    if not version == 'current' and not version in self.exclusions:
+                    '''
+                    if version in self.exclusions:
+                        try:
+                            os.remove( os.path.join( outputDir, version ) )
+                            logging.info( 'exclusion found in versions of output %s. %s removed.' %( objectClicked.label, os.path.join( outputDir, version ) ) )
+                        except:
+                            logging.warning( 'exclusion found but not removed: %s' %( os.path.join( outputDir, version ) ) )
+                    '''
+                    if not version == 'current':
 
                         versionPath = os.path.join( outputDir, version )
                         #print versionPath
 
                         outputDirContent = os.listdir( versionPath )
+                        for item in outputDirContent:
+                            if item in self.exclusions:
+                                try:
+                                    os.remove( os.path.join( versionPath, item ) )
+                                    outputDirContent.remove( item )
+                                    logging.info( 'exclusion found and removed: %s' %( os.path.join( versionPath, item ) ) )
+                                except:
+                                    outputDirContent.remove( item )
+                                    logging.warning( 'exclusion found but not removed: %s' %( os.path.join( versionPath, item ) ) )
                         outputDirContent.remove( outputLabel )
 
                         menuMakeLive = self.menuOutput.addMenu( version )
@@ -355,11 +396,17 @@ class SceneView( QGraphicsScene ):
                         #print 'here we are'
 
                         if outputLabel.startswith( 'SEQ' ) or outputLabel.startswith( 'TEX' ) or outputLabel.startswith( 'PLB' ):
+                            '''
                             for exclusion in self.exclusions:
                                 try:
+                                    #if os.path.exists( os.path.join( outputDirContent, exclusion ) ):
+                                    logging.info( 'exclusion removed from list: %s' %( os.path.join( outputDirContent, exclusion ) ) )
+                                    #os.remove( os.path.join( outputDirContent, exclusion ) )
                                     outputDirContent.remove( exclusion )
                                 except:
-                                    pass
+                                    logging.warning( 'exclusion found but not removed from list: %s' %( os.path.join( outputDirContent, exclusion ) ) )
+                            '''
+
                             try:
                                 menuMakeLive.addAction( 'view', self.viewVersion( os.path.join( versionPath, outputDirContent[ 0 ] ) ) )
                                 try:
@@ -607,6 +654,15 @@ class SceneView( QGraphicsScene ):
 
     def getVersions( self, fullOutputDir ):
         versions = os.listdir( fullOutputDir )
+        for version in versions:
+            if version in self.exclusions:
+                try:
+                    os.remove( os.path.join( fullOutputDir, version ) )
+                    versions.remove( version )
+                    logging.info( 'exclusion found and removed: %s' %( os.path.join( fullOutputDir, version ) ) )
+                except:
+                    versions.remove( version )
+                    logging.warning( 'exclusion found but not removed: %s' %( os.path.join( fullOutputDir, version ) ) )
         return versions
 
     def foo( self, arg ):
@@ -1574,6 +1630,7 @@ class SceneView( QGraphicsScene ):
                     if os.path.basename( startItems[ 0 ].parentItem().getNodeRootDir() ).startswith( 'LDR' ) \
                                     and os.path.basename( endItems[ 0 ].parentItem().getNodeRootDir() ).startswith( 'SVR' ):
                         parentNode.sendFromNodeToBox( '--- don\'t connect loader to saver' + '\n' )
+                        logging.info( 'tried to connect loader to saver, which is not possible' )
                     else:
 
                         #print "is an input :)"

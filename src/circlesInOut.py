@@ -111,9 +111,6 @@ class portOutput( QGraphicsItem ):
         painter.drawEllipse( self.rect )
 
     def setPortOutputColor( self ):
-
-
-
         if len( str( self.data( 0 ).toPyObject() ).split( '.' ) ) > 1:
             self.nodeOutput = str( self.data( 0 ).toPyObject() ).split( '.' )[ 3 ].split( '__' )[ 0 ]
 
@@ -205,6 +202,11 @@ class portInput( QGraphicsItem ):
         self.setFlags( QGraphicsItem.ItemIsSelectable )
 
         self.mainWindow = mainWindow
+
+        self._outputs = self.mainWindow.getOutputs()
+
+        self.portInputColorItem = QColor( 0, 0, 0 )
+        self.portInputRingColorItem = QColor( 0, 0, 0 )
         
         self.scene = scene
         self.node = node
@@ -253,19 +255,57 @@ class portInput( QGraphicsItem ):
         return self.rect
 
     def paint( self, painter, option, widget ):
+
         painter.setRenderHint( QPainter.Antialiasing )
         pen = QPen( Qt.SolidLine )
         pen.setColor( Qt.black )
         pen.setWidth( 3 )
-        
         painter.setPen( pen )
-        if len( self.connection ) == 0:
-            painter.setBrush( QColor( 0, 0, 0, 0 ) )
-            for i in self.icon:
-                painter.drawLine( i )
-        elif len( self.connection ) == 1:
+        if self.label == None:
+            if len( self.connection ) == 0:
+                painter.setBrush( QColor( 0, 0, 0, 0 ) )
+                for i in self.icon:
+                    painter.drawLine( i )
+            elif len( self.connection ) == 1:
+                #painter.setBrush( QColor( 0, 0, 0, 255 ) )
+                painter.setBrush( self.portInputColorItem )
+        else:
+            self.setPortInputColor()
             painter.setBrush( self.portInputColorItem )
         painter.drawEllipse( self.rect )
+
+
+    def setPortInputColor( self ):
+        #print self.label
+        if len( self.label.split( '.' ) ) > 1:
+            self.nodeInput = self.label.split( '.' )[ 3 ].split( '__' )[ 0 ]
+
+        else:
+            self.nodeInput = self.label.split( '__' )[ 0 ]
+
+        #print self.nodeInput
+        index = 0
+        found = False
+        for i in self._outputs:
+            if found == False:
+
+                for j in i:
+                    #print j
+                    if found == False:
+                        #print self._outputs[ index ][ 0 ][ 0 ][ 1 ]
+                        if [ item for item in j if self.nodeInput in item and not 'mime' in item ]:
+
+                            found = True
+                            #print 'found = %s' %( found )
+                            inputIndex = index
+
+                            self.portInputColor = self._outputs[ inputIndex ][ 0 ][ 0 ][ 1 ]
+
+                            break
+                index += 1
+            else:
+                break
+        self.portInputColorItem.setNamedColor( self.portInputColor )
 
 
 class portOutputButton( QGraphicsItem ):

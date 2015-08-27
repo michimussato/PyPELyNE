@@ -6,6 +6,7 @@ from PyQt4.QtCore import *
 from PyQt4.uic import *
 from PyQt4.QtOpenGL import *
 from random import *
+import logging
 
 from src.pypelyneConfigurationWindow import *
 from src.bezierLine import *
@@ -13,6 +14,8 @@ from src.graphicsScene import *
 from src.screenCast import *
 from src.timeTracker import *
 from src.listScreenCasts import *
+from src.nodeWidget import *
+from src.playerWidget import *
 
 from conf.valuePyPELyNE import *
 
@@ -25,41 +28,7 @@ except:
     #raise ImportError( 'failed to import vlc' )
 
 
-
-
-
 app = None
-        
-        
-class nodeWidgetUi( QWidget ):
-    def __init__( self, mainWindow, parent = None ):
-        super( nodeWidgetUi, self ).__init__( parent )
-        self.mainWindow = mainWindow
-        self.pypelyneRoot = self.mainWindow.getPypelyneRoot()
-        self.currentPlatform = self.mainWindow.getCurrentPlatform()
-
-        self.ui = loadUi( os.path.join( self.pypelyneRoot, 'ui', 'nodeWidget.ui' ), self )
-
-
-
-class playerWidgetUi( QWidget ):
-    def __init__( self, mainWindow, parent = None ):
-        super( playerWidgetUi, self ).__init__( parent )
-        self.mainWindow = mainWindow
-        self.pypelyneRoot = self.mainWindow.getPypelyneRoot()
-        self.currentPlatform = self.mainWindow.getCurrentPlatform()
-
-        self.ui = loadUi( os.path.join( self.pypelyneRoot, 'ui', 'player.ui' ), self )
-
-
-        #self.connect( self.pushButtonPlayStop, SIGNAL( 'customContextMenuRequested( const QPoint& )' ), self.playerContextMenu )
-        #self.contextMenu =QMenu()
-        #self.contextMenu.addSeparator()
-
-    #def playerContextMenu( self, point ):
-        #sendingButton = self.sender()
-        #self.contextMenu.exec_( sendingButton.mapToGlobal( point ) )
-
 
 
 
@@ -68,6 +37,8 @@ class pypelyneMainWindow( QMainWindow ):
 
     def __init__( self, parent = None ):
         super( pypelyneMainWindow, self ).__init__( parent )
+
+        #logging.basicConfig( level = logging.INFO )
 
         self.pypelyneRoot = os.getcwd()
         self.currentPlatform = platform.system()
@@ -79,7 +50,10 @@ class pypelyneMainWindow( QMainWindow ):
         self.tarSep = archiveSeparator
 
         if self.currentPlatform == "Windows":
-            print 'platform not fully supported'
+
+            #print 'platform not fully supported'
+            logging.info( 'Windows not fully supported' )
+            self.fileExplorer = fileExplorerWin
             self.tarExec = tarExecWin
             self.projectsRoot = projectsRootWin
             self.audioFolder = audioFolderWin
@@ -94,6 +68,8 @@ class pypelyneMainWindow( QMainWindow ):
                 self.sequenceExec = sequenceExecRvWin
                 self.rv = True
         elif self.currentPlatform == "Darwin":
+            logging.info( 'welcome to pypelyne for darwin' )
+            self.fileExplorer = fileExplorerDarwin
             self.tarExec = tarExecDarwin
             self.projectsRoot = projectsRootDarwin
             self.audioFolder = audioFolderDarwin
@@ -108,8 +84,14 @@ class pypelyneMainWindow( QMainWindow ):
                 self.sequenceExec = sequenceExecRvDarwin
                 self.rv = True
         elif self.currentPlatform == "Linux":
-            print 'platform not supported. bye.'
-            quit()
+            logging.info( 'linux not fully supported' )
+            if os.path.exists( fileExplorerLinux ):
+                self.fileExplorer = fileExplorerLinux
+            elif os.path.exists( fileExplorerLinux ):
+                self.fileExplorer = fileExplorerLinuxAlt
+            else:
+                logging.warning( 'no valid file explorer found for linux' )
+            #quit()
             self.tarExec = tarExecLinux
             self.projectsRoot = projectsRootLinux
             self.audioFolder = audioFolderLinux
@@ -186,22 +168,28 @@ class pypelyneMainWindow( QMainWindow ):
         self.addTools()
 
         if os.path.exists( self.audioFolder ):
+            logging.info( 'audioFolder found at %s' %( self.audioFolder ) )
             self.audioFolderContent = os.listdir( self.audioFolder )
             for exclusion in self.exclusions:
                 try:
                     self.audioFolderContent.remove( exclusion )
-                    print 'exclusion %s removed from audioFolderContent' %( exclusion )
+                    logging.info( 'exclusion %s removed from audioFolderContent' %( exclusion ) )
                 except:
-                    pass
+                    logging.warning( 'could not remove exclusion %s from audioFolderContent' %( exclusion ) )
 
             self.addPlayer()
 
             if len( os.listdir( self.audioFolder ) ) == 0:
+                logging.warning( '%s items found in %s' %( len( os.listdir( self.audioFolder ) ), self.audioFolder ) )
                 #print 'no audio files found'
                 self.playerUi.pushButtonPlayStop.setEnabled( False )
 
                 #self.playerUi.radioButtonStop.setEnabled( False )
                 #self.playerUi.buttonSkip.setEnabled( False )
+            else:
+                logging.info( '%s items found in %s' %( len( os.listdir( self.audioFolder ) ), self.audioFolder ) )
+        else:
+            logging.warning( 'no audioFolder found at %s' %( self.audioFolder ) )
         
         
         self.runToolPushButton.clicked.connect( self.runTool )
@@ -241,7 +229,7 @@ class pypelyneMainWindow( QMainWindow ):
         else:
             self.screenCastsUI.activateWindow()
             self.screenCastsUI.raise_()
-        print 'hallo'
+        #print 'hallo'
 
     def resetScreenCastsWindowOpen( self ):
         #print 'emitted'
@@ -261,9 +249,13 @@ class pypelyneMainWindow( QMainWindow ):
 
             pids = ', '.join( [ str( qprocess )[ :-1 ] for qprocess in qprocesses ] )
 
+
+
             quit_msg = "Too early to leave. There is still something running...\n\nPID(s): %s" %( pids )
 
             reply = QMessageBox.critical( self, 'Message', quit_msg, QMessageBox.Ok )
+
+
 
 
             #print 'about to close'
@@ -594,7 +586,7 @@ class pypelyneMainWindow( QMainWindow ):
         pigz = os.path.join( self.pypelyneRoot, 'payload', 'pigz', 'darwin', 'pigz' )
         tarDirRoot = os.path.join( self.projectsRoot, self.getCurrentProject(), 'check_out' )
         #print self.getCurrentContent()
-        tarName = dateTime + self.tarSep + self.getCurrentProject() + self.tarSep +os.path.basename( os.path.dirname( node.getNodeAsset() ) ) + self.tarSep + os.path.basename( node.getNodeAsset() ) + self.tarSep + node.label + '.tar.gz'
+        tarName = dateTime + self.tarSep + self.getCurrentProject() + self.tarSep + os.path.basename( os.path.dirname( node.getNodeAsset() ) ) + self.tarSep + os.path.basename( node.getNodeAsset() ) + self.tarSep + node.label + '.tar.gz'
 
         if not os.path.exists( tarDirRoot ):
             os.makedirs( tarDirRoot, mode=0777 )
@@ -614,8 +606,8 @@ class pypelyneMainWindow( QMainWindow ):
         arguments.append( 'output/*.*' )
         arguments.append( '--exclude' )
         arguments.append( 'live' )
-        arguments.append( '--exclude' )
-        arguments.append( 'propertyNode.xml' )
+        #arguments.append( '--exclude' )
+        #arguments.append( 'propertyNode.xml' )
         arguments.append( '--use-compress-program' )
         arguments.append( pigz )
         arguments.append( '-f' )
@@ -629,8 +621,8 @@ class pypelyneMainWindow( QMainWindow ):
         process = QProcess( self )
         process.readyReadStandardOutput.connect( lambda: self.dataReadyStd( process, pColor ) )
         process.readyReadStandardError.connect( lambda: self.dataReadyErr( process, pColor ) )
-        process.started.connect( lambda: self.toolOnStarted( process ) )
-        process.finished.connect( lambda: self.toolOnFinished( process ) )
+        process.started.connect( lambda: self.checkOutOnStarted( process ) )
+        process.finished.connect( lambda: self.checkoutOnFinished( process, node, tarName ) )
 
         process.start( self.tarExec, arguments )
 
@@ -797,12 +789,13 @@ class pypelyneMainWindow( QMainWindow ):
 
                                     #self._tools.append( ( vendor.items()[ 0 ][ 1 ] + ' ' + family.items()[ 1 ][ 1 ] + ' ' + version.items()[ 0 ][ 1 ] + ' ' + platform.items()[ 0 ][ 1 ] + ' ' + executable.tag, command, familyAbbreviation ) )
                                     #self._tools.append( ( vendorValue + ' ' + familyValue + ' ' + versionValue + ' ' + platformValue + ' ' + executableArch, command, familyAbbreviation, vendorValue, familyValue, versionValue, executableArch ) )
+                                    logging.info( 'application' + vendorValue + ' ' + familyValue + ' ' + versionValue + ' ' + executableArch + ' found on this machine.' )
                                     self._tools.append( ( vendorValue + ' ' + familyValue + ' ' + versionValue + ' ' + executableArch, command, familyAbbreviation, vendorValue, familyValue, versionValue, executableArch, versionTemplate, directoryList, defaultOutputList, flags, versionWorkspace ) )
                                     self.sendTextToBox( '\t' + vendorValue + ' ' + familyValue + ' ' + versionValue + ' ' + executableArch + ' found.\n' )
 
                                 else:
-                                    print 'path not found: %s. application not added to tools dropdown' %( path )
-                                    self.sendTextToBox( '\t' + vendorValue + ' ' + familyValue + ' ' + versionValue + ' ' + executableArch + ' not found.\n' )
+                                    logging.warning( 'path not found: %s. application not added to tools dropdown' %( path ) )
+                                    self.sendTextToBox( '\t' + vendorValue + ' ' + familyValue + ' ' + versionValue + ' ' + executableArch + ' not found.' )
 
 
         self.sendTextToBox( 'initialization done.\n\n' )
@@ -834,14 +827,16 @@ class pypelyneMainWindow( QMainWindow ):
         #print contentFiles
         if os.path.exists( contentFiles ):
             if self.currentPlatform == 'Windows':
-                subprocess.call( 'explorer.exe %s' %contentFiles, shell=False )
+                subprocess.call( self.fileExplorer + contentFiles, shell=False )
             elif self.currentPlatform == 'Darwin':
-                subprocess.Popen( [ '/usr/bin/open', contentFiles ], shell=False )
+                subprocess.Popen( [ self.fileExplorer, contentFiles ], shell=False )
+            elif self.currentPlatform == 'Linux':
+                subprocess.Popen( [ self.fileExplorer, contentFiles ], shell=False )
             else:
-                self.sendTextToBox( 'platform %s not supported\n' %self.currentPlatform )
+                self.sendTextToBox( 'platform %s not supported\n' %( self.currentPlatform ) )
         else:
 
-            print 'project does not exist:', contentFiles
+            logging.warning( 'project does not exist:', contentFiles )
     
     def cloneContent( self, contentFiles ):
         tabIndex = self.assetsShotsTabWidget.currentIndex()
@@ -861,6 +856,7 @@ class pypelyneMainWindow( QMainWindow ):
         #print contentFiles
         
         shutil.rmtree( contentFiles )
+        logging.info( 'content removed from filesystem: %s' %contentFiles )
         self.sendTextToBox( 'content removed from filesystem: %s\n' %contentFiles )
         
         self.addContent()
@@ -884,7 +880,7 @@ class pypelyneMainWindow( QMainWindow ):
             newContentPath = self.shotsRoot
             
         newContent = os.path.join( newContentPath, str( text ) )
-        print 'newContent = %s' %( newContent )
+        #logging.info( 'newContent = %s' %( newContent ) )
 
 
         #for char in list( text ):
@@ -894,10 +890,13 @@ class pypelyneMainWindow( QMainWindow ):
             if not os.path.exists( newContent ):
                 os.makedirs( newContent, mode=0777 )
                 self.addContent()
-                self.sendTextToBox( 'content created on filesystem: %s\n' %newContent )
+                self.sendTextToBox( 'content created on filesystem: %s\n' %( newContent ) )
+                logging.info( 'content created on filesystem: %s' %( newContent ) )
+
             else:
-                self.sendTextToBox( 'content not created because it already exists (%s)\n' %newContent )
-                self.sendTextToBox( 'choose different name.\n' %newContent )
+                self.sendTextToBox( 'content not created because it already exists (%s)\n' %( newContent ) )
+                self.sendTextToBox( 'choose different name.\n' )
+                logging.warning( 'content not created because it already exists (%s)' %( newContent ) )
 
         #    else:
         #        self.sendTextToBox( 'invalid characters: %s\n' %text )
@@ -972,115 +971,118 @@ class pypelyneMainWindow( QMainWindow ):
         self.configWindow.show()
 
     def computeConnections( self ):
-        print '\ncomputeConnections...'
-        # get all nodes
-        nodeList = self.scene.getNodeList()
-        # for each node
-        for nodeDst in nodeList:
-            print '\nnodeDst = %s' %( nodeDst.data( 0 ).toPyObject() )
-            # get node inputs
-            nodeRootDir = nodeDst.getNodeRootDir()
-            nodeInputDir = os.sep.join( [ str( nodeRootDir ), 'input' ] )
-            #endItems =
-            inputs = os.listdir( nodeInputDir )
-            #print inputs
-            # for each input
+        try:
+            logging.info( 'computeConnections...' )
+            # get all nodes
+            nodeList = self.scene.getNodeList()
+            # for each node
+            for nodeDst in nodeList:
+                logging.info( '%s:' %( nodeDst.data( 0 ).toPyObject() ) )
+                # get node inputs
+                nodeRootDir = nodeDst.getNodeRootDir()
+                nodeInputDir = os.sep.join( [ str( nodeRootDir ), 'input' ] )
+                #endItems =
+                inputs = os.listdir( nodeInputDir )
+                #print inputs
+                # for each input
 
-            for input in  inputs:
-                if len( inputs ) > 0 and not input in self.exclusions:
-                    print '\tprocessing input %s' %( input )
-                    # input circle = endItem
-                    endItem = nodeDst.inputList[ len( nodeDst.inputs ) ]
-                    # find connected node (string[ 2 ])
-                    inputString = input.split( '.' )
-                    #print inputString
-                    inputContent = inputString[ 0 ]
-                    inputAsset = inputString[ 1 ]
-                    inputNode = inputString[ 2 ]
-                    inputOutput = inputString[ 3 ]
+                for input in  inputs:
+                    if len( inputs ) > 0 and not input in self.exclusions:
+                        logging.info( '\tprocessing input %s' %( input ) )
+                        # input circle = endItem
+                        endItem = nodeDst.inputList[ len( nodeDst.inputs ) ]
+                        # find connected node (string[ 2 ])
+                        inputString = input.split( '.' )
+                        #print inputString
+                        inputContent = inputString[ 0 ]
+                        inputAsset = inputString[ 1 ]
+                        inputNode = inputString[ 2 ]
+                        inputOutput = inputString[ 3 ]
 
-                    nodeDstAssetDir = nodeDst.getNodeAsset()
-                    #print nodeDst.getNodeAsset()
-                    for nodeSrc in nodeList:
-                        #print input.getInputDir()
-                        #print nodeSrc.getNodeRootDir()
-                        nodeSrcRootDir = nodeSrc.getNodeRootDir()
-                        nodeSrcRootDirBasename = os.path.basename( nodeSrcRootDir )
+                        nodeDstAssetDir = nodeDst.getNodeAsset()
+                        #print nodeDst.getNodeAsset()
+                        for nodeSrc in nodeList:
+                            #print input.getInputDir()
+                            #print nodeSrc.getNodeRootDir()
+                            nodeSrcRootDir = nodeSrc.getNodeRootDir()
+                            nodeSrcRootDirBasename = os.path.basename( nodeSrcRootDir )
 
-                        #print nodeSrcRootDir
-                        #print os.path.join( nodeDstAssetDir, inputNode )
+                            #print nodeSrcRootDir
+                            #print os.path.join( nodeDstAssetDir, inputNode )
 
-                        if inputContent == 'assets':
-                            content = 'AST'
-                        elif inputContent == 'shots':
-                            content = 'SHT'
+                            if inputContent == 'assets':
+                                content = 'AST'
+                            elif inputContent == 'shots':
+                                content = 'SHT'
 
-                        outputItems = nodeSrc.outputList
-
-
-                        if nodeSrcRootDir == os.path.join( nodeDstAssetDir, inputNode ):
-                            print '\t\tnodeSrc is a task'
-                            print '\t\tnodeSrc is %s' %( nodeSrc.data( 0 ).toPyObject() )
-                            print '\t\tlooking for output called %s' %( inputOutput )
-                            for outputItem in outputItems:
-                                print '\t\t\tprocessing output %s' %( outputItem.data( 0 ).toPyObject() )
-                                if outputItem.data( 0 ).toPyObject() == inputOutput:
-                                    print '\t\t\t\t found output %s' %( outputItem.data( 0 ).toPyObject() )
-                                    startItem = outputItem
-                                    #startItem =
-                                    #break
-                                #else:
-                                #    print '\t\t\t\tnot found'
-
-                        elif nodeSrcRootDir == os.path.join( nodeDstAssetDir, 'LDR_' + content + '__' + inputAsset ):
-                            print '\t\tnodeSrc is a loader'
-                            print '\t\tnodeSrc is %s' %( nodeSrc.data( 0 ).toPyObject() )
-                            print '\t\tlooking for output called %s' %( inputOutput )
-                            for outputItem in outputItems:
-                                print '\t\t\tprocessing output %s' %( outputItem.data( 0 ).toPyObject().split( '.' )[ 3 ] )
-                                #print nodeSrc.data( 0 ).toPyObject()
-                                print '\t\tlooking for output called %s' %( inputOutput )
-                                searchString = outputItem.data( 0 ).toPyObject().split( '.' )[ 3 ]
-                                if searchString == inputOutput:
-                                    print '\t\t\t\t found output %s' %( outputItem.data( 0 ).toPyObject().split( '.' )[ 3 ] )
-                                    startItem = outputItem
-                                    #endItem = nodeDst.inputList[ len( nodeDst.inputs ) ]
-                                    #connectionLine = bezierLine( self, self.scene, startItem, endItem )
-                                    #break
-                                #else:
-                                #    print '\t\t\t\tnot found'
-
-                    endItem = nodeDst.inputList[ len( nodeDst.inputs ) ]
-
-                    connectionLine = bezierLine( self, self.scene, startItem, endItem )
-
-                    endItem.parentItem().inputs.append( endItem )
-                    endItem.connection.append( connectionLine )
-                    endItem.output.append( startItem )
-                    endItem.parentItem().incoming.append( startItem )
-                    startItem.inputs.append( endItem )
-
-                    startItemRootDir = startItem.parentItem().getNodeRootDir()
-                    endItemRootDir = endItem.parentItem().getNodeRootDir()
-
-                    startItemOutputLabel = startItem.getLabel()
-
-                    endItemInputDir = os.path.join( str( endItemRootDir ), 'input', str( input ) )
-
-                    endItem.setInputDir( endItemInputDir )
-
-                    self.scene.addItem( connectionLine )
-
-                    endItem.parentItem().newInput( self.scene )
+                            outputItems = nodeSrc.outputList
 
 
-                elif input in self.exclusions:
-                    print 'input data is in exclusions list'
+                            if nodeSrcRootDir == os.path.join( nodeDstAssetDir, inputNode ):
+                                logging.info( '\t\tnodeSrc is a task' )
+                                logging.info( '\t\tnodeSrc is %s' %( nodeSrc.data( 0 ).toPyObject() ) )
+                                logging.info( '\t\tlooking for output called %s' %( inputOutput ) )
+                                for outputItem in outputItems:
+                                    logging.info( '\t\t\tprocessing output %s' %( outputItem.data( 0 ).toPyObject() ) )
+                                    if outputItem.data( 0 ).toPyObject() == inputOutput:
+                                        logging.info( '\t\t\t\t found output %s' %( outputItem.data( 0 ).toPyObject() ) )
+                                        startItem = outputItem
+                                        #startItem =
+                                        #break
+                                    #else:
+                                    #    print '\t\t\t\tnot found'
 
-                else:
-                    print 'node %s has no input' %( node.data( 0 ).toPyObject() )
+                            elif nodeSrcRootDir == os.path.join( nodeDstAssetDir, 'LDR_' + content + '__' + inputAsset ):
+                                logging.info( '\t\tnodeSrc is a loader' )
+                                logging.info( '\t\tnodeSrc is %s' %( nodeSrc.data( 0 ).toPyObject() ) )
+                                logging.info( '\t\tlooking for output called %s' %( inputOutput ) )
+                                for outputItem in outputItems:
+                                    logging.info( '\t\t\tprocessing output %s' %( outputItem.data( 0 ).toPyObject().split( '.' )[ 3 ] ) )
+                                    #print nodeSrc.data( 0 ).toPyObject()
+                                    logging.info( '\t\tlooking for output called %s' %( inputOutput ) )
+                                    searchString = outputItem.data( 0 ).toPyObject().split( '.' )[ 3 ]
+                                    if searchString == inputOutput:
+                                        logging.info( '\t\t\t\t found output %s' %( outputItem.data( 0 ).toPyObject().split( '.' )[ 3 ] ) )
+                                        startItem = outputItem
+                                        #endItem = nodeDst.inputList[ len( nodeDst.inputs ) ]
+                                        #connectionLine = bezierLine( self, self.scene, startItem, endItem )
+                                        #break
+                                    #else:
+                                    #    print '\t\t\t\tnot found'
+
+                        endItem = nodeDst.inputList[ len( nodeDst.inputs ) ]
+
+                        connectionLine = bezierLine( self, self.scene, startItem, endItem )
+
+                        endItem.parentItem().inputs.append( endItem )
+                        endItem.connection.append( connectionLine )
+                        endItem.output.append( startItem )
+                        endItem.parentItem().incoming.append( startItem )
+                        startItem.inputs.append( endItem )
+
+                        startItemRootDir = startItem.parentItem().getNodeRootDir()
+                        endItemRootDir = endItem.parentItem().getNodeRootDir()
+
+                        startItemOutputLabel = startItem.getLabel()
+
+                        endItemInputDir = os.path.join( str( endItemRootDir ), 'input', str( input ) )
+
+                        endItem.setInputDir( endItemInputDir )
+
+                        self.scene.addItem( connectionLine )
+
+                        endItem.parentItem().newInput( self.scene )
 
 
+                    elif input in self.exclusions:
+                        logging.info( 'input data is in exclusions list' )
+
+                    else:
+                        logging.info( 'node %s has no input' %( node.data( 0 ).toPyObject() ) )
+
+
+        except:
+            logging.warning( 'computeConnections error. aborted.' )
 
 
 
@@ -1189,11 +1191,11 @@ class pypelyneMainWindow( QMainWindow ):
 
 
     def getShotContent( self, shotButton = None, nodeShtLabel = None ):
-        print shotButton
-        print nodeShtLabel
+        #print shotButton
+        #print nodeShtLabel
 
         if not shotButton == None:
-            print shotButton.text()
+            #print shotButton.text()
             buttonText = shotButton.text()
         elif not nodeShtLabel == None:
             buttonText = nodeShtLabel.split( '__' )[ 1 ]
@@ -1220,14 +1222,21 @@ class pypelyneMainWindow( QMainWindow ):
         self.currentContent = currentProject + os.sep + 'content' + os.sep + 'shots' + os.sep + buttonText
 
         for nodeItem in shotContent:
-            if nodeItem in self.exclusions:
-                pass
+            if not nodeItem in self.exclusions:
+                if os.path.isdir( os.path.join( self.shotsRoot, str( buttonText ), nodeItem ) ):
+
+                    self.propertyNodePathShots = os.path.join( self.shotsRoot, str( buttonText ), nodeItem, 'propertyNode.xml' )
+
+                    newNode = node( self, self.scene, self.propertyNodePathShots )
+                    newNode.addText( self.scene, nodeItem )
+                    self.scene.addToNodeList( newNode )
+                else:
+                    logging.warning( 'shots: nodeItem %s is not a directory' %( nodeItem ) )
+
             else:
-                self.propertyNodePathShots = os.path.join( self.shotsRoot, str( buttonText ), nodeItem, 'propertyNode.xml' )
-                
-                newNode = node( self, self.scene, self.propertyNodePathShots )
-                newNode.addText( self.scene, nodeItem )
-                self.scene.addToNodeList( newNode )
+                os.remove( os.path.join( self.shotsRoot, str( buttonText ), nodeItem ) )
+                logging.info( 'exclusion %s found and cleaned' %( nodeItem ) )
+
                 
         self.computeConnections()
             
@@ -1263,14 +1272,21 @@ class pypelyneMainWindow( QMainWindow ):
         self.currentContent = currentProject + os.sep + 'content' + os.sep + 'assets' + os.sep + buttonText
 
         for nodeItem in assetContent:
-            if nodeItem in self.exclusions:
-                pass
+
+            if not nodeItem in self.exclusions:
+                if os.path.isdir( os.path.join( self.assetsRoot, str( buttonText ), nodeItem ) ):
+                    self.propertyNodePathAssets = os.path.join( self.assetsRoot, str( buttonText ), nodeItem, 'propertyNode.xml' )
+
+                    newNode = node( self, self.scene, self.propertyNodePathAssets )
+                    newNode.addText( self.scene, nodeItem )
+                    self.scene.addToNodeList( newNode )
+
+                else:
+                    logging.warning( 'assets: nodeItem %s is not a directory' %( nodeItem ) )
             else:
-                self.propertyNodePathAssets = os.path.join( self.assetsRoot, str( buttonText ), nodeItem, 'propertyNode.xml' )
-                
-                newNode = node( self, self.scene, self.propertyNodePathAssets )
-                newNode.addText( self.scene, nodeItem )
-                self.scene.addToNodeList( newNode )
+                os.remove( os.path.join( self.assetsRoot, str( buttonText ), nodeItem ) )
+                logging.info( 'exclusion %s found and cleaned' %( nodeItem ) )
+
                 
         self.computeConnections()
 
@@ -1287,20 +1303,15 @@ class pypelyneMainWindow( QMainWindow ):
             for i in os.listdir( self.assetsRoot ):
                 if not i in self.exclusions:
                     assets.append( i )
-                else:
-                    pass
-                    
-                
         except:
-            print 'no assetsRoot found'
+            logging.warning( 'no assetsRoot found' )
+
         try:
             for i in os.listdir( self.shotsRoot ):
                 if not i in self.exclusions:
                     shots.append( i )
-                else:
-                    pass
         except:
-            print 'no shotsRoot found'  
+            logging.warning( 'no shotsRoot found' )
     
     
         #Assets
@@ -1320,6 +1331,7 @@ class pypelyneMainWindow( QMainWindow ):
             self.connect( assetPushButton, SIGNAL( 'customContextMenuRequested( const QPoint& )' ), self.contentContextMenu )
             layoutAssets.addWidget( assetPushButton )
             self.assetButtonGroup.addButton( assetPushButton )
+            logging.info( 'asset %s found' %( i ) )
             
         layoutAssets.addItem( QSpacerItem( 1, 1, QSizePolicy.Expanding, QSizePolicy.Minimum ) )
         
@@ -1357,6 +1369,7 @@ class pypelyneMainWindow( QMainWindow ):
             self.connect( shotPushButton, SIGNAL( 'customContextMenuRequested( const QPoint& )' ), self.contentContextMenu )
             layoutShots.addWidget( shotPushButton )
             self.shotButtonGroup.addButton( shotPushButton )
+            logging.info( 'shot %s found' %( i ) )
         
         layoutShots.addItem( QSpacerItem( 1, 1, QSizePolicy.Expanding, QSizePolicy.Minimum ) )
         
@@ -1459,9 +1472,11 @@ class pypelyneMainWindow( QMainWindow ):
             for i in os.listdir( self.projectsRoot ):
                 if os.path.isdir( os.path.join( self.projectsRoot, i ) ):
                     self.projectComboBox.addItem( i )
-                    self.sendTextToBox( '\tproject found: %s\n' %( i ) )
+                    self.sendTextToBox( '\tproject %s found\n' %( i ) )
+                    logging.info( 'project %s found' %( i ) )
         except:
             self.sendTextToBox( 'no project found.\n' )
+            logging.warning( 'no project found' )
         
         self.sendTextToBox( 'all projects added.\n\n' )
         self.projectComboBox.activated.connect( self.refreshProjects )
@@ -1490,7 +1505,7 @@ class pypelyneMainWindow( QMainWindow ):
             self.assetsShotsTabWidget.setVisible( False )
             self.nodeView.setVisible( False )
             self.assetsShotsTabWidget.clear()
-            print 'no project selected'
+            #print 'no project selected'
             self.openPushButton.setEnabled( False )
             
         
@@ -1550,7 +1565,8 @@ class pypelyneMainWindow( QMainWindow ):
             path = re.findall( r'"([^"]*)"', self._tools[ index ][ 1 ][ 0 ] )[ 0 ]
 
             if os.path.exists( os.path.normpath( path ) ):
-                self.sendTextToBox( "%s: starting %s. Enjoy!\n" %( datetime.datetime.now(), self._tools[ index ][ 0 ] ) )
+                logging.info( '%s: starting %s' %( datetime.datetime.now(), self._tools[ index ][ 0 ] ) )
+                self.sendTextToBox( '%s: starting %s. Enjoy!\n' %( datetime.datetime.now(), self._tools[ index ][ 0 ] ) )
 
                 process = QProcess( self )
 
@@ -1620,6 +1636,24 @@ class pypelyneMainWindow( QMainWindow ):
 
         self.toolsComboBox.setCurrentIndex( 0 )
 
+    def checkOutOnStarted( self, qprocess ):
+        self.qprocesses.append( qprocess )
+
+    def checkoutOnFinished( self, qprocess, node, tarName ):
+        tarNameSplit = tarName.split( self.tarSep )
+        #        0                1        2          3           4
+        #2015-08-27_1134-42_____test_____assets_____asdf_____SVR_AST__asdf.tar.gz
+        #projectName = os.path.basename( os.path.dirname( node.getNodeAsset() ) )
+        projectName = tarNameSplit[ 1 ]
+        contentFamily = tarNameSplit[ 2 ][ :-1 ]
+        #contentName = os.path.basename( node.getNodeAsset() )
+        contentName = tarNameSplit[ 3 ]
+        nodeName = tarNameSplit[ 4 ].split( '.' )[ 0 ]
+        #nodeName = node.label
+        self.qprocesses.remove( qprocess )
+        QMessageBox.information( self, 'check out finished', str( 'node %s successfully checked out\nproject:\t%s\n%s:\t%s\n\narchive file: %s' %( nodeName, projectName, contentFamily, contentName, tarName ) ), QMessageBox.Ok, QMessageBox.Ok )
+        return
+
     def toolOnStarted( self, qprocess ):
         self.qprocesses.append( qprocess )
 
@@ -1656,6 +1690,7 @@ class pypelyneMainWindow( QMainWindow ):
         cursorBox.setCharFormat( newFormat )
 
         cursorBox.insertText( '%s (std):   %s' %( datetime.datetime.now(), str( process.readAllStandardOutput() ) ) )
+        logging.info(  '%s (std):   %s' %( datetime.datetime.now(), str( process.readAllStandardOutput() ) )  )
 
         cursorBox.movePosition( cursorBox.End )
         format = cursorBox.charFormat()
@@ -1687,7 +1722,8 @@ class pypelyneMainWindow( QMainWindow ):
         # apply it
         cursorBox.setCharFormat( newFormat )
 
-        cursorBox.insertText( "%s (err):   %s" %( datetime.datetime.now(), str( process.readAllStandardError() ) ) )
+        cursorBox.insertText( '%s (err):   %s' %( datetime.datetime.now(), str( process.readAllStandardError() ) ) )
+        logging.warning( '%s (err):   %s' %( datetime.datetime.now(), str( process.readAllStandardError() ) ) )
 
         cursorBox.movePosition( cursorBox.End )
         format = cursorBox.charFormat()
@@ -1763,7 +1799,6 @@ class pypelyneMainWindow( QMainWindow ):
 #         centerOn( centerPoint )
 
     def graphicsView_resizeEvent( self, event ):
-
         pass
 
     def setNodeMenuWidget( self ):
@@ -1773,12 +1808,12 @@ class pypelyneMainWindow( QMainWindow ):
         #self.nodeOptionsWindow.setTitle(item.displayText.toPlainText())
 
 if __name__ == "__main__":
-    
-    print "starting PyPELyNE"
+    logging.basicConfig( level = logging.INFO )
+    logging.info( 'launching PyPELyNE' )
     app = QApplication( sys.argv )
     #app.aboutToQuit.connect(deleteGLWidget)
     screenSize = QApplication.desktop().availableGeometry()
-    print 'screen resolution is %ix%i' %( int( screenSize.width() ), int( screenSize.height() ) )
+    logging.info( 'screen resolution is %ix%i' %( int( screenSize.width() ), int( screenSize.height() ) ) )
     pypelyneWindow = pypelyneMainWindow()
     #screenSize = QApplication.desktop().availableGeometry()
     pypelyneWindow.resize( int( screenSize.width() ), int( screenSize.height() ) )

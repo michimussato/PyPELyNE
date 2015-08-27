@@ -1,29 +1,41 @@
-#Global
-exclusions = [ '.DS_Store', 'Thumbs.db', '.com.apple.timemachine.supported', 'desktop.ini' ]
-imageExtensions = [ '.jpg', '.exr', '.tga', '.png', '.tiff', '.tif' ]
-movieExtensions = [ '.mov', '.avi' ]
-archiveSeparator = '_____'
+###Global
+#files matching items in exclusions get removed!
+exclusions           = [ '.DS_Store', 'Thumbs.db', '.com.apple.timemachine.supported', 'desktop.ini' ]
+imageExtensions      = [ '.jpg', '.exr', '.tga', '.png', '.tiff', '.tif' ]
+movieExtensions      = [ '.mov', '.avi' ]
+archiveSeparator     = '_____'
 
-#Darwin
-projectsRootDarwin = r'/Volumes/pili/pypelyne_projects'
-audioFolderDarwin = r'/Volumes/pili/library/audio'
-screenCastExecDarwin = r'payload/vlc/darwin/VLC'
-sequenceExecDarwin = r'payload/djv/darwin/djv-1.1.0-OSX-64'
-sequenceExecRvDarwin = r'/Applications/RV64.app/Contents/MacOS/RV'
-tarExecDarwin = r'payload/tar/darwin/tar'
+###Server
+projectsRootServer        = r'/pypelyne/PyPELyNE_projects'
+projectsRootServerDarwin  = r'/Volumes/pypelyne/PyPELyNE_projects'
+projectsRootServerWin     = r''
+projectsRootServerLinux   = r'/mnt/pypelyne/PyPELyNE_projects'
 
-#Windows
-projectsRootWin = r'C:\pypelyne_projects'
-audioFolderWin = r'C:\audio'
-screenCastExecWin = r'payload\vlc\win64\vlc.exe'
-sequenceExecWin = r''
-sequenceExecRvWin = r''
-tarExecWin = r''
+###Darwin
+fileExplorerDarwin        = r'/usr/bin/open'
+projectsRootDarwin        = r'/Users/michaelmussato/pypelyne_projects'
+#projectsRootDarwin        = r'/Volumes/pili/pypelyne_projects'
+audioFolderDarwin         = r'/Volumes/pili/library/audio'
+screenCastExecDarwin      = r'payload/vlc/darwin/VLC'
+sequenceExecDarwin        = r'payload/djv/darwin/djv-1.1.0-OSX-64'
+sequenceExecRvDarwin      = r'/Applications/RV64.app/Contents/MacOS/RV'
+tarExecDarwin             = r'payload/tar/darwin/tar'
 
-#Linux
-projectsRootLinux = r''
-audioFolderLinux = r''
-screenCastExecLinux = r''
-sequenceExecLinux = r''
-sequenceExecRvLinux = r''
-tarExecLinux = r''
+###Windows
+fileExplorerWin      = r'explorer.exe'
+projectsRootWin      = r'C:\pypelyne_projects'
+audioFolderWin       = r'C:\audio'
+screenCastExecWin    = r'payload\vlc\win64\vlc.exe'
+sequenceExecWin      = r''
+sequenceExecRvWin    = r''
+tarExecWin           = r''
+
+###Linux
+fileExplorerLinux    = r'/usr/bin/nautilus'
+fileExplorerLinuxAlt = r'/usr/bin/dolphin'
+projectsRootLinux    = r''
+audioFolderLinux     = r''
+screenCastExecLinux  = r''
+sequenceExecLinux    = r''
+sequenceExecRvLinux  = r''
+tarExecLinux         = r''

@@ -4,7 +4,7 @@ Created on Dec 15, 2014
 @author: michaelmussato
 '''
 
-import datetime, os, glob, subprocess, getpass
+import datetime, os, glob, subprocess, getpass, logging
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -54,7 +54,9 @@ class node( QGraphicsItem, QObject ):
         try:
             self.setNodePosition()
         except:
-            print '===> fix corrupt %s' %( self.propertyNodePath )
+            logging.warning( '===> fix corrupt %s' %( self.propertyNodePath ) )
+            return
+            #print '===> fix corrupt %s' %( self.propertyNodePath )
 
         self.scene.clearSelection()
         self.labelBoundingRect = 0.0
@@ -276,46 +278,49 @@ class node( QGraphicsItem, QObject ):
     def paint( self, painter, option, widget ):
         painter.setRenderHint( QPainter.Antialiasing )
 
-        if os.path.exists( os.path.join( self.location, 'locked' ) ):
-            self.gradient.setColorAt( 0, self.taskColorItem )
-            self.gradient.setColorAt( 1, Qt.red )
-        elif os.path.exists( os.path.join( self.location, 'checkedOut' ) ):
-            self.gradient.setColorAt( 0, self.taskColorItem )
-            self.gradient.setColorAt( 1, Qt.white )
-        else:
-            self.gradient.setColorAt( 0, self.taskColorItem )
-            self.gradient.setColorAt( 1, self.applicationColorItem.darker( 160 ) )
-        pen = QPen( Qt.SolidLine )
-        pen.setColor( Qt.black )
-        pen.setWidth( 0 )
-        painter.setBrush( self.gradient )
-        
-        if option.state & QStyle.State_Selected:
-            self.updatePropertyNodeXML()
-            self.setZValue( 1 )
-            pen.setWidth( 1 )
-            pen.setColor( Qt.green )
-
-        elif option.state & QStyle.State_MouseOver:
-            pen.setWidth( 1 )
-            pen.setColor( Qt.yellow )
-
-        else:
-            
+        try:
+            if os.path.exists( os.path.join( self.location, 'locked' ) ):
+                self.gradient.setColorAt( 0, self.taskColorItem )
+                self.gradient.setColorAt( 1, Qt.red )
+            elif os.path.exists( os.path.join( self.location, 'checkedOut' ) ):
+                self.gradient.setColorAt( 0, self.taskColorItem )
+                self.gradient.setColorAt( 1, Qt.white )
+            else:
+                self.gradient.setColorAt( 0, self.taskColorItem )
+                self.gradient.setColorAt( 1, self.applicationColorItem.darker( 160 ) )
+            pen = QPen( Qt.SolidLine )
+            pen.setColor( Qt.black )
             pen.setWidth( 0 )
-            self.setZValue( 0 )
+            painter.setBrush( self.gradient )
 
-        painter.setPen( pen )
+            if option.state & QStyle.State_Selected:
+                self.updatePropertyNodeXML()
+                self.setZValue( 1 )
+                pen.setWidth( 1 )
+                pen.setColor( Qt.green )
 
-        painter.drawRoundedRect( self.rect, 10.0, 10.0 )
-        
-        for i in self.outputList:
-            i.setPos( self.boundingRect().width() - i.rect.width(), i.pos().y() )
-            
-        self.rect.setWidth( self.rect.width() )
-        self.arrangeOutputs()
-        self.arrangeInputs()
-        self.resize()
+            elif option.state & QStyle.State_MouseOver:
+                pen.setWidth( 1 )
+                pen.setColor( Qt.yellow )
+
+            else:
+
+                pen.setWidth( 0 )
+                self.setZValue( 0 )
+
+            painter.setPen( pen )
+
+            painter.drawRoundedRect( self.rect, 10.0, 10.0 )
+
+            for i in self.outputList:
+                i.setPos( self.boundingRect().width() - i.rect.width(), i.pos().y() )
+
+            self.rect.setWidth( self.rect.width() )
+            self.arrangeOutputs()
+            self.arrangeInputs()
+            self.resize()
+        except:
+            logging.warning( 'paint error for node %s (corrupt propertyNode.xml?)' %( self.label ) )
         
     def arrangeOutputs( self ):
         for output in self.outputs:
@@ -345,16 +350,19 @@ class node( QGraphicsItem, QObject ):
         for i in allInputs:
             if not i in self.exclusions:
                 input = self.newInput( self.scene )
+                try:
+                    lookupDir = os.path.dirname( os.path.join( self.inputRootDir, os.readlink( os.path.join( self.inputRootDir, i ) ) ) )
+                except:
+                    lookupDir = os.path.dirname( os.path.join( self.inputRootDir, os.path.join( self.inputRootDir, i ) ) )
 
-                lookupDir = os.path.dirname( os.path.join( self.inputRootDir, os.readlink( os.path.join( self.inputRootDir, i ) ) ) )
 
                 if not i in os.listdir( lookupDir ) and os.path.basename( os.path.dirname( lookupDir ) ).startswith( 'LDR' ) == True:
                     os.remove( os.path.join( self.inputRootDir, i ) )
-                    print 'removed', i
+                    logging.warning( 'orphaned input found on node %s: %s removed' %( self.label, i ) )
 
                 else:
                     
-                    print 'keep', i
+                    logging.info( 'input is still valid. %s kept' %( i ) )
 
     #add new dynamic input
     def newInput( self, scene ):
@@ -461,7 +469,7 @@ class node( QGraphicsItem, QObject ):
 
             for i in self._tasks:
                 if [ item for item in i if self.nodeTask in item ]:
-                    print 'found'
+                    logging.info( 'task color description found' )
                     self.taskColor = self._tasks[ index ][ 0 ][ 1 ]
                     break
                 else:

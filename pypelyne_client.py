@@ -35,13 +35,13 @@ app = None
 class pypelyneMainWindow( QMainWindow ):
     addNewScreenCast = pyqtSignal()
 
-    def __init__( self, parent = None, server = '', port = 50001 ):
+    def __init__( self, parent = None ):
         super( pypelyneMainWindow, self ).__init__( parent )
 
         #logging.basicConfig( level = logging.INFO )
 
-        self.serverHost = server
-        self.serverPort = port
+        self.serverHost = serverIP
+        self.serverPort = serverPort
         self.serverAlive = False
 
         self.socket = socket.socket( socket.AF_INET, socket.SOCK_STREAM )
@@ -1932,7 +1932,7 @@ if __name__ == "__main__":
     #app.aboutToQuit.connect(deleteGLWidget)
     screenSize = QApplication.desktop().availableGeometry()
     logging.info( 'screen resolution is %ix%i' %( int( screenSize.width() ), int( screenSize.height() ) ) )
-    pypelyneWindow = pypelyneMainWindow( server = '192.168.0.22' )
+    pypelyneWindow = pypelyneMainWindow()
     #screenSize = QApplication.desktop().availableGeometry()
     pypelyneWindow.resize( int( screenSize.width() ), int( screenSize.height() ) )
     pypelyneWindow.show()

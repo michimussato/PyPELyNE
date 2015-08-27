@@ -6,6 +6,8 @@ movieExtensions           = [ '.mov', '.avi' ]
 archiveSeparator          = '_____'
 
 ###Server
+serverIP                  = r'192.168.0.22'
+serverPort                = r'50001'
 projectsRootServer        = r'/pypelyne/PyPELyNE_projects'
 projectsRootServerDarwin  = r'/Volumes/pypelyne/PyPELyNE_projects'
 projectsRootServerWin     = r''

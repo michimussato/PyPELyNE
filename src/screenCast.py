@@ -1,5 +1,5 @@
 
-import os, sys, time, subprocess, getpass, datetime
+import os, sys, time, subprocess, getpass, datetime, logging
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -10,7 +10,7 @@ class screenCast( QProcess ):
 
         self.mainWindow = mainWindow
 
-        self.vlcExec = r'/Applications/VLC.app/Contents/MacOS/VLC'
+        self.vlcExec = self.mainWindow.screenCastExec
 
         self.now = datetime.datetime.now().strftime( '%Y-%m-%d_%H%M-%S-%f' )
 
@@ -27,7 +27,7 @@ class screenCast( QProcess ):
         self.mp4 = self.makingOfDir + os.sep + self.now + '__' + self.user + '__' + self.assetName + '__' + self.taskName + '.mp4'
         self.vlcSocket = os.path.join( os.path.expanduser('~'), str( 'vlc.sock' + '.' + self.now ) )
 
-        self.vlcArgs = [ r'/Applications/VLC.app/Contents/MacOS/VLC', '-I', 'rc', '--rc-fake-tty', '--rc-unix', self.vlcSocket, 'screen://', '--screen-fps', '4', '--quiet', '--sout', '#transcode{vcodec=h264,vb=512,scale=0.5}:standard{access=file,mux=mp4,dst=' + self.mp4 + '}' ]
+        self.vlcArgs = [ self.vlcExec, '-I', 'rc', '--rc-fake-tty', '--rc-unix', self.vlcSocket, 'screen://', '--screen-fps', '4', '--quiet', '--sout', '#transcode{vcodec=h264,vb=512,scale=0.5}:standard{access=file,mux=mp4,dst=' + self.mp4 + '}' ]
 
 
 
@@ -35,10 +35,10 @@ class screenCast( QProcess ):
         try:
             subprocess.Popen( self.vlcArgs, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE )
             self.mainWindow.sendTextToBox( '%s: screencast for %s started\n' %( datetime.datetime.now(), self.taskName ) )
-            print 'screencast for %s started' %( self.taskName )
+            logging.info( 'screencast for %s started' %( self.taskName ) )
         except:
             self.mainWindow.sendTextToBox( '%s: startCast failed\n'%( datetime.datetime.now() ) )
-            print 'startCast failed'
+            logging.warning( 'startCast failed' )
 
     def stop( self ):
         commandStop = "echo stop | nc -U " + self.vlcSocket
@@ -49,8 +49,8 @@ class screenCast( QProcess ):
         self.mainWindow.sendTextToBox( '%s: screenCast on %s finished\n' %( datetime.datetime.now(), self.taskName ) )
         self.mainWindow.sendTextToBox( '%s: video created at %s\n' %( datetime.datetime.now(), self.mp4 ) )
 
-        print 'screenCast on %s finished' %( self.taskName )
-        print 'video created at %s' %( self.mp4 )
+        logging.info( 'screenCast on %s finished' %( self.taskName ) )
+        logging.info( 'video created at %s' %( self.mp4 ) )
 
 
     def quit( self ):

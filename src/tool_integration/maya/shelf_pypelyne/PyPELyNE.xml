@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scriptsShelf>
-	<shelfItem icon="computeReferences.png" cmds="from computeReferences import *;compute = computeReferences();compute.synchronizeReferences();compute.referencesLoad();compute.referencesUnload();compute.referencesReload()" ann="Sync PyPELyNE inputs (with reload)"/>
+	<shelfItem icon="computeReferences.png" cmds="from computeReferences import *;compute = computeReferences();compute.doItAll()" ann="Sync PyPELyNE inputs (with reload)"/>
 	<shelfItem icon="computeAbsolutePaths.png" cmds="from computeAbsolutePaths import *;compute = computeAbsolutePaths();compute.doItAll()" ann="Convert abslute paths of references and texture nodes to relative paths"/>
 	<shelfItem icon="objBatchExport.png" cmds="from objBatchExport import *;objBatchExportWindow = objBatchExport();objBatchExportWindow.show()" ann="OBJ Batch Export"/>
 	<shelfItem icon="sag_instancerToGeometry.png" cmds="from sag_instancerToGeometry import *;sag_instancerToGeometry()" ann="sag Instancer to Geo"/>

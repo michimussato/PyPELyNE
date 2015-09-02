@@ -21,21 +21,32 @@ class portOutput( QGraphicsItem ):
 
         self.mainWindow = mainWindow
         #print mainWindow.exclusions
-        self.exclusions = self.mainWindow.getExclusions()
-        self.pypelyneRoot = self.mainWindow.getPypelyneRoot()
-        self.projectsRoot = self.mainWindow.getProjectsRoot()
+        #self.exclusions = self.mainWindow.getExclusions()
+        self.exclusions = self.mainWindow.exclusions
+        #self.pypelyneRoot = self.mainWindow.getPypelyneRoot()
+        self.pypelyneRoot = self.mainWindow.pypelyneRoot
+        #self.projectsRoot = self.mainWindow.getProjectsRoot()
+        self.projectsRoot = self.mainWindow.projectsRoot
+        #self.currentPlatform = self.mainWindow.getCurrentPlatform()
+        self.currentPlatform = self.mainWindow.currentPlatform
 
         self.node = node
+        self.nodeRoot = self.node.location
+        self.nodeProject = self.node.project
 
-        self._outputs = self.mainWindow.getOutputs()
+        #self._outputs = self.mainWindow.getOutputs()
+        self._outputs = self.mainWindow._outputs
 
         self.portOutputColorItem = QColor( 0, 0, 0 )
         self.portOutputRingColorItem = QColor( 0, 0, 0 )
 
-        self.outputDir = os.path.normpath( os.path.join( node.getNodeRootDir(), 'output', name ) )
-        self.liveDir = os.path.normpath( os.path.join( node.getNodeRootDir(), 'live', name ) )
-        self.nodeRoot = self.node.getNodeRootDir()
-        self.nodeProject = self.node.getNodeProject()
+        #self.outputDir = os.path.normpath( os.path.join( node.getNodeRootDir(), 'output', name ) )
+        self.outputDir = os.path.normpath( os.path.join( self.nodeRoot, 'output', name ) )
+        #self.liveDir = os.path.normpath( os.path.join( node.getNodeRootDir(), 'live', name ) )
+        self.liveDir = os.path.normpath( os.path.join( self.nodeRoot, 'live', name ) )
+        #self.nodeRoot = self.node.getNodeRootDir()
+
+
 
         #print self.outputDir
         #print self.liveDir
@@ -136,58 +147,120 @@ class portOutput( QGraphicsItem ):
                 break
 
         if os.path.exists( self.liveDir ):
-
-            if os.path.exists( os.path.join( self.outputDir, 'current' ) ):
-                #
-                if not os.path.basename( os.readlink( self.liveDir ) ) == os.readlink( os.path.join( self.outputDir, 'current' ) ):
-                    path = os.path.join( self.outputDir, 'current' )
-                    content = os.listdir( path )
-                    for exclusion in self.exclusions:
-                        if exclusion in content:
-                            content.remove( exclusion )
-                            try:
-                                os.remove( os.path.join( path, exclusion ) )
-                                print 'exclusion removed: %s' %( os.path.join( path, exclusion ) )
-                            except:
-                                print 'could not remove: %s' %( os.path.join( path, exclusion ) )
-                    if len( content ) <= 1:
-                        self.portOutputRingColorItem.setNamedColor( self.outputColorEmpty )
+            if self.currentPlatform == 'Darwin' or self.currentPlatform == 'Linux':
+                if os.path.exists( os.path.join( self.outputDir, 'current' ) ):
+                    if not os.path.basename( os.readlink( self.liveDir ) ) == os.readlink( os.path.join( self.outputDir, 'current' ) ):
+                        path = os.path.join( self.outputDir, 'current' )
+                        content = os.listdir( path )
+                        for exclusion in self.exclusions:
+                            if exclusion in content:
+                                content.remove( exclusion )
+                                try:
+                                    os.remove( os.path.join( path, exclusion ) )
+                                    print 'exclusion removed: %s' %( os.path.join( path, exclusion ) )
+                                except:
+                                    print 'could not remove: %s' %( os.path.join( path, exclusion ) )
+                        if len( content ) <= 1:
+                            self.portOutputRingColorItem.setNamedColor( self.outputColorEmpty )
+                        else:
+                            self.portOutputRingColorItem.setNamedColor( self.outputColorNearline )
                     else:
-                        self.portOutputRingColorItem.setNamedColor( self.outputColorNearline )
-                else:
-                    self.portOutputRingColorItem.setNamedColor( self.outputColorOnline )
-
-            else:
-                outputName = os.path.basename( os.path.abspath( os.readlink( self.liveDir ) ) )
-                srcPath = os.path.dirname( os.path.dirname( os.path.abspath( os.readlink( self.liveDir ) ) ) )[ 1: ]
-
-                #print os.path.basename( os.path.join( srcPath, 'live', outputName ) )
-                #print self.projectsRoot
-                #print self.projectsRoot
-                #print srcPath
-                #print os.path.join( self.projectsRoot, srcPath, 'output', outputName, 'current' )
-                #print os.path.join( self.projectsRoot, srcPath, 'live', outputName )
-
-
-                if not os.readlink( os.path.join( self.projectsRoot, srcPath, 'output', outputName, 'current' ) ) == os.path.basename( os.readlink( os.path.join( self.projectsRoot, srcPath, 'live', outputName ) ) ):
-                    path = os.path.join( self.projectsRoot, srcPath, 'output', outputName, 'current' )
-                    content = os.listdir( path )
-                    for exclusion in self.exclusions:
-                        if exclusion in content:
-                            content.remove( exclusion )
-                            try:
-                                os.remove( os.path.join( path, exclusion ) )
-                                print 'exclusion removed: %s' %( os.path.join( path, exclusion ) )
-                            except:
-                                print 'could not remove: %s' %( os.path.join( path, exclusion ) )
-
-                    if len( content ) <= 1:
-                        self.portOutputRingColorItem.setNamedColor( self.outputColorEmpty )
-                    else:
-                        self.portOutputRingColorItem.setNamedColor( self.outputColorNearline )
+                        self.portOutputRingColorItem.setNamedColor( self.outputColorOnline )
 
                 else:
-                    self.portOutputRingColorItem.setNamedColor( self.outputColorOnline )
+                    #print os.path.basename( self.liveDir ).split( '.' )[ -1 ]
+                    #print os.readlink( self.liveDir )
+                    #print os.path.abspath( os.readlink( self.liveDir ) )
+                    #print os.path.basename( os.path.abspath( os.readlink( self.liveDir ) ) )
+
+                    outputName = os.path.basename( os.path.abspath( os.readlink( self.liveDir ) ) )
+                    #outputName = os.path.basename( self.liveDir ).split( '.' )[ -1 ]
+
+
+                    #print os.path.dirname( os.path.dirname( os.path.abspath( os.readlink( self.liveDir ) ) ) )
+                    srcPath = os.path.dirname( os.path.dirname( os.path.abspath( os.readlink( self.liveDir ) ) ) )[ 1: ]
+
+                    #print os.path.basename( os.path.join( srcPath, 'live', outputName ) )
+                    #print self.projectsRoot
+                    #print self.projectsRoot
+                    #print srcPath
+                    #print os.path.join( self.projectsRoot, srcPath, 'output', outputName, 'current' )
+                    #print os.path.join( self.projectsRoot, srcPath, 'live', outputName )
+
+
+                    if not os.readlink( os.path.join( self.projectsRoot, srcPath, 'output', outputName, 'current' ) ) == os.path.basename( os.readlink( os.path.join( self.projectsRoot, srcPath, 'live', outputName ) ) ):
+                        path = os.path.join( self.projectsRoot, srcPath, 'output', outputName, 'current' )
+                        content = os.listdir( path )
+                        for exclusion in self.exclusions:
+                            if exclusion in content:
+                                content.remove( exclusion )
+                                try:
+                                    os.remove( os.path.join( path, exclusion ) )
+                                    print 'exclusion removed: %s' %( os.path.join( path, exclusion ) )
+                                except:
+                                    print 'could not remove: %s' %( os.path.join( path, exclusion ) )
+
+                        if len( content ) <= 1:
+                            self.portOutputRingColorItem.setNamedColor( self.outputColorEmpty )
+                        else:
+                            self.portOutputRingColorItem.setNamedColor( self.outputColorNearline )
+
+                    else:
+                        self.portOutputRingColorItem.setNamedColor( self.outputColorOnline )
+
+            elif self.currentPlatform == 'Windows':
+                if os.path.exists( os.path.join( self.outputDir, 'current' ) ):
+                    if not os.path.basename( os.path.realpath( self.liveDir ) ) == os.path.realpath( os.path.join( self.outputDir, 'current' ) ):
+                        path = os.path.join( self.outputDir, 'current' )
+                        content = os.listdir( path )
+                        for exclusion in self.exclusions:
+                            if exclusion in content:
+                                content.remove( exclusion )
+                                try:
+                                    os.remove( os.path.join( path, exclusion ) )
+                                    print 'exclusion removed: %s' %( os.path.join( path, exclusion ) )
+                                except:
+                                    print 'could not remove: %s' %( os.path.join( path, exclusion ) )
+                        if len( content ) <= 1:
+                            self.portOutputRingColorItem.setNamedColor( self.outputColorEmpty )
+                        else:
+                            self.portOutputRingColorItem.setNamedColor( self.outputColorNearline )
+                    else:
+                        self.portOutputRingColorItem.setNamedColor( self.outputColorOnline )
+
+                else:
+                    outputName = os.path.basename( os.path.abspath( os.path.realpath( self.liveDir ) ) )
+                    srcPath = os.path.dirname( os.path.dirname( os.path.abspath( os.path.realpath( self.liveDir ) ) ) )[ 1: ]
+
+                    #print os.path.basename( os.path.join( srcPath, 'live', outputName ) )
+                    #print self.projectsRoot
+                    #print self.projectsRoot
+                    #print srcPath
+                    #print os.path.join( self.projectsRoot, srcPath, 'output', outputName, 'current' )
+                    #print os.path.join( self.projectsRoot, srcPath, 'live', outputName )
+
+
+                    if not os.path.realpath( os.path.join( self.projectsRoot, srcPath, 'output', outputName, 'current' ) ) == os.path.basename( os.path.realpath( os.path.join( self.projectsRoot, srcPath, 'live', outputName ) ) ):
+                        path = os.path.join( self.projectsRoot, srcPath, 'output', outputName, 'current' )
+                        content = os.listdir( path )
+                        for exclusion in self.exclusions:
+                            if exclusion in content:
+                                content.remove( exclusion )
+                                try:
+                                    os.remove( os.path.join( path, exclusion ) )
+                                    print 'exclusion removed: %s' %( os.path.join( path, exclusion ) )
+                                except:
+                                    print 'could not remove: %s' %( os.path.join( path, exclusion ) )
+
+                        if len( content ) <= 1:
+                            self.portOutputRingColorItem.setNamedColor( self.outputColorEmpty )
+                        else:
+                            self.portOutputRingColorItem.setNamedColor( self.outputColorNearline )
+
+                    else:
+                        self.portOutputRingColorItem.setNamedColor( self.outputColorOnline )
+
+
         else:
             #output with no live data found
             self.portOutputRingColorItem.setNamedColor( self.outputcolorNoLive )
@@ -203,7 +276,7 @@ class portInput( QGraphicsItem ):
 
         self.mainWindow = mainWindow
 
-        self._outputs = self.mainWindow.getOutputs()
+        self._outputs = self.mainWindow._outputs
 
         self.portInputColorItem = QColor( 0, 0, 0 )
         self.portInputRingColorItem = QColor( 0, 0, 0 )

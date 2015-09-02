@@ -16,7 +16,7 @@ from src.newNode import *
 from src.newOutput import *
 from src.newLoader import *
 
-import shutil, os, subprocess
+import shutil, os, subprocess, logging
 
 # class Signals( QObject ):
 #     trigger = pyqtSignal( str )
@@ -30,18 +30,17 @@ class SceneView( QGraphicsScene ):
         super( SceneView, self ).__init__( parent )
 
         self.mainWindow = mainWindow
-        self.pypelyneRoot = self.mainWindow.getPypelyneRoot()
-        self.currentPlatform = self.mainWindow.getCurrentPlatform()
-        self.projectsRoot = str( self.mainWindow.getProjectsRoot() )
+        self.pypelyneRoot = self.mainWindow.pypelyneRoot
+        self.currentPlatform = self.mainWindow.currentPlatform
+        self.projectsRoot = str( self.mainWindow.projectsRoot )
 
-        self.exclusions = self.mainWindow.getExclusions()
-        self.imageExtensions = self.mainWindow.getImageExtensions()
-        self.movieExtensions = self.mainWindow.getMovieExtensions()
-        self.sequenceExec = self.mainWindow.getSequenceExec()
+        self.exclusions = self.mainWindow.exclusions
+        self.imageExtensions = self.mainWindow.imageExtensions
+        self.movieExtensions = self.mainWindow.movieExtensions
+        self.sequenceExec = self.mainWindow.sequenceExec
 
         self.line = None
-        rect = self.setSceneRect( QRectF( 0, 0, 0, 0 ) )
-        
+
         self.nodeList = []
 
     def addToNodeList( self, node ):
@@ -109,38 +108,12 @@ class SceneView( QGraphicsScene ):
         
         self.menu = QMenu()
 
-        currentProject = self.mainWindow.getCurrentProject()
-        currentContent = self.mainWindow.getCurrentContent()
-        #print self.mainWindow.getCurrentContent()
-        #print self.mainWindow.getProjectsRoot()
-        print os.path.join( str( self.mainWindow.getProjectsRoot() ), str( self.mainWindow.getCurrentContent() ) )
+        #currentProject = self.mainWindow.getCurrentProject()
+        #currentContent = self.mainWindow.getCurrentContent()
 
-        #icon = QIcon
-        
         objectClicked = self.itemAt( pos )
 
-        '''
-        try:
-            print '1 %s' %( objectClicked )
-        except:
-            pass
-        try:
-            print '2 %s' %( objectClicked.parentItem() )
-        except:
-            pass
-        try:
-            print '3 %s' %( objectClicked.parentItem().parentItem() )
-        except:
-            pass
-        try:
-            print '4 %s' %( objectClicked.parentItem().parentItem().parentItem() )
-        except:
-            pass
-        '''
-        
-        items = []
-
-        #self.menu.addMenu( 'add item' )
+        #items = []
 
         contentDirs = os.listdir( os.path.join( str( self.mainWindow.getProjectsRoot() ), str( self.mainWindow.getCurrentContent() ) ) )
         
@@ -385,17 +358,33 @@ class SceneView( QGraphicsScene ):
 
                         menuMakeLive = self.menuOutput.addMenu( version )
 
-                        if os.path.exists( liveDir ):
-                            if os.path.basename( os.readlink( liveDir ) ) == version:
-                                menuMakeLive.setIcon( QIcon( 'src/icons/dotActive.png' ) )
+
+                        if self.currentPlatform == 'Darwin' or self.currentPlatform == 'Linux':
+                            if os.path.exists( liveDir ):
+                                if os.path.basename( os.readlink( liveDir ) ) == version:
+                                    menuMakeLive.setIcon( QIcon( 'src/icons/dotActive.png' ) )
+                                else:
+                                    menuMakeLive.setIcon( QIcon( 'src/icons/dotInactive.png' ) )
                             else:
                                 menuMakeLive.setIcon( QIcon( 'src/icons/dotInactive.png' ) )
-                        else:
-                            menuMakeLive.setIcon( QIcon( 'src/icons/dotInactive.png' ) )
+                        elif self.currentPlatform == 'Windows':
+                            if os.path.exists( liveDir ):
+                                print liveDir
+                                print os.path.abspath( liveDir )
+                                print os.path.realpath( liveDir )
+                                print version
+                                if os.path.basename( os.path.realpath( liveDir ) ) == version:
+                                    menuMakeLive.setIcon( QIcon( 'src/icons/dotActive.png' ) )
+                                else:
+                                    menuMakeLive.setIcon( QIcon( 'src/icons/dotInactive.png' ) )
+                            else:
+                                menuMakeLive.setIcon( QIcon( 'src/icons/dotInactive.png' ) )
 
                         #print 'here we are'
 
-                        if outputLabel.startswith( 'SEQ' ) or outputLabel.startswith( 'TEX' ) or outputLabel.startswith( 'PLB' ):
+                        #if outputLabel.startswith( 'SEQ' ) or outputLabel.startswith( 'TEX' ) or outputLabel.startswith( 'PLB' ):
+                        #print os.path.splitext( outputDirContent[ 0 ] )[ 1 ]
+                        if os.path.splitext( outputDirContent[ 0 ] )[ 1 ] in self.imageExtensions or os.path.splitext( outputDirContent[ 0 ] )[ 1 ] in self.movieExtensions:
                             '''
                             for exclusion in self.exclusions:
                                 try:
@@ -430,10 +419,18 @@ class SceneView( QGraphicsScene ):
 
                         makeCurrentAction = menuMakeLive.addAction( 'make current', self.makeCurrentCallback( versionPath ) )
 
-                        if os.path.join( outputDir, version ) == os.path.join( outputDir, os.readlink( os.path.join( outputDir, 'current' ) ) ):
-                            deleteVersionAction.setEnabled( False )
-                        else:
-                            deleteVersionAction.setEnabled( True )
+
+                        if self.currentPlatform == 'Darwin' or self.currentPlatform == 'Linux':
+                            if os.path.join( outputDir, version ) == os.path.join( outputDir, os.readlink( os.path.join( outputDir, 'current' ) ) ):
+                                deleteVersionAction.setEnabled( False )
+                            else:
+                                deleteVersionAction.setEnabled( True )
+                        elif self.currentPlatform == 'Windows':
+
+
+                            print os.path.join( outputDir, version )
+                            print os.path.join( outputDir, 'current' )
+                            print os.path.join( outputDir, os.path.realpath( os.path.join( outputDir, 'current' ) ) )
 
 
 
@@ -473,15 +470,20 @@ class SceneView( QGraphicsScene ):
                             print 'no live version found'
                             #makeLiveAction.setEnabled( True )
 
-                        if versionPath == os.path.join( outputDir, os.path.basename( os.readlink( os.path.join( outputDir, 'current' ) ) ) ):
-                            makeCurrentAction.setEnabled( False )
+
+                        if self.currentPlatform == 'Darwin' or self.currentPlatform == 'Linux':
+                            if versionPath == os.path.join( outputDir, os.path.basename( os.readlink( os.path.join( outputDir, 'current' ) ) ) ):
+                                makeCurrentAction.setEnabled( False )
+                        elif self.currentPlatform == 'Windows':
+                            if versionPath == os.path.join( outputDir, os.path.basename( os.path.realpath( os.path.join( outputDir, 'current' ) ) ) ):
+                                makeCurrentAction.setEnabled( False )
 
 
 
 
-            #except:
-            #    print 'not working'
-                #pass
+        #except:
+            #print 'not working'
+            #pass
 
 
 
@@ -586,7 +588,15 @@ class SceneView( QGraphicsScene ):
             if os.path.islink( outputDir ):
                 os.unlink( outputDir )
 
-            os.symlink( os.path.relpath( versionDir, liveDir ), outputDir )
+
+            if self.currentPlatform == "Darwin" or self.currentPlatform == "Linux":
+                os.symlink( os.path.relpath( versionDir, liveDir ), outputDir )
+            elif self.currentPlatform == "Windows":
+                cmdstring = str( "mklink /D " + outputDir + " " + os.path.relpath( versionDir, liveDir ) )
+                #print 'Win cmdstring = %s' %( cmdstring )
+                #os.chdir( os.path.dirname( endItemInputDir ) )
+                os.system( cmdstring )
+
 
             os.chdir( cwd )
 
@@ -621,8 +631,9 @@ class SceneView( QGraphicsScene ):
             os.symlink( os.path.basename( currentDir ), 'current' )
 
         elif self.currentPlatform == "Windows":
+            logging.info( 'creating windows symlink to %s' %( os.path.join( os.path.dirname( currentDir ) ) ) )
 
-            cmdstring = "mklink /D " + os.path.join( os.path.dirname( currentDir ), 'current' ) + " " + currentDir
+            cmdstring = str( "mklink /D " + os.path.join( os.path.dirname( currentDir ), 'current' ) + " " + currentDir )
             #print 'Win cmdstring = %s' %( cmdstring )
             #os.chdir( os.path.dirname( endItemInputDir ) )
             os.system( cmdstring )
@@ -731,7 +742,7 @@ class SceneView( QGraphicsScene ):
                 #print text
                 #print type( str( text ) )
                 #output = node.newOutput( node, text )
-                output = node.newOutput( self, str( text ) )
+                node.newOutput( self, str( text ) )
                 os.makedirs( newOutputDir, mode=0777 )
 
                 #while not os.path.isdir( newOutputDir ):

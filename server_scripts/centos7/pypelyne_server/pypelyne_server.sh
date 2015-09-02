@@ -3,8 +3,8 @@
 # TTS Server for Speech Synthesis
 # https://wolfpaulus.com/journal/software/pythonlauncher/
 #
-pypelyneRoot='/pypelyne/PyPELyNE'
-logDir='${pypelyneRoot}/logs'
+pypelyneRoot=/pypelyne/PyPELyNE
+logDir=${pypelyneRoot}/logs
 
 
 # Wait for Network to be available.
@@ -27,10 +27,10 @@ done
  
 start() {
     #cd $workdir
-    if [ ! -d '${logDir}' ]; then
-        mkdir '${logDir}'
-        chown nobody:nobody '${logDir}'
-        chmod 777 '${logDir}'
+    if [ ! -d ${logDir} ]; then
+        mkdir ${logDir}
+        chown nobody:nobody ${logDir}
+        chmod 777 ${logDir}
         echo 'logDir created'
     fi
 
@@ -40,7 +40,8 @@ start() {
 }
  
 stop() {
-    pid=`ps -ef | grep '[p]ython ${pypelyneRoot}/pypelyne_server.py' | awk '{ print $2 }'`
+    pid=$(ps -ef | grep "[p]ython ${pypelyneRoot}/pypelyne_server.py" | awk '{ print $2 }')
+    #pid=`ps -ef | grep '[p]ython ${pypelyneRoot}/pypelyne_server.py' | awk '{ print $2 }'`
     echo $pid
     kill $pid
     sleep 2

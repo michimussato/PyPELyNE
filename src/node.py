@@ -126,14 +126,14 @@ class node( QGraphicsItem, QObject ):
         self.propertyNode = ET.parse( self.propertyNodePath )
 
         try:
-            print 'new style reading'
+            logging.info( 'new style reading' )
             nodePosition = self.propertyNode.findall( './node' )
 
             positionX = nodePosition[ 0 ].items()[ 0 ][ 1 ]
             positionY = nodePosition[ 0 ].items()[ 1 ][ 1 ]
 
         except:
-            print 'old style reading'
+            logging.info( 'old style reading' )
             positionX = self.propertyNode.findall( './positionX' )
             positionY = self.propertyNode.findall( './positionY' )
 
@@ -160,7 +160,7 @@ class node( QGraphicsItem, QObject ):
 
             if searchIndex < 0:
                 if not str( self.nodeFamily + ' ' + self.nodeVersion ) in [ self.mainWindow.toolsComboBox.itemText( i ) for i in range( self.mainWindow.toolsComboBox.count() ) ]:
-                    print 'application family not available'
+                    logging.warning( 'application family not available' )
                     QMessageBox.critical( self.mainWindow, 'application warning', str( '%s not available.' %str( self.nodeFamily + ' ' + self.nodeVersion ) ), QMessageBox.Abort, QMessageBox.Abort )
                     return
 
@@ -170,7 +170,7 @@ class node( QGraphicsItem, QObject ):
                     if reply == QMessageBox.Yes:
                         searchString = str( self.nodeVendor + ' ' + self.nodeFamily + ' ' + self.nodeVersion + ' ' + 'x32' )
                         searchIndex = self.mainWindow.toolsComboBox.findText( QString( searchString ), Qt.MatchContains ) - 2
-                        print 'x64 not available. using x32 version.'
+                        logging.warning( 'x64 not available. using x32 version.' )
                     else:
                         return
                 elif self.nodeArch == 'x32':
@@ -179,11 +179,11 @@ class node( QGraphicsItem, QObject ):
                     if reply == QMessageBox.Yes:
                         searchString = str( self.nodeVendor + ' ' + self.nodeFamily + ' ' + self.nodeVersion + ' ' + 'x64' )
                         searchIndex = self.mainWindow.toolsComboBox.findText( QString( searchString ), Qt.MatchContains ) - 2
-                        print 'x32 not available. using x64 version.'
+                        logging.warning( 'x32 not available. using x64 version.' )
                     else:
                         return
                 else:
-                    print 'some weird shit'
+                    logging.warning( 'some weird shit' )
 
             elif os.path.exists( os.path.join( self.location, 'locked' ) ):
                 QMessageBox.critical( self.mainWindow, 'node warning', str( '%s is currently in use.' %str( self.label ) ), QMessageBox.Abort, QMessageBox.Abort )
@@ -201,7 +201,7 @@ class node( QGraphicsItem, QObject ):
 
             if self.nodeFamily == 'Maya':
                 for arg in [ '-proj', self.location, '-file' ]:
-                    print self.location
+                    #print self.location
                     args.append( arg )
 
             projectRoot = os.path.join( self.location, 'project' )

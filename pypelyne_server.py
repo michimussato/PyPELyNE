@@ -15,21 +15,23 @@ import threading
 from logging import *
 import signal
 import json
-import getLocalIp
+import src.getLocalIp as getLocalIp
+
+from conf.valuePyPELyNE import *
 
 
 class server():
-    def __init__( self, host = '', port = 50001, debugLevel = INFO ):
+    def __init__( self, host = '', debugLevel = INFO ):
 
         basicConfig( level = debugLevel )
 
         self.host = host
-        self.port = port
+        self.port = serverPort
         self.sockets = []
         self.threads = []
 
         #how many ports should be checked if given port fails?
-        self.portRange = 2
+        self.portRange = int( serverPortRange )
 
 
         self.projectsRoot = projectsRootServer
@@ -40,13 +42,13 @@ class server():
 
         self.pypelyneRoot = os.getcwd()
 
-
+        self.sockets = []
 
         self.launch()
         
-    def sendList( self, sock, path, isPath, pathExists, data, addr ):
+    def sendList( self, sock, path, addr, data = None ):
         try:
-            serialized = json.dumps( [ path, isPath, pathExists, data ] )
+            serialized = json.dumps( [ path, addr, data ] )
             # send the length of the serialized data first
             sock.send( '%d\n' %( len( serialized ) ) )
             # send the serialized data
@@ -66,40 +68,56 @@ class server():
                 #raise Exception( 'sending data not possible' )
     
     def listContent( self, path, sock, addr ):
+        self.sockets.append( sock )
+        # syntax: ( socket, isPath, pathExists, content, receiver )
+        info( ' server %s:%s | connection to %s:%s established' %( self.host, self.port, addr[ 0 ], addr[ 1 ] ) )
+        #while True:
+        while sock:
 
-        response = socket.recv( 1024 )
+            response = sock.recv( 1024 )
 
-        if response == 'getProjectsRootServerDarwin':
-            logging.info( 'client %s:%s requested projectsRootServerDarwin, which is %s' %( addr[ 0 ], add[ 1 ], self.projectsRootDarwin ) )
-            self.sendSerialized( socket, self.projectsRootDarwin )
+            if response == 'getProjectsRootServerDarwin':
+                info( 'client %s:%s requested projectsRootServerDarwin, which is %s' %( addr[ 0 ], addr[ 1 ], self.projectsRootDarwin ) )
+                #data = os.listdir( self.projectsRootDarwin )
+                self.sendList( sock, self.projectsRootDarwin, addr )
 
-        elif response == 'getProjectsRootServerLinux':
-            logging.info( 'client %s:%s requested projectsRootServerLinux, which is %s' %( addr[ 0 ], add[ 1 ], self.projectsRootLinux ) )
-            self.sendSerialized( socket, self.projectsRootDarwin )
+            elif response == 'getProjectsRootServerLinux':
+                info( 'client %s:%s requested projectsRootServerLinux, which is %s' %( addr[ 0 ], addr[ 1 ], self.projectsRootLinux ) )
+                self.sendList( sock, self.projectsRootDarwin, addr )
 
-        elif response == 'getProjectsRootServerWin':
-            logging.info( 'client %s:%s requested projectsRootServerWin, which is %s' %( addr[ 0 ], add[ 1 ], self.projectsRootWin ) )
-            self.sendSerialized( socket, self.projectsRootWin )
+            elif response == 'getProjectsRootServerWin':
+                info( 'client %s:%s requested projectsRootServerWin, which is %s' %( addr[ 0 ], addr[ 1 ], self.projectsRootWin ) )
+                self.sendList( sock, self.projectsRootWin, addr )
 
-        elif response == 'bye':
-            #self.sendSerialized( socket, response )
-            logging.info( 'client %s:%s gone' %( addr[ 0 ], add[ 1 ] ) )
+            elif response == 'addProjectsServer':
+                projects = os.listdir( self.projectsRoot )
+                self.sendList( sock, self.projectsRoot, addr, projects )
+                info( 'client %s:%s requested projects list, which is %s' %( addr[ 0 ], addr[ 1 ], projects ) )
+
+            elif response == 'bye':
+                #self.sendSerialized( socket, response )
+                info( 'client %s:%s sent bye bye' %( addr[ 0 ], addr[ 1 ] ) )
+                #self.sendList( sock, 'bye', None )
+                self.sockets.remove( sock )
+                sock.close()
+                info( '%s connections left open' %( len( self.sockets ) ) )
+                break
 
 
-        elif os.path.exists( response ):
+            elif os.path.exists( response ):
 
-            logging.info( 'valid path received: %s' %( response ) )
-            #sock.send( 'path %s exists' %( path ) )
+                info( 'valid path received: %s' %( response ) )
+                #sock.send( 'path %s exists' %( path ) )
 
-            content = os.listdir( path )
+                content = os.listdir( path )
 
-            #for directory in content:
-            self.sendSerialized( socket, response )
+                #for directory in content:
+                self.sendList( sock, response )
 
-        else:
-            logging.warning( 'invalid path received: %s' %( response ) )
-            #sock.send( 'path %s does not exist' %( path ) )
-            self.sendSerialized( socket, 'path %s does not exist' %( response ) )
+            else:
+                warning( 'invalid path received: %s' %( response ) )
+                #sock.send( 'path %s does not exist' %( path ) )
+                self.sendList( sock, 'path %s does not exist' %( response ) )
 
 
 
@@ -172,7 +190,7 @@ if __name__ == '__main__':
         ip = getLocalIp.getIp()
     except:
         ip = '127.0.0.1'
-    #server = server( host = ip, port = 50505, debugLevel = INFO )
+    #server = server( host = ip, debugLevel = INFO )
     server = server( host = ip, debugLevel = INFO )
 
 

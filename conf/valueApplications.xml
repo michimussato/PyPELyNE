@@ -563,6 +563,20 @@
                     </x64>
                 </platform>
             </version>
+            <version value="8" template="None" workspace="None">
+                <platform value="Windows">
+                    <x32 value="None">
+                    </x32>
+                    <x64 value="None">
+                    </x64>
+                </platform>
+                <platform value="Darwin">
+                    <x32 value="None">
+                    </x32>
+                    <x64 value="/Applications/Blackmagic Fusion 8/Fusion.app/Contents/MacOS/Fusion">
+                    </x64>
+                </platform>
+            </version>
         </vendor>
     </family>
     <family value="HDRLightStudio" abbrev="LST">

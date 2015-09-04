@@ -153,6 +153,9 @@ class node( QGraphicsItem, QObject ):
             self.mainWindow.getAssetContent( None, self.label )
         elif self.label.startswith( 'LDR_SHT' ):
             self.mainWindow.getShotContent( None, self.label )
+        #elif self.label.startswith( 'LDR_LIB' ):
+        #    pass
+
 
         else:
             searchString = self.nodeVendor + ' ' + self.nodeFamily + ' ' + self.nodeVersion + ' ' + self.nodeArch
@@ -459,6 +462,8 @@ class node( QGraphicsItem, QObject ):
                 self.taskColor = '#FFFF00'
             elif os.path.basename( self.location )[ :7 ].endswith( 'SHT' ):
                 self.taskColor = '#0000FF'
+            elif os.path.basename( self.location )[ :7 ].endswith( 'LIB' ):
+                self.taskColor = '#00FF00'
         elif os.path.basename( self.location )[ :7 ].startswith( 'SVR' ):
             if os.path.basename( self.location )[ :7 ].endswith( 'AST' ):
                 self.taskColor = '#FFFF33'

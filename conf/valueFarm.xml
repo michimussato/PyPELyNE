@@ -1,0 +1,157 @@
+<?xml version="1.0"?>
+<valueFarm>
+    <family value="Deadline">
+        <vendor value="Thinkbox">
+            <version value="5.2" binaryRoot="/Applications/Deadline/Resources/bin">
+
+                <component value="DeadlineCommand" submitter="True">
+                    <arguments>
+                        <argument value="-SubmitCommandLineJob " valueRequired="False" type="None" min="None" max="None" default="None" description="None"></argument>
+                        <argument value="-executable " valueRequired="True" type="string" min="None" max="None" default="None" description="None"></argument>
+                        <argument value="-startupdirectory " valueRequired="True" type="string" min="None" max="None" default="None" description="None"></argument>
+                        <argument value="-arguments " valueRequired="True" type="string" min="None" max="None" default="None" description="None"></argument>
+                        <argument value="-frames " valueRequired="True" type="string" min="None" max="None" default="None" description="None"></argument>
+                        <argument value="-initialstatus " valueRequired="True" type="string" min="None" max="None" default="None" description="None"></argument>
+                        <argument value="-startupdirectory " valueRequired="True" type="string" min="None" max="None" default="None" description="None"></argument>
+                    </arguments>
+                    <properties prefix="-prop">
+                        <property value="Comment=" valueRequired="True" type="string" min="None" max="None" default="None" description="None"></property>
+                        <property value="Interruptible=" valueRequired="True" type="boolean" min="None" max="None" default="None" description="None"></property>
+                        <property value="ForceReloadPlugin=" valueRequired="True" type="boolean" min="None" max="None" default="false" description="None"></property>
+                        <property value="OutputDirectory0=" valueRequired="True" type="string" min="None" max="None" default="None" description="None"></property>
+                        <property value="OutputFilename=" valueRequired="True" type="string" min="None" max="None" default="None" description="None"></property>
+                        <property value="Name=" valueRequired="True" type="string" min="None" max="None" default="None" description="None"></property>
+                        <property value="Priority=" valueRequired="True" type="integer" min="0" max="100" default="50" description="None"></property>
+                        <property value="Name=" valueRequired="True" type="string" min="None" max="None" default="None" description="None"></property>
+                        <property value="ConcurrentTasks=" valueRequired="True" type="integer" min="1" max="None" default="1" description="None"></property>
+                    </properties>
+                    <platform value="Darwin">
+                        <x32 value="None">
+                        </x32>
+                        <x64 value="deadlinecommand"
+                    </platform>
+                </component>
+                <component value="DeadlineSlave" submitter="False">
+                    <platform value="Darwin">
+                        <x32 value="None">
+                        </x32>
+                        <x64 value="deadlineslave">
+                        </x64>
+                    </platform>
+                </component>
+                <component value="DeadlineMonitor" submitter="False">
+                    <platform value="Darwin">
+                        <x32 value="None">
+                        </x32>
+                        <x64 value="deadlinemonitor">
+                        </x64>
+                    </platform>
+                </component>
+                <component value="DeadlineJobMonitor" submitter="False">
+                    <platform value="Darwin">
+                        <x32 value="None">
+                        </x32>
+                        <x64 value="deadlinejobmonitor">
+                        </x64>
+                    </platform>
+                </component>
+            </version>
+        </vendor>
+    </family>
+    <family value="Royal Render">
+        <vendor value="Holger Schoenberger">
+            <version value="7.0.25" binaryRoot="/Volumes/pypelyne/royalrender_repository/bin">
+                <arguments>
+                    <argument value=" " valueRequired="True" type="string" min="None" max="None" default="None" description="input file">
+                    </argument>
+                    <argument value="-NoAutoSceneRead " valueRequired="False" type="None" min="None" max="None" default="None" description="None">
+                    </argument>
+                    <argument value="-SceneDatabaseDir " valueRequired="True" type="string" min="None" max="None" default="None" description="None">
+                    </argument>
+                    <argument value="-ImageDir " valueRequired="True" type="string" min="None" max="None" default="None" description="None">
+                    </argument>
+                    <argument value="-ImageFileName " valueRequired="True" type="string" min="None" max="None" default="None" description="None">
+                    </argument>
+                    <argument value="-ImageExtension " valueRequired="True" type="string" min="None" max="None" default=".exr" description="None">
+                    </argument>
+                    <argument value="-ImageFramePadding " valueRequired="True" type="integer" min="1" max="None" default="4" description="None">
+                    </argument>
+                    <argument value="-SeqStep " valueRequired="True" type="integer" min="1" max="None" default="1" description="None">
+                    </argument>
+                    <argument value="-SeqFileOffset " valueRequired="True" type="integer" min="0" max="None" default="0" description="None">
+                    </argument>
+                    <argument value="-Software " valueRequired="True" type="string" min="None" max="None" default="None" description="None">
+                    </argument>
+                    <argument value="-Renderer " valueRequired="True" type="string" min="None" max="None" default="--default--" description="None">
+                    </argument>
+                    <argument value="-Version " valueRequired="True" type="string" min="None" max="None" default="None" description="None">
+                    </argument>
+                </arguments>
+                <properties prefix="None">
+                    <property value="CropEXR=1~" type="boolean" min="None" max="None" default="1" description="None">
+                    </property>
+                    <property value="CompanyProjectName=1~" type="string" min="None" max="None" default="None" description="None">
+                    </property>
+                    <property value="Priority=1~" type="integer" min="0" max="100" default="50" description="None">
+                    </property>
+                    <property value="OverrideRenderVerbose=1~" type="integer" min="0" max="4" default="0" description="None">
+                    </property>
+                    <property value="CustomSCeneName=1~" type="string" min="None" max="None" default="None" description="None">
+                    </property>
+                    <property value="CustomSHotName=1~" type="string" min="None" max="None" default="None" description="None">
+                    </property>
+                    <property value="CustomVersionName=1~" type="string" min="None" max="None" default="None" description="None">
+                    </property>
+                    <property value="AllowImageNameChange=" type="boolean" min="None" max="None" default="0" description="None">
+                    </property>
+                    <property value="AllowImageDirChange=" type="boolean" min="None" max="None" default="0" description="None">
+                    </property>
+                    <property value="DoNotShowPreviewJpegs=1~" type="boolean" min="None" max="None" default="0" description="None">
+                    </property>
+                    <property value="GroupRROptions=1~" type="boolean" min="None" max="None" default="0" description="None">
+                    </property>
+                </properties>
+                <component value="rrSubmitter" submitter="True">
+                    <platform value="Darwin">
+                        <x32 value="mac/rrSubmitter.app/Contents/MacOS/rrSubmitter">
+                        </x32>
+                        <x64 value="None">
+                        </x64>
+                    </platform>
+                </component>
+                <component value="rrClient" submitter="False">
+                    <platform value="Darwin">
+                        <x32 value="mac/rrClient.app/Contents/MacOS/rrClient">
+                        </x32>
+                        <x64 value="/pypelyne/royalrender_repository/bin/mac64/rrClient.app/Contents/MacOS/rrClient">
+                        </x64>
+                    </platform>
+                </component>
+                <component value="rrClientwatch" submitter="False">
+                    <platform value="Darwin">
+                        <x32 value="bin/mac/rrClientwatch.app/Contents/MacOS/rrClientwatch">
+                        </x32>
+                        <x64 value="None">
+                        </x64>
+                    </platform>
+                </component>
+                <component value="rrConfig" submitter="False">
+                    <platform value="Darwin">
+                        <x32 value="mac/rrConfig.app/Contents/MacOS/rrConfig">
+                        </x32>
+                        <x64 value="None">
+                        </x64>
+                    </platform>
+                </component>
+                <component value="rrControl" submitter="False">
+                    <platform value="Darwin">
+                        <x32 value="mac/rrControl.app/Contents/MacOS/rrControl">
+                        </x32>
+                        <x64 value="None">
+                        </x64>
+                    </platform>
+                </component>
+            </version>
+        </vendor>
+    </family>
+</valueFarm>

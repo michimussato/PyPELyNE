@@ -1,22 +1,43 @@
 <?xml version="1.0"?>
 <valueRenderer>
-    <family value="Arnold" abbrev="">
-        <vendor value="SolidAngle">
-            <version value="0.25.3" template="None">
-                <platform value="Windows">
-                    <x32 value="None">
-                        <flag value="-launch"/>
-                    </x32>
-                    <x64 value="None">
-                    </x64>
-                </platform>
-                <platform value="Darwin">
-                    <x32 value="None">
-                    </x32>
-                    <x64 value="/Applications/MtoA-0.25.3-darwin-2013/bin/kick">
-                    </x64>
-                </platform>
-            </version>
-        </vendor>
-    </family>
+    <plugin value="Arnold">
+        <versionPlugin value="MtoA 1.2.2.0">
+            <argument value="-v" valueRequired="True" type="integer" min="0" max="6" default="2" description="verbosity level">
+            </argument>
+            <argument value="-as" valueRequired="True" type="integer" min="0" max="None" default="None" description="antialiasing samples">
+            </argument>
+            <argument value="-dw" valueRequired="False" type="boolean" min="None" max="None" default="None" description="disable render window">
+            </argument>
+            <argument value="-nstdin" valueRequired="False" type="boolean" min="None" max="None" default="None" description="ignore input from stdin">
+            </argument>
+            <argument value="-bs" valueRequired="True" type="integer" min="8" max="64" default="32" description="bucket size">
+            </argument>
+            <argument value="-i" valueRequired="True" type="string" min="None" max="None" default="None" description="input ass file">
+            </argument>
+            <argument value="-o" valueRequired="True" type="string" min="None" max="None" default="None" description="output filename">
+            </argument>
+            <platform value="Darwin">
+                <x32 value="None"></x32>
+                <x64 value="/Applications/MtoA/bin/kick" help="--help"></x64>
+            </platform>
+        </versionPlugin>
+    </plugin>
+
+    <plugin value="Mantra">
+        <versionPlugin value="13.0.314">
+            <argument value="-V " valueRequired="True" type="integer" min="0" max="9" default="4a" description="verbosity level">
+                <appendix value="a" description="Turn on Alfred-style progress reporting"></appendix>
+                <appendix value="p" description="Turn on VEX profiling"></appendix>
+                <appendix value="P" description="Turn on VEX profiling and NAN detection"></appendix>
+            </argument>
+            <argument value="-j" valueRequired="True" type="integer" min="0" max="16" default="0" description="Set the number of threads">
+            </argument>
+            <argument value="-F" valueRequired="True" type="string" min="None" max="None" default="None" description="Argument specifies input IFD instead of output image">
+            </argument>
+            <platform value="Darwin">
+                <x32 value="None"></x32>
+                <x64 value="/Library/Frameworks/Houdini.framework/Versions/Current/Resources/bin/mantra" help="-h"></x64>
+            </platform>
+        </versionPlugin>
+    </plugin>
 </valueRenderer>

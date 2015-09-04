@@ -148,6 +148,7 @@ class portOutput( QGraphicsItem ):
 
         if os.path.exists( self.liveDir ):
             if self.currentPlatform == 'Darwin' or self.currentPlatform == 'Linux':
+                #print 'outputDir:', self.outputDir
                 if os.path.exists( os.path.join( self.outputDir, 'current' ) ):
                     if not os.path.basename( os.readlink( self.liveDir ) ) == os.readlink( os.path.join( self.outputDir, 'current' ) ):
                         path = os.path.join( self.outputDir, 'current' )
@@ -173,39 +174,50 @@ class portOutput( QGraphicsItem ):
                     #print os.path.abspath( os.readlink( self.liveDir ) )
                     #print os.path.basename( os.path.abspath( os.readlink( self.liveDir ) ) )
 
-                    outputName = os.path.basename( os.path.abspath( os.readlink( self.liveDir ) ) )
+                    #print 'liveDir:', self.liveDir
+                    try:
+                        outputName = os.path.basename( os.path.abspath( os.readlink( self.liveDir ) ) )
+                    except:
+                        outputName = self.liveDir.split( '.' )[ -1 ]
                     #outputName = os.path.basename( self.liveDir ).split( '.' )[ -1 ]
+                    #print 'outputName:', outputName
 
 
                     #print os.path.dirname( os.path.dirname( os.path.abspath( os.readlink( self.liveDir ) ) ) )
-                    srcPath = os.path.dirname( os.path.dirname( os.path.abspath( os.readlink( self.liveDir ) ) ) )[ 1: ]
-
-                    #print os.path.basename( os.path.join( srcPath, 'live', outputName ) )
-                    #print self.projectsRoot
-                    #print self.projectsRoot
-                    #print srcPath
-                    #print os.path.join( self.projectsRoot, srcPath, 'output', outputName, 'current' )
-                    #print os.path.join( self.projectsRoot, srcPath, 'live', outputName )
+                    try:
+                        srcPath = os.path.dirname( os.path.dirname( os.path.abspath( os.readlink( self.liveDir ) ) ) )[ 1: ]
+                        #print 'srcPath:', srcPath
 
 
-                    if not os.readlink( os.path.join( self.projectsRoot, srcPath, 'output', outputName, 'current' ) ) == os.path.basename( os.readlink( os.path.join( self.projectsRoot, srcPath, 'live', outputName ) ) ):
-                        path = os.path.join( self.projectsRoot, srcPath, 'output', outputName, 'current' )
-                        content = os.listdir( path )
-                        for exclusion in self.exclusions:
-                            if exclusion in content:
-                                content.remove( exclusion )
-                                try:
-                                    os.remove( os.path.join( path, exclusion ) )
-                                    print 'exclusion removed: %s' %( os.path.join( path, exclusion ) )
-                                except:
-                                    print 'could not remove: %s' %( os.path.join( path, exclusion ) )
+                        #print os.path.basename( os.path.join( srcPath, 'live', outputName ) )
+                        #print self.projectsRoot
+                        #print self.projectsRoot
+                        #print srcPath
+                        #print os.path.join( self.projectsRoot, srcPath, 'output', outputName, 'current' )
+                        #print os.path.join( self.projectsRoot, srcPath, 'live', outputName )
 
-                        if len( content ) <= 1:
-                            self.portOutputRingColorItem.setNamedColor( self.outputColorEmpty )
+
+                        if not os.readlink( os.path.join( self.projectsRoot, srcPath, 'output', outputName, 'current' ) ) == os.path.basename( os.readlink( os.path.join( self.projectsRoot, srcPath, 'live', outputName ) ) ):
+                            path = os.path.join( self.projectsRoot, srcPath, 'output', outputName, 'current' )
+                            content = os.listdir( path )
+                            for exclusion in self.exclusions:
+                                if exclusion in content:
+                                    content.remove( exclusion )
+                                    try:
+                                        os.remove( os.path.join( path, exclusion ) )
+                                        print 'exclusion removed: %s' %( os.path.join( path, exclusion ) )
+                                    except:
+                                        print 'could not remove: %s' %( os.path.join( path, exclusion ) )
+
+                            if len( content ) <= 1:
+                                self.portOutputRingColorItem.setNamedColor( self.outputColorEmpty )
+                            else:
+                                self.portOutputRingColorItem.setNamedColor( self.outputColorNearline )
+
                         else:
-                            self.portOutputRingColorItem.setNamedColor( self.outputColorNearline )
-
-                    else:
+                            self.portOutputRingColorItem.setNamedColor( self.outputColorOnline )
+                    except:
+                        #we have a library loader here:
                         self.portOutputRingColorItem.setNamedColor( self.outputColorOnline )
 
             elif self.currentPlatform == 'Windows':

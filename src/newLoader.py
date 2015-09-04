@@ -11,6 +11,34 @@ from PyQt4.uic import *
 import os
 
 
+
+
+'''
+#library loader procedure:
+cd /Volumes/pili/pypelyne_projects/0000-00-00___test___test/content/assets/libraryTest ;
+
+mkdir LDR_LIB__mazda;
+
+cd LDR_LIB__mazda/;
+
+#create the xml file:
+touch propertyNode.xml;
+
+ln -s ../../../../../../pypelyne_library/2015-05-20___myself___edelviz_____assets_____edelVizModel_____SVR_AST__edelVizModel_____2015-09-04_1632-53/output output;
+
+ln -s ../../../../../../pypelyne_library/2015-05-20___myself___edelviz_____assets_____edelVizModel_____SVR_AST__edelVizModel_____2015-09-04_1632-53/input input;
+
+ln -s ../../../../../../pypelyne_library/2015-05-20___myself___edelviz_____assets_____edelVizModel_____SVR_AST__edelVizModel_____2015-09-04_1632-53/live live;
+
+'''
+
+
+
+
+
+
+
+
 class newLoaderUI( QDialog ):
     def __init__( self, activeItemPath, mainWindow, parent = None ):
         super( newLoaderUI, self ).__init__( parent )
@@ -135,6 +163,8 @@ class newLoaderUI( QDialog ):
         
     def setStatus( self ):
 
+        print 'tabIndex:', self.tabAsset.currentIndex()
+
 
         #print type( self.comboBoxCategory.currentText() )
         #print self.comboBoxCategory.currentText()
@@ -211,6 +241,10 @@ class newLoaderUI( QDialog ):
         
     def onOk( self ):
 
+        tabIndex = self.tabAsset.currentIndex()
+
+        #tabItem = self.tabAsset.currentItem()
+
         saverFolder = [ folder for folder in os.listdir( self.sourceSaverLocation ) if folder.startswith( 'SVR_' ) ][ 0 ]
         #print saverFolder
 
@@ -228,7 +262,7 @@ class newLoaderUI( QDialog ):
         #self.taskIndex = self.comboBoxTask.currentIndex() - 1
         #print self.nodeName
         self.accept()
-        return self.loaderName, os.path.join( self.sourceSaverLocation, saverFolder )
+        return self.loaderName, os.path.join( self.sourceSaverLocation, saverFolder ), tabIndex
     
     
     # http://stackoverflow.com/questions/18196799/how-can-i-show-a-pyqt-modal-dialog-and-get-data-out-of-its-controls-once-its-clo
@@ -236,5 +270,5 @@ class newLoaderUI( QDialog ):
     def getNewLoaderData( contentDirectory, exclusions ):
         dialog = newLoaderUI( contentDirectory, exclusions )
         result = dialog.exec_()
-        loaderName, sourceSaverLocation = dialog.onOk()
-        return result == QDialog.Accepted, loaderName, sourceSaverLocation
+        loaderName, sourceSaverLocation, tabIndex = dialog.onOk()
+        return result == QDialog.Accepted, loaderName, sourceSaverLocation, tabIndex

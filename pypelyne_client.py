@@ -99,7 +99,7 @@ class pypelyneMainWindow( QMainWindow ):
             self.fileExplorer = fileExplorerWin
             self.tarExec = tarExecWin
             #self.projectsRoot = projectsRootWin
-            self.assetsRoot = assetsRootWin
+            self.libraryRoot = libraryRootWin
             self.audioFolder = audioFolderWin
             if screenCastExecWin[ 1: ].startswith( ':' + os.sep ):
                 self.screenCastExec = screenCastExecWin
@@ -116,7 +116,7 @@ class pypelyneMainWindow( QMainWindow ):
             self.fileExplorer = fileExplorerDarwin
             self.tarExec = tarExecDarwin
             #self.projectsRoot = projectsRootDarwin
-            self.assetsRoot = assetsRootDarwin
+            self.libraryRoot = libraryRootDarwin
             self.audioFolder = audioFolderDarwin
             if screenCastExecDarwin.startswith( os.sep ):
                 self.screenCastExec = screenCastExecDarwin
@@ -139,7 +139,7 @@ class pypelyneMainWindow( QMainWindow ):
             #quit()
             self.tarExec = tarExecLinux
             #self.projectsRoot = projectsRootLinux
-            self.assetsRoot = assetsRootLinux
+            self.libraryRoot = libraryRootLinux
             self.audioFolder = audioFolderLinux
             if screenCastExecLinux.startswith( os.sep ):
                 self.screenCastExec = screenCastExecLinux
@@ -154,6 +154,13 @@ class pypelyneMainWindow( QMainWindow ):
         else:
             print 'platform unknown. not supported. bye.'
             quit()
+
+
+
+        #print self.libraryRoot
+        if not os.path.exists( self.libraryRoot ) and not self.libraryRoot == None and not self.libraryRoot == '':
+            os.makedirs( self.libraryRoot, mode = 0777 )
+            logging.info( 'library root directory created' )
 
 
 
@@ -342,6 +349,47 @@ class pypelyneMainWindow( QMainWindow ):
                 self.projectsRoot = projectsRootDarwinAlt
             else:
                 logging.warning( 'no predefinded projectsRoot found' )
+
+
+
+    def exportToLibraryCallback( self, node ):
+        def callback():
+            self.exportToLibrary( node )
+        return callback
+
+    def exportToLibrary( self, node ):
+        print 'exportToLibrary', node
+        dateTime = datetime.datetime.now().strftime( '%Y-%m-%d_%H%M-%S' )
+        currentDir = os.getcwd()
+        exportSrcNodeDir = node.location
+        exportSrcNodeDirInputs = os.path.join( exportSrcNodeDir, 'input' )
+        #exportSrcNodeDirOutputs = os.path.join( exportSrcNodeDir, 'output' )
+        exportDstDirRoot = self.libraryRoot
+        exportDstName = self.getCurrentProject() + self.tarSep + os.path.basename( os.path.dirname( node.getNodeAsset() ) ) + self.tarSep + os.path.basename( node.getNodeAsset() ) + self.tarSep + node.label + self.tarSep + dateTime
+        exportDstDir = os.path.join( exportDstDirRoot, exportDstName )
+        exportDstNameInput = os.path.join( exportDstDir, 'input' )
+        exportDstNameOutput = os.path.join( exportDstDir, 'output' )
+
+        #print 'export from:', exportSrcNodeDirInputs
+        #print 'export to:', exportDstNameInput
+        #print 'export name:', exportDstName
+
+        os.makedirs( os.path.join( self.libraryRoot, exportDstName ), mode = 0777 )
+        os.makedirs( os.path.join( self.libraryRoot, exportDstNameInput ), mode = 0777 )
+        #os.makedirs( os.path.join( self.libraryRoot, exportDstNameOutput ), mode = 0777 )
+
+        #shutil.copytree( '/Volumes/pili/pypelyne_projects/0000-00-00___test___test/content/assets/test/SVR_AST__test/input', '/Volumes/pili/pypelyne_assets/0000-00-00___test___test_____assets_____test_____SVR_AST__test_____2015-09-04_1311-41/output', symlinks = False )
+        #                  /Volumes/pili/pypelyne_projects/0000-00-00___test___test/content/assets/test/SVR_AST__test/input
+
+        shutil.copytree( exportSrcNodeDirInputs, exportDstNameOutput, symlinks = False )
+
+        os.chdir( exportDstDir )
+        os.symlink( os.path.relpath( exportDstNameOutput, exportDstDir ), 'live' )
+        os.path.relpath( exportDstNameOutput, exportDstDir )
+        os.chdir( currentDir )
+        #shutil.copytree( exportSrcNodeDirOutputs, exportDstNameInput, symlinks = False )
+
+
 
 
 
@@ -1132,118 +1180,137 @@ class pypelyneMainWindow( QMainWindow ):
         self.configWindow.show()
 
     def computeConnections( self ):
-        try:
-            logging.info( 'computeConnections...' )
-            # get all nodes
-            nodeList = self.scene.getNodeList()
-            # for each node
-            for nodeDst in nodeList:
-                logging.info( '%s:' %( nodeDst.data( 0 ).toPyObject() ) )
-                # get node inputs
-                nodeRootDir = nodeDst.getNodeRootDir()
-                nodeInputDir = os.sep.join( [ str( nodeRootDir ), 'input' ] )
-                #endItems =
-                inputs = os.listdir( nodeInputDir )
-                #print inputs
-                # for each input
+        #try:
+        logging.info( 'computeConnections...' )
+        # get all nodes
+        nodeList = self.scene.getNodeList()
+        # for each node
+        for nodeDst in nodeList:
+            logging.info( '%s:' %( nodeDst.data( 0 ).toPyObject() ) )
+            # get node inputs
+            nodeRootDir = nodeDst.getNodeRootDir()
+            nodeInputDir = os.sep.join( [ str( nodeRootDir ), 'input' ] )
+            #endItems =
+            inputs = os.listdir( nodeInputDir )
+            #print inputs
+            # for each input
 
-                for input in  inputs:
-                    if len( inputs ) > 0 and not input in self.exclusions:
-                        logging.info( '\tprocessing input %s' %( input ) )
-                        # input circle = endItem
-                        endItem = nodeDst.inputList[ len( nodeDst.inputs ) ]
-                        # find connected node (string[ 2 ])
-                        inputString = input.split( '.' )
-                        #print inputString
-                        inputContent = inputString[ 0 ]
-                        inputAsset = inputString[ 1 ]
-                        inputNode = inputString[ 2 ]
-                        inputOutput = inputString[ 3 ]
+            for input in  inputs:
+                if len( inputs ) > 0 and not input in self.exclusions:
+                    logging.info( '\tprocessing input %s' %( input ) )
+                    # input circle = endItem
+                    endItem = nodeDst.inputList[ len( nodeDst.inputs ) ]
+                    # find connected node (string[ 2 ])
+                    inputString = input.split( '.' )
+                    #print inputString
+                    inputContent = inputString[ 0 ]
+                    inputAsset = inputString[ 1 ]
+                    inputNode = inputString[ 2 ]
+                    inputOutput = inputString[ 3 ]
 
-                        nodeDstAssetDir = nodeDst.getNodeAsset()
-                        #print nodeDst.getNodeAsset()
-                        for nodeSrc in nodeList:
-                            #print input.getInputDir()
-                            #print nodeSrc.getNodeRootDir()
-                            nodeSrcRootDir = nodeSrc.getNodeRootDir()
-                            nodeSrcRootDirBasename = os.path.basename( nodeSrcRootDir )
+                    nodeDstAssetDir = nodeDst.getNodeAsset()
+                    #print nodeDst.getNodeAsset()
+                    for nodeSrc in nodeList:
+                        #print input.getInputDir()
+                        #print nodeSrc.getNodeRootDir()
+                        nodeSrcRootDir = nodeSrc.getNodeRootDir()
+                        nodeSrcRootDirBasename = os.path.basename( nodeSrcRootDir )
 
-                            #print nodeSrcRootDir
-                            #print os.path.join( nodeDstAssetDir, inputNode )
+                        #print nodeSrcRootDir
+                        #print os.path.join( nodeDstAssetDir, inputNode )
 
-                            if inputContent == 'assets':
-                                content = 'AST'
-                            elif inputContent == 'shots':
-                                content = 'SHT'
+                        if inputContent == 'assets':
+                            content = 'AST'
+                        elif inputContent == 'shots':
+                            content = 'SHT'
 
-                            outputItems = nodeSrc.outputList
+                        outputItems = nodeSrc.outputList
+
+                        #print 'nodeSrcRootDir:', nodeSrcRootDir
+                        #print 'os.path.join:', os.path.join( nodeDstAssetDir, 'LDR_LIB__' + inputAsset )
 
 
-                            if nodeSrcRootDir == os.path.join( nodeDstAssetDir, inputNode ):
-                                logging.info( '\t\tnodeSrc is a task' )
-                                logging.info( '\t\tnodeSrc is %s' %( nodeSrc.data( 0 ).toPyObject() ) )
+                        if nodeSrcRootDir == os.path.join( nodeDstAssetDir, inputNode ):
+                            logging.info( '\t\tnodeSrc is a task' )
+                            logging.info( '\t\tnodeSrc is %s' %( nodeSrc.data( 0 ).toPyObject() ) )
+                            logging.info( '\t\tlooking for output called %s' %( inputOutput ) )
+                            for outputItem in outputItems:
+                                logging.info( '\t\t\tprocessing output %s' %( outputItem.data( 0 ).toPyObject() ) )
+                                if outputItem.data( 0 ).toPyObject() == inputOutput:
+                                    logging.info( '\t\t\t\t found output %s' %( outputItem.data( 0 ).toPyObject() ) )
+                                    startItem = outputItem
+                                    #startItem =
+                                    #break
+                                #else:
+                                #    print '\t\t\t\tnot found'
+
+                        elif nodeSrcRootDir == os.path.join( nodeDstAssetDir, 'LDR_' + content + '__' + inputAsset ):
+                            logging.info( '\t\tnodeSrc is a loader' )
+                            logging.info( '\t\tnodeSrc is %s' %( nodeSrc.data( 0 ).toPyObject() ) )
+                            logging.info( '\t\tlooking for output called %s' %( inputOutput ) )
+                            for outputItem in outputItems:
+                                logging.info( '\t\t\tprocessing output %s' %( outputItem.data( 0 ).toPyObject().split( '.' )[ 3 ] ) )
+                                #print nodeSrc.data( 0 ).toPyObject()
                                 logging.info( '\t\tlooking for output called %s' %( inputOutput ) )
-                                for outputItem in outputItems:
-                                    logging.info( '\t\t\tprocessing output %s' %( outputItem.data( 0 ).toPyObject() ) )
-                                    if outputItem.data( 0 ).toPyObject() == inputOutput:
-                                        logging.info( '\t\t\t\t found output %s' %( outputItem.data( 0 ).toPyObject() ) )
-                                        startItem = outputItem
-                                        #startItem =
-                                        #break
-                                    #else:
-                                    #    print '\t\t\t\tnot found'
+                                searchString = outputItem.data( 0 ).toPyObject().split( '.' )[ 3 ]
+                                if searchString == inputOutput:
+                                    logging.info( '\t\t\t\t found output %s' %( outputItem.data( 0 ).toPyObject().split( '.' )[ 3 ] ) )
+                                    startItem = outputItem
+                                    #endItem = nodeDst.inputList[ len( nodeDst.inputs ) ]
+                                    #connectionLine = bezierLine( self, self.scene, startItem, endItem )
+                                    #break
+                                #else:
+                                #    print '\t\t\t\tnot found'
 
-                            elif nodeSrcRootDir == os.path.join( nodeDstAssetDir, 'LDR_' + content + '__' + inputAsset ):
-                                logging.info( '\t\tnodeSrc is a loader' )
-                                logging.info( '\t\tnodeSrc is %s' %( nodeSrc.data( 0 ).toPyObject() ) )
+                        #special case for library loader
+                        elif nodeSrc.label.startswith( 'LDR_LIB__' ):
+                            logging.info( '\t\tnodeSrc is a library loader' )
+                            logging.info( '\t\tnodeSrc is %s' %( nodeSrc.data( 0 ).toPyObject() ) )
+                            logging.info( '\t\tlooking for output called %s' %( inputOutput ) )
+                            for outputItem in outputItems:
+                                logging.info( '\t\t\tprocessing output %s' %( outputItem.data( 0 ).toPyObject().split( '.' )[ 3 ] ) )
+                                #print nodeSrc.data( 0 ).toPyObject()
                                 logging.info( '\t\tlooking for output called %s' %( inputOutput ) )
-                                for outputItem in outputItems:
-                                    logging.info( '\t\t\tprocessing output %s' %( outputItem.data( 0 ).toPyObject().split( '.' )[ 3 ] ) )
-                                    #print nodeSrc.data( 0 ).toPyObject()
-                                    logging.info( '\t\tlooking for output called %s' %( inputOutput ) )
-                                    searchString = outputItem.data( 0 ).toPyObject().split( '.' )[ 3 ]
-                                    if searchString == inputOutput:
-                                        logging.info( '\t\t\t\t found output %s' %( outputItem.data( 0 ).toPyObject().split( '.' )[ 3 ] ) )
-                                        startItem = outputItem
-                                        #endItem = nodeDst.inputList[ len( nodeDst.inputs ) ]
-                                        #connectionLine = bezierLine( self, self.scene, startItem, endItem )
-                                        #break
-                                    #else:
-                                    #    print '\t\t\t\tnot found'
-
-                        endItem = nodeDst.inputList[ len( nodeDst.inputs ) ]
-
-                        connectionLine = bezierLine( self, self.scene, startItem, endItem )
-
-                        endItem.parentItem().inputs.append( endItem )
-                        endItem.connection.append( connectionLine )
-                        endItem.output.append( startItem )
-                        endItem.parentItem().incoming.append( startItem )
-                        startItem.inputs.append( endItem )
-
-                        startItemRootDir = startItem.parentItem().getNodeRootDir()
-                        endItemRootDir = endItem.parentItem().getNodeRootDir()
-
-                        startItemOutputLabel = startItem.getLabel()
-
-                        endItemInputDir = os.path.join( str( endItemRootDir ), 'input', str( input ) )
-
-                        endItem.setInputDir( endItemInputDir )
-
-                        self.scene.addItem( connectionLine )
-
-                        endItem.parentItem().newInput( self.scene )
+                                searchString = outputItem.data( 0 ).toPyObject().split( '.' )[ 3 ]
+                                if searchString == inputOutput:
+                                    logging.info( '\t\t\t\t found output %s' %( outputItem.data( 0 ).toPyObject().split( '.' )[ 3 ] ) )
+                                    startItem = outputItem
 
 
-                    elif input in self.exclusions:
-                        logging.info( 'input data is in exclusions list' )
 
-                    else:
-                        logging.info( 'node %s has no input' %( node.data( 0 ).toPyObject() ) )
+                    endItem = nodeDst.inputList[ len( nodeDst.inputs ) ]
+
+                    connectionLine = bezierLine( self, self.scene, startItem, endItem )
+
+                    endItem.parentItem().inputs.append( endItem )
+                    endItem.connection.append( connectionLine )
+                    endItem.output.append( startItem )
+                    endItem.parentItem().incoming.append( startItem )
+                    startItem.inputs.append( endItem )
+
+                    startItemRootDir = startItem.parentItem().getNodeRootDir()
+                    endItemRootDir = endItem.parentItem().getNodeRootDir()
+
+                    startItemOutputLabel = startItem.getLabel()
+
+                    endItemInputDir = os.path.join( str( endItemRootDir ), 'input', str( input ) )
+
+                    endItem.setInputDir( endItemInputDir )
+
+                    self.scene.addItem( connectionLine )
+
+                    endItem.parentItem().newInput( self.scene )
 
 
-        except:
-            logging.warning( 'computeConnections error. aborted.' )
+                elif input in self.exclusions:
+                    logging.info( 'input data is in exclusions list' )
+
+                else:
+                    logging.info( 'node %s has no input' %( node.data( 0 ).toPyObject() ) )
+
+
+        #except:
+        #    logging.warning( 'computeConnections error. aborted.' )
 
 
 

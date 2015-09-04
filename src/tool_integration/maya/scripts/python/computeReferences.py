@@ -177,11 +177,14 @@ class computeReferences():
             
     def referencesUnload( self ):
     
-        for item in self.referencesToUnload:
-            print "need to unload %s" %item
-            #TODO: maybe choice between unload or remove would be good...
-            cmds.file( removeReference=True, referenceNode=item )
-            print "reference %s removed" %item
+        for reference in self.referencesToUnload:
+            print "need to unload %s" %reference
+            try:
+                #TODO: maybe choice between unload or remove would be good...
+                cmds.file( removeReference=True, referenceNode=reference )
+                print "reference %s removed" %reference
+            except:
+                print 'could not unload reference:', reference
 
     def referencesReload ( self ):
         for reference in self.allReferenceNodes:

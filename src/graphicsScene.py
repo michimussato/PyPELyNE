@@ -15,6 +15,7 @@ from src.bezierLine import *
 from src.newNode import *
 from src.newOutput import *
 from src.newLoader import *
+from src.listAssets import *
 
 import shutil, os, subprocess, logging
 
@@ -127,7 +128,9 @@ class SceneView( QGraphicsScene ):
             print 'content already has a saver'
         self.menu.addSeparator()
 
-        self.menu.addAction( 'from library...', self.fooCallback( 'from library item' ) )
+        #self.menu.addAction( 'new library loader', self.newLibraryLoaderCallback( pos ) )
+        #self.menu.addAction( 'new library saver', self.newLibrarySaverCallback() )
+        #self.menu.addSeparator()
         
         try:
 
@@ -145,6 +148,11 @@ class SceneView( QGraphicsScene ):
                     nodeClicked = objectClicked.parentItem().parentItem()
                 elif isinstance( objectClicked.parentItem().parentItem().parentItem(), node ):
                     nodeClicked = objectClicked.parentItem().parentItem().parentItem()
+
+                if nodeClicked.label.startswith( 'SVR' ):
+                    self.menu.addAction( 'export to library', self.mainWindow.exportToLibraryCallback( nodeClicked ) )
+                self.menu.addSeparator()
+
 
 
                 self.menuNode = self.menu.addMenu( 'node' )
@@ -177,6 +185,9 @@ class SceneView( QGraphicsScene ):
                     self.menuNode.addSeparator()
                     self.menuNode.addAction( 'delete shot loader', self.removeObjectCallback( nodeClicked ) )
 
+                elif nodeClicked.label.startswith( 'LDR_LIB' ):
+                    self.menuNode.addAction( 'delete library loader', self.removeObjectCallback( nodeClicked ) )
+
                 elif nodeClicked.label.startswith( 'SVR_AST' ):
                     self.menuNode.addAction( 'delete asset saver', self.removeObjectCallback( nodeClicked ) )
                     self.menuNode.addSeparator()
@@ -186,6 +197,8 @@ class SceneView( QGraphicsScene ):
                     self.menuNode.addAction( 'delete shot saver', self.removeObjectCallback( nodeClicked ) )
                     self.menuNode.addSeparator()
                     self.menuNode.addAction( 'check out shot', self.mainWindow.checkOutCallback( nodeClicked ) )
+
+                #elif nodeClicked.label.startswith
 
                     #self.mainWindow.getShotContent( None, nodeClicked.getLabel() )
 
@@ -240,7 +253,8 @@ class SceneView( QGraphicsScene ):
 
 
             #output specific context menu items
-            if isinstance( objectClicked, portOutput ) and not objectClicked.parentItem().label.startswith( 'LDR' ):
+            #if isinstance( objectClicked, portOutput ) and not objectClicked.parentItem().label.startswith( 'LDR' ):
+            if isinstance( objectClicked, portOutput ):
                 #items.append( 'delete this output' )
 
                 #self.menu.addSeparator()
@@ -281,7 +295,15 @@ class SceneView( QGraphicsScene ):
                 #print 'liveDir = %s' %liveDir
 
 
-                versions = self.getVersions( outputDir )
+                #versions = self.getVersions( outputDir )
+                #try:
+                #    versions.remove( 'current' )
+                #except:
+                #    pass
+
+                #print outputDir
+                #print os.path.basename( outputDir )
+
                 #print outputDir
 
                 self.menuOutput.addAction( 'open output directory', lambda: self.mainWindow.locateContent( outputDir ) )
@@ -306,28 +328,44 @@ class SceneView( QGraphicsScene ):
                 self.menuPathOps.addAction( 'copy relative output path',  self.copyToClipboardCallback( os.path.relpath( os.path.join( outputDir, 'current', outputLabel ), os.path.join( outputNodeRootDir ) ) ) )
 
 
+                versions = self.getVersions( outputDir )
+                #print 'outputDir', outputDir
+                try:
+                    versions.remove( 'current' )
+                except:
+                    pass
+                try:
+                    versions.remove( os.path.basename( outputDir ).split( '.' )[ -1 ] )
+                except:
+                    pass
+                #print 'outputDir', outputDir
+
+                if not objectClicked.parentItem().label.startswith( 'LDR' ):
+
+                    self.menuOutput.addAction( 'cleanup output', self.cleanUpOutputCallback( objectClicked ) )
+
+                    if os.path.exists( liveDir ):
+
+                        #liveVersion = os.path.basename( os.readlink( liveDir ) )
 
 
+                        #self.menuPathOps.addAction( 'to clipboard 1234', self.copyToClipboardCallback( '1234' ) )
+                        #self.menuPathOps.addAction( 'to clipboard 5678', self.copyToClipboardCallback( '5678' ) )
+                        #self.menuPathOps.addAction( 'copy relative path', self.foo(  ) )
+                        #self.menuPathOps()
 
-                self.menuOutput.addAction( 'cleanup output', self.cleanUpOutputCallback( objectClicked ) )
+                        self.menuOutput.addAction( 'remove pipe (live)', self.unmakeLiveCallback( liveDir ) )
 
-                if os.path.exists( liveDir ):
+                #if not objectClicked.parentItem().label.startswith( 'LDR' ):
+                    self.menuOutput.addAction( 'delete output', self.removeObjectCallback( objectClicked ) )
+                    self.menuOutput.addSeparator()
 
-                    #liveVersion = os.path.basename( os.readlink( liveDir ) )
-
-
-                    #self.menuPathOps.addAction( 'to clipboard 1234', self.copyToClipboardCallback( '1234' ) )
-                    #self.menuPathOps.addAction( 'to clipboard 5678', self.copyToClipboardCallback( '5678' ) )
-                    #self.menuPathOps.addAction( 'copy relative path', self.foo(  ) )
-                    #self.menuPathOps()
-
-                    self.menuOutput.addAction( 'remove pipe (live)', self.unmakeLiveCallback( liveDir ) )
-                self.menuOutput.addAction( 'delete output', self.removeObjectCallback( objectClicked ) )
-                self.menuOutput.addSeparator()
-
-                self.menuOutput.addAction( 'create new version', self.createNewVersionCallback( outputDir ) )
+                    self.menuOutput.addAction( 'create new version', self.createNewVersionCallback( outputDir ) )
 
                     #print 'added'
+                #else:
+
+
                 self.menuOutput.addSeparator()
                 #print versions
                 for version in versions:
@@ -341,10 +379,20 @@ class SceneView( QGraphicsScene ):
                     '''
                     if not version == 'current':
 
-                        versionPath = os.path.join( outputDir, version )
-                        #print versionPath
+                        if not objectClicked.parentItem().label.startswith( 'LDR' ):
+                            versionPath = os.path.join( outputDir, version )
+                        else:
+                            versionPath = outputDir
+                        print 'versionPath', versionPath
+
+
+
+
+
 
                         outputDirContent = os.listdir( versionPath )
+
+                        #print 'outputDirContent', outputDirContent
                         for item in outputDirContent:
                             if item in self.exclusions:
                                 try:
@@ -361,18 +409,21 @@ class SceneView( QGraphicsScene ):
 
                         if self.currentPlatform == 'Darwin' or self.currentPlatform == 'Linux':
                             if os.path.exists( liveDir ):
-                                if os.path.basename( os.readlink( liveDir ) ) == version:
-                                    menuMakeLive.setIcon( QIcon( 'src/icons/dotActive.png' ) )
+                                if not objectClicked.parentItem().label.startswith( 'LDR' ):
+                                    if os.path.basename( os.readlink( liveDir ) ) == version:
+                                        menuMakeLive.setIcon( QIcon( 'src/icons/dotActive.png' ) )
+                                    else:
+                                        menuMakeLive.setIcon( QIcon( 'src/icons/dotInactive.png' ) )
                                 else:
-                                    menuMakeLive.setIcon( QIcon( 'src/icons/dotInactive.png' ) )
+                                    menuMakeLive.setIcon( QIcon( 'src/icons/dotActive.png' ) )
                             else:
                                 menuMakeLive.setIcon( QIcon( 'src/icons/dotInactive.png' ) )
                         elif self.currentPlatform == 'Windows':
                             if os.path.exists( liveDir ):
-                                print liveDir
-                                print os.path.abspath( liveDir )
-                                print os.path.realpath( liveDir )
-                                print version
+                                #print liveDir
+                                #print os.path.abspath( liveDir )
+                                #print os.path.realpath( liveDir )
+                                #print version
                                 if os.path.basename( os.path.realpath( liveDir ) ) == version:
                                     menuMakeLive.setIcon( QIcon( 'src/icons/dotActive.png' ) )
                                 else:
@@ -384,47 +435,53 @@ class SceneView( QGraphicsScene ):
 
                         #if outputLabel.startswith( 'SEQ' ) or outputLabel.startswith( 'TEX' ) or outputLabel.startswith( 'PLB' ):
                         #print os.path.splitext( outputDirContent[ 0 ] )[ 1 ]
-                        if os.path.splitext( outputDirContent[ 0 ] )[ 1 ] in self.imageExtensions or os.path.splitext( outputDirContent[ 0 ] )[ 1 ] in self.movieExtensions:
-                            '''
-                            for exclusion in self.exclusions:
+                        if len( outputDirContent ) > 0:
+                            if os.path.splitext( outputDirContent[ 0 ] )[ 1 ] in self.imageExtensions or os.path.splitext( outputDirContent[ 0 ] )[ 1 ] in self.movieExtensions:
+                                '''
+                                for exclusion in self.exclusions:
+                                    try:
+                                        #if os.path.exists( os.path.join( outputDirContent, exclusion ) ):
+                                        logging.info( 'exclusion removed from list: %s' %( os.path.join( outputDirContent, exclusion ) ) )
+                                        #os.remove( os.path.join( outputDirContent, exclusion ) )
+                                        outputDirContent.remove( exclusion )
+                                    except:
+                                        logging.warning( 'exclusion found but not removed from list: %s' %( os.path.join( outputDirContent, exclusion ) ) )
+                                '''
+
                                 try:
-                                    #if os.path.exists( os.path.join( outputDirContent, exclusion ) ):
-                                    logging.info( 'exclusion removed from list: %s' %( os.path.join( outputDirContent, exclusion ) ) )
-                                    #os.remove( os.path.join( outputDirContent, exclusion ) )
-                                    outputDirContent.remove( exclusion )
+                                    menuMakeLive.addAction( 'view', self.viewVersion( os.path.join( versionPath, outputDirContent[ 0 ] ) ) )
+                                    if not objectClicked.parentItem().label.startswith( 'LDR' ):
+                                        try:
+                                            if self.mainWindow.rv == True:
+                                                menuMakeLive.addAction( 'compare to live', self.compareVersion( os.path.join( versionPath, outputDirContent[ 0 ] ), os.path.join( liveDir, outputDirContent[ 0 ] ) ) )
+                                                menuMakeLive.addAction( 'difference to live', self.differenceVersion( os.path.join( versionPath, outputDirContent[ 0 ] ), os.path.join( liveDir, outputDirContent[ 0 ] ) ) )
+
+                                        except:
+                                            print 'compare/difference to live version not possible'
                                 except:
-                                    logging.warning( 'exclusion found but not removed from list: %s' %( os.path.join( outputDirContent, exclusion ) ) )
-                            '''
+                                    print 'not possible to view SEQ. emty?'
 
-                            try:
-                                menuMakeLive.addAction( 'view', self.viewVersion( os.path.join( versionPath, outputDirContent[ 0 ] ) ) )
-                                try:
-                                    if self.mainWindow.rv == True:
-                                        menuMakeLive.addAction( 'compare to live', self.compareVersion( os.path.join( versionPath, outputDirContent[ 0 ] ), os.path.join( liveDir, outputDirContent[ 0 ] ) ) )
-                                        menuMakeLive.addAction( 'difference to live', self.differenceVersion( os.path.join( versionPath, outputDirContent[ 0 ] ), os.path.join( liveDir, outputDirContent[ 0 ] ) ) )
-
-                                except:
-                                    print 'compare/difference to live version not possible'
-                            except:
-                                print 'not possible to view SEQ. emty?'
-
-                            #menuMakeLive.addAction( 'compare to live', self.compareVersion( os.path.join( outputDir, version, outputDirContent[ 0 ] ), os.path.join( liveDir, outputDirContent[ 0 ] ) ) )
+                                #menuMakeLive.addAction( 'compare to live', self.compareVersion( os.path.join( outputDir, version, outputDirContent[ 0 ] ), os.path.join( liveDir, outputDirContent[ 0 ] ) ) )
 
 
-                            #self.versionMenu.addAction( 'view live', self.viewLive( os.path.join( liveDir, liveDirContent[ 0 ] ) ) )
+                                #self.versionMenu.addAction( 'view live', self.viewLive( os.path.join( liveDir, liveDirContent[ 0 ] ) ) )
 
-                        menuMakeLive.addAction( 'open directory', self.mainWindow.locateContentCallback( versionPath ) )
 
-                        deleteVersionAction = menuMakeLive.addAction( 'delete version', self.deleteContentCallback( versionPath ) )
 
-                        makeCurrentAction = menuMakeLive.addAction( 'make current', self.makeCurrentCallback( versionPath ) )
+                        if not objectClicked.parentItem().label.startswith( 'LDR' ):
+                            menuMakeLive.addAction( 'open directory', self.mainWindow.locateContentCallback( versionPath ) )
+                            deleteVersionAction = menuMakeLive.addAction( 'delete version', self.deleteContentCallback( versionPath ) )
+
+                            makeCurrentAction = menuMakeLive.addAction( 'make current', self.makeCurrentCallback( versionPath ) )
 
 
                         if self.currentPlatform == 'Darwin' or self.currentPlatform == 'Linux':
-                            if os.path.join( outputDir, version ) == os.path.join( outputDir, os.readlink( os.path.join( outputDir, 'current' ) ) ):
-                                deleteVersionAction.setEnabled( False )
-                            else:
-                                deleteVersionAction.setEnabled( True )
+                            if not objectClicked.parentItem().label.startswith( 'LDR' ):
+                                if os.path.join( outputDir, version ) == os.path.join( outputDir, os.readlink( os.path.join( outputDir, 'current' ) ) ):
+                                    deleteVersionAction.setEnabled( False )
+                                else:
+                                    deleteVersionAction.setEnabled( True )
+
                         elif self.currentPlatform == 'Windows':
 
 
@@ -433,47 +490,49 @@ class SceneView( QGraphicsScene ):
                             print os.path.join( outputDir, os.path.realpath( os.path.join( outputDir, 'current' ) ) )
 
 
-
-                        makeLiveAction = menuMakeLive.addAction( 'make live', self.makeLiveCallback( versionPath ) )
-
-
-                        #print liveDir
-                        #print outputLabel
-                        #print 'test', os.path.join( os.path.dirname( os.path.dirname( liveDir ) ), 'output', outputLabel, version )
-                        #print os.path.basename( os.readlink( liveDir ) )
-                        #print 'livedir   =', os.path.join( outputDir, os.path.basename( os.readlink( liveDir ) ) )
-                        #print 'outputdir =', os.path.join( outputDir, version )
+                        if not objectClicked.parentItem().label.startswith( 'LDR' ):
+                            makeLiveAction = menuMakeLive.addAction( 'make live', self.makeLiveCallback( versionPath ) )
 
 
+                            #print liveDir
+                            #print outputLabel
+                            #print 'test', os.path.join( os.path.dirname( os.path.dirname( liveDir ) ), 'output', outputLabel, version )
+                            #print os.path.basename( os.readlink( liveDir ) )
+                            #print 'livedir   =', os.path.join( outputDir, os.path.basename( os.readlink( liveDir ) ) )
+                            #print 'outputdir =', os.path.join( outputDir, version )
 
-                        if len( outputDirContent ) > 0:
-                            makeLiveAction.setEnabled( True )
 
 
-                            #outputDir = objectClicked.getOutputDir()
+                            if len( outputDirContent ) > 0:
+                                makeLiveAction.setEnabled( True )
 
-                            #outputLabel = objectClicked.getLabel()
 
-                            #liveDir = objectClicked.getLiveDir()
-                        else:
-                            makeLiveAction.setEnabled( False )
-                            makeLiveAction.setText( makeLiveAction.text() + ' (no content)' )
+                                #outputDir = objectClicked.getOutputDir()
 
-                        try:
+                                #outputLabel = objectClicked.getLabel()
 
-                            if os.path.join( outputDir, os.path.basename( os.readlink( liveDir ) ) ) == os.path.join( outputDir, version ):
+                                #liveDir = objectClicked.getLiveDir()
+                            else:
                                 makeLiveAction.setEnabled( False )
-                                makeLiveAction.setText( makeLiveAction.text() + ' (already live)' )
-                                deleteVersionAction.setEnabled( False )
+                                makeLiveAction.setText( makeLiveAction.text() + ' (no content)' )
 
-                        except:
-                            print 'no live version found'
-                            #makeLiveAction.setEnabled( True )
+                            try:
+
+                                if os.path.join( outputDir, os.path.basename( os.readlink( liveDir ) ) ) == os.path.join( outputDir, version ):
+                                    makeLiveAction.setEnabled( False )
+                                    makeLiveAction.setText( makeLiveAction.text() + ' (already live)' )
+                                    deleteVersionAction.setEnabled( False )
+
+                            except:
+                                print 'no live version found'
+                                #makeLiveAction.setEnabled( True )
 
 
                         if self.currentPlatform == 'Darwin' or self.currentPlatform == 'Linux':
-                            if versionPath == os.path.join( outputDir, os.path.basename( os.readlink( os.path.join( outputDir, 'current' ) ) ) ):
-                                makeCurrentAction.setEnabled( False )
+                            if not objectClicked.parentItem().label.startswith( 'LDR' ):
+                                if versionPath == os.path.join( outputDir, os.path.basename( os.readlink( os.path.join( outputDir, 'current' ) ) ) ):
+                                    makeCurrentAction.setEnabled( False )
+
                         elif self.currentPlatform == 'Windows':
                             if versionPath == os.path.join( outputDir, os.path.basename( os.path.realpath( os.path.join( outputDir, 'current' ) ) ) ):
                                 makeCurrentAction.setEnabled( False )
@@ -481,9 +540,9 @@ class SceneView( QGraphicsScene ):
 
 
 
-        #except:
-            #print 'not working'
-            #pass
+            #except:
+                #print 'not working'
+                #pass
 
 
 
@@ -795,8 +854,16 @@ class SceneView( QGraphicsScene ):
                 node.sendFromNodeToBox( str( datetime.datetime.now() ) )
                 node.sendFromNodeToBox( ':' + '\n' )
                 node.sendFromNodeToBox( '--- new output created' + '\n' )
+    '''
+    def newLibraryLoaderDialogCallback( self, pos ):
+        def callback():
+            self.newLibraryLoaderDialog( pos )
+        return callback
 
-
+    def newLibraryLoaderDialog( self, pos ):
+        print 'newLibraryLoaderDialog', pos
+        libraryContent = os.listdir( self.mainWindow.libraryRoot )
+    '''
 
 
     def newLoaderDialog( self, pos ):
@@ -814,11 +881,15 @@ class SceneView( QGraphicsScene ):
 
             #directoryContent = 
 
-            ok, loaderName, sourceSaverLocation = newLoaderUI.getNewLoaderData( activeItemPath, self.mainWindow )
+            ok, loaderName, sourceSaverLocation, tabIndex = newLoaderUI.getNewLoaderData( activeItemPath, self.mainWindow )
 
             if ok:
 
+                print tabIndex
+
                 #newLoaderName = loaderName
+
+                #print tabItem
 
                 newLoaderPath = os.path.join( activeItemPath, loaderName )
 
@@ -937,6 +1008,31 @@ class SceneView( QGraphicsScene ):
                 else:
                     print 'asset loader already exists'
         return callback
+
+    def newLibraryLoaderCallback( self, pos ):
+        def callback():
+            self.newLibraryLoader( pos )
+        return callback
+
+    def newLibraryLoader( self, pos ):
+        print 'newLibraryLoader', pos
+        assetsInLibrary = os.listdir( self.mainWindow.libraryRoot )
+        for exclusion in self.exclusions:
+            if exclusion in assetsInLibrary:
+                try:
+                    os.remove( os.path.join( self.mainWindow.libraryRoot, exclusion ) )
+                    assetsInLibrary.remove( exclusion )
+                    logging.info( 'exclusion in libraryRoot removed' )
+                except:
+                    logging.info( 'exclusion in libraryRoot could not be removed' )
+        assetsUI = listAssetsUI( self.mainWindow, pos )
+        assetsUI.show()
+
+
+
+
+
+
 
     def newSaverDialog( self, pos ):
         def callback():
@@ -1298,17 +1394,13 @@ class SceneView( QGraphicsScene ):
 
 
     def removeObject( self, item ):
-
-
-
         reply = QMessageBox.warning( self.mainWindow, str( 'about to delete item' ), str( 'are you sure to \ndelete %s %s \nand its contents?' %( item.data( 2 ).toPyObject(), item.label ) ), QMessageBox.Yes | QMessageBox.No, QMessageBox.No )
 
         #print yes
 
         if reply == QMessageBox.Yes:
 
-            if isinstance( item, node ) :
-
+            if isinstance( item, node ):
                 #print 'self.children() = %s' %self.children()
                 #node.outputList
                 tempOutputList = item.outputList
@@ -1331,11 +1423,30 @@ class SceneView( QGraphicsScene ):
 
 
                 nodeRootDir = item.getNodeRootDir()
-                #print 'nodeRootDir = %s' %nodeRootDir
-                shutil.rmtree( nodeRootDir )
-                self.removeItem( item )
 
-                #print 'self.children() = %s' %self.children()
+
+                if item.label.startswith( 'LDR' ):
+                    #print 'deleting loader'
+                    #print nodeRootDir
+                    nodeRootDirContent = os.listdir( nodeRootDir )
+
+                    #print nodeRootDirContent
+
+                    for dir in nodeRootDirContent:
+                        if os.path.islink( os.path.join( nodeRootDir, dir ) ):
+                            os.remove( os.path.join( nodeRootDir, dir ) )
+                            print os.path.join( nodeRootDir, dir ), 'removed'
+                    shutil.rmtree( nodeRootDir )
+                    self.removeItem( item )
+
+                else:
+
+
+                    #print 'nodeRootDir = %s' %nodeRootDir
+                    shutil.rmtree( nodeRootDir )
+                    self.removeItem( item )
+
+                    #print 'self.children() = %s' %self.children()
 
 
 
@@ -1423,15 +1534,16 @@ class SceneView( QGraphicsScene ):
         #print outputDir
         liveDir = item.getLiveDir()
         #print liveDir
-        if os.path.exists( liveDir ):
-            #########
-            os.unlink( liveDir )
-        #print outputDir
-        shutil.rmtree( outputDir )
+        if not item.parentItem().label.startswith( 'LDR' ):
+            if os.path.exists( liveDir ):
+                #########
+                os.unlink( liveDir )
+            #print outputDir
+            shutil.rmtree( outputDir )
 
-        #item.parentItem().resize()
-        #print item.parentItem().boundingRect()
-        self.removeItem( item )
+            #item.parentItem().resize()
+            #print item.parentItem().boundingRect()
+            self.removeItem( item )
         
         
         

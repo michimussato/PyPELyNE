@@ -11,7 +11,7 @@ class addScreenCastUI( QWidget ):
         super( addScreenCastUI, self ).__init__( parent )
         self.mainWindow = mainWindow
         self.castProcess = castProcess
-        self.pypelyneRoot = self.mainWindow.getPypelyneRoot()
+        self.pypelyneRoot = self.mainWindow.pypelyneRoot
 
         self.createUI()
 

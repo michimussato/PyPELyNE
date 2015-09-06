@@ -88,12 +88,6 @@
       </item>
       <item>
        <widget class="QPushButton" name="runToolPushButton">
-        <property name="maximumSize">
-         <size>
-          <width>30</width>
-          <height>23</height>
-         </size>
-        </property>
         <property name="text">
          <string>run</string>
         </property>

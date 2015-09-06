@@ -15,7 +15,7 @@ from src.bezierLine import *
 from src.newNode import *
 from src.newOutput import *
 from src.newLoader import *
-from src.listAssets import *
+#from src.listAssets import *
 
 import shutil, os, subprocess, logging
 
@@ -540,16 +540,16 @@ class SceneView( QGraphicsScene ):
 
 
 
-            #except:
-                #print 'not working'
-                #pass
+        #except:
+            #print 'not working'
+            #pass
 
 
 
 
 
         except:
-            print 'context menu fuck up or objectClicked == None (QGraphicsScene)'
+            logging.warning( 'context menu fuck up or objectClicked == None (QGraphicsScene)' )
 
         self.menu.move( QCursor.pos() )
         self.menu.show()

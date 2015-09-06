@@ -48,6 +48,7 @@ class node( QGraphicsItem, QObject ):
         self.incoming = []
         self.outputs = []
         self.setFlags( QGraphicsItem.ItemIsSelectable | QGraphicsItem.ItemIsMovable )
+        self.hovered = False
         self.setData( 1, self.now )
         self.setData( 2, 'node' )
         #self.setToolTip( 'haha' )
@@ -144,7 +145,14 @@ class node( QGraphicsItem, QObject ):
 
         self.getApplicationInfo( self.propertyNode )
     
-    
+
+    def hoverEnterEvent( self, event ):
+        self.hovered = True
+
+    def hoverLeaveEvent( self, event ):
+        self.hovered = False
+
+
     def mousePressEvent( self, event ):
         self.scene.nodeSelect.emit( self )
 
@@ -248,12 +256,13 @@ class node( QGraphicsItem, QObject ):
         cursorBox.movePosition( cursorBox.End )
         cursorBox.insertText( "%s (%s): %s" %( datetime.datetime.now(), self.pid, str( self.process.readAll() ) ) )
         self.mainWindow.statusBox.ensureCursorVisible()
-
+    '''
     def hoverEnterEvent( self, event ):
         pass
     
     def hoverLeaveEvent( self, event ):
         pass
+    '''
 
     def resizeWidth( self ):
         outputListTextWidth = [ 0 ]
@@ -281,35 +290,57 @@ class node( QGraphicsItem, QObject ):
     def paint( self, painter, option, widget ):
         painter.setRenderHint( QPainter.Antialiasing )
 
+        pen = QPen( Qt.SolidLine )
+        pen.setColor( Qt.black )
+        pen.setWidth( 0 )
+
         try:
-            if os.path.exists( os.path.join( self.location, 'locked' ) ):
-                self.gradient.setColorAt( 0, self.taskColorItem )
-                self.gradient.setColorAt( 1, Qt.red )
-            elif os.path.exists( os.path.join( self.location, 'checkedOut' ) ):
-                self.gradient.setColorAt( 0, self.taskColorItem )
-                self.gradient.setColorAt( 1, Qt.white )
-            else:
-                self.gradient.setColorAt( 0, self.taskColorItem )
-                self.gradient.setColorAt( 1, self.applicationColorItem.darker( 160 ) )
-            pen = QPen( Qt.SolidLine )
-            pen.setColor( Qt.black )
-            pen.setWidth( 0 )
-            painter.setBrush( self.gradient )
 
             if option.state & QStyle.State_Selected:
                 self.updatePropertyNodeXML()
                 self.setZValue( 1 )
                 pen.setWidth( 1 )
                 pen.setColor( Qt.green )
+                self.gradient.setColorAt( 0, self.taskColorItem )
+                self.gradient.setColorAt( 1, self.applicationColorItem )
 
-            elif option.state & QStyle.State_MouseOver:
+                if os.path.exists( os.path.join( self.location, 'locked' ) ):
+                    self.gradient.setColorAt( 0, self.taskColorItem )
+                    self.gradient.setColorAt( 1, Qt.red )
+
+                elif os.path.exists( os.path.join( self.location, 'checkedOut' ) ):
+                    self.gradient.setColorAt( 0, self.taskColorItem )
+                    self.gradient.setColorAt( 1, Qt.white )
+
+            elif option.state & QStyle.State_MouseOver or self.hovered:
                 pen.setWidth( 1 )
-                pen.setColor( Qt.yellow )
+                self.gradient.setColorAt( 0, self.taskColorItem )
+                self.gradient.setColorAt( 1, self.applicationColorItem )
+
+                if os.path.exists( os.path.join( self.location, 'locked' ) ):
+                    self.gradient.setColorAt( 0, self.taskColorItem )
+                    self.gradient.setColorAt( 1, Qt.red )
+
+                elif os.path.exists( os.path.join( self.location, 'checkedOut' ) ):
+                    self.gradient.setColorAt( 0, self.taskColorItem )
+                    self.gradient.setColorAt( 1, Qt.white )
+
+            elif os.path.exists( os.path.join( self.location, 'locked' ) ):
+                self.gradient.setColorAt( 0, self.taskColorItem )
+                self.gradient.setColorAt( 1, Qt.red )
+
+            elif os.path.exists( os.path.join( self.location, 'checkedOut' ) ):
+                self.gradient.setColorAt( 0, self.taskColorItem )
+                self.gradient.setColorAt( 1, Qt.white )
 
             else:
-
                 pen.setWidth( 0 )
                 self.setZValue( 0 )
+                self.gradient.setColorAt( 0, self.taskColorItem )
+                self.gradient.setColorAt( 1, self.applicationColorItem.darker( 160 ) )
+
+
+            painter.setBrush( self.gradient )
 
             painter.setPen( pen )
 

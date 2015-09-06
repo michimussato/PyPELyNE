@@ -29,6 +29,8 @@ class bezierLine( QGraphicsPathItem ):
 
         self.setActive( True )
 
+        self.hovered = False
+
         self.setPen( QPen( self.myColor, 2 ) )
         self.getEndItem()
 
@@ -39,10 +41,20 @@ class bezierLine( QGraphicsPathItem ):
         self.setPathColor()
         
     def hoverEnterEvent( self, event ):
-        pass
+        #print 'entered'
+        #print self.childItems()
+        #print self.parentItem()
+        self.hovered = True
+        self.myStartItem.hovered = True
+        self.myEndItem.hovered = True
+        #print self.myStartItem.hovered
         
     def hoverLeaveEvent( self, event ):
-        pass
+        #print 'left'
+        self.hovered = False
+        self.myStartItem.hovered = False
+        self.myEndItem.hovered = False
+        #print self.myStartItem.hovered
 
     def mouseMoveEvent( self, event ):
         pass
@@ -53,6 +65,7 @@ class bezierLine( QGraphicsPathItem ):
         pen = self.pen()
         pen.setWidth( 2 )
         painter.setRenderHint( QPainter.Antialiasing )
+        self.setZValue( -1 )
 
         if not os.path.isdir( self.startItemLiveDir ):
             pen.setStyle( Qt.CustomDashLine )
@@ -61,13 +74,23 @@ class bezierLine( QGraphicsPathItem ):
         else:
             pen.setStyle( Qt.SolidLine )
 
-        if option.state & QStyle.State_MouseOver:
+        #if option.state & QStyle.State_MouseOver:
+        if self.hovered:
+
+            pen.setWidth( 3 )
+
             pen.setColor( self.pathColorItem.lighter( 150 ) )
-            self.setZValue( 2 )
+            #print self.myStartItem
+            #print self.myEndItem
+            #self.myStartItem.gradient.setColorAt( 0.4, self.myStartItem.portOutputColorItem.lighter( 150 ) )
+            #self.myEndItem.portInputColorItem.lighter( 150 )
+
+            #self.setZValue( -1 )
 
         else:
+
             pen.setColor( self.pathColorItem )
-            self.setZValue( -1 )
+            #self.setZValue( -1 )
 
         painter.setPen( pen )
 

@@ -34,6 +34,8 @@ class portOutput( QGraphicsItem ):
         self.nodeRoot = self.node.location
         self.nodeProject = self.node.project
 
+        self.setAcceptHoverEvents( True )
+
         #self._outputs = self.mainWindow.getOutputs()
         self._outputs = self.mainWindow._outputs
 
@@ -59,6 +61,8 @@ class portOutput( QGraphicsItem ):
         self.connectedTo = []
         
         self.inputs = []
+
+        self.hovered = False
         
         self.rect = QRectF( 0, 0, 20, 20 )
         
@@ -103,6 +107,23 @@ class portOutput( QGraphicsItem ):
     def boundingRect( self ):
         return self.rect
 
+    def hoverEnterEvent( self, event ):
+        #print 'enter'
+        self.hovered = True
+        #print self.inputs
+        for input in self.inputs:
+            input.hovered = True
+            input.connection[ 0 ].hovered = True
+        #print self.childItems()
+        #print self.parentItem()
+
+    def hoverLeaveEvent( self, event ):
+        #print 'left'
+        self.hovered = False
+        for input in self.inputs:
+            input.hovered = False
+            input.connection[ 0 ].hovered = False
+
     def paint( self, painter, option, widget ):
         self.setPortOutputColor()
         painter.setRenderHint( QPainter.Antialiasing )
@@ -110,10 +131,18 @@ class portOutput( QGraphicsItem ):
         pen.setColor( Qt.black )
         pen.setWidth( 3 )
 
+
         self.gradient.setColorAt( 0, self.portOutputRingColorItem )
         self.gradient.setColorAt( 0.3, self.portOutputRingColorItem )
         self.gradient.setColorAt( 0.4, self.portOutputColorItem )
         self.gradient.setColorAt( 1, self.portOutputColorItem )
+
+        if self.hovered:
+            pass
+            #self.setZValue( 3 )
+        else:
+            pass
+            #self.setZValue( -1 )
 
         painter.setPen( pen )
 
@@ -277,7 +306,13 @@ class portOutput( QGraphicsItem ):
             #output with no live data found
             self.portOutputRingColorItem.setNamedColor( self.outputcolorNoLive )
 
-        self.portOutputColorItem.setNamedColor( self.portOutputColor )
+
+
+        if self.hovered:
+            self.portOutputColorItem.setNamedColor( self.portOutputColor )
+            self.portOutputColorItem = self.portOutputColorItem.lighter( 150 )
+        else:
+            self.portOutputColorItem.setNamedColor( self.portOutputColor )
 
 
 
@@ -302,11 +337,19 @@ class portInput( QGraphicsItem ):
         self.output = []
         
         self.setPos( 0, 0 )
-        
+
+        self.hovered = False
+
+        self.setAcceptHoverEvents( True )
 
         self.icon = []
         self.icon.append( QLine( 10, 14, 6, 10 ) )
         self.icon.append( QLine( 10, 14, 14, 10 ) )
+
+        #self.setAcceptHoverEvents( True )
+        #self.setAcceptTouchEvents( True )
+
+        #self.setActive( True )
         
         self.label = None
         self.setData( 2, 'input' )
@@ -316,7 +359,27 @@ class portInput( QGraphicsItem ):
         self.portInputColorItem = QColor( 0, 0, 0, 0 )
         self.gradient = QLinearGradient( self.rect.topLeft(), self.rect.topRight() )
         
-        
+
+    def hoverEnterEvent( self, event ):
+        #print 'enter'
+        #print self.childItems()
+        #print self.parentItem()
+        try:
+            self.hovered = True
+            self.connection[ 0 ].hovered = True
+            self.output[ 0 ].hovered = True
+        except:
+            pass
+
+    def hoverLeaveEvent( self, event ):
+        #print 'left'
+        try:
+            self.hovered = False
+            self.connection[ 0 ].hovered = False
+            self.output[ 0 ].hovered = False
+        except:
+            pass
+
 
     def getLabel( self ):
         return self.label
@@ -340,24 +403,45 @@ class portInput( QGraphicsItem ):
         return self.rect
 
     def paint( self, painter, option, widget ):
+        #print self.zValue()
+
+        #print self.hovered
 
         painter.setRenderHint( QPainter.Antialiasing )
         pen = QPen( Qt.SolidLine )
         pen.setColor( Qt.black )
         pen.setWidth( 3 )
+
+        if self.hovered:
+            pass
+            #pen.setWidth( 5 )
+            #self.setZValue( 3 )
+        else:
+            pass
+            #pen.setWidth( 3 )
+            #self.setZValue( -1 )
+
         painter.setPen( pen )
+
+
+
         if self.label == None:
             if len( self.connection ) == 0:
                 painter.setBrush( QColor( 0, 0, 0, 0 ) )
                 for i in self.icon:
                     painter.drawLine( i )
             elif len( self.connection ) == 1:
-                #painter.setBrush( QColor( 0, 0, 0, 255 ) )
-                painter.setBrush( self.portInputColorItem )
+                painter.setBrush( self.portInputColorItem.lighter( 150 ) )
+
         else:
             self.setPortInputColor()
             painter.setBrush( self.portInputColorItem )
+
+
         painter.drawEllipse( self.rect )
+
+
+
 
 
     def setPortInputColor( self ):
@@ -367,6 +451,8 @@ class portInput( QGraphicsItem ):
 
         else:
             self.nodeInput = self.label.split( '__' )[ 0 ]
+
+
 
         #print self.nodeInput
         index = 0
@@ -390,7 +476,13 @@ class portInput( QGraphicsItem ):
                 index += 1
             else:
                 break
-        self.portInputColorItem.setNamedColor( self.portInputColor )
+
+        if self.hovered:
+            #print 'hover hello'
+            self.portInputColorItem.setNamedColor( self.portInputColor )
+            self.portInputColorItem = self.portInputColorItem.lighter( 150 )
+        else:
+            self.portInputColorItem.setNamedColor( self.portInputColor )
 
 
 class portOutputButton( QGraphicsItem ):

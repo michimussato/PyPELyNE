@@ -31,6 +31,7 @@ class SceneView( QGraphicsScene ):
         super( SceneView, self ).__init__( parent )
 
         self.mainWindow = mainWindow
+        self.user = self.mainWindow.user
         self.pypelyneRoot = self.mainWindow.pypelyneRoot
         self.currentPlatform = self.mainWindow.currentPlatform
         self.projectsRoot = str( self.mainWindow.projectsRoot )
@@ -125,7 +126,7 @@ class SceneView( QGraphicsScene ):
         if not any( dir.startswith( 'SVR' ) for dir in contentDirs ):
             self.menu.addAction( 'new saver', self.newSaverDialog( pos ) )
         else:
-            print 'content already has a saver'
+            logging.info( 'content already has a saver' )
         self.menu.addSeparator()
 
         #self.menu.addAction( 'new library loader', self.newLibraryLoaderCallback( pos ) )
@@ -383,7 +384,7 @@ class SceneView( QGraphicsScene ):
                             versionPath = os.path.join( outputDir, version )
                         else:
                             versionPath = outputDir
-                        print 'versionPath', versionPath
+                        #print 'versionPath', versionPath
 
 
 
@@ -402,6 +403,18 @@ class SceneView( QGraphicsScene ):
                                 except:
                                     outputDirContent.remove( item )
                                     logging.warning( 'exclusion found but not removed: %s' %( os.path.join( versionPath, item ) ) )
+                            try:
+                                outputDirContent.remove( 'approved' )
+                            except:
+                                pass
+                            try:
+                                outputDirContent.remove( 'requestApproval' )
+                            except:
+                                pass
+                            try:
+                                outputDirContent.remove( 'denied' )
+                            except:
+                                pass
                         outputDirContent.remove( outputLabel )
 
                         menuMakeLive = self.menuOutput.addMenu( version )
@@ -410,10 +423,30 @@ class SceneView( QGraphicsScene ):
                         if self.currentPlatform == 'Darwin' or self.currentPlatform == 'Linux':
                             if os.path.exists( liveDir ):
                                 if not objectClicked.parentItem().label.startswith( 'LDR' ):
-                                    if os.path.basename( os.readlink( liveDir ) ) == version:
-                                        menuMakeLive.setIcon( QIcon( 'src/icons/dotActive.png' ) )
+                                    if os.path.exists( os.path.join( outputDir, version, 'approved' ) ):
+                                        if os.path.basename( os.readlink( liveDir ) ) == version:
+                                            menuMakeLive.setIcon( QIcon( 'src/icons/dotActiveApproved.png' ) )
+                                        elif not os.path.basename( os.readlink( liveDir ) ) == version:
+                                            menuMakeLive.setIcon( QIcon( 'src/icons/dotInactiveApproved.png' ) )
+
+                                    elif os.path.exists( os.path.join( outputDir, version, 'waiting' ) ):
+                                        if os.path.basename( os.readlink( liveDir ) ) == version:
+                                            menuMakeLive.setIcon( QIcon( 'src/icons/dotActiveRequested.png' ) )
+                                        elif not os.path.basename( os.readlink( liveDir ) ) == version:
+                                            menuMakeLive.setIcon( QIcon( 'src/icons/dotInactiveRequested.png' ) )
+
+                                    elif os.path.exists( os.path.join( outputDir, version, 'denied' ) ):
+                                        if os.path.basename( os.readlink( liveDir ) ) == version:
+                                            menuMakeLive.setIcon( QIcon( 'src/icons/dotActiveDenied.png' ) )
+                                        elif not os.path.basename( os.readlink( liveDir ) ) == version:
+                                            menuMakeLive.setIcon( QIcon( 'src/icons/dotInactiveDenied.png' ) )
+
                                     else:
-                                        menuMakeLive.setIcon( QIcon( 'src/icons/dotInactive.png' ) )
+                                        if os.path.basename( os.readlink( liveDir ) ) == version:
+                                            menuMakeLive.setIcon( QIcon( 'src/icons/dotActive.png' ) )
+                                        elif not os.path.basename( os.readlink( liveDir ) ) == version:
+                                            menuMakeLive.setIcon( QIcon( 'src/icons/dotInactive.png' ) )
+
                                 else:
                                     menuMakeLive.setIcon( QIcon( 'src/icons/dotActive.png' ) )
                             else:
@@ -449,6 +482,50 @@ class SceneView( QGraphicsScene ):
                                 '''
 
                                 try:
+                                    if os.path.exists( os.path.join( versionPath, 'approved' ) ):
+                                        menuMakeLive.addAction( 'remove approval', self.removeApproveVersionCallback( versionPath ) )
+                                        menuMakeLive.addSeparator()
+                                    else:
+                                        if not os.path.exists( os.path.join( versionPath, 'denied' ) ):
+                                            menuMakeLive.addAction( 'approve', self.approveVersionCallback( versionPath ) )
+                                            menuMakeLive.addAction( 'deny', self.denyVersionCallback( versionPath ) )
+
+                                        if os.path.exists( os.path.join( versionPath, 'waiting' ) ):
+                                            menuMakeLive.addAction( 'cancel approval request', self.removeApproveRequestVersionCallback( versionPath ) )
+                                        else:
+                                            menuMakeLive.addAction( 'request approval', self.approveRequestCallback( versionPath ) )
+
+                                        menuMakeLive.addSeparator()
+
+
+
+                                    '''
+                                    if not os.path.exists( os.path.join( versionPath, 'waiting' ) ):
+                                        menuMakeLive.addAction( 'request approval', self.approveRequestCallback( versionPath ) )
+                                        menuMakeLive.addAction( 'approve', self.approveVersionCallback( versionPath ) )
+                                    else:
+                                        if not os.path.exists( os.path.join( versionPath, 'approved' ) ):
+                                            menuMakeLive.addAction( 'approve', self.approveVersionCallback( versionPath ) )
+                                        else:
+                                            menuMakeLive.addAction( 'cancel approval request', self.removeApproveRequestVersionCallback( versionPath ) )
+                                    '''
+
+
+
+                                    '''
+                                    if not os.path.exists( os.path.join( versionPath, 'waiting' ) ):
+                                        menuMakeLive.addAction( 'request approval', self.approveRequestCallback( versionPath ) )
+                                    elif os.path.exists( os.path.join( versionPath, 'waiting' ) ):
+                                        menuMakeLive.addAction( 'cancel approval request', self.removeApproveRequestVersionCallback( versionPath ) )
+
+                                    if not os.path.exists( os.path.join( versionPath, 'approved' ) ):
+                                        menuMakeLive.addAction( 'approve', self.approveVersionCallback( versionPath ) )
+                                    elif os.path.exists( os.path.join( versionPath, 'approved' ) ):
+                                        menuMakeLive.addAction( 'remove approval', self.removeApproveVersionCallback( versionPath ) )
+                                    '''
+
+
+
                                     menuMakeLive.addAction( 'view', self.viewVersion( os.path.join( versionPath, outputDirContent[ 0 ] ) ) )
                                     if not objectClicked.parentItem().label.startswith( 'LDR' ):
                                         try:
@@ -470,6 +547,7 @@ class SceneView( QGraphicsScene ):
 
                         if not objectClicked.parentItem().label.startswith( 'LDR' ):
                             menuMakeLive.addAction( 'open directory', self.mainWindow.locateContentCallback( versionPath ) )
+
                             deleteVersionAction = menuMakeLive.addAction( 'delete version', self.deleteContentCallback( versionPath ) )
 
                             makeCurrentAction = menuMakeLive.addAction( 'make current', self.makeCurrentCallback( versionPath ) )
@@ -553,6 +631,84 @@ class SceneView( QGraphicsScene ):
 
         self.menu.move( QCursor.pos() )
         self.menu.show()
+
+
+    def denyVersionCallback( self, versionPath ):
+        def callback():
+            self.denyVersion( versionPath )
+        return callback
+
+    def denyVersion( self, versionPath ):
+        approveRequestFilePath = os.path.join( versionPath, 'waiting' )
+
+        try:
+            os.remove( approveRequestFilePath )
+        except:
+            pass
+
+
+        denyVersionFilePath = os.path.join( versionPath, 'denied' )
+        denyVersionFile = open( denyVersionFilePath, 'a' )
+        denyVersionFile.write( self.user )
+        denyVersionFile.close()
+
+
+    def approveRequestCallback( self, versionPath ):
+        def callback():
+            self.approveRequest( versionPath )
+        return callback
+
+    def approveRequest( self, versionPath ):
+        denyVersionFilePath = os.path.join( versionPath, 'denied' )
+
+        try:
+            os.remove( denyVersionFilePath )
+        except:
+            pass
+
+        approveRequestFilePath = os.path.join( versionPath, 'waiting' )
+        approveRequestFile = open( approveRequestFilePath, 'a' )
+        approveRequestFile.write( self.user )
+        approveRequestFile.close()
+
+    def removeApproveRequestVersionCallback( self, versionPath ):
+        def callback():
+            self.removeApproveRequestVersion( versionPath )
+        return callback
+
+    def removeApproveRequestVersion( self, versionPath ):
+        approveRequestFilePath = os.path.join( versionPath, 'waiting' )
+        os.remove( approveRequestFilePath )
+
+
+    def removeApproveVersionCallback( self, versionPath ):
+        def callback():
+            self.removeApproveVersion( versionPath )
+        return callback
+
+    def removeApproveVersion( self, versionPath ):
+        approveFilePath = os.path.join( versionPath, 'approved' )
+        os.remove( approveFilePath )
+
+
+    def approveVersionCallback( self, versionPath ):
+        def callback():
+            self.approveVersion( versionPath )
+        return callback
+
+    def approveVersion( self, versionPath ):
+        approveRequestFilePath = os.path.join( versionPath, 'waiting' )
+
+        try:
+            os.remove( approveRequestFilePath )
+        except:
+            pass
+
+        approveFilePath = os.path.join( versionPath, 'approved' )
+        approveFile = open( approveFilePath, 'a' )
+        approveFile.write( self.user )
+        approveFile.close()
+
 
     def cleanUpOutputProc( self, portOutput ):
         outputDir = portOutput.getOutputDir()
@@ -1584,13 +1740,14 @@ class SceneView( QGraphicsScene ):
     def mousePressEvent( self, event ):
         pos = event.scenePos()
 
-        print 'pos = %s' %pos
+        #print 'pos = %s' %pos
         
         if event.button() == Qt.MidButton:
-            print 'MidButton'
+            pass
+            #print 'MidButton'
           
         elif event.button() == Qt.LeftButton:
-            print 'LeftButton'
+            #print 'LeftButton'
             item = self.itemAt( event.scenePos() )
             #print "item = %s" %item
             if event.button() == Qt.LeftButton and ( isinstance( item, portOutput ) ):
@@ -1617,7 +1774,8 @@ class SceneView( QGraphicsScene ):
             modifiers = QApplication.keyboardModifiers()
             pos = event.scenePos()
             if modifiers == Qt.ControlModifier:
-                print "Control + Click: (%d, %d)" % ( pos.x(), pos.y() ) 
+                pass
+                #print "Control + Click: (%d, %d)" % ( pos.x(), pos.y() )
 
 
             else:
@@ -1625,7 +1783,8 @@ class SceneView( QGraphicsScene ):
                 #print "Click: (%d, %d)" % (pos.x(), pos.y())
 
         elif event.button() == Qt.RightButton:
-            print 'RightButton'
+            pass
+            #print 'RightButton'
 
             self.contextMenu( pos )
 

@@ -9,6 +9,7 @@ Use it, but I'd be happy to get credited if you finish a project using PyPELyNE 
 
 Project features:
 - versioning
+- simple version approval system
 - quick cleanup of a project (i.e. removal of versions that are not being used anymore) (not yet fully functional)
 - time tracking
 - project traceability
@@ -18,7 +19,7 @@ Project features:
 - connecting individual tools
 - shot-/asset-based node trees
 - single console for all processes with color coded output
-- use of central asset library (not yet functional)
+- use of central asset library (not yet fully functional)
 - automatic screen recording (i. e. for making of's/breakdowns with high compression)
 - task locking (when it's in use by someone else)
 - data flow visualization (reusable data and dependencies)

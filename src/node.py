@@ -302,7 +302,7 @@ class node( QGraphicsItem, QObject ):
                 pen.setWidth( 1 )
                 pen.setColor( Qt.green )
                 self.gradient.setColorAt( 0, self.taskColorItem )
-                self.gradient.setColorAt( 1, self.applicationColorItem )
+                self.gradient.setColorAt( 1, self.applicationColorItem.darker( 160 ) )
 
                 if os.path.exists( os.path.join( self.location, 'locked' ) ):
                     self.gradient.setColorAt( 0, self.taskColorItem )
@@ -314,8 +314,9 @@ class node( QGraphicsItem, QObject ):
 
             elif option.state & QStyle.State_MouseOver or self.hovered:
                 pen.setWidth( 1 )
+                pen.setColor( Qt.yellow )
                 self.gradient.setColorAt( 0, self.taskColorItem )
-                self.gradient.setColorAt( 1, self.applicationColorItem )
+                self.gradient.setColorAt( 1, self.applicationColorItem.darker( 160 ) )
 
                 if os.path.exists( os.path.join( self.location, 'locked' ) ):
                     self.gradient.setColorAt( 0, self.taskColorItem )

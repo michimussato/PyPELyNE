@@ -1479,7 +1479,10 @@ class SceneView( QGraphicsScene ):
                     print 'cannot remove symlink 1234'
 
                 #os.rmdir( inputDir )
+                print 'here'
                 self.removeInput( item )
+
+                print 'and here'
 
     
     def removeObjectCallback( self, item ):
@@ -1541,11 +1544,7 @@ class SceneView( QGraphicsScene ):
             #print outputDir
             shutil.rmtree( outputDir )
 
-            #item.parentItem().resize()
-            #print item.parentItem().boundingRect()
             self.removeItem( item )
-        
-        
         
     def removeInput( self, item ):
         try:
@@ -1573,50 +1572,16 @@ class SceneView( QGraphicsScene ):
         
         def callback():
             node( self.mainWindow, pos, self )
-            #newNode = node( pos, self )
-            #self.nodeClicked.connect( self.test )
-            #newNode.nodeClicked.connect( self.test )
-            #newNode.connect(  )
-            #newNode.setWidgetMenu()
-            #newNode.connect( self.nodeWidget )
-            #newNode.signals.connect( self.signals.emit )
-            #newNode.nodeCreatedInScene.emit()
-            #newNode.clickedSignal.connect( self.nodeClicked.emit )
-            #newNode.clickedSignal.connect( self.categoryItemClicked.emit )
- 
-             
         return callback
-        
-        
-    
+
     def printContextMenuAction( self, item ):
         def callback():
             pass
             # from http://stackoverflow.com/questions/6682688/python-dynamic-function-generation
             #print item
         return callback
-        
-    
-
-                
-        #return callback
-    '''
-    def mouseDoubleClickEvent( self, event ):
-        print 'double click'
-
-    '''
 
     def mousePressEvent( self, event ):
-        
-        #print self.sceneRect()
-        #rect = self.setSceneRect( self.itemsBoundingRect() )
-        #print self.sceneRect()
-        
-        #self.nodeDeselect.emit()
-
-        
-        #print 'mousePressEvent'
-        
         pos = event.scenePos()
 
         print 'pos = %s' %pos
@@ -1671,6 +1636,7 @@ class SceneView( QGraphicsScene ):
 
         
     def mouseMoveEvent( self, event ):
+
         if self.line:
 
             newLine = QLineF( self.line.line().p1(), event.scenePos() )
@@ -1682,10 +1648,6 @@ class SceneView( QGraphicsScene ):
     def mouseReleaseEvent( self, event ):
         #print 'mouseReleaseEvent'
         
-        
-        
-
-        
         if self.line:
             try:
                 startItems = self.items( self.line.line().p1() )
@@ -1696,17 +1658,9 @@ class SceneView( QGraphicsScene ):
             if len( startItems ) and startItems[ 0 ] == self.line:
                 #print "popping"
                 #print "len( startItems ) = %i" %len( startItems )
-                
 
                 startItems.pop( 0 )
                 #print "startItems popped = %s" %startItems
-
-            '''
-            try:
-                print "startItems[ 0 ] = %s" %startItems[ 0 ]
-            except:
-                print "no startItems[ 0 ]"
-            '''
             
             endItems = self.items( self.line.line().p2() )
              
@@ -1717,14 +1671,6 @@ class SceneView( QGraphicsScene ):
 
                 endItems.pop( 0 )
                 #print "endItems popped = %s" %endItems
-
-            '''
-            try:
-                print "endItems[ 0 ] = %s" %endItems[ 0 ]
-                
-            except:
-                print "no endItems[ 0 ]"
-            '''
                 
             self.removeItem( self.line )
             
@@ -1733,11 +1679,7 @@ class SceneView( QGraphicsScene ):
                 
                 parentNode = endItems[ 0 ].parentItem()
                 
-                #print 'parentNode.childItems() = %s' %parentNode.childItems()
-                
                 if startItems[ 0 ] in endItems[ 0 ].parentItem().incoming:
-
-                    
                     
                     parentNode.sendFromNodeToBox( str( datetime.datetime.now() ) )
                     parentNode.sendFromNodeToBox( ':' + '\n' )

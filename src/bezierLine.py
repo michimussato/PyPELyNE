@@ -31,6 +31,11 @@ class bezierLine( QGraphicsPathItem ):
 
         self.hovered = False
 
+        self.qp = QPainterPathStroker()
+        self.qp.setWidth( 10 )
+        self.qp.setCapStyle( Qt.SquareCap )
+        self.shape = self.qp.createStroke( self.getLine() )
+
         self.setPen( QPen( self.myColor, 2 ) )
         self.getEndItem()
 
@@ -39,25 +44,23 @@ class bezierLine( QGraphicsPathItem ):
 
         self.pathColorItem = QColor( 0, 0, 0 )
         self.setPathColor()
+        #self.setBoundingRegionGranularity( 0.1 )
         
     def hoverEnterEvent( self, event ):
-        #print 'entered'
-        #print self.childItems()
-        #print self.parentItem()
         self.hovered = True
         self.myStartItem.hovered = True
         self.myEndItem.hovered = True
-        #print self.myStartItem.hovered
         
     def hoverLeaveEvent( self, event ):
-        #print 'left'
         self.hovered = False
         self.myStartItem.hovered = False
         self.myEndItem.hovered = False
-        #print self.myStartItem.hovered
 
     def mouseMoveEvent( self, event ):
         pass
+
+    def shape( self ):
+        return self.shape
 
     def paint( self, painter, option, widget ):
         line = self.getLine()
@@ -65,7 +68,6 @@ class bezierLine( QGraphicsPathItem ):
         pen = self.pen()
         pen.setWidth( 2 )
         painter.setRenderHint( QPainter.Antialiasing )
-        self.setZValue( -1 )
 
         if not os.path.isdir( self.startItemLiveDir ):
             pen.setStyle( Qt.CustomDashLine )
@@ -74,23 +76,14 @@ class bezierLine( QGraphicsPathItem ):
         else:
             pen.setStyle( Qt.SolidLine )
 
-        #if option.state & QStyle.State_MouseOver:
         if self.hovered:
-
             pen.setWidth( 3 )
-
+            self.setZValue( -1 )
             pen.setColor( self.pathColorItem.lighter( 150 ) )
-            #print self.myStartItem
-            #print self.myEndItem
-            #self.myStartItem.gradient.setColorAt( 0.4, self.myStartItem.portOutputColorItem.lighter( 150 ) )
-            #self.myEndItem.portInputColorItem.lighter( 150 )
-
-            #self.setZValue( -1 )
 
         else:
-
+            self.setZValue( -2 )
             pen.setColor( self.pathColorItem )
-            #self.setZValue( -1 )
 
         painter.setPen( pen )
 
@@ -103,9 +96,6 @@ class bezierLine( QGraphicsPathItem ):
 
     def getStartItem( self ):
         return self.myStartItem
-
-    def addItem( self ):
-        self.bezierItem = QGraphicsPathItem()
     
     def getLine( self ):
         p1 = QPointF( self.myStartItem.sceneBoundingRect().center().x() + 10, self.myStartItem.sceneBoundingRect().center().y() )
@@ -113,18 +103,18 @@ class bezierLine( QGraphicsPathItem ):
         if ( p1.x() + 40 ) < p4.x():
             p2 = QPointF( ( p4.x() - p1.x() ) / 2 + p1.x() + 40, p1.y() )
             p3 = QPointF( ( p4.x() - p1.x() ) / 2 + p1.x() - 40, p4.y() )
+
         elif ( p1.x() + 40 ) >= p4.x():
-            
             p2 = QPointF( ( p4.x() - p1.x() ) / 2 + p1.x() + 40 + ( ( ( p1.x() + 40 ) - p4.x() ) ), p1.y() )
             p3 = QPointF( ( p4.x() - p1.x() ) / 2 + p1.x() - 40 - ( ( ( p1.x() + 40 ) - p4.x() ) ), p4.y() )
-            
-        
+
         path = QPainterPath( p1 )
 
         path.cubicTo( p2, p3, p4 )
 
-        return path
+        self.shape = self.qp.createStroke( path )
 
+        return path
 
     def setPathColor( self ):
         self.nodeOutput = self.label.split( '__' )[ 0 ]

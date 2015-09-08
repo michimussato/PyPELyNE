@@ -19,7 +19,8 @@ Project features:
 - connecting individual tools
 - shot-/asset-based node trees
 - single console for all processes with color coded output
-- use of central asset library (not yet fully functional)
+- export assets with all its dependencies from a project to the central asset library (not yet fully functional)
+- referencing content from central asset library into a project (not yet fully functional)
 - automatic screen recording (i. e. for making of's/breakdowns with high compression)
 - task locking (when it's in use by someone else)
 - data flow visualization (reusable data and dependencies)
@@ -90,6 +91,11 @@ Re-usable data.
 A simple example of per process color coded output
 i. e. if you're running several tasks/applications simultaneously
 ![console](/gitImg/console.png)
+
+This image displays the usage of an asset loaded from my central asset library (green). 
+Any asset in this library can be loaded (referenced) into any project. Any asset output (saver)
+can be exported to this library directly with all its dependencies.
+![libraryLoader](/gitImg/library.png)
 
 Deadline (render management software by Thinkbox) submitter.
 Arnold and Mantra jobs are supported (automatic detection).

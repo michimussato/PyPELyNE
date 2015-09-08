@@ -1,8 +1,3 @@
-# My demo reel
-
-[![Reel](/gitImg/reel.png)](https://www.dropbox.com/s/lrhukj3f9l35c7a/MussatoMichael_DemoReel.mov?dl=0)
-
-Now for the software...
 # PyPELyNE
 
 3D animation pipeline software written in Python and Qt
@@ -12,7 +7,7 @@ under development...
 I'm not a programmer, so the code structure might be a complete turn off for you...
 Use it, but I'd be happy to get credited if you finish a project using PyPELyNE ;)
 
-Project features:
+## Project features:
 - versioning
 - simple version approval system
 - quick cleanup of a project (i.e. removal of versions that are not being used anymore) (not yet fully functional)
@@ -39,7 +34,7 @@ Project features:
 - create custom default scene/project files for each application version
 - one button MP3 player (play, skip, stop, choose track out of a mp3 library)
 
-Supports:
+## Supports:
 - Maya
 - Mudbox
 - Houdini
@@ -57,7 +52,7 @@ Supports:
 - Possibly any other tool can be integrated
 - Different tool versions at the same time
 
-Requires (tested with):
+## Requires (tested with):
 - Mac OS 10.8
 - VLC 2.1.5 (included)
 - Python 2.7.6
@@ -65,16 +60,16 @@ Requires (tested with):
 - RV 4.0
 - Thinkbox Deadline 5.2
 
-Windows (not yet functional):
+## Windows (not yet functional):
 - python-2.7.8.msi
 - PyQt4-4.11.3-gpl-Py2.7-Qt4.8.6-x32.exe
 - pywin32-219.win32-py2.7.exe
 - qt-opensource-windows-x86-mingw482-4.8.6-1.exe
 
-Documentation:
+## Documentation:
 - To do :(
 
-Images:
+## Images
 Overview
 ![Overview](/gitImg/overview.png)
 
@@ -111,6 +106,8 @@ All fields are filled in automatically, but can be altered if desired.
 Launch a tool instance at any time to do some tests without affecting the project content.
 ![instanceLauncher](/gitImg/instanceLauncher.png)
 
-Youtube Preview:
-
+## Youtube Preview:
 [![Demo](/gitImg/demo.png)](https://www.youtube.com/watch?v=E1eQKEq-fcQ)
+
+## My demo reel
+[![Reel](/gitImg/reel.png)](https://www.dropbox.com/s/lrhukj3f9l35c7a/MussatoMichael_DemoReel.mov?dl=0)

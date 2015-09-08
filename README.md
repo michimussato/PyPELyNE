@@ -73,10 +73,10 @@ Images:
 Overview
 ![Overview](/gitImg/overview.png)
 
-A node example with some in- and outputs
+A node example with its inputs and outputs
 ![Node](/gitImg/node.png)
 
-A dialog of a nodes' output port
+A dialog of a nodes' output port displaying denied (red), pending (yellow) and approved (green) versions.
 ![dialog](/gitImg/dialog.png)
 
 A completed asset (model, textures, shaders, rigs).

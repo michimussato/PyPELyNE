@@ -464,68 +464,30 @@ class SceneView( QGraphicsScene ):
                             else:
                                 menuMakeLive.setIcon( QIcon( 'src/icons/dotInactive.png' ) )
 
-                        #print 'here we are'
+
+
+                        if os.path.exists( os.path.join( versionPath, 'approved' ) ):
+                            menuMakeLive.addAction( 'remove approval', self.removeApproveVersionCallback( versionPath ) )
+                            menuMakeLive.addSeparator()
+                        else:
+                            if not os.path.exists( os.path.join( versionPath, 'denied' ) ):
+                                menuMakeLive.addAction( 'approve', self.approveVersionCallback( versionPath ) )
+                                menuMakeLive.addAction( 'deny', self.denyVersionCallback( versionPath ) )
+
+                            if os.path.exists( os.path.join( versionPath, 'waiting' ) ):
+                                menuMakeLive.addAction( 'cancel approval request', self.removeApproveRequestVersionCallback( versionPath ) )
+                            else:
+                                menuMakeLive.addAction( 'request approval', self.approveRequestCallback( versionPath ) )
+
+                            menuMakeLive.addSeparator()
+
 
                         #if outputLabel.startswith( 'SEQ' ) or outputLabel.startswith( 'TEX' ) or outputLabel.startswith( 'PLB' ):
                         #print os.path.splitext( outputDirContent[ 0 ] )[ 1 ]
                         if len( outputDirContent ) > 0:
                             if os.path.splitext( outputDirContent[ 0 ] )[ 1 ] in self.imageExtensions or os.path.splitext( outputDirContent[ 0 ] )[ 1 ] in self.movieExtensions:
-                                '''
-                                for exclusion in self.exclusions:
-                                    try:
-                                        #if os.path.exists( os.path.join( outputDirContent, exclusion ) ):
-                                        logging.info( 'exclusion removed from list: %s' %( os.path.join( outputDirContent, exclusion ) ) )
-                                        #os.remove( os.path.join( outputDirContent, exclusion ) )
-                                        outputDirContent.remove( exclusion )
-                                    except:
-                                        logging.warning( 'exclusion found but not removed from list: %s' %( os.path.join( outputDirContent, exclusion ) ) )
-                                '''
 
                                 try:
-                                    if os.path.exists( os.path.join( versionPath, 'approved' ) ):
-                                        menuMakeLive.addAction( 'remove approval', self.removeApproveVersionCallback( versionPath ) )
-                                        menuMakeLive.addSeparator()
-                                    else:
-                                        if not os.path.exists( os.path.join( versionPath, 'denied' ) ):
-                                            menuMakeLive.addAction( 'approve', self.approveVersionCallback( versionPath ) )
-                                            menuMakeLive.addAction( 'deny', self.denyVersionCallback( versionPath ) )
-
-                                        if os.path.exists( os.path.join( versionPath, 'waiting' ) ):
-                                            menuMakeLive.addAction( 'cancel approval request', self.removeApproveRequestVersionCallback( versionPath ) )
-                                        else:
-                                            menuMakeLive.addAction( 'request approval', self.approveRequestCallback( versionPath ) )
-
-                                        menuMakeLive.addSeparator()
-
-
-
-                                    '''
-                                    if not os.path.exists( os.path.join( versionPath, 'waiting' ) ):
-                                        menuMakeLive.addAction( 'request approval', self.approveRequestCallback( versionPath ) )
-                                        menuMakeLive.addAction( 'approve', self.approveVersionCallback( versionPath ) )
-                                    else:
-                                        if not os.path.exists( os.path.join( versionPath, 'approved' ) ):
-                                            menuMakeLive.addAction( 'approve', self.approveVersionCallback( versionPath ) )
-                                        else:
-                                            menuMakeLive.addAction( 'cancel approval request', self.removeApproveRequestVersionCallback( versionPath ) )
-                                    '''
-
-
-
-                                    '''
-                                    if not os.path.exists( os.path.join( versionPath, 'waiting' ) ):
-                                        menuMakeLive.addAction( 'request approval', self.approveRequestCallback( versionPath ) )
-                                    elif os.path.exists( os.path.join( versionPath, 'waiting' ) ):
-                                        menuMakeLive.addAction( 'cancel approval request', self.removeApproveRequestVersionCallback( versionPath ) )
-
-                                    if not os.path.exists( os.path.join( versionPath, 'approved' ) ):
-                                        menuMakeLive.addAction( 'approve', self.approveVersionCallback( versionPath ) )
-                                    elif os.path.exists( os.path.join( versionPath, 'approved' ) ):
-                                        menuMakeLive.addAction( 'remove approval', self.removeApproveVersionCallback( versionPath ) )
-                                    '''
-
-
-
                                     menuMakeLive.addAction( 'view', self.viewVersion( os.path.join( versionPath, outputDirContent[ 0 ] ) ) )
                                     if not objectClicked.parentItem().label.startswith( 'LDR' ):
                                         try:

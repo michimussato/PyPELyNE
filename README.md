@@ -70,7 +70,7 @@ Use it, but I'd be happy to get credited if you finish a project using PyPELyNE 
 - To do :(
 
 ## Images
-Overview
+Interface
 ![Overview](/gitImg/overview.png)
 
 A node example with its inputs and outputs
@@ -105,6 +105,9 @@ All fields are filled in automatically, but can be altered if desired.
 
 Launch a tool instance at any time to do some tests without affecting the project content.
 ![instanceLauncher](/gitImg/instanceLauncher.png)
+
+Create template project files for each tool (for each version of each tool even...).
+![templates](/gitImg/templates.png)
 
 ## Youtube Preview:
 [![Demo](/gitImg/demo.png)](https://www.youtube.com/watch?v=E1eQKEq-fcQ)

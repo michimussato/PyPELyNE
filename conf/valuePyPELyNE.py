@@ -11,8 +11,8 @@ screenCastActive          = True
 
 ###Server
 serverIP                  = r'192.168.0.22'
-serverPort                = r'50001'
-serverPortRange           = r'5'
+SERVER_PORT               = r'50001'
+SERVER_PORT_RANGE         = r'5'
 projectsRootServer        = r'/pypelyne/PyPELyNE_projects'
 libraryRootServer          = r'/pypelyne/PyPELyNE_assets'
 projectsRootServerDarwin  = r'/Volumes/pypelyne/PyPELyNE_projects'

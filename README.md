@@ -67,7 +67,16 @@ Use it, but I'd be happy to get credited if you finish a project using PyPELyNE 
 - qt-opensource-windows-x86-mingw482-4.8.6-1.exe
 
 ## Documentation:
-- To do :(
+needs yet to be done :(
+generally, take a look at these files and modify them according to your needs:
+- conf/valuePyPELyNE.xml
+- conf/valueApplications.xml
+- conf/valueTasks.xml
+- conf/valueOutputs.xml
+- conf/envVars_osx.txt
+
+careful: there might be new variables which you probably need to change (especially in valuePyPELyNE.xml) after a commit
+
 
 ## Images
 Interface

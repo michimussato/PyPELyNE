@@ -15,21 +15,21 @@ import os
 import subprocess
 import logging
 
-# class Signals( QObject ):
-#     trigger = pyqtSignal( str )
+# class Signals(QObject):
+#     trigger = pyqtSignal(str)
 
-class SceneView( QGraphicsScene ):
-    textMessage = pyqtSignal( str )
-    nodeSelect = pyqtSignal( object )
+class SceneView(QGraphicsScene):
+    textMessage = pyqtSignal(str)
+    nodeSelect = pyqtSignal(object)
     nodeDeselect = pyqtSignal()
     
-    def __init__( self, mainWindow, parent=None ):
-        super( SceneView, self ).__init__( parent )
+    def __init__(self, mainWindow, parent=None):
+        super(SceneView, self).__init__(parent)
 
         self.mainWindow = mainWindow
         self.pypelyneRoot = self.mainWindow.getPypelyneRoot()
         self.currentPlatform = self.mainWindow.getCurrentPlatform()
-        self.projectsRoot = str( self.mainWindow.getProjectsRoot() )
+        self.projectsRoot = str(self.mainWindow.getProjectsRoot())
 
         self.exclusions = self.mainWindow.getExclusions()
         self.imageExtensions = self.mainWindow.getImageExtensions()
@@ -37,72 +37,72 @@ class SceneView( QGraphicsScene ):
         self.sequenceExec = self.mainWindow.getSequenceExec()
 
         self.line = None
-        rect = self.setSceneRect( QRectF( 0, 0, 0, 0 ) )
+        rect = self.setSceneRect(QRectF(0, 0, 0, 0))
         
         self.nodeList = []
 
-    def addToNodeList( self, node ):
-        self.nodeList.append( node )
+    def addToNodeList(self, node):
+        self.nodeList.append(node)
 
-    def getNodeList( self ):
+    def getNodeList(self):
         return self.nodeList
         
-    def clearNodeList( self ):
+    def clearNodeList(self):
         self.nodeList = []
 
-    def keyPressEvent( self, event ):
+    def keyPressEvent(self, event):
         if event.key() == Qt.Key_Delete:
             for item in self.selectedItems():
                 if item.inputs > 1:
-                    item.sendFromNodeToBox( 'item has inputs. cannot delete.\n' )
+                    item.sendFromNodeToBox('item has inputs. cannot delete.\n')
                 elif item.inputs == 1:
                     self.removeItem(item)
 
-        super( SceneView, self ).keyPressEvent( event )
+        super(SceneView, self).keyPressEvent(event)
 
-    def unmakeLive( self, path ):
-        os.unlink( path )
+    def unmakeLive(self, path):
+        os.unlink(path)
 
-    def unmakeLiveCallback( self, path ):
+    def unmakeLiveCallback(self, path):
         def callback():
-            self.unmakeLive( path )
+            self.unmakeLive(path)
         return callback
 
-    def viewVersion( self, imgFile ):
+    def viewVersion(self, imgFile):
         def callback():
-            subprocess.Popen( [ self.sequenceExec, imgFile ], shell=False )
+            subprocess.Popen([self.sequenceExec, imgFile], shell=False)
         return callback
 
-    def compareVersion( self, imgFile, liveImgFile ):
+    def compareVersion(self, imgFile, liveImgFile):
         def callback():
-            subprocess.Popen( [ self.sequenceExec, imgFile, '-wipe', liveImgFile ], shell=False )
+            subprocess.Popen([self.sequenceExec, imgFile, '-wipe', liveImgFile], shell=False)
         return callback
 
-    def differenceVersion( self, imgFile, liveImgFile ):
+    def differenceVersion(self, imgFile, liveImgFile):
         def callback():
-            subprocess.Popen( [ self.sequenceExec, imgFile, '-diff', liveImgFile ], shell=False )
+            subprocess.Popen([self.sequenceExec, imgFile, '-diff', liveImgFile], shell=False)
         return callback
 
-    def deleteContentCallback( self, path ):
+    def deleteContentCallback(self, path):
         def callback():
-            self.deleteContent( path )
+            self.deleteContent(path)
         return callback
 
-    def deleteContent( self, path ):
+    def deleteContent(self, path):
         #print path
-        shutil.rmtree( path )
+        shutil.rmtree(path)
 
-    def copyToClipboard( self, text ):
-        self.mainWindow.clipBoard.setText( text )
-        print '%s copied to clipboard' %( text )
+    def copyToClipboard(self, text):
+        self.mainWindow.clipBoard.setText(text)
+        print '%s copied to clipboard' %(text)
 
-    def copyToClipboardCallback( self, text ):
+    def copyToClipboardCallback(self, text):
         def callback():
-            self.copyToClipboard( text )
+            self.copyToClipboard(text)
         return callback
 
         
-    def contextMenu( self, pos ):
+    def contextMenu(self, pos):
         
         self.menu = QMenu()
 
@@ -110,111 +110,111 @@ class SceneView( QGraphicsScene ):
         currentContent = self.mainWindow.getCurrentContent()
         #print self.mainWindow.getCurrentContent()
         #print self.mainWindow.getProjectsRoot()
-        #print os.path.join( str( self.mainWindow.getProjectsRoot() ), str( self.mainWindow.getCurrentContent() ) )
+        #print os.path.join(str(self.mainWindow.getProjectsRoot()), str(self.mainWindow.getCurrentContent()))
 
         #icon = QIcon
         
-        objectClicked = self.itemAt( pos )
+        objectClicked = self.itemAt(pos)
 
         '''
         try:
-            print '1 %s' %( objectClicked )
+            print '1 %s' %(objectClicked)
         except:
             pass
         try:
-            print '2 %s' %( objectClicked.parentItem() )
+            print '2 %s' %(objectClicked.parentItem())
         except:
             pass
         try:
-            print '3 %s' %( objectClicked.parentItem().parentItem() )
+            print '3 %s' %(objectClicked.parentItem().parentItem())
         except:
             pass
         try:
-            print '4 %s' %( objectClicked.parentItem().parentItem().parentItem() )
+            print '4 %s' %(objectClicked.parentItem().parentItem().parentItem())
         except:
             pass
         '''
         
         items = []
 
-        #self.menu.addMenu( 'add item' )
+        #self.menu.addMenu('add item')
 
-        contentDirs = os.listdir( os.path.join( str( self.mainWindow.getProjectsRoot() ), str( self.mainWindow.getCurrentContent() ) ) )
+        contentDirs = os.listdir(os.path.join(str(self.mainWindow.getProjectsRoot()), str(self.mainWindow.getCurrentContent())))
         
-        self.menu.addAction( 'new node', self.newNodeDialog( pos ) )
+        self.menu.addAction('new node', self.newNodeDialog(pos))
         self.menu.addSeparator()
-        self.menu.addAction( 'new loader', self.newLoaderDialog( pos ) )
+        self.menu.addAction('new loader', self.newLoaderDialog(pos))
         #for dir in contentDirs:
-        if not any( dir.startswith( 'SVR' ) for dir in contentDirs ):
-            self.menu.addAction( 'new saver', self.newSaverDialog( pos ) )
+        if not any(dir.startswith('SVR') for dir in contentDirs):
+            self.menu.addAction('new saver', self.newSaverDialog(pos))
         else:
             print 'content already has a saver'
         self.menu.addSeparator()
 
-        self.menu.addAction( 'from library...', self.fooCallback( 'from library item' ) )
+        self.menu.addAction('from library...', self.fooCallback('from library item'))
         
         try:
 
             #node specific context menu items
-            if isinstance( objectClicked, node ) \
-                    or isinstance( objectClicked.parentItem(), node ) \
-                    or isinstance( objectClicked.parentItem().parentItem(), node ) \
-                    or isinstance( objectClicked.parentItem().parentItem().parentItem(), node ):
+            if isinstance(objectClicked, node) \
+                    or isinstance(objectClicked.parentItem(), node) \
+                    or isinstance(objectClicked.parentItem().parentItem(), node) \
+                    or isinstance(objectClicked.parentItem().parentItem().parentItem(), node):
 
-                if isinstance( objectClicked, node ):
+                if isinstance(objectClicked, node):
                     nodeClicked = objectClicked
-                elif isinstance( objectClicked.parentItem(), node ):
+                elif isinstance(objectClicked.parentItem(), node):
                     nodeClicked = objectClicked.parentItem()
-                elif isinstance( objectClicked.parentItem().parentItem(), node ):
+                elif isinstance(objectClicked.parentItem().parentItem(), node):
                     nodeClicked = objectClicked.parentItem().parentItem()
-                elif isinstance( objectClicked.parentItem().parentItem().parentItem(), node ):
+                elif isinstance(objectClicked.parentItem().parentItem().parentItem(), node):
                     nodeClicked = objectClicked.parentItem().parentItem().parentItem()
 
 
-                self.menuNode = self.menu.addMenu( 'node' )
+                self.menuNode = self.menu.addMenu('node')
 
-                if not nodeClicked.label.startswith( 'LDR' ) and not nodeClicked.label.startswith( 'SVR' ):
-                    self.menuNode.addAction( 'open node directory', lambda: self.mainWindow.locateContent( nodeClicked.getNodeRootDir() ) )
+                if not nodeClicked.label.startswith('LDR') and not nodeClicked.label.startswith('SVR'):
+                    self.menuNode.addAction('open node directory', lambda: self.mainWindow.locateContent(nodeClicked.getNodeRootDir()))
 
-                    if not os.path.exists( os.path.join( nodeClicked.getNodeRootDir(), 'locked' ) ):
+                    if not os.path.exists(os.path.join(nodeClicked.getNodeRootDir(), 'locked')):
                         self.menuNode.addSeparator()
-                        self.menuNode.addAction( 'cleanup node', self.cleanUpNodeCallback( nodeClicked ) )
-                        self.menuNode.addAction( 'delete node', self.removeObjectCallback( nodeClicked ) )
+                        self.menuNode.addAction('cleanup node', self.cleanUpNodeCallback(nodeClicked))
+                        self.menuNode.addAction('delete node', self.removeObjectCallback(nodeClicked))
 
-                        if os.path.exists( os.path.join( nodeClicked.getNodeRootDir(), 'checkedOut' ) ):
+                        if os.path.exists(os.path.join(nodeClicked.getNodeRootDir(), 'checkedOut')):
                             self.menuNode.addSeparator()
-                            self.menuNode.addAction( 'check in node', self.mainWindow.checkInCallback( nodeClicked ) )
+                            self.menuNode.addAction('check in node', self.mainWindow.checkInCallback(nodeClicked))
 
                         else:
                             self.menuNode.addSeparator()
-                            self.menuNode.addAction( 'check out node', self.mainWindow.checkOutCallback( nodeClicked ) )
+                            self.menuNode.addAction('check out node', self.mainWindow.checkOutCallback(nodeClicked))
 
-                elif nodeClicked.label.startswith( 'LDR_AST' ):
+                elif nodeClicked.label.startswith('LDR_AST'):
 
-                    self.menuNode.addAction( 'open asset tree', lambda: self.mainWindow.getAssetContent( None, nodeClicked.getLabel() ) )
+                    self.menuNode.addAction('open asset tree', lambda: self.mainWindow.getAssetContent(None, nodeClicked.getLabel()))
                     self.menuNode.addSeparator()
-                    self.menuNode.addAction( 'delete asset loader', self.removeObjectCallback( nodeClicked ) )
+                    self.menuNode.addAction('delete asset loader', self.removeObjectCallback(nodeClicked))
 
-                elif nodeClicked.label.startswith( 'LDR_SHT' ):
-                    #self.menuNode.addAction( 'open shot', lambda: self.foo( nodeClicked.getNodeRootDir() ) )
-                    self.menuNode.addAction( 'open shot tree', lambda: self.mainWindow.getShotContent( None, nodeClicked.getLabel() ) )
+                elif nodeClicked.label.startswith('LDR_SHT'):
+                    #self.menuNode.addAction('open shot', lambda: self.foo(nodeClicked.getNodeRootDir()))
+                    self.menuNode.addAction('open shot tree', lambda: self.mainWindow.getShotContent(None, nodeClicked.getLabel()))
                     self.menuNode.addSeparator()
-                    self.menuNode.addAction( 'delete shot loader', self.removeObjectCallback( nodeClicked ) )
+                    self.menuNode.addAction('delete shot loader', self.removeObjectCallback(nodeClicked))
 
-                elif nodeClicked.label.startswith( 'SVR_AST' ):
-                    self.menuNode.addAction( 'delete asset saver', self.removeObjectCallback( nodeClicked ) )
+                elif nodeClicked.label.startswith('SVR_AST'):
+                    self.menuNode.addAction('delete asset saver', self.removeObjectCallback(nodeClicked))
                     self.menuNode.addSeparator()
-                    self.menuNode.addAction( 'check out asset', self.mainWindow.checkOutCallback( nodeClicked ) )
+                    self.menuNode.addAction('check out asset', self.mainWindow.checkOutCallback(nodeClicked))
 
-                elif nodeClicked.label.startswith( 'SVR_SHT' ):
-                    self.menuNode.addAction( 'delete shot saver', self.removeObjectCallback( nodeClicked ) )
+                elif nodeClicked.label.startswith('SVR_SHT'):
+                    self.menuNode.addAction('delete shot saver', self.removeObjectCallback(nodeClicked))
                     self.menuNode.addSeparator()
-                    self.menuNode.addAction( 'check out shot', self.mainWindow.checkOutCallback( nodeClicked ) )
+                    self.menuNode.addAction('check out shot', self.mainWindow.checkOutCallback(nodeClicked))
 
-                    #self.mainWindow.getShotContent( None, nodeClicked.getLabel() )
+                    #self.mainWindow.getShotContent(None, nodeClicked.getLabel())
 
                 self.menuNode.addSeparator()
-                #self.menu.addAction( 'cleanup node', self.fooCallback( 'cleanup node' ) )
+                #self.menu.addAction('cleanup node', self.fooCallback('cleanup node'))
 
 
 
@@ -222,14 +222,14 @@ class SceneView( QGraphicsScene ):
                 #self.menu.addSeparator()
 
 
-                #self.menu.addAction( 'clone', lambda: self.cloneNodeCallback( objectClicked ) ).setActive ( 'False' )
+                #self.menu.addAction('clone', lambda: self.cloneNodeCallback(objectClicked)).setActive ('False')
 
 
-                #self.menu.addAction( 'none', lambda: None )
-                #items.append( 'delete this node' )
+                #self.menu.addAction('none', lambda: None)
+                #items.append('delete this node')
                 #print objectClicked.getNodeRootDir()
 
-                #location = self.mainWindow.locateContent( objectClicked.getNodeRootDir( objectClicked ) )
+                #location = self.mainWindow.locateContent(objectClicked.getNodeRootDir(objectClicked))
 
 
 
@@ -237,16 +237,16 @@ class SceneView( QGraphicsScene ):
 
 
             #input specific context menu items
-            if isinstance( objectClicked, portInput ) and not objectClicked.label == None:
-                self.menuInput = self.menu.addMenu( 'input' )
+            if isinstance(objectClicked, portInput) and not objectClicked.label == None:
+                self.menuInput = self.menu.addMenu('input')
 
 
 
-                #items.append( 'delete this input' )
+                #items.append('delete this input')
 
-                self.menuPathOps = self.menuInput.addMenu( 'clipboard' )
+                self.menuPathOps = self.menuInput.addMenu('clipboard')
                 self.menuInput.addSeparator()
-                self.menuInput.addAction( 'delete input', self.removeObjectCallback( objectClicked ) )
+                self.menuInput.addAction('delete input', self.removeObjectCallback(objectClicked))
 
 
                 inputLabel = objectClicked.getLabel()
@@ -255,17 +255,17 @@ class SceneView( QGraphicsScene ):
                 outputNode = objectClicked.parentItem()
                 outputNodeRootDir = outputNode.getNodeRootDir()
 
-                self.menuPathOps.addAction( 'copy input label', self.copyToClipboardCallback( inputLabel ) )
-                self.menuPathOps.addAction( 'copy absolute input path',  self.copyToClipboardCallback( os.path.join( inputDir, inputLabel ) ) )
-                self.menuPathOps.addAction( 'copy relative input path',  self.copyToClipboardCallback( os.path.relpath( os.path.join( inputDir, inputLabel ), os.path.join( outputNodeRootDir ) ) ) )
+                self.menuPathOps.addAction('copy input label', self.copyToClipboardCallback(inputLabel))
+                self.menuPathOps.addAction('copy absolute input path',  self.copyToClipboardCallback(os.path.join(inputDir, inputLabel)))
+                self.menuPathOps.addAction('copy relative input path',  self.copyToClipboardCallback(os.path.relpath(os.path.join(inputDir, inputLabel), os.path.join(outputNodeRootDir))))
 
 
 
 
 
             #output specific context menu items
-            if isinstance( objectClicked, portOutput ) and not objectClicked.parentItem().label.startswith( 'LDR' ):
-                #items.append( 'delete this output' )
+            if isinstance(objectClicked, portOutput) and not objectClicked.parentItem().label.startswith('LDR'):
+                #items.append('delete this output')
 
                 #self.menu.addSeparator()
 
@@ -276,9 +276,9 @@ class SceneView( QGraphicsScene ):
 
 
 
-                self.menuOutput = self.menu.addMenu( 'output' )
+                self.menuOutput = self.menu.addMenu('output')
 
-                self.menuPathOps = self.menuOutput.addMenu( 'clipboard' )
+                self.menuPathOps = self.menuOutput.addMenu('clipboard')
                 self.menuOutput.addSeparator()
 
                 #print objectClicked.getOutputDir()
@@ -305,12 +305,12 @@ class SceneView( QGraphicsScene ):
                 #print 'liveDir = %s' %liveDir
 
 
-                versions = self.getVersions( outputDir )
+                versions = self.getVersions(outputDir)
                 #print outputDir
 
-                self.menuOutput.addAction( 'open output directory', lambda: self.mainWindow.locateContent( outputDir ) )
+                self.menuOutput.addAction('open output directory', lambda: self.mainWindow.locateContent(outputDir))
 
-                #self.menuVersion.addAction( 'cleanup', lambda: self.foo( 'cleanup' ) )
+                #self.menuVersion.addAction('cleanup', lambda: self.foo('cleanup'))
 
 
 
@@ -318,38 +318,38 @@ class SceneView( QGraphicsScene ):
 
                 self.menuOutput.addSeparator()
 
-                #self.menuMakeLive = self.menuVersion.addMenu( 'make live' )
+                #self.menuMakeLive = self.menuVersion.addMenu('make live')
 
                 #try:
-                #    print os.path.exists( liveDir )
+                #    print os.path.exists(liveDir)
                 #except:
                 #    raise 'shizzle'
 
-                self.menuPathOps.addAction( 'copy output label', self.copyToClipboardCallback( outputLabel ) )
-                self.menuPathOps.addAction( 'copy absolute output path',  self.copyToClipboardCallback( os.path.join( outputDir, 'current', outputLabel ) ) )
-                self.menuPathOps.addAction( 'copy relative output path',  self.copyToClipboardCallback( os.path.relpath( os.path.join( outputDir, 'current', outputLabel ), os.path.join( outputNodeRootDir ) ) ) )
+                self.menuPathOps.addAction('copy output label', self.copyToClipboardCallback(outputLabel))
+                self.menuPathOps.addAction('copy absolute output path',  self.copyToClipboardCallback(os.path.join(outputDir, 'current', outputLabel)))
+                self.menuPathOps.addAction('copy relative output path',  self.copyToClipboardCallback(os.path.relpath(os.path.join(outputDir, 'current', outputLabel), os.path.join(outputNodeRootDir))))
 
 
 
 
 
-                self.menuOutput.addAction( 'cleanup output', self.cleanUpOutputCallback( objectClicked ) )
+                self.menuOutput.addAction('cleanup output', self.cleanUpOutputCallback(objectClicked))
 
-                if os.path.exists( liveDir ):
+                if os.path.exists(liveDir):
 
-                    #liveVersion = os.path.basename( os.readlink( liveDir ) )
+                    #liveVersion = os.path.basename(os.readlink(liveDir))
 
 
-                    #self.menuPathOps.addAction( 'to clipboard 1234', self.copyToClipboardCallback( '1234' ) )
-                    #self.menuPathOps.addAction( 'to clipboard 5678', self.copyToClipboardCallback( '5678' ) )
-                    #self.menuPathOps.addAction( 'copy relative path', self.foo(  ) )
+                    #self.menuPathOps.addAction('to clipboard 1234', self.copyToClipboardCallback('1234'))
+                    #self.menuPathOps.addAction('to clipboard 5678', self.copyToClipboardCallback('5678'))
+                    #self.menuPathOps.addAction('copy relative path', self.foo())
                     #self.menuPathOps()
 
-                    self.menuOutput.addAction( 'remove pipe (live)', self.unmakeLiveCallback( liveDir ) )
-                self.menuOutput.addAction( 'delete output', self.removeObjectCallback( objectClicked ) )
+                    self.menuOutput.addAction('remove pipe (live)', self.unmakeLiveCallback(liveDir))
+                self.menuOutput.addAction('delete output', self.removeObjectCallback(objectClicked))
                 self.menuOutput.addSeparator()
 
-                self.menuOutput.addAction( 'create new version', self.createNewVersionCallback( outputDir ) )
+                self.menuOutput.addAction('create new version', self.createNewVersionCallback(outputDir))
 
                     #print 'added'
                 self.menuOutput.addSeparator()
@@ -358,120 +358,120 @@ class SceneView( QGraphicsScene ):
                     '''
                     if version in self.exclusions:
                         try:
-                            os.remove( os.path.join( outputDir, version ) )
-                            logging.info( 'exclusion found in versions of output %s. %s removed.' %( objectClicked.label, os.path.join( outputDir, version ) ) )
+                            os.remove(os.path.join(outputDir, version))
+                            logging.info('exclusion found in versions of output %s. %s removed.' %(objectClicked.label, os.path.join(outputDir, version)))
                         except:
-                            logging.warning( 'exclusion found but not removed: %s' %( os.path.join( outputDir, version ) ) )
+                            logging.warning('exclusion found but not removed: %s' %(os.path.join(outputDir, version)))
                     '''
                     if not version == 'current':
 
-                        versionPath = os.path.join( outputDir, version )
+                        versionPath = os.path.join(outputDir, version)
                         #print versionPath
 
-                        outputDirContent = os.listdir( versionPath )
+                        outputDirContent = os.listdir(versionPath)
                         for item in outputDirContent:
                             if item in self.exclusions:
                                 try:
-                                    os.remove( os.path.join( versionPath, item ) )
-                                    outputDirContent.remove( item )
-                                    logging.info( 'exclusion found and removed: %s' %( os.path.join( versionPath, item ) ) )
+                                    os.remove(os.path.join(versionPath, item))
+                                    outputDirContent.remove(item)
+                                    logging.info('exclusion found and removed: %s' %(os.path.join(versionPath, item)))
                                 except:
-                                    outputDirContent.remove( item )
-                                    logging.warning( 'exclusion found but not removed: %s' %( os.path.join( versionPath, item ) ) )
-                        outputDirContent.remove( outputLabel )
+                                    outputDirContent.remove(item)
+                                    logging.warning('exclusion found but not removed: %s' %(os.path.join(versionPath, item)))
+                        outputDirContent.remove(outputLabel)
 
-                        menuMakeLive = self.menuOutput.addMenu( version )
+                        menuMakeLive = self.menuOutput.addMenu(version)
 
 
                         if self.currentPlatform == 'Darwin' or self.currentPlatform == 'Linux':
-                            if os.path.exists( liveDir ):
-                                if os.path.basename( os.readlink( liveDir ) ) == version:
-                                    menuMakeLive.setIcon( QIcon( 'src/icons/dotActive.png' ) )
+                            if os.path.exists(liveDir):
+                                if os.path.basename(os.readlink(liveDir)) == version:
+                                    menuMakeLive.setIcon(QIcon('src/icons/dotActive.png'))
                                 else:
-                                    menuMakeLive.setIcon( QIcon( 'src/icons/dotInactive.png' ) )
+                                    menuMakeLive.setIcon(QIcon('src/icons/dotInactive.png'))
                             else:
-                                menuMakeLive.setIcon( QIcon( 'src/icons/dotInactive.png' ) )
+                                menuMakeLive.setIcon(QIcon('src/icons/dotInactive.png'))
                         elif self.currentPlatform == 'Windows':
-                            if os.path.exists( liveDir ):
+                            if os.path.exists(liveDir):
                                 print liveDir
-                                print os.path.abspath( liveDir )
-                                print os.path.realpath( liveDir )
+                                print os.path.abspath(liveDir)
+                                print os.path.realpath(liveDir)
                                 print version
-                                if os.path.basename( os.path.realpath( liveDir ) ) == version:
-                                    menuMakeLive.setIcon( QIcon( 'src/icons/dotActive.png' ) )
+                                if os.path.basename(os.path.realpath(liveDir)) == version:
+                                    menuMakeLive.setIcon(QIcon('src/icons/dotActive.png'))
                                 else:
-                                    menuMakeLive.setIcon( QIcon( 'src/icons/dotInactive.png' ) )
+                                    menuMakeLive.setIcon(QIcon('src/icons/dotInactive.png'))
                             else:
-                                menuMakeLive.setIcon( QIcon( 'src/icons/dotInactive.png' ) )
+                                menuMakeLive.setIcon(QIcon('src/icons/dotInactive.png'))
 
                         #print 'here we are'
 
-                        #if outputLabel.startswith( 'SEQ' ) or outputLabel.startswith( 'TEX' ) or outputLabel.startswith( 'PLB' ):
-                        #print os.path.splitext( outputDirContent[ 0 ] )[ 1 ]
-                        if os.path.splitext( outputDirContent[ 0 ] )[ 1 ] in self.imageExtensions or os.path.splitext( outputDirContent[ 0 ] )[ 1 ] in self.movieExtensions:
+                        #if outputLabel.startswith('SEQ') or outputLabel.startswith('TEX') or outputLabel.startswith('PLB'):
+                        #print os.path.splitext(outputDirContent[0])[1]
+                        if os.path.splitext(outputDirContent[0])[1] in self.imageExtensions or os.path.splitext(outputDirContent[0])[1] in self.movieExtensions:
                             '''
                             for exclusion in self.exclusions:
                                 try:
-                                    #if os.path.exists( os.path.join( outputDirContent, exclusion ) ):
-                                    logging.info( 'exclusion removed from list: %s' %( os.path.join( outputDirContent, exclusion ) ) )
-                                    #os.remove( os.path.join( outputDirContent, exclusion ) )
-                                    outputDirContent.remove( exclusion )
+                                    #if os.path.exists(os.path.join(outputDirContent, exclusion)):
+                                    logging.info('exclusion removed from list: %s' %(os.path.join(outputDirContent, exclusion)))
+                                    #os.remove(os.path.join(outputDirContent, exclusion))
+                                    outputDirContent.remove(exclusion)
                                 except:
-                                    logging.warning( 'exclusion found but not removed from list: %s' %( os.path.join( outputDirContent, exclusion ) ) )
+                                    logging.warning('exclusion found but not removed from list: %s' %(os.path.join(outputDirContent, exclusion)))
                             '''
 
                             try:
-                                menuMakeLive.addAction( 'view', self.viewVersion( os.path.join( versionPath, outputDirContent[ 0 ] ) ) )
+                                menuMakeLive.addAction('view', self.viewVersion(os.path.join(versionPath, outputDirContent[0])))
                                 try:
                                     if self.mainWindow.rv == True:
-                                        menuMakeLive.addAction( 'compare to live', self.compareVersion( os.path.join( versionPath, outputDirContent[ 0 ] ), os.path.join( liveDir, outputDirContent[ 0 ] ) ) )
-                                        menuMakeLive.addAction( 'difference to live', self.differenceVersion( os.path.join( versionPath, outputDirContent[ 0 ] ), os.path.join( liveDir, outputDirContent[ 0 ] ) ) )
+                                        menuMakeLive.addAction('compare to live', self.compareVersion(os.path.join(versionPath, outputDirContent[0]), os.path.join(liveDir, outputDirContent[0])))
+                                        menuMakeLive.addAction('difference to live', self.differenceVersion(os.path.join(versionPath, outputDirContent[0]), os.path.join(liveDir, outputDirContent[0])))
 
                                 except:
                                     print 'compare/difference to live version not possible'
                             except:
                                 print 'not possible to view SEQ. emty?'
 
-                            #menuMakeLive.addAction( 'compare to live', self.compareVersion( os.path.join( outputDir, version, outputDirContent[ 0 ] ), os.path.join( liveDir, outputDirContent[ 0 ] ) ) )
+                            #menuMakeLive.addAction('compare to live', self.compareVersion(os.path.join(outputDir, version, outputDirContent[0]), os.path.join(liveDir, outputDirContent[0])))
 
 
-                            #self.versionMenu.addAction( 'view live', self.viewLive( os.path.join( liveDir, liveDirContent[ 0 ] ) ) )
+                            #self.versionMenu.addAction('view live', self.viewLive(os.path.join(liveDir, liveDirContent[0])))
 
-                        menuMakeLive.addAction( 'open directory', self.mainWindow.locateContentCallback( versionPath ) )
+                        menuMakeLive.addAction('open directory', self.mainWindow.locateContentCallback(versionPath))
 
-                        deleteVersionAction = menuMakeLive.addAction( 'delete version', self.deleteContentCallback( versionPath ) )
+                        deleteVersionAction = menuMakeLive.addAction('delete version', self.deleteContentCallback(versionPath))
 
-                        makeCurrentAction = menuMakeLive.addAction( 'make current', self.makeCurrentCallback( versionPath ) )
+                        makeCurrentAction = menuMakeLive.addAction('make current', self.makeCurrentCallback(versionPath))
 
 
                         if self.currentPlatform == 'Darwin' or self.currentPlatform == 'Linux':
-                            if os.path.join( outputDir, version ) == os.path.join( outputDir, os.readlink( os.path.join( outputDir, 'current' ) ) ):
-                                deleteVersionAction.setEnabled( False )
+                            if os.path.join(outputDir, version) == os.path.join(outputDir, os.readlink(os.path.join(outputDir, 'current'))):
+                                deleteVersionAction.setEnabled(False)
                             else:
-                                deleteVersionAction.setEnabled( True )
+                                deleteVersionAction.setEnabled(True)
                         elif self.currentPlatform == 'Windows':
 
 
-                            print os.path.join( outputDir, version )
-                            print os.path.join( outputDir, 'current' )
-                            print os.path.join( outputDir, os.path.realpath( os.path.join( outputDir, 'current' ) ) )
+                            print os.path.join(outputDir, version)
+                            print os.path.join(outputDir, 'current')
+                            print os.path.join(outputDir, os.path.realpath(os.path.join(outputDir, 'current')))
 
 
 
-                        makeLiveAction = menuMakeLive.addAction( 'make live', self.makeLiveCallback( versionPath ) )
+                        makeLiveAction = menuMakeLive.addAction('make live', self.makeLiveCallback(versionPath))
 
 
                         #print liveDir
                         #print outputLabel
-                        #print 'test', os.path.join( os.path.dirname( os.path.dirname( liveDir ) ), 'output', outputLabel, version )
-                        #print os.path.basename( os.readlink( liveDir ) )
-                        #print 'livedir   =', os.path.join( outputDir, os.path.basename( os.readlink( liveDir ) ) )
-                        #print 'outputdir =', os.path.join( outputDir, version )
+                        #print 'test', os.path.join(os.path.dirname(os.path.dirname(liveDir)), 'output', outputLabel, version)
+                        #print os.path.basename(os.readlink(liveDir))
+                        #print 'livedir   =', os.path.join(outputDir, os.path.basename(os.readlink(liveDir)))
+                        #print 'outputdir =', os.path.join(outputDir, version)
 
 
 
-                        if len( outputDirContent ) > 0:
-                            makeLiveAction.setEnabled( True )
+                        if len(outputDirContent) > 0:
+                            makeLiveAction.setEnabled(True)
 
 
                             #outputDir = objectClicked.getOutputDir()
@@ -480,27 +480,27 @@ class SceneView( QGraphicsScene ):
 
                             #liveDir = objectClicked.getLiveDir()
                         else:
-                            makeLiveAction.setEnabled( False )
-                            makeLiveAction.setText( makeLiveAction.text() + ' (no content)' )
+                            makeLiveAction.setEnabled(False)
+                            makeLiveAction.setText(makeLiveAction.text() + ' (no content)')
 
                         try:
 
-                            if os.path.join( outputDir, os.path.basename( os.readlink( liveDir ) ) ) == os.path.join( outputDir, version ):
-                                makeLiveAction.setEnabled( False )
-                                makeLiveAction.setText( makeLiveAction.text() + ' (already live)' )
-                                deleteVersionAction.setEnabled( False )
+                            if os.path.join(outputDir, os.path.basename(os.readlink(liveDir))) == os.path.join(outputDir, version):
+                                makeLiveAction.setEnabled(False)
+                                makeLiveAction.setText(makeLiveAction.text() + ' (already live)')
+                                deleteVersionAction.setEnabled(False)
 
                         except:
                             print 'no live version found'
-                            #makeLiveAction.setEnabled( True )
+                            #makeLiveAction.setEnabled(True)
 
 
                         if self.currentPlatform == 'Darwin' or self.currentPlatform == 'Linux':
-                            if versionPath == os.path.join( outputDir, os.path.basename( os.readlink( os.path.join( outputDir, 'current' ) ) ) ):
-                                makeCurrentAction.setEnabled( False )
+                            if versionPath == os.path.join(outputDir, os.path.basename(os.readlink(os.path.join(outputDir, 'current')))):
+                                makeCurrentAction.setEnabled(False)
                         elif self.currentPlatform == 'Windows':
-                            if versionPath == os.path.join( outputDir, os.path.basename( os.path.realpath( os.path.join( outputDir, 'current' ) ) ) ):
-                                makeCurrentAction.setEnabled( False )
+                            if versionPath == os.path.join(outputDir, os.path.basename(os.path.realpath(os.path.join(outputDir, 'current')))):
+                                makeCurrentAction.setEnabled(False)
 
 
 
@@ -516,34 +516,34 @@ class SceneView( QGraphicsScene ):
         except:
             print 'context menu fuck up or objectClicked == None (QGraphicsScene)'
 
-        self.menu.move( QCursor.pos() )
+        self.menu.move(QCursor.pos())
         self.menu.show()
 
-    def cleanUpOutputProc( self, portOutput ):
+    def cleanUpOutputProc(self, portOutput):
         outputDir = portOutput.getOutputDir()
-        outputVersions = self.getVersions( outputDir )
+        outputVersions = self.getVersions(outputDir)
         #print outputVersions
-        outputVersions.remove( 'current' )
+        outputVersions.remove('current')
         for exclusion in self.exclusions:
             try:
-                outputVersions.remove( exclusion )
+                outputVersions.remove(exclusion)
             except:
                 pass
         #print outputVersions
-        currentVersion = os.path.realpath( os.path.join( outputDir, 'current' ) )
-        outputVersions.remove( os.path.basename( currentVersion ) )
+        currentVersion = os.path.realpath(os.path.join(outputDir, 'current'))
+        outputVersions.remove(os.path.basename(currentVersion))
         #print outputVersions
         #print currentVersion
         liveDir = portOutput.getLiveDir()
         #print liveDir
 
-        if os.path.exists( liveDir ):
-            liveDirDest = os.path.realpath( liveDir )
-            liveVersion = os.path.basename( liveDirDest )
+        if os.path.exists(liveDir):
+            liveDirDest = os.path.realpath(liveDir)
+            liveVersion = os.path.basename(liveDirDest)
             #print liveDirDest
             #print liveVersion
             try:
-                outputVersions.remove( liveVersion )
+                outputVersions.remove(liveVersion)
             except:
                 print 'outputCurrent = live'
 
@@ -551,248 +551,248 @@ class SceneView( QGraphicsScene ):
             print 'no liveDir'
 
         for outputVersion in outputVersions:
-            #print 'need to delete %s' %( os.path.join( outputDir, outputVersion ) )
-            self.deleteContent( os.path.join( outputDir, outputVersion ) )
-            print '%s removed' %( os.path.join( outputDir, outputVersion ) )
-        print 'output %s cleaned up' %( portOutput.getLabel() )
+            #print 'need to delete %s' %(os.path.join(outputDir, outputVersion))
+            self.deleteContent(os.path.join(outputDir, outputVersion))
+            print '%s removed' %(os.path.join(outputDir, outputVersion))
+        print 'output %s cleaned up' %(portOutput.getLabel())
 
-    def cleanUpNodeCallback( self, node ):
+    def cleanUpNodeCallback(self, node):
         def callback():
-            self.cleanUpNode( node )
+            self.cleanUpNode(node)
         return callback
 
-    def cleanUpNode( self, node ):
-        reply = QMessageBox.warning( self.mainWindow, str( 'about to cleanup item' ), str( 'are you sure to \ncleanup all outputs of %s?' %( node.getLabel() ) ), QMessageBox.Yes | QMessageBox.No, QMessageBox.No )
+    def cleanUpNode(self, node):
+        reply = QMessageBox.warning(self.mainWindow, str('about to cleanup item'), str('are you sure to \ncleanup all outputs of %s?' %(node.getLabel())), QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
 
         if reply == QMessageBox.Yes:
             for output in node.outputList:
-                self.cleanUpOutputProc( output )
+                self.cleanUpOutputProc(output)
             #print node.outputs
             #print node.outputList
 
-    def cleanUpOutputCallback( self, portOutput ):
+    def cleanUpOutputCallback(self, portOutput):
         def callback():
-            self.cleanUpOutput( portOutput )
+            self.cleanUpOutput(portOutput)
         return callback
 
-    def cleanUpOutput( self, portOutput ):
+    def cleanUpOutput(self, portOutput):
 
         #print portOutput.getLabel()
 
-        reply = QMessageBox.warning( self.mainWindow, str( 'about to cleanup item' ), str( 'are you sure to \ncleanup %s?' %( portOutput.getLabel() ) ), QMessageBox.Yes | QMessageBox.No, QMessageBox.No )
+        reply = QMessageBox.warning(self.mainWindow, str('about to cleanup item'), str('are you sure to \ncleanup %s?' %(portOutput.getLabel())), QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
 
         #print yes
 
 
         if reply == QMessageBox.Yes:
-            self.cleanUpOutputProc( portOutput )
+            self.cleanUpOutputProc(portOutput)
 
-    def cloneNodeCallback( self, node ):
+    def cloneNodeCallback(self, node):
         def callback():
-            self.cloneNode( node )
+            self.cloneNode(node)
 
         return callback()
 
-    def cloneNode( self, node ):
+    def cloneNode(self, node):
         print 'clone node not yet working'
 
-    def makeLiveCallback( self, versionDir ):
+    def makeLiveCallback(self, versionDir):
         def callback():
             #print versionDir
             cwd = os.getcwd()
 
-            outputDir = os.path.basename( os.path.dirname( versionDir ) )
+            outputDir = os.path.basename(os.path.dirname(versionDir))
             #print outputDir
 
-            liveDir = os.path.join( os.path.dirname( os.path.dirname( os.path.dirname( versionDir ) ) ), 'live' )
+            liveDir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(versionDir))), 'live')
             #print liveDir
 
-            os.chdir( liveDir )
+            os.chdir(liveDir)
 
-            if os.path.islink( outputDir ):
-                os.unlink( outputDir )
+            if os.path.islink(outputDir):
+                os.unlink(outputDir)
 
 
             if self.currentPlatform == "Darwin" or self.currentPlatform == "Linux":
-                os.symlink( os.path.relpath( versionDir, liveDir ), outputDir )
+                os.symlink(os.path.relpath(versionDir, liveDir), outputDir)
             elif self.currentPlatform == "Windows":
-                cmdstring = str( "mklink /D " + outputDir + " " + os.path.relpath( versionDir, liveDir ) )
-                #print 'Win cmdstring = %s' %( cmdstring )
-                #os.chdir( os.path.dirname( endItemInputDir ) )
-                os.system( cmdstring )
+                cmdstring = str("mklink /D " + outputDir + " " + os.path.relpath(versionDir, liveDir))
+                #print 'Win cmdstring = %s' %(cmdstring)
+                #os.chdir(os.path.dirname(endItemInputDir))
+                os.system(cmdstring)
 
 
-            os.chdir( cwd )
+            os.chdir(cwd)
 
         return callback
 
-    def makeCurrentCallback( self, currentDir ):
+    def makeCurrentCallback(self, currentDir):
         def callback():
-            self.makeCurrent( currentDir )
+            self.makeCurrent(currentDir)
         return callback
 
-    def makeCurrent( self, currentDir ):
-        fullOutputDir = os.path.dirname( currentDir )
+    def makeCurrent(self, currentDir):
+        fullOutputDir = os.path.dirname(currentDir)
         #print currentDir
         #print fullOutputDir
 
         try:
             if self.currentPlatform == "Darwin":
-                os.unlink( os.path.join( fullOutputDir, 'current' ) )
+                os.unlink(os.path.join(fullOutputDir, 'current'))
             elif self.currentPlatform == "Windows":
-                os.rmdir( os.path.join( fullOutputDir, 'current' ) )
+                os.rmdir(os.path.join(fullOutputDir, 'current'))
         except:
             print 'cannot remove symlink or not available'
 
         cwd = os.getcwd()
-        os.chdir( os.path.join( os.path.dirname( currentDir ) ) )
+        os.chdir(os.path.join(os.path.dirname(currentDir)))
 
         if self.currentPlatform == "Darwin":
 
             # TODO: need to create relative links
-            #print os.path.relpath( newVersionDir, os.path.dirname( newVersionDir ) )
+            #print os.path.relpath(newVersionDir, os.path.dirname(newVersionDir))
 
-            os.symlink( os.path.basename( currentDir ), 'current' )
+            os.symlink(os.path.basename(currentDir), 'current')
 
         elif self.currentPlatform == "Windows":
-            logging.info( 'creating windows symlink to %s' %( os.path.join( os.path.dirname( currentDir ) ) ) )
+            logging.info('creating windows symlink to %s' %(os.path.join(os.path.dirname(currentDir))))
 
-            cmdstring = str( "mklink /D " + os.path.join( os.path.dirname( currentDir ), 'current' ) + " " + currentDir )
-            #print 'Win cmdstring = %s' %( cmdstring )
-            #os.chdir( os.path.dirname( endItemInputDir ) )
-            os.system( cmdstring )
-            #os.chdir( cwd )
+            cmdstring = str("mklink /D " + os.path.join(os.path.dirname(currentDir), 'current') + " " + currentDir)
+            #print 'Win cmdstring = %s' %(cmdstring)
+            #os.chdir(os.path.dirname(endItemInputDir))
+            os.system(cmdstring)
+            #os.chdir(cwd)
 
-            #endItems[ 0 ].setInputDir( inputLink )
-            #print 'Windows: endItems[ 0 ].getInputDir() = %s' %endItems[ 0 ].getInputDir()
+            #endItems[0].setInputDir(inputLink)
+            #print 'Windows: endItems[0].getInputDir() = %s' %endItems[0].getInputDir()
 
-        os.chdir( cwd )
+        os.chdir(cwd)
 
-    def createNewVersion( self, fullOutputDir ):
+    def createNewVersion(self, fullOutputDir):
 
         #print 'testing'
-        newVersion = datetime.datetime.now().strftime( '%Y-%m-%d_%H%M-%S' )
-        #print os.path.join( fullOutputDir, newVersion )
+        newVersion = datetime.datetime.now().strftime('%Y-%m-%d_%H%M-%S')
+        #print os.path.join(fullOutputDir, newVersion)
 
-        #versions = self.getVersions( fullOutputDir )
-        newVersionDir = os.path.join( fullOutputDir, newVersion )
-        os.makedirs( newVersionDir, mode=0777 )
-        open( os.path.join( fullOutputDir, newVersion, os.path.basename( fullOutputDir ) ), 'a' ).close()
+        #versions = self.getVersions(fullOutputDir)
+        newVersionDir = os.path.join(fullOutputDir, newVersion)
+        os.makedirs(newVersionDir, mode=0777)
+        open(os.path.join(fullOutputDir, newVersion, os.path.basename(fullOutputDir)), 'a').close()
 
-        self.makeCurrent( newVersionDir )
+        self.makeCurrent(newVersionDir)
 
-    def createNewVersionCallback( self, fullOutputDir ):
+    def createNewVersionCallback(self, fullOutputDir):
         #print 'test'
         def callback():
-            self.createNewVersion( fullOutputDir )
+            self.createNewVersion(fullOutputDir)
         return callback
 
-    def getVersions( self, fullOutputDir ):
-        versions = os.listdir( fullOutputDir )
+    def getVersions(self, fullOutputDir):
+        versions = os.listdir(fullOutputDir)
         for version in versions:
             if version in self.exclusions:
                 try:
-                    os.remove( os.path.join( fullOutputDir, version ) )
-                    versions.remove( version )
-                    logging.info( 'exclusion found and removed: %s' %( os.path.join( fullOutputDir, version ) ) )
+                    os.remove(os.path.join(fullOutputDir, version))
+                    versions.remove(version)
+                    logging.info('exclusion found and removed: %s' %(os.path.join(fullOutputDir, version)))
                 except:
-                    versions.remove( version )
-                    logging.warning( 'exclusion found but not removed: %s' %( os.path.join( fullOutputDir, version ) ) )
+                    versions.remove(version)
+                    logging.warning('exclusion found but not removed: %s' %(os.path.join(fullOutputDir, version)))
         return versions
 
-    def foo( self, arg ):
+    def foo(self, arg):
         print arg
 
-    def fooCallback( self, arg ):
+    def fooCallback(self, arg):
         def callback():
 
 
             print arg
         return callback
 
-    def newOutputAuto( self, node, defaultOutput ):
+    def newOutputAuto(self, node, defaultOutput):
 
-        #print node.data( 0 ).toPyObject(), defaultOutput
+        #print node.data(0).toPyObject(), defaultOutput
 
-        #projectsRoot = str( self.mainWindow.getProjectsRoot() )
-        currentContent = str( self.mainWindow.getCurrentContent() )
-        currentProject = str( self.mainWindow.projectComboBox.currentText() )
+        #projectsRoot = str(self.mainWindow.getProjectsRoot())
+        currentContent = str(self.mainWindow.getCurrentContent())
+        currentProject = str(self.mainWindow.projectComboBox.currentText())
 
-        outputDir = os.path.join( self.projectsRoot, currentContent, str( node.data( 0 ).toPyObject() ), 'output' )
+        outputDir = os.path.join(self.projectsRoot, currentContent, str(node.data(0).toPyObject()), 'output')
 
         nodeRootDir = node.getNodeRootDir()
 
-        newOutputDir = os.path.join( str( nodeRootDir ), 'output', str( defaultOutput ) )
+        newOutputDir = os.path.join(str(nodeRootDir), 'output', str(defaultOutput))
         #print newOutputDir
-        os.makedirs( newOutputDir, mode=0777 )
+        os.makedirs(newOutputDir, mode=0777)
 
-        #output = node.newOutput( self, str( defaultOutput ) )
+        #output = node.newOutput(self, str(defaultOutput))
         #print output
 
         
 
-        #os.makedirs( newOutputDir, mode=0777 )
+        #os.makedirs(newOutputDir, mode=0777)
 
-        #while not os.path.isdir( newOutputDir ):
+        #while not os.path.isdir(newOutputDir):
         #    print 'not created yet'
 
-        self.createNewVersion( newOutputDir )
+        self.createNewVersion(newOutputDir)
 
 
-    def newOutputDialog( self, node ):
+    def newOutputDialog(self, node):
         #def callback():
-        #projectsRoot = str( self.mainWindow.getProjectsRoot() )
-        currentContent = str( self.mainWindow.getCurrentContent() )
-        currentProject = str( self.mainWindow.projectComboBox.currentText() )
+        #projectsRoot = str(self.mainWindow.getProjectsRoot())
+        currentContent = str(self.mainWindow.getCurrentContent())
+        currentProject = str(self.mainWindow.projectComboBox.currentText())
         outputs = self.mainWindow.getOutputs()
 
-        outputDir = os.path.join( self.projectsRoot, currentContent, str( node.data( 0 ).toPyObject() ), 'output' )
+        outputDir = os.path.join(self.projectsRoot, currentContent, str(node.data(0).toPyObject()), 'output')
 
-        #text, ok, outputIndex, mimeIndex = newOutputUI.getNewOutputData( outputDir, outputs )
-        text, ok, outputIndex = newOutputUI.getNewOutputData( outputDir, outputs, self.mainWindow )
+        #text, ok, outputIndex, mimeIndex = newOutputUI.getNewOutputData(outputDir, outputs)
+        text, ok, outputIndex = newOutputUI.getNewOutputData(outputDir, outputs, self.mainWindow)
 
         if ok:
             #print text, ok, outputIndex
 
             nodeRootDir = node.getNodeRootDir()
 
-            newOutputDir = os.path.join( str( nodeRootDir ), 'output', str( text ) )
+            newOutputDir = os.path.join(str(nodeRootDir), 'output', str(text))
 
-            if os.path.exists( newOutputDir ):
-                node.sendFromNodeToBox( '--- output already exists' + '\n' )
+            if os.path.exists(newOutputDir):
+                node.sendFromNodeToBox('--- output already exists' + '\n')
                 
             else:
                 #print self
                 #print text
-                #print type( str( text ) )
-                #output = node.newOutput( node, text )
-                node.newOutput( self, str( text ) )
-                os.makedirs( newOutputDir, mode=0777 )
+                #print type(str(text))
+                #output = node.newOutput(node, text)
+                node.newOutput(self, str(text))
+                os.makedirs(newOutputDir, mode=0777)
 
-                #while not os.path.isdir( newOutputDir ):
+                #while not os.path.isdir(newOutputDir):
                 #    print 'not created yet'
 
-                self.createNewVersion( newOutputDir )
+                self.createNewVersion(newOutputDir)
 
                 #print newOutputDir
                 
                 #print output
                 #print 'item.parentItem().outputs = %s' %node.outputs
                 #node.resize()
-                node.sendFromNodeToBox( str( datetime.datetime.now() ) )
-                node.sendFromNodeToBox( ':' + '\n' )
-                node.sendFromNodeToBox( '--- new output created' + '\n' )
+                node.sendFromNodeToBox(str(datetime.datetime.now()))
+                node.sendFromNodeToBox(':' + '\n')
+                node.sendFromNodeToBox('--- new output created' + '\n')
                 
 
 
         #return callback
 
-    def newOutputDialogOld( self, node ):
+    def newOutputDialogOld(self, node):
 
 
         nodeLabel = node.getLabel()
         #print nodeLabel
-        text, ok = QInputDialog.getText( self.mainWindow, 'create new output in %s' %nodeLabel, 'enter output name:' )
+        text, ok = QInputDialog.getText(self.mainWindow, 'create new output in %s' %nodeLabel, 'enter output name:')
         # text is a fucking QString object
         
         
@@ -801,109 +801,109 @@ class SceneView( QGraphicsScene ):
             nodeRootDir = node.getNodeRootDir()
             
             
-            newNodeDir = os.path.join( str( nodeRootDir ), 'output', str( text ) )
+            newNodeDir = os.path.join(str(nodeRootDir), 'output', str(text))
             
-            if os.path.exists( newNodeDir ):
-                node.sendFromNodeToBox( '--- output already exists' + '\n' )
+            if os.path.exists(newNodeDir):
+                node.sendFromNodeToBox('--- output already exists' + '\n')
                 
             else:
                 #print self
                 #print text
-                #print type( str( text ) )
-                #output = node.newOutput( node, text )
-                output = node.newOutput( self, str( text ) )
-                os.makedirs( newNodeDir, mode=0777 )
+                #print type(str(text))
+                #output = node.newOutput(node, text)
+                output = node.newOutput(self, str(text))
+                os.makedirs(newNodeDir, mode=0777)
                 #print output
                 #print 'item.parentItem().outputs = %s' %node.outputs
                 #node.resize()
-                node.sendFromNodeToBox( str( datetime.datetime.now() ) )
-                node.sendFromNodeToBox( ':' + '\n' )
-                node.sendFromNodeToBox( '--- new output created' + '\n' )
+                node.sendFromNodeToBox(str(datetime.datetime.now()))
+                node.sendFromNodeToBox(':' + '\n')
+                node.sendFromNodeToBox('--- new output created' + '\n')
 
 
 
 
-    def newLoaderDialog( self, pos ):
+    def newLoaderDialog(self, pos):
         def callback():
-            #projectsRoot = str( self.mainWindow.getProjectsRoot() )
-            currentProject = str( self.mainWindow.projectComboBox.currentText() )
+            #projectsRoot = str(self.mainWindow.getProjectsRoot())
+            currentProject = str(self.mainWindow.projectComboBox.currentText())
 
-            currentContent = str( self.mainWindow.getCurrentContent() )
+            currentContent = str(self.mainWindow.getCurrentContent())
             #print currentContent
-            #print os.path.basename( currentContent )
+            #print os.path.basename(currentContent)
 
-            activeItemPath = os.path.join( self.projectsRoot, currentProject, 'content', os.path.basename( os.path.dirname( currentContent ) ), os.path.basename( currentContent ) )
+            activeItemPath = os.path.join(self.projectsRoot, currentProject, 'content', os.path.basename(os.path.dirname(currentContent)), os.path.basename(currentContent))
 
             #print activeItemPath
 
             #directoryContent = 
 
-            ok, loaderName, sourceSaverLocation = newLoaderUI.getNewLoaderData( activeItemPath, self.mainWindow )
+            ok, loaderName, sourceSaverLocation = newLoaderUI.getNewLoaderData(activeItemPath, self.mainWindow)
 
             if ok:
 
                 #newLoaderName = loaderName
 
-                newLoaderPath = os.path.join( activeItemPath, loaderName )
+                newLoaderPath = os.path.join(activeItemPath, loaderName)
 
                 #print newLoaderPath, sourceSaverLocation
 
-                srcParentDirs = os.sep.join( [ str( os.path.relpath( self.projectsRoot, sourceSaverLocation ) ) ] ) + os.sep
+                srcParentDirs = os.sep.join([str(os.path.relpath(self.projectsRoot, sourceSaverLocation))]) + os.sep
                 #print srcParentDirs
 
-                src = os.sep.join( [ str( os.path.relpath( sourceSaverLocation, self.projectsRoot ) ) ] )
+                src = os.sep.join([str(os.path.relpath(sourceSaverLocation, self.projectsRoot))])
                 #print src
 
-                relPath = os.sep.join( [ str( srcParentDirs + src ) ] )
+                relPath = os.sep.join([str(srcParentDirs + src)])
                 #print relPath
 
-                inputLinkOutput = os.path.join( newLoaderPath, 'output' )
-                inputLinkLive = os.path.join( newLoaderPath, 'live' )
+                inputLinkOutput = os.path.join(newLoaderPath, 'output')
+                inputLinkLive = os.path.join(newLoaderPath, 'live')
                 #print inputLinkOutput
                 #print inputLinkLive
 
 
                 '''
-                srcParentDirs = os.sep.join( [ str( os.path.relpath( self.projectsRoot, os.path.dirname( dst ) ) ) ] ) + os.sep
+                srcParentDirs = os.sep.join([str(os.path.relpath(self.projectsRoot, os.path.dirname(dst)))]) + os.sep
                 print srcParentDirs
 
 
-                src = os.sep.join( [ str( os.path.relpath( startItemOutputDir, self.projectsRoot ) ) ] )
+                src = os.sep.join([str(os.path.relpath(startItemOutputDir, self.projectsRoot))])
                 print src
 
 
-                #relPath = os.sep.join( [ str( src + os.sep + os.sep.join( [ str( os.path.relpath( dst, self.projectsRoot ) ) ] ) ) ] )
+                #relPath = os.sep.join([str(src + os.sep + os.sep.join([str(os.path.relpath(dst, self.projectsRoot))]))])
                 
-                relPath = os.sep.join( [ str( srcParentDirs + src ) ] )
+                relPath = os.sep.join([str(srcParentDirs + src)])
                 #print relPath
 
-                #src + os.sep + os.sep.join( [ str( os.path.relpath( dst, self.projectsRoot ) ) ] )
+                #src + os.sep + os.sep.join([str(os.path.relpath(dst, self.projectsRoot))])
 
 
                 
-                inputLink = os.path.dirname( dst ) + os.sep + os.path.basename( os.path.dirname( os.path.dirname( startItemRootDir ) ) ) + '.' + os.path.basename( os.path.dirname( startItemRootDir ) ) + '.' + os.path.basename( startItemRootDir ) + '.' + os.path.basename( dst )
+                inputLink = os.path.dirname(dst) + os.sep + os.path.basename(os.path.dirname(os.path.dirname(startItemRootDir))) + '.' + os.path.basename(os.path.dirname(startItemRootDir)) + '.' + os.path.basename(startItemRootDir) + '.' + os.path.basename(dst)
                 '''
 
 
 
-                if not os.path.exists( newLoaderPath ):
+                if not os.path.exists(newLoaderPath):
 
                                 #print newNodePath
-                    propertyNode = ET.Element( 'propertyNode' )
+                    propertyNode = ET.Element('propertyNode')
                     
                     #print pos.x()
                     #print pos.y()
                     
-                    posX = str( int( float( round( pos.x() ) ) ) )
-                    posY = str( int( float( round( pos.y() ) ) ) )
+                    posX = str(int(float(round(pos.x()))))
+                    posY = str(int(float(round(pos.y()))))
 
-                    ET.SubElement( propertyNode, 'node', { 'positionX':posX, 'positionY':posY } )
-                    #ET.SubElement( propertyNode, 'positionX', { 'value':posX } )
-                    #ET.SubElement( propertyNode, 'positionY', { 'value':posY } )
+                    ET.SubElement(propertyNode, 'node', { 'positionX':posX, 'positionY':posY })
+                    #ET.SubElement(propertyNode, 'positionX', { 'value':posX })
+                    #ET.SubElement(propertyNode, 'positionY', { 'value':posY })
 
                     #print  toolFamily, toolVendor, toolVersion, toolArch
 
-                    #ET.SubElement( propertyNode, 'task', { 'family':toolFamily, 'vendor':toolVendor, 'version':toolVersion, 'arch':toolArch, 'nodetask':toolTask } )
+                    #ET.SubElement(propertyNode, 'task', { 'family':toolFamily, 'vendor':toolVendor, 'version':toolVersion, 'arch':toolArch, 'nodetask':toolTask })
 
 
 
@@ -913,100 +913,100 @@ class SceneView( QGraphicsScene ):
                     
                     
                     
-                    tree = ET.ElementTree( propertyNode )
+                    tree = ET.ElementTree(propertyNode)
                     
-                    propertyNodePath = os.path.join( newLoaderPath, 'propertyNode.xml' )
+                    propertyNodePath = os.path.join(newLoaderPath, 'propertyNode.xml')
                     #print propertyNodePath
                     
 
-                    os.makedirs( newLoaderPath, mode=0777 )
-                    #os.makedirs( os.path.join( newNodePath, 'project' ), mode=0777 )
-                    os.makedirs( os.path.join( newLoaderPath, 'input' ), mode=0777 )
-                    #os.makedirs( os.path.join( newLoaderPath, 'live' ), mode=0777 )
-                    #os.symlink( relPath, inputLink )
-                    os.symlink( os.path.join( relPath, 'input' ), inputLinkOutput )
-                    os.symlink( os.path.join( relPath, 'input' ), inputLinkLive )
-                    #os.makedirs( os.path.join( newLoaderPath, 'input' ), mode=0777 )
-                    #print os.path.exists( newNodePath )
+                    os.makedirs(newLoaderPath, mode=0777)
+                    #os.makedirs(os.path.join(newNodePath, 'project'), mode=0777)
+                    os.makedirs(os.path.join(newLoaderPath, 'input'), mode=0777)
+                    #os.makedirs(os.path.join(newLoaderPath, 'live'), mode=0777)
+                    #os.symlink(relPath, inputLink)
+                    os.symlink(os.path.join(relPath, 'input'), inputLinkOutput)
+                    os.symlink(os.path.join(relPath, 'input'), inputLinkLive)
+                    #os.makedirs(os.path.join(newLoaderPath, 'input'), mode=0777)
+                    #print os.path.exists(newNodePath)
 
                     #for toolDirectory in toolDirectories:
-                    #    os.makedirs( os.path.join( newNodePath, 'project', toolDirectory ), mode=0777 )
+                    #    os.makedirs(os.path.join(newNodePath, 'project', toolDirectory), mode=0777)
 
                     
 
                     #if not toolTemplate == 'None':
 
-                    #    shutil.copyfile( os.path.join( 'src', 'template_documents', toolTemplate ), os.path.join( newNodePath, 'project', str( text + '.' + '0000' + os.path.splitext( toolTemplate )[ 1 ] ) ) )
+                    #    shutil.copyfile(os.path.join('src', 'template_documents', toolTemplate), os.path.join(newNodePath, 'project', str(text + '.' + '0000' + os.path.splitext(toolTemplate)[1])))
 
 
                     
                     
-                    #print ET.tostring( propertyNode ) 
-                    #if not os.path.exists( propertyNodePath ): 
-                    xmlDoc = open( propertyNodePath, 'w' )
+                    #print ET.tostring(propertyNode) 
+                    #if not os.path.exists(propertyNodePath): 
+                    xmlDoc = open(propertyNodePath, 'w')
                      
-                    #print ET.tostring( propertyNode )
+                    #print ET.tostring(propertyNode)
                     
-                    xmlDoc.write( '<?xml version="1.0"?>' )
-                    xmlDoc.write( ET.tostring( propertyNode ) )
-                    #ET.ElementTree( propertyNode ).write( xmlDoc )
-                    #tree.write( xmlDoc )
+                    xmlDoc.write('<?xml version="1.0"?>')
+                    xmlDoc.write(ET.tostring(propertyNode))
+                    #ET.ElementTree(propertyNode).write(xmlDoc)
+                    #tree.write(xmlDoc)
                     
                     
                     xmlDoc.close()
                     
-                    newNode = node( self.mainWindow, self, propertyNodePath )
-                    newNode.addText( self, loaderName )
+                    newNode = node(self.mainWindow, self, propertyNodePath)
+                    newNode.addText(self, loaderName)
 
                 else:
                     print 'asset loader already exists'
         return callback
 
-    def newSaverDialog( self, pos ):
+    def newSaverDialog(self, pos):
         def callback():
 
-            #currentContent = str( self.mainWindow.getCurrentContent() )
-            #currentProject = str( self.mainWindow.projectComboBox.currentText() )
+            #currentContent = str(self.mainWindow.getCurrentContent())
+            #currentProject = str(self.mainWindow.projectComboBox.currentText())
 
             
-            #nodeDir = os.path.join( self.projectsRoot, currentContent )
+            #nodeDir = os.path.join(self.projectsRoot, currentContent)
 
             #print nodeDir
 
-            #projectsRoot = str( self.mainWindow.getProjectsRoot() )
-            #currentTarget = str( self.mainWindow.getCurrentContent() )
-            currentContent = str( self.mainWindow.getCurrentContent() )
-            #print currentContent.split( os.sep )[ 2 ]
-            currentProject = str( self.mainWindow.projectComboBox.currentText() )
+            #projectsRoot = str(self.mainWindow.getProjectsRoot())
+            #currentTarget = str(self.mainWindow.getCurrentContent())
+            currentContent = str(self.mainWindow.getCurrentContent())
+            #print currentContent.split(os.sep)[2]
+            currentProject = str(self.mainWindow.projectComboBox.currentText())
 
-            if currentContent.split( os.sep )[ 2 ] == 'assets':
+            if currentContent.split(os.sep)[2] == 'assets':
 
-                newSaverName = 'SVR_AST__' + os.path.basename( currentContent )
+                newSaverName = 'SVR_AST__' + os.path.basename(currentContent)
 
-            elif currentContent.split( os.sep )[ 2 ] == 'shots':
+            elif currentContent.split(os.sep)[2] == 'shots':
 
-                newSaverName = 'SVR_SHT__' + os.path.basename( currentContent )
+                newSaverName = 'SVR_SHT__' + os.path.basename(currentContent)
 
-            newSaverPath = os.path.join( self.projectsRoot, currentContent, newSaverName )
+            newSaverPath = os.path.join(self.projectsRoot, currentContent, newSaverName)
 
-            if not os.path.exists( newSaverPath ):
+            if not os.path.exists(newSaverPath):
 
                             #print newNodePath
-                propertyNode = ET.Element( 'propertyNode' )
+                propertyNode = ET.Element('propertyNode')
                 
                 #print pos.x()
                 #print pos.y()
                 
-                posX = str( int( float( round( pos.x() ) ) ) )
-                posY = str( int( float( round( pos.y() ) ) ) )
+                posX = str(int(float(round(pos.x()))))
+                posY = str(int(float(round(pos.y()))))
 
-                ET.SubElement( propertyNode, 'node', { 'positionX':posX, 'positionY':posY } )
-                #ET.SubElement( propertyNode, 'positionX', { 'value':posX } )
-                #ET.SubElement( propertyNode, 'positionY', { 'value':posY } )
+                ET.SubElement(propertyNode, 'node', { 'positionX':posX, 'positionY':posY })
+                #ET.SubElement(propertyNode, 'positionX', { 'value':posX })
+                #ET.SubElement(propertyNode, 'positionY', { 'value':posY })
 
                 #print  toolFamily, toolVendor, toolVersion, toolArch
 
-                #ET.SubElement( propertyNode, 'task', { 'family':toolFamily, 'vendor':toolVendor, 'version':toolVersion, 'arch':toolArch, 'nodetask':toolTask } )
+                #ET.SubElement(propertyNode, 'task', { 'family':toolFamily, 'vendor':toolVendor, 'version':toolVersion, 'arch':toolArch, 'nodetask':toolTask })
 
 
 
@@ -1016,47 +1016,47 @@ class SceneView( QGraphicsScene ):
                 
                 
                 
-                tree = ET.ElementTree( propertyNode )
+                tree = ET.ElementTree(propertyNode)
                 
-                propertyNodePath = os.path.join( newSaverPath, 'propertyNode.xml' )
+                propertyNodePath = os.path.join(newSaverPath, 'propertyNode.xml')
                 #print propertyNodePath
                 
 
-                os.makedirs( newSaverPath, mode=0777 )
-                #os.makedirs( os.path.join( newNodePath, 'project' ), mode=0777 )
-                os.makedirs( os.path.join( newSaverPath, 'output' ), mode=0777 )
-                #os.makedirs( os.path.join( newNodePath, 'live' ), mode=0777 )
-                os.makedirs( os.path.join( newSaverPath, 'input' ), mode=0777 )
-                #print os.path.exists( newNodePath )
+                os.makedirs(newSaverPath, mode=0777)
+                #os.makedirs(os.path.join(newNodePath, 'project'), mode=0777)
+                os.makedirs(os.path.join(newSaverPath, 'output'), mode=0777)
+                #os.makedirs(os.path.join(newNodePath, 'live'), mode=0777)
+                os.makedirs(os.path.join(newSaverPath, 'input'), mode=0777)
+                #print os.path.exists(newNodePath)
 
                 #for toolDirectory in toolDirectories:
-                #    os.makedirs( os.path.join( newNodePath, 'project', toolDirectory ), mode=0777 )
+                #    os.makedirs(os.path.join(newNodePath, 'project', toolDirectory), mode=0777)
 
                 
 
                 #if not toolTemplate == 'None':
 
-                #    shutil.copyfile( os.path.join( 'src', 'template_documents', toolTemplate ), os.path.join( newNodePath, 'project', str( text + '.' + '0000' + os.path.splitext( toolTemplate )[ 1 ] ) ) )
+                #    shutil.copyfile(os.path.join('src', 'template_documents', toolTemplate), os.path.join(newNodePath, 'project', str(text + '.' + '0000' + os.path.splitext(toolTemplate)[1])))
 
 
                 
                 
-                #print ET.tostring( propertyNode ) 
-                #if not os.path.exists( propertyNodePath ): 
-                xmlDoc = open( propertyNodePath, 'w' )
+                #print ET.tostring(propertyNode) 
+                #if not os.path.exists(propertyNodePath): 
+                xmlDoc = open(propertyNodePath, 'w')
                  
-                #print ET.tostring( propertyNode )
+                #print ET.tostring(propertyNode)
                 
-                xmlDoc.write( '<?xml version="1.0"?>' )
-                xmlDoc.write( ET.tostring( propertyNode ) )
-                #ET.ElementTree( propertyNode ).write( xmlDoc )
-                #tree.write( xmlDoc )
+                xmlDoc.write('<?xml version="1.0"?>')
+                xmlDoc.write(ET.tostring(propertyNode))
+                #ET.ElementTree(propertyNode).write(xmlDoc)
+                #tree.write(xmlDoc)
                 
                 
                 xmlDoc.close()
                 
-                newNode = node( self.mainWindow, self, propertyNodePath )
-                newNode.addText( self, newSaverName )
+                newNode = node(self.mainWindow, self, propertyNodePath)
+                newNode.addText(self, newSaverName)
 
             else:
                 print 'asset saver already exists'
@@ -1066,32 +1066,32 @@ class SceneView( QGraphicsScene ):
 
 
         '''
-        #newNodePath = os.path.join( str( projectsRoot ), str( currentContent ), str( text ) )
+        #newNodePath = os.path.join(str(projectsRoot), str(currentContent), str(text))
                 
                 
                 
 #                 if tabIndex == 0:
-#                     newNodePath = os.path.join( str( currentContent ), str( text ) )
+#                     newNodePath = os.path.join(str(currentContent), str(text))
 #             
 #                 elif tabIndex == 1:
-#                     newNodePath = os.path.join( str( currentContent ), str( text ) )
+#                     newNodePath = os.path.join(str(currentContent), str(text))
                 
                 #print newNodePath
-                propertyNode = ET.Element( 'propertyNode' )
+                propertyNode = ET.Element('propertyNode')
                 
                 #print pos.x()
                 #print pos.y()
                 
-                posX = str( int( float( round( pos.x() ) ) ) )
-                posY = str( int( float( round( pos.y() ) ) ) )
+                posX = str(int(float(round(pos.x()))))
+                posY = str(int(float(round(pos.y()))))
 
-                ET.SubElement( propertyNode, 'node', { 'positionX':posX, 'positionY':posY } )
-                #ET.SubElement( propertyNode, 'positionX', { 'value':posX } )
-                #ET.SubElement( propertyNode, 'positionY', { 'value':posY } )
+                ET.SubElement(propertyNode, 'node', { 'positionX':posX, 'positionY':posY })
+                #ET.SubElement(propertyNode, 'positionX', { 'value':posX })
+                #ET.SubElement(propertyNode, 'positionY', { 'value':posY })
 
                 #print  toolFamily, toolVendor, toolVersion, toolArch
 
-                ET.SubElement( propertyNode, 'task', { 'family':toolFamily, 'vendor':toolVendor, 'version':toolVersion, 'arch':toolArch, 'nodetask':toolTask } )
+                ET.SubElement(propertyNode, 'task', { 'family':toolFamily, 'vendor':toolVendor, 'version':toolVersion, 'arch':toolArch, 'nodetask':toolTask })
 
 
 
@@ -1101,53 +1101,53 @@ class SceneView( QGraphicsScene ):
                 
                 
                 
-                tree = ET.ElementTree( propertyNode )
+                tree = ET.ElementTree(propertyNode)
                 
-                propertyNodePath = os.path.join( newNodePath, 'propertyNode.xml' )
+                propertyNodePath = os.path.join(newNodePath, 'propertyNode.xml')
                 #print propertyNodePath
                 
 
-                os.makedirs( newNodePath, mode=0777 )
-                os.makedirs( os.path.join( newNodePath, 'project' ), mode=0777 )
-                os.makedirs( os.path.join( newNodePath, 'output' ), mode=0777 )
-                os.makedirs( os.path.join( newNodePath, 'live' ), mode=0777 )
-                os.makedirs( os.path.join( newNodePath, 'input' ), mode=0777 )
-                print os.path.exists( newNodePath )
+                os.makedirs(newNodePath, mode=0777)
+                os.makedirs(os.path.join(newNodePath, 'project'), mode=0777)
+                os.makedirs(os.path.join(newNodePath, 'output'), mode=0777)
+                os.makedirs(os.path.join(newNodePath, 'live'), mode=0777)
+                os.makedirs(os.path.join(newNodePath, 'input'), mode=0777)
+                print os.path.exists(newNodePath)
 
                 for toolDirectory in toolDirectories:
-                    os.makedirs( os.path.join( newNodePath, 'project', toolDirectory ), mode=0777 )
+                    os.makedirs(os.path.join(newNodePath, 'project', toolDirectory), mode=0777)
 
                 
 
                 if not toolTemplate == 'None':
 
-                    shutil.copyfile( os.path.join( 'src', 'template_documents', toolTemplate ), os.path.join( newNodePath, 'project', str( text + '.' + '0000' + os.path.splitext( toolTemplate )[ 1 ] ) ) )
+                    shutil.copyfile(os.path.join('src', 'template_documents', toolTemplate), os.path.join(newNodePath, 'project', str(text + '.' + '0000' + os.path.splitext(toolTemplate)[1])))
 
 
                 
                 
-                #print ET.tostring( propertyNode ) 
-                #if not os.path.exists( propertyNodePath ): 
-                xmlDoc = open( propertyNodePath, 'w' )
+                #print ET.tostring(propertyNode) 
+                #if not os.path.exists(propertyNodePath): 
+                xmlDoc = open(propertyNodePath, 'w')
                  
-                #print ET.tostring( propertyNode )
+                #print ET.tostring(propertyNode)
                 
-                xmlDoc.write( '<?xml version="1.0"?>' )
-                xmlDoc.write( ET.tostring( propertyNode ) )
-                #ET.ElementTree( propertyNode ).write( xmlDoc )
-                #tree.write( xmlDoc )
+                xmlDoc.write('<?xml version="1.0"?>')
+                xmlDoc.write(ET.tostring(propertyNode))
+                #ET.ElementTree(propertyNode).write(xmlDoc)
+                #tree.write(xmlDoc)
                 
                 
                 xmlDoc.close()
                 
-                newNode = node( self, propertyNodePath )
-                newNode.addText( self, str( text ) )
+                newNode = node(self, propertyNodePath)
+                newNode.addText(self, str(text))
 
                 print toolDefaultOutputList
 
                 for toolDefaultOutput in toolDefaultOutputList:
                     print toolDefaultOutput
-                    self.newOutputAuto( newNode, toolDefaultOutput )
+                    self.newOutputAuto(newNode, toolDefaultOutput)
         '''
 
 
@@ -1155,23 +1155,23 @@ class SceneView( QGraphicsScene ):
         pass
 
         
-    def newNodeDialog( self, pos ):
+    def newNodeDialog(self, pos):
         def callback():
             
-            #projectsRoot = str( self.mainWindow.getProjectsRoot() )
-            currentContent = str( self.mainWindow.getCurrentContent() )
-            currentProject = str( self.mainWindow.projectComboBox.currentText() )
+            #projectsRoot = str(self.mainWindow.getProjectsRoot())
+            currentContent = str(self.mainWindow.getCurrentContent())
+            currentProject = str(self.mainWindow.projectComboBox.currentText())
             tools = self.mainWindow.getTools()
             tasks = self.mainWindow.getTasks()
             #tabIndex = self.mainWindow.assetsShotsTabWidget.currentIndex()
-            #index = self.projectComboBox.findText( indexText )
+            #index = self.projectComboBox.findText(indexText)
             
-            #self.ui = loadUi( os.path.join( self.mainWindow.getPypelyneRoot(), 'ui', 'newNode.ui' ), self )
+            #self.ui = loadUi(os.path.join(self.mainWindow.getPypelyneRoot(), 'ui', 'newNode.ui'), self)
 
-            #text, ok = QInputDialog.getText( self.mainWindow, 'create new node in %s' %currentProject, 'enter node name:' )
+            #text, ok = QInputDialog.getText(self.mainWindow, 'create new node in %s' %currentProject, 'enter node name:')
             #print os.getcwd()
             
-            nodeDir = os.path.join( self.projectsRoot, currentContent )
+            nodeDir = os.path.join(self.projectsRoot, currentContent)
             
             #print 'root: %s' %projectsRoot
             #print 'content: %s' %currentContent
@@ -1179,32 +1179,32 @@ class SceneView( QGraphicsScene ):
             #print nodeDir
             
             #print tools
-            text, ok, toolIndex, taskIndex = newNodeUI.getNewNodeData( nodeDir, tools, tasks, self.mainWindow )
+            text, ok, toolIndex, taskIndex = newNodeUI.getNewNodeData(nodeDir, tools, tasks, self.mainWindow)
 
             try:
-                toolNode = tools[ toolIndex ]
+                toolNode = tools[toolIndex]
                 print toolNode
             except:
                 #print 'deadline job'
                 toolNode = ('Thinkbox Software Deadline 5.2 x64', ['"deadlinecommand" -SubmitCommandLineJob'], 'DDL', 'Thinkbox Software', 'Deadline', '5.2', 'x64', 'None', [], [])
-            taskNode = tasks[ taskIndex ]
+            taskNode = tasks[taskIndex]
             
             #print text, ok, toolIndex, taskIndex
-            #print tools[ toolIndex ]
+            #print tools[toolIndex]
 
             #print taskNode
 
-            toolTask = taskNode[ 2 ][ 1 ]
+            toolTask = taskNode[2][1]
 
-            toolVendor = toolNode[ 3 ]
-            toolFamily = toolNode[ 4 ]
-            toolVersion = toolNode[ 5 ]
-            toolArch = toolNode[ 6 ]
-            toolTemplate = toolNode[ 7 ]
-            toolDirectories = toolNode[ 8 ]
-            toolDefaultOutputList = toolNode[ 9 ]
-            toolFlags = toolNode[ 10 ]
-            workspaceTemplate = toolNode[ 11 ]
+            toolVendor = toolNode[3]
+            toolFamily = toolNode[4]
+            toolVersion = toolNode[5]
+            toolArch = toolNode[6]
+            toolTemplate = toolNode[7]
+            toolDirectories = toolNode[8]
+            toolDefaultOutputList = toolNode[9]
+            toolFlags = toolNode[10]
+            workspaceTemplate = toolNode[11]
 
             #print  toolFamily, toolVendor, toolVersion, toolArch, toolTask, toolTemplates, toolDirectories, toolDefaultOutputList
             
@@ -1214,33 +1214,33 @@ class SceneView( QGraphicsScene ):
  
             if ok:
                 
-#                 #os.makedirs( newContent, mode=0777 )
-                newNodePath = os.path.join( str( self.projectsRoot ), str( currentContent ), str( text ) )
+#                 #os.makedirs(newContent, mode=0777)
+                newNodePath = os.path.join(str(self.projectsRoot), str(currentContent), str(text))
                 
                 
                 
 #                 if tabIndex == 0:
-#                     newNodePath = os.path.join( str( currentContent ), str( text ) )
+#                     newNodePath = os.path.join(str(currentContent), str(text))
 #             
 #                 elif tabIndex == 1:
-#                     newNodePath = os.path.join( str( currentContent ), str( text ) )
+#                     newNodePath = os.path.join(str(currentContent), str(text))
                 
                 #print newNodePath
-                propertyNode = ET.Element( 'propertyNode' )
+                propertyNode = ET.Element('propertyNode')
                 
                 #print pos.x()
                 #print pos.y()
                 
-                posX = str( int( float( round( pos.x() ) ) ) )
-                posY = str( int( float( round( pos.y() ) ) ) )
+                posX = str(int(float(round(pos.x()))))
+                posY = str(int(float(round(pos.y()))))
 
-                ET.SubElement( propertyNode, 'node', { 'positionX':posX, 'positionY':posY } )
-                #ET.SubElement( propertyNode, 'positionX', { 'value':posX } )
-                #ET.SubElement( propertyNode, 'positionY', { 'value':posY } )
+                ET.SubElement(propertyNode, 'node', { 'positionX':posX, 'positionY':posY })
+                #ET.SubElement(propertyNode, 'positionX', { 'value':posX })
+                #ET.SubElement(propertyNode, 'positionY', { 'value':posY })
 
                 #print  toolFamily, toolVendor, toolVersion, toolArch
 
-                ET.SubElement( propertyNode, 'task', { 'family':toolFamily, 'vendor':toolVendor, 'version':toolVersion, 'arch':toolArch, 'nodetask':toolTask } )
+                ET.SubElement(propertyNode, 'task', { 'family':toolFamily, 'vendor':toolVendor, 'version':toolVersion, 'arch':toolArch, 'nodetask':toolTask })
 
 
 
@@ -1250,65 +1250,65 @@ class SceneView( QGraphicsScene ):
                 
                 
                 
-                tree = ET.ElementTree( propertyNode )
+                tree = ET.ElementTree(propertyNode)
                 
-                propertyNodePath = os.path.join( newNodePath, 'propertyNode.xml' )
+                propertyNodePath = os.path.join(newNodePath, 'propertyNode.xml')
                 #print propertyNodePath
                 
 
-                os.makedirs( newNodePath, mode=0777 )
-                os.makedirs( os.path.join( newNodePath, 'project' ), mode=0777 )
-                os.makedirs( os.path.join( newNodePath, 'output' ), mode=0777 )
-                os.makedirs( os.path.join( newNodePath, 'live' ), mode=0777 )
-                os.makedirs( os.path.join( newNodePath, 'input' ), mode=0777 )
-                #print os.path.exists( newNodePath )
+                os.makedirs(newNodePath, mode=0777)
+                os.makedirs(os.path.join(newNodePath, 'project'), mode=0777)
+                os.makedirs(os.path.join(newNodePath, 'output'), mode=0777)
+                os.makedirs(os.path.join(newNodePath, 'live'), mode=0777)
+                os.makedirs(os.path.join(newNodePath, 'input'), mode=0777)
+                #print os.path.exists(newNodePath)
 
                 for toolDirectory in toolDirectories:
-                    os.makedirs( os.path.join( newNodePath, 'project', toolDirectory ), mode=0777 )
+                    os.makedirs(os.path.join(newNodePath, 'project', toolDirectory), mode=0777)
 
                 
 
                 if not toolTemplate == 'None':
                     #print toolTemplates
 
-                    shutil.copyfile( os.path.join( 'src', 'template_documents', toolTemplate ), os.path.join( newNodePath, 'project', str( text + '.' + '0000' + os.path.splitext( toolTemplate )[ 1 ] ) ) )
-                    #toolTemplates.remove( toolTemplates[ 0 ] )
+                    shutil.copyfile(os.path.join('src', 'template_documents', toolTemplate), os.path.join(newNodePath, 'project', str(text + '.' + '0000' + os.path.splitext(toolTemplate)[1])))
+                    #toolTemplates.remove(toolTemplates[0])
 
                     if not workspaceTemplate == 'None':
-                        print str( workspaceTemplate )
-                        print str( workspaceTemplate ).split( '_' )
-                        shutil.copyfile( os.path.join( 'src', 'template_documents', workspaceTemplate ), os.path.join( newNodePath, str( workspaceTemplate ).split( '_' )[ -1 ] ) )
+                        print str(workspaceTemplate)
+                        print str(workspaceTemplate).split('_')
+                        shutil.copyfile(os.path.join('src', 'template_documents', workspaceTemplate), os.path.join(newNodePath, str(workspaceTemplate).split('_')[-1]))
 
 
                 
                 
-                #print ET.tostring( propertyNode ) 
-                #if not os.path.exists( propertyNodePath ): 
-                xmlDoc = open( propertyNodePath, 'w' )
+                #print ET.tostring(propertyNode) 
+                #if not os.path.exists(propertyNodePath): 
+                xmlDoc = open(propertyNodePath, 'w')
                  
-                #print ET.tostring( propertyNode )
+                #print ET.tostring(propertyNode)
                 
-                xmlDoc.write( '<?xml version="1.0"?>' )
-                xmlDoc.write( ET.tostring( propertyNode ) )
-                #ET.ElementTree( propertyNode ).write( xmlDoc )
-                #tree.write( xmlDoc )
+                xmlDoc.write('<?xml version="1.0"?>')
+                xmlDoc.write(ET.tostring(propertyNode))
+                #ET.ElementTree(propertyNode).write(xmlDoc)
+                #tree.write(xmlDoc)
                 
                 
                 xmlDoc.close()
                 
-                newNode = node( self.mainWindow, self, propertyNodePath )
-                newNode.addText( self, str( text ) )
+                newNode = node(self.mainWindow, self, propertyNodePath)
+                newNode.addText(self, str(text))
 
                 #print toolDefaultOutputList
 
                 for toolDefaultOutput in toolDefaultOutputList:
                     #print toolDefaultOutput
-                    self.newOutputAuto( newNode, toolDefaultOutput )
-                    #self.newOutputDialog( newNode )
+                    self.newOutputAuto(newNode, toolDefaultOutput)
+                    #self.newOutputDialog(newNode)
                 
                 
 
-                #self.sendTextToBox( 'content created on filesystem: %s\n' %newContent )
+                #self.sendTextToBox('content created on filesystem: %s\n' %newContent)
                 
                 #self.mainWindow.getAssetContent()
                 #self.mainWindow.getShotContent()
@@ -1321,17 +1321,17 @@ class SceneView( QGraphicsScene ):
 
 
 
-    def removeObject( self, item ):
+    def removeObject(self, item):
 
 
 
-        reply = QMessageBox.warning( self.mainWindow, str( 'about to delete item' ), str( 'are you sure to \ndelete %s %s \nand its contents?' %( item.data( 2 ).toPyObject(), item.label ) ), QMessageBox.Yes | QMessageBox.No, QMessageBox.No )
+        reply = QMessageBox.warning(self.mainWindow, str('about to delete item'), str('are you sure to \ndelete %s %s \nand its contents?' %(item.data(2).toPyObject(), item.label)), QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
 
         #print yes
 
         if reply == QMessageBox.Yes:
 
-            if isinstance( item, node ) :
+            if isinstance(item, node) :
 
                 #print 'self.children() = %s' %self.children()
                 #node.outputList
@@ -1342,12 +1342,12 @@ class SceneView( QGraphicsScene ):
 
                 for output in tempOutputList:
                     try:
-                        self.removeOutput( output )
+                        self.removeOutput(output)
                     except:
                         pass
 
                 for input in tempInputList:
-                    self.removeInput( input )
+                    self.removeInput(input)
 
 
                 del tempOutputList
@@ -1356,152 +1356,152 @@ class SceneView( QGraphicsScene ):
 
                 nodeRootDir = item.getNodeRootDir()
                 #print 'nodeRootDir = %s' %nodeRootDir
-                shutil.rmtree( nodeRootDir )
-                self.removeItem( item )
+                shutil.rmtree(nodeRootDir)
+                self.removeItem(item)
 
                 #print 'self.children() = %s' %self.children()
 
 
 
 
-            elif isinstance( item, portOutput ):
-                self.removeOutput( item )
+            elif isinstance(item, portOutput):
+                self.removeOutput(item)
 
 
 
 
-            elif isinstance( item, portInput ):
+            elif isinstance(item, portInput):
                 ###
                 #print 'shit'
                 #print item.getInputDir()
                 #print 'another shit'
                 inputDir = item.getInputDir()
 
-                #shutil.rmtree( inputDir ) #removes link and contents
-                #os.unlink( inputDir ) #access denied error
-                #os.remove( inputDir ) #access denied error
+                #shutil.rmtree(inputDir) #removes link and contents
+                #os.unlink(inputDir) #access denied error
+                #os.remove(inputDir) #access denied error
                 try:
                     if self.currentPlatform == "Darwin":
-                        os.unlink( inputDir )
+                        os.unlink(inputDir)
                     elif self.currentPlatform == "Windows":
-                        os.rmdir( inputDir )
+                        os.rmdir(inputDir)
                         #windows removes the contents of the connected output folder as well using shutil.rmtree :(((
                         #and if inputDir is not empty, it cannot remove the link/directory because it's not empty :(((
-                        #shutil.rmtree( inputDir )
+                        #shutil.rmtree(inputDir)
                 except:
                     print 'cannot remove symlink 1234'
 
-                #os.rmdir( inputDir )
-                self.removeInput( item )
+                #os.rmdir(inputDir)
+                self.removeInput(item)
 
     
-    def removeObjectCallback( self, item ):
+    def removeObjectCallback(self, item):
         def callback():
-            self.removeObject( item )
+            self.removeObject(item)
 
         return callback
     
-    def removeOutput( self, item ):
+    def removeOutput(self, item):
         #print item.parentItem().boundingRect()
         #need a copy of the actual list for the item count to stay consistent over the loop
-        tempInputsList = list( item.inputs )
+        tempInputsList = list(item.inputs)
         for port in tempInputsList:
             #remove connection from objects and scene
-            connectionLine = port.connection[ 0 ]
-            self.removeItem( connectionLine )
-            port.connection.remove( connectionLine )
+            connectionLine = port.connection[0]
+            self.removeItem(connectionLine)
+            port.connection.remove(connectionLine)
              
             #remove input from output list in upstream node
-            output = port.output[ 0 ]
-            output.inputs.remove( port )
+            output = port.output[0]
+            output.inputs.remove(port)
              
             #remove input in parentNode.inputs[]
-            port.parentItem().inputs.remove( port )
-            port.parentItem().incoming.remove( output )
+            port.parentItem().inputs.remove(port)
+            port.parentItem().incoming.remove(output)
             inputDir = port.getInputDir()
                 
-            #os.unlink( inputDir )
+            #os.unlink(inputDir)
             try:
                 if self.currentPlatform == "Darwin":
-                    os.unlink( inputDir )
+                    os.unlink(inputDir)
                 elif self.currentPlatform == "Windows":
-                    os.rmdir( inputDir )
+                    os.rmdir(inputDir)
             except:
                 print 'cannot remove symlink 2345'
-            self.removeItem( port )
+            self.removeItem(port)
             
                  
         
          
         del tempInputsList
         
-        item.parentItem().outputs.remove( item )
+        item.parentItem().outputs.remove(item)
 
-        #if os.path.exists( os.path.join( item.getLiveDir, outputLabel ) )
+        #if os.path.exists(os.path.join(item.getLiveDir, outputLabel))
         
         
         #outputLabel = item.getLabel()
         #nodeRootDir = item.parentItem().getNodeRootDir()
-        #outputDir = os.path.join( str( nodeRootDir ), 'output', str( outputLabel ) )
+        #outputDir = os.path.join(str(nodeRootDir), 'output', str(outputLabel))
         outputDir = item.getOutputDir()
         #print outputDir
         liveDir = item.getLiveDir()
         #print liveDir
-        if os.path.exists( liveDir ):
+        if os.path.exists(liveDir):
             #########
-            os.unlink( liveDir )
+            os.unlink(liveDir)
         #print outputDir
-        shutil.rmtree( outputDir )
+        shutil.rmtree(outputDir)
 
         #item.parentItem().resize()
         #print item.parentItem().boundingRect()
-        self.removeItem( item )
+        self.removeItem(item)
         
         
         
-    def removeInput( self, item ):
+    def removeInput(self, item):
         try:
             
             #remove connection from objects and scene
-            self.removeItem( item.connection[ 0 ] )
-            item.connection.remove( item.connection[ 0 ] )
+            self.removeItem(item.connection[0])
+            item.connection.remove(item.connection[0])
             
             #remove input from output list in upstream node
-            output = item.output[ 0 ]
-            output.inputs.remove( item )
+            output = item.output[0]
+            output.inputs.remove(item)
             
             #remove input in parentNode.inputs[]
-            item.parentItem().inputs.remove( item )
-            item.parentItem().incoming.remove( output )
+            item.parentItem().inputs.remove(item)
+            item.parentItem().incoming.remove(output)
             #item.parentItem().resize()
-            self.removeItem( item )
+            self.removeItem(item)
         
         except:
             print 'port is input portal! mustn\'t delete!'
         
         
-    def newNode( self, pos ):
+    def newNode(self, pos):
 
         
         def callback():
-            node( self.mainWindow, pos, self )
-            #newNode = node( pos, self )
-            #self.nodeClicked.connect( self.test )
-            #newNode.nodeClicked.connect( self.test )
-            #newNode.connect(  )
+            node(self.mainWindow, pos, self)
+            #newNode = node(pos, self)
+            #self.nodeClicked.connect(self.test)
+            #newNode.nodeClicked.connect(self.test)
+            #newNode.connect()
             #newNode.setWidgetMenu()
-            #newNode.connect( self.nodeWidget )
-            #newNode.signals.connect( self.signals.emit )
+            #newNode.connect(self.nodeWidget)
+            #newNode.signals.connect(self.signals.emit)
             #newNode.nodeCreatedInScene.emit()
-            #newNode.clickedSignal.connect( self.nodeClicked.emit )
-            #newNode.clickedSignal.connect( self.categoryItemClicked.emit )
+            #newNode.clickedSignal.connect(self.nodeClicked.emit)
+            #newNode.clickedSignal.connect(self.categoryItemClicked.emit)
  
              
         return callback
         
         
     
-    def printContextMenuAction( self, item ):
+    def printContextMenuAction(self, item):
         def callback():
             pass
             # from http://stackoverflow.com/questions/6682688/python-dynamic-function-generation
@@ -1513,15 +1513,15 @@ class SceneView( QGraphicsScene ):
                 
         #return callback
     '''
-    def mouseDoubleClickEvent( self, event ):
+    def mouseDoubleClickEvent(self, event):
         print 'double click'
 
     '''
 
-    def mousePressEvent( self, event ):
+    def mousePressEvent(self, event):
         
         #print self.sceneRect()
-        #rect = self.setSceneRect( self.itemsBoundingRect() )
+        #rect = self.setSceneRect(self.itemsBoundingRect())
         #print self.sceneRect()
         
         #self.nodeDeselect.emit()
@@ -1538,23 +1538,23 @@ class SceneView( QGraphicsScene ):
           
         elif event.button() == Qt.LeftButton:
             print 'LeftButton'
-            item = self.itemAt( event.scenePos() )
+            item = self.itemAt(event.scenePos())
             #print "item = %s" %item
-            if event.button() == Qt.LeftButton and ( isinstance( item, portOutput ) ):
-                self.line = QGraphicsLineItem( QLineF( event.scenePos(), event.scenePos() ) )
-                self.addItem( self.line )
-            elif event.button() == Qt.LeftButton and ( isinstance( item, portOutputButton ) ):
+            if event.button() == Qt.LeftButton and (isinstance(item, portOutput)):
+                self.line = QGraphicsLineItem(QLineF(event.scenePos(), event.scenePos()))
+                self.addItem(self.line)
+            elif event.button() == Qt.LeftButton and (isinstance(item, portOutputButton)):
                 #print 'is portOutputButton'
                 #print item.parentItem()
-                self.newOutputDialog( item.parentItem() )
+                self.newOutputDialog(item.parentItem())
                 
-            elif event.button() == Qt.LeftButton and ( isinstance( item, node ) ):
+            elif event.button() == Qt.LeftButton and (isinstance(item, node)):
                 pass
-                #self.nodeSelect.emit( item )
+                #self.nodeSelect.emit(item)
                 #print item
                 #print item.getWidgetMenu()
                 #print self.parentItem()
-                #self.scene.nodeMenuArea.setWidget( self.widget )
+                #self.scene.nodeMenuArea.setWidget(self.widget)
             else:
                 self.nodeDeselect.emit()
                 #print 'deselect'
@@ -1564,7 +1564,7 @@ class SceneView( QGraphicsScene ):
             modifiers = QApplication.keyboardModifiers()
             pos = event.scenePos()
             if modifiers == Qt.ControlModifier:
-                print "Control + Click: (%d, %d)" % ( pos.x(), pos.y() ) 
+                print "Control + Click: (%d, %d)" % (pos.x(), pos.y()) 
 
 
             else:
@@ -1574,24 +1574,24 @@ class SceneView( QGraphicsScene ):
         elif event.button() == Qt.RightButton:
             print 'RightButton'
 
-            self.contextMenu( pos )
+            self.contextMenu(pos)
 
         else:
             print 'def mousePressEvent problem'
 
-        super( SceneView, self ).mousePressEvent( event )
+        super(SceneView, self).mousePressEvent(event)
 
         
-    def mouseMoveEvent( self, event ):
+    def mouseMoveEvent(self, event):
         if self.line:
 
-            newLine = QLineF( self.line.line().p1(), event.scenePos() )
-            self.line.setLine( newLine )
-        super( SceneView, self ).mouseMoveEvent(event)
+            newLine = QLineF(self.line.line().p1(), event.scenePos())
+            self.line.setLine(newLine)
+        super(SceneView, self).mouseMoveEvent(event)
         self.update()
         
 
-    def mouseReleaseEvent( self, event ):
+    def mouseReleaseEvent(self, event):
         #print 'mouseReleaseEvent'
         
         
@@ -1600,97 +1600,97 @@ class SceneView( QGraphicsScene ):
         
         if self.line:
             try:
-                startItems = self.items( self.line.line().p1() )
-                parentNodeStartItem = startItems[ 0 ].parentItem()
+                startItems = self.items(self.line.line().p1())
+                parentNodeStartItem = startItems[0].parentItem()
             except:
                 return
 
-            if len( startItems ) and startItems[ 0 ] == self.line:
+            if len(startItems) and startItems[0] == self.line:
                 #print "popping"
-                #print "len( startItems ) = %i" %len( startItems )
+                #print "len(startItems) = %i" %len(startItems)
                 
 
-                startItems.pop( 0 )
+                startItems.pop(0)
                 #print "startItems popped = %s" %startItems
 
             '''
             try:
-                print "startItems[ 0 ] = %s" %startItems[ 0 ]
+                print "startItems[0] = %s" %startItems[0]
             except:
-                print "no startItems[ 0 ]"
+                print "no startItems[0]"
             '''
             
-            endItems = self.items( self.line.line().p2() )
+            endItems = self.items(self.line.line().p2())
              
-            if len( endItems ) and endItems[ 0 ] == self.line:
+            if len(endItems) and endItems[0] == self.line:
                 #print "popping"
-                #print "len( endItems ) = %i" %len( endItems )
+                #print "len(endItems) = %i" %len(endItems)
                 
 
-                endItems.pop( 0 )
+                endItems.pop(0)
                 #print "endItems popped = %s" %endItems
 
             '''
             try:
-                print "endItems[ 0 ] = %s" %endItems[ 0 ]
+                print "endItems[0] = %s" %endItems[0]
                 
             except:
-                print "no endItems[ 0 ]"
+                print "no endItems[0]"
             '''
                 
-            self.removeItem( self.line )
+            self.removeItem(self.line)
             
             
-            if ( isinstance( endItems[ 0 ], portInput ) ):
+            if (isinstance(endItems[0], portInput)):
                 
-                parentNode = endItems[ 0 ].parentItem()
+                parentNode = endItems[0].parentItem()
                 
                 #print 'parentNode.childItems() = %s' %parentNode.childItems()
                 
-                if startItems[ 0 ] in endItems[ 0 ].parentItem().incoming:
+                if startItems[0] in endItems[0].parentItem().incoming:
 
                     
                     
-                    parentNode.sendFromNodeToBox( str( datetime.datetime.now() ) )
-                    parentNode.sendFromNodeToBox( ':' + '\n' )
-                    parentNode.sendFromNodeToBox( '--- this connection already exists, you dumbass' + '\n' )
+                    parentNode.sendFromNodeToBox(str(datetime.datetime.now()))
+                    parentNode.sendFromNodeToBox(':' + '\n')
+                    parentNode.sendFromNodeToBox('--- this connection already exists, you dumbass' + '\n')
 
                     
-                elif startItems[ 0 ].parentItem() == endItems[ 0 ].parentItem():
-                    parentNode.sendFromNodeToBox( str( datetime.datetime.now() ) )
-                    parentNode.sendFromNodeToBox( ':' + '\n' )
-                    parentNode.sendFromNodeToBox( '--- don\'t connect to itself, you moron' + '\n' )
+                elif startItems[0].parentItem() == endItems[0].parentItem():
+                    parentNode.sendFromNodeToBox(str(datetime.datetime.now()))
+                    parentNode.sendFromNodeToBox(':' + '\n')
+                    parentNode.sendFromNodeToBox('--- don\'t connect to itself, you moron' + '\n')
                     
-                elif len( endItems[ 0 ].connection ) == 0:
-                    if os.path.basename( startItems[ 0 ].parentItem().getNodeRootDir() ).startswith( 'LDR' ) \
-                                    and os.path.basename( endItems[ 0 ].parentItem().getNodeRootDir() ).startswith( 'SVR' ):
-                        parentNode.sendFromNodeToBox( '--- don\'t connect loader to saver' + '\n' )
-                        logging.info( 'tried to connect loader to saver, which is not possible' )
+                elif len(endItems[0].connection) == 0:
+                    if os.path.basename(startItems[0].parentItem().getNodeRootDir()).startswith('LDR') \
+                                    and os.path.basename(endItems[0].parentItem().getNodeRootDir()).startswith('SVR'):
+                        parentNode.sendFromNodeToBox('--- don\'t connect loader to saver' + '\n')
+                        logging.info('tried to connect loader to saver, which is not possible')
                     else:
 
                         #print "is an input :)"
-                        connectionLine = bezierLine( self.mainWindow, self, startItems[ 0 ], endItems[ 0 ], QPainterPath( startItems[ 0 ].scenePos() ) )
+                        connectionLine = bezierLine(self.mainWindow, self, startItems[0], endItems[0], QPainterPath(startItems[0].scenePos()))
                         #print "connectionLine = %s" %connectionLine
                         
-                        endItems[ 0 ].parentItem().inputs.append( endItems[ 0 ] )
-                        endItems[ 0 ].connection.append( connectionLine )
-                        endItems[ 0 ].output.append( startItems[ 0 ] )
-                        endItems[ 0 ].parentItem().incoming.append( startItems[ 0 ] )
-                        startItems[ 0 ].inputs.append( endItems[ 0 ] )
+                        endItems[0].parentItem().inputs.append(endItems[0])
+                        endItems[0].connection.append(connectionLine)
+                        endItems[0].output.append(startItems[0])
+                        endItems[0].parentItem().incoming.append(startItems[0])
+                        startItems[0].inputs.append(endItems[0])
                         
                         
                         
-                        startItemRootDir = startItems[ 0 ].parentItem().getNodeRootDir()
-                        endItemRootDir = endItems[ 0 ].parentItem().getNodeRootDir()
+                        startItemRootDir = startItems[0].parentItem().getNodeRootDir()
+                        endItemRootDir = endItems[0].parentItem().getNodeRootDir()
                         
-                        #startItemOutputLabel = startItems[ 0 ].getLabel()
-                        startItemOutputLabel = os.path.basename( startItems[ 0 ].getOutputDir() )
+                        #startItemOutputLabel = startItems[0].getLabel()
+                        startItemOutputLabel = os.path.basename(startItems[0].getOutputDir())
                         #print 'startItemOutputLabel', startItemOutputLabel
                         
                         #
-                        #startItemOutputDir = os.path.join( str( startItemRootDir ), 'output', str( startItemOutputLabel ) )
-                        startItemOutputDir = os.path.join( str( startItemRootDir ), 'live', str( startItemOutputLabel ) )
-                        endItemInputDir = os.path.join( str( endItemRootDir ), 'input', str( startItemOutputLabel ) )
+                        #startItemOutputDir = os.path.join(str(startItemRootDir), 'output', str(startItemOutputLabel))
+                        startItemOutputDir = os.path.join(str(startItemRootDir), 'live', str(startItemOutputLabel))
+                        endItemInputDir = os.path.join(str(endItemRootDir), 'input', str(startItemOutputLabel))
                         
                         #print 'startItemRootDir = %s' %startItemRootDir
                         #print 'startItemOutputLabel = %s' %startItemOutputLabel
@@ -1703,14 +1703,14 @@ class SceneView( QGraphicsScene ):
     #                     >>> relpath('/usr/var/log/', '/usr/var/sad/')
     #                     '../log'
                         
-                        #os.makedirs( endItemOutputDir, mode=0777 )
+                        #os.makedirs(endItemOutputDir, mode=0777)
 
 
-                        #projectsRoot = str( self.mainWindow.getProjectsRoot() )
-                        currentContent = str( self.mainWindow.getCurrentContent() )
-                        #currentProject = str( self.mainWindow.projectComboBox.currentText() )
+                        #projectsRoot = str(self.mainWindow.getProjectsRoot())
+                        currentContent = str(self.mainWindow.getCurrentContent())
+                        #currentProject = str(self.mainWindow.projectComboBox.currentText())
 
-                        #currentProjectRoot = os.path.join( projectsRoot, currentContent )
+                        #currentProjectRoot = os.path.join(projectsRoot, currentContent)
                         
 
     #                     #darwin:
@@ -1718,66 +1718,66 @@ class SceneView( QGraphicsScene ):
     #                     os.symlink(self.newFolderFull, os.path.relpath(currentDir))  
                         cwd = os.getcwd()
                         dst = endItemInputDir
-                        #src = os.sep.join( [ str( os.path.relpath( startItemOutputDir, os.path.dirname( dst ) ) ), 'current' ] )
-                        #src = os.sep.join( [ str( os.path.relpath( startItemOutputDir, os.path.dirname( dst ) ) ) ] )
-                        #print str( os.path.relpath( os.path.join( self.projectsRoot, currentContent ), os.path.dirname( dst ) ) )
+                        #src = os.sep.join([str(os.path.relpath(startItemOutputDir, os.path.dirname(dst))), 'current'])
+                        #src = os.sep.join([str(os.path.relpath(startItemOutputDir, os.path.dirname(dst)))])
+                        #print str(os.path.relpath(os.path.join(self.projectsRoot, currentContent), os.path.dirname(dst)))
                         
-                        srcParentDirs = os.sep.join( [ str( os.path.relpath( self.projectsRoot, os.path.dirname( dst ) ) ) ] ) + os.sep
+                        srcParentDirs = os.sep.join([str(os.path.relpath(self.projectsRoot, os.path.dirname(dst)))]) + os.sep
                         #print srcParentDirs
 
 
-                        src = os.sep.join( [ str( os.path.relpath( startItemOutputDir, self.projectsRoot ) ) ] )
+                        src = os.sep.join([str(os.path.relpath(startItemOutputDir, self.projectsRoot))])
                         
 
 
-                        #relPath = os.sep.join( [ str( src + os.sep + os.sep.join( [ str( os.path.relpath( dst, self.projectsRoot ) ) ] ) ) ] )
+                        #relPath = os.sep.join([str(src + os.sep + os.sep.join([str(os.path.relpath(dst, self.projectsRoot))]))])
                         
-                        relPath = os.sep.join( [ str( srcParentDirs + src ) ] )
+                        relPath = os.sep.join([str(srcParentDirs + src)])
                         #print relPath
 
-                        #src + os.sep + os.sep.join( [ str( os.path.relpath( dst, self.projectsRoot ) ) ] )
+                        #src + os.sep + os.sep.join([str(os.path.relpath(dst, self.projectsRoot))])
 
-                        #print str( os.path.basename( os.path.dirname( os.path.dirname( startItemRootDir ) ) ) ).split( '.' )
+                        #print str(os.path.basename(os.path.dirname(os.path.dirname(startItemRootDir)))).split('.')
 
-                        #if len( str( os.path.basename( os.path.dirname( os.path.dirname( startItemRootDir ) ) ) ).split( '.' ) ) == 4:
+                        #if len(str(os.path.basename(os.path.dirname(os.path.dirname(startItemRootDir)))).split('.')) == 4:
 
-                        #print os.path.basename( os.path.dirname( os.path.dirname( startItemRootDir ) ) )
-                        #print os.path.dirname( os.path.dirname( startItemRootDir ) )
+                        #print os.path.basename(os.path.dirname(os.path.dirname(startItemRootDir)))
+                        #print os.path.dirname(os.path.dirname(startItemRootDir))
 
-                        #if not len( startItemOutputLabel.split( '.' ) ) == 1:
-                        #    startItemOutputLabel = startItemOutputLabel.split( '.' )[ 3 ]
+                        #if not len(startItemOutputLabel.split('.')) == 1:
+                        #    startItemOutputLabel = startItemOutputLabel.split('.')[3]
 
-                        if len( os.path.basename( dst ).split( '.' ) ) > 1:
+                        if len(os.path.basename(dst).split('.')) > 1:
 
-                            #inputLink = os.path.dirname( dst ) + os.sep + os.path.basename( os.path.dirname( os.path.dirname( startItemRootDir ) ) ) + '.' + os.path.basename( os.path.dirname( startItemRootDir ) ) + '.' + os.path.basename( startItemRootDir ) + '.' + os.path.basename( dst ).split( '.' )[ 3 ]
-                            inputLink = os.path.dirname( dst ) + os.sep + os.path.basename( relPath )
+                            #inputLink = os.path.dirname(dst) + os.sep + os.path.basename(os.path.dirname(os.path.dirname(startItemRootDir))) + '.' + os.path.basename(os.path.dirname(startItemRootDir)) + '.' + os.path.basename(startItemRootDir) + '.' + os.path.basename(dst).split('.')[3]
+                            inputLink = os.path.dirname(dst) + os.sep + os.path.basename(relPath)
                             
                         else:
-                            inputLink = os.path.dirname( dst ) + os.sep + os.path.basename( os.path.dirname( os.path.dirname( startItemRootDir ) ) ) + '.' + os.path.basename( os.path.dirname( startItemRootDir ) ) + '.' + os.path.basename( startItemRootDir ) + '.' + os.path.basename( dst )
+                            inputLink = os.path.dirname(dst) + os.sep + os.path.basename(os.path.dirname(os.path.dirname(startItemRootDir))) + '.' + os.path.basename(os.path.dirname(startItemRootDir)) + '.' + os.path.basename(startItemRootDir) + '.' + os.path.basename(dst)
                         #print inputLink
                         #print src
-                        #print os.path.basename( dst )
-                        #elif len( str( os.path.basename( os.path.dirname( os.path.dirname( startItemRootDir ) ) ) ).split( '.' ) ) == 7:
-                        #    inputLink = os.path.dirname( dst ) + os.sep + os.path.basename( os.path.dirname( os.path.dirname( startItemRootDir ) ) )
-                        #print 'inputLink = %s' %( inputLink )
-                        #print 'inputLink = %s' %( inputLink )
+                        #print os.path.basename(dst)
+                        #elif len(str(os.path.basename(os.path.dirname(os.path.dirname(startItemRootDir)))).split('.')) == 7:
+                        #    inputLink = os.path.dirname(dst) + os.sep + os.path.basename(os.path.dirname(os.path.dirname(startItemRootDir)))
+                        #print 'inputLink = %s' %(inputLink)
+                        #print 'inputLink = %s' %(inputLink)
                         if self.currentPlatform == "Darwin":
                             #cwd = os.getcwd()
                             #src = startItemOutputDir
                             #dst = endItemInputDir
-                            #print 'asset = %s' %os.path.dirname( startItemRootDir )
+                            #print 'asset = %s' %os.path.dirname(startItemRootDir)
                             #print 'node = %s' %startItemRootDir
-                            #src = str(  ) + '.' + str( os.path.relpath( startItemOutputDir, os.path.dirname( dst ) ) )
-                            #print str( os.path.dirname( dst ) )
-                            #src = os.sep.join( [ str( os.path.relpath( startItemOutputDir, os.path.dirname( dst ) ) ), 'current' ] )
-                            #src = os.path.basename( os.path.normpath( startItemOutputDir ) )
+                            #src = str() + '.' + str(os.path.relpath(startItemOutputDir, os.path.dirname(dst)))
+                            #print str(os.path.dirname(dst))
+                            #src = os.sep.join([str(os.path.relpath(startItemOutputDir, os.path.dirname(dst))), 'current'])
+                            #src = os.path.basename(os.path.normpath(startItemOutputDir))
                             #dst = endItemOutputDir
                             #print cwd
                             #print src
-                            #print os.path.dirname( dst ) + os.sep + os.path.basename( os.path.dirname( startItemRootDir ) ) + '.' + os.path.basename( startItemRootDir ) + '.' + os.path.basename( dst )
-                            #'.'join( [ os.path.basename( startItemRootDir ), os.path.basename( dst ) ] )
-                            #print os.path.basename( os.path.dirname( os.path.dirname( startItemRootDir ) ) )
-                            #inputLink = os.path.dirname( dst ) + os.sep + os.path.basename( os.path.dirname( os.path.dirname( startItemRootDir ) ) ) + '.' + os.path.basename( os.path.dirname( startItemRootDir ) ) + '.' + os.path.basename( startItemRootDir ) + '.' + os.path.basename( dst )
+                            #print os.path.dirname(dst) + os.sep + os.path.basename(os.path.dirname(startItemRootDir)) + '.' + os.path.basename(startItemRootDir) + '.' + os.path.basename(dst)
+                            #'.'join([os.path.basename(startItemRootDir), os.path.basename(dst)])
+                            #print os.path.basename(os.path.dirname(os.path.dirname(startItemRootDir)))
+                            #inputLink = os.path.dirname(dst) + os.sep + os.path.basename(os.path.dirname(os.path.dirname(startItemRootDir))) + '.' + os.path.basename(os.path.dirname(startItemRootDir)) + '.' + os.path.basename(startItemRootDir) + '.' + os.path.basename(dst)
                             #print 'inputLink = %s' %inputLink
                             try:
                                 #print src
@@ -1785,11 +1785,11 @@ class SceneView( QGraphicsScene ):
 
                                 #print self.projectsRoot, relPath, inputLink, 
 
-                                os.symlink( relPath, inputLink )
+                                os.symlink(relPath, inputLink)
                             except:
                                 pass
-                            endItems[ 0 ].setInputDir( inputLink )
-                            #print 'Darwin: endItems[ 0 ].getInputDir() = %s' %endItems[ 0 ].getInputDir()
+                            endItems[0].setInputDir(inputLink)
+                            #print 'Darwin: endItems[0].getInputDir() = %s' %endItems[0].getInputDir()
                             
                             
     #                     #win:
@@ -1798,33 +1798,33 @@ class SceneView( QGraphicsScene ):
     #                     os.system(cmdstring)
                         elif self.currentPlatform == "Windows":
                             #dst = endItemInputDir
-                            #src = os.sep.join( [ str( os.path.relpath( startItemOutputDir, os.path.dirname( dst ) ) ), 'current' ] )
+                            #src = os.sep.join([str(os.path.relpath(startItemOutputDir, os.path.dirname(dst))), 'current'])
                             cmdstring = "mklink /D " + inputLink + " " + src
-                            #print 'Win cmdstring = %s' %( cmdstring )
-                            os.chdir( os.path.dirname( endItemInputDir ) )
-                            os.system( cmdstring )
-                            os.chdir( cwd )
+                            #print 'Win cmdstring = %s' %(cmdstring)
+                            os.chdir(os.path.dirname(endItemInputDir))
+                            os.system(cmdstring)
+                            os.chdir(cwd)
                             
-                            endItems[ 0 ].setInputDir( inputLink )
-                            #print 'Windows: endItems[ 0 ].getInputDir() = %s' %endItems[ 0 ].getInputDir()
+                            endItems[0].setInputDir(inputLink)
+                            #print 'Windows: endItems[0].getInputDir() = %s' %endItems[0].getInputDir()
                         
 
                         
                         
                         
-                        self.addItem( connectionLine )
+                        self.addItem(connectionLine)
                         
                         
 
-                        endItems[ 0 ].parentItem().newInput( self )
+                        endItems[0].parentItem().newInput(self)
 
                 else:
                                        
                     
-                    parentNode.sendFromNodeToBox( str( datetime.datetime.now() ) )
-                    parentNode.sendFromNodeToBox( ':' + '\n' )
-                    parentNode.sendFromNodeToBox( '--- this input port is already in use. obviously.' + '\n' )
-                    parentNode.sendFromNodeToBox( '--- your iq is dropping...' + '\n' )
+                    parentNode.sendFromNodeToBox(str(datetime.datetime.now()))
+                    parentNode.sendFromNodeToBox(':' + '\n')
+                    parentNode.sendFromNodeToBox('--- this input port is already in use. obviously.' + '\n')
+                    parentNode.sendFromNodeToBox('--- your iq is dropping...' + '\n')
                     
                     
 
@@ -1832,16 +1832,16 @@ class SceneView( QGraphicsScene ):
             else:
 
 
-                parentNodeStartItem = startItems[ 0 ].parentItem()
+                parentNodeStartItem = startItems[0].parentItem()
                 
 
-                parentNodeStartItem.sendFromNodeToBox( str( datetime.datetime.now() ) )
-                parentNodeStartItem.sendFromNodeToBox( ':' + '\n' )
-                parentNodeStartItem.sendFromNodeToBox( '--- endItem is not an input :(' + '\n' )
-                parentNodeStartItem.sendFromNodeToBox( '--- no endItem chosen' + '\n' )
+                parentNodeStartItem.sendFromNodeToBox(str(datetime.datetime.now()))
+                parentNodeStartItem.sendFromNodeToBox(':' + '\n')
+                parentNodeStartItem.sendFromNodeToBox('--- endItem is not an input :(' + '\n')
+                parentNodeStartItem.sendFromNodeToBox('--- no endItem chosen' + '\n')
 
         
         
         self.line = None
 
-        super( SceneView, self ).mouseReleaseEvent( event )
+        super(SceneView, self).mouseReleaseEvent(event)

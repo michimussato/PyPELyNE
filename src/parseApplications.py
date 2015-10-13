@@ -17,7 +17,7 @@ class parseApplicationsXML():
     '''
 
 
-    def __init__( self, platform ):
+    def __init__(self, platform):
         #self.currentPlatform = platform.system()
         
         self.xmlPath = ''
@@ -34,7 +34,7 @@ class parseApplicationsXML():
         
         #print self.families
         
-    def getXmlPath( self ):
+    def getXmlPath(self):
         
         if self.platform == "Windows":
             self.xmlPath = r'C:\Users\michael.mussato.SCHERRERMEDIEN\Dropbox\development\workspace\PyPELyNE\conf\applications.xml'
@@ -45,24 +45,24 @@ class parseApplicationsXML():
         
         #return self.xmlPath
     
-    def getApplications( self ):
+    def getApplications(self):
         
-        tree = ET.parse( self.xmlPath )
+        tree = ET.parse(self.xmlPath)
         root = tree.getroot()
         
 #         root.tag
 #         root.attrib
         
         for name in root:
-            self.families.append( name.attrib )
+            self.families.append(name.attrib)
             #print name.attrib
             for details in name.iter():
                 #print details.attrib
-                self.applications.append( details.attrib )
-#             for subEntry in child.iter(  ):
+                self.applications.append(details.attrib)
+#             for subEntry in child.iter():
 #                 
-#                 #self.applications.append( child.attrib )
-#                 self.applications.append( subEntry.attrib )
+#                 #self.applications.append(child.attrib)
+#                 self.applications.append(subEntry.attrib)
 #             #print child
 
 
@@ -76,7 +76,7 @@ class parseApplicationsXML():
 
 currentPlatform = platform.system()
 
-tree = ET.parse( r'../conf/applications.xml' )
+tree = ET.parse(r'../conf/applications.xml')
 root = tree.getroot()
 
 #print root
@@ -90,9 +90,9 @@ for family in root:
                     print executable
                     for flag in executable:
                         print "hallo"
-                        if not executable.items()[ 0 ][ 1 ] == 'None' and platform.items()[ 0 ][ 1 ] == currentPlatform:
+                        if not executable.items()[0][1] == 'None' and platform.items()[0][1] == currentPlatform:
                         
-                            print element.items()[ 0 ][ 1 ] + ' ' + family.items()[ 0 ][ 1 ] + ' ' + platform.items()[ 0 ][ 1 ] + ' ' + executable.tag + ' = ' + executable.items()[ 0 ][ 1 ]
+                            print element.items()[0][1] + ' ' + family.items()[0][1] + ' ' + platform.items()[0][1] + ' ' + executable.tag + ' = ' + executable.items()[0][1]
                     
                 #print family.attrib, element.attrib, platform.attrib, executable.tag, executable.attrib
     
@@ -107,8 +107,8 @@ xmlObject = parseApplicationsXML()
 xmlPath = xmlObject.getXmlPath()
 
 
-#minidomXml = minidom.parse( xmlPath )
-tree = ET.parse( xmlPath )
+#minidomXml = minidom.parse(xmlPath)
+tree = ET.parse(xmlPath)
 root = tree.getroot()
 
 #root = ET.fromstring
@@ -119,10 +119,10 @@ root.attrib
 for child in root:
     
     print child.tag, child.attrib
-    for subEntry in child.iter(  ):
+    for subEntry in child.iter():
         print subEntry.tag, subEntry.attrib
 
-#for executable in root.iter(  ):
+#for executable in root.iter():
 #    print executable.attrib
 '''
 

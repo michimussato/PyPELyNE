@@ -18,52 +18,52 @@ from jobDeadline import *
 import xml.etree.ElementTree as ET
 
 
-class node( QGraphicsItem, QObject ):
+class node(QGraphicsItem, QObject):
     nodeClicked = pyqtSignal()
 
-    def __init__( self, mainWindow, scene, propertyNodePath ):
-        super( node, self ).__init__( None, scene )
+    def __init__(self, mainWindow, scene, propertyNodePath):
+        super(node, self).__init__(None, scene)
         
         self.propertyNodePath = propertyNodePath
         self.mainWindow = mainWindow
         self.pypelyneRoot = self.mainWindow.pypelyneRoot
         self.user = self.mainWindow.getUser()
         self.location = self.getNodeRootDir()
-        self.loaderSaver = os.path.basename( self.location )[ :7 ]
-        self.asset = os.path.dirname( self.location )
-        self.project = os.path.dirname( os.path.dirname ( os.path.dirname( self.asset ) ) )
+        self.loaderSaver = os.path.basename(self.location)[:7]
+        self.asset = os.path.dirname(self.location)
+        self.project = os.path.dirname(os.path.dirname (os.path.dirname(self.asset)))
         self.scene = scene
         self._tools = self.mainWindow.getTools()
         self._tasks = self.mainWindow.getTasks()
         self.exclusions = self.mainWindow.getExclusions()
         self.now = datetime.datetime.now()
-        self.nowStr = str( self.now )
-        self.rect = QRectF( 0, 0, 200, 40 )
+        self.nowStr = str(self.now)
+        self.rect = QRectF(0, 0, 200, 40)
         self.outputMaxWidth = []
         self.inputMaxWidth = []
-        self.setAcceptHoverEvents( True )
+        self.setAcceptHoverEvents(True)
         self.outputList = []
         self.inputList = []
         self.inputs = []
         self.incoming = []
         self.outputs = []
-        self.setFlags( QGraphicsItem.ItemIsSelectable | QGraphicsItem.ItemIsMovable )
+        self.setFlags(QGraphicsItem.ItemIsSelectable | QGraphicsItem.ItemIsMovable)
         self.hovered = False
-        self.setData( 1, self.now )
-        self.setData( 2, 'node' )
-        #self.setToolTip( 'haha' )
+        self.setData(1, self.now)
+        self.setData(2, 'node')
+        #self.setToolTip('haha')
         try:
             self.setNodePosition()
         except:
-            logging.warning( '===> fix corrupt %s' %( self.propertyNodePath ) )
+            logging.warning('===> fix corrupt %s' %(self.propertyNodePath))
             return
-            #print '===> fix corrupt %s' %( self.propertyNodePath )
+            #print '===> fix corrupt %s' %(self.propertyNodePath)
 
         self.scene.clearSelection()
         self.labelBoundingRect = 0.0
         
-        if not self.loaderSaver.startswith( 'LDR' ):
-            self.inputPort = self.newInput( scene )
+        if not self.loaderSaver.startswith('LDR'):
+            self.inputPort = self.newInput(scene)
         
         self.label = None
         
@@ -71,40 +71,40 @@ class node( QGraphicsItem, QObject ):
         self.addOutputs()
         self.addInputs()
 
-        self.gradient = QLinearGradient( self.rect.topLeft(), self.rect.bottomLeft() )
-        self.taskColorItem = QColor( 0, 0, 0 )
-        self.applicationColorItem = QColor( 0, 0, 0 )
+        self.gradient = QLinearGradient(self.rect.topLeft(), self.rect.bottomLeft())
+        self.taskColorItem = QColor(0, 0, 0)
+        self.applicationColorItem = QColor(0, 0, 0)
 
-        if not self.loaderSaver.startswith( 'SVR' ) and not self.loaderSaver.startswith( 'LDR' ):
+        if not self.loaderSaver.startswith('SVR') and not self.loaderSaver.startswith('LDR'):
             self.newOutputButton()
 
         self.widgetMenu = None
         self.setTaskColor()
         self.setApplicationColor()
 
-    def getNodeAsset( self ):
+    def getNodeAsset(self):
         return self.asset
 
-    def getNodeProject( self ):
+    def getNodeProject(self):
         return self.project
 
-    def getInputPort( self ):
+    def getInputPort(self):
         return self.inputPort
         
-    def getNodeRootDir( self ):
-        return os.path.dirname( os.path.realpath( self.propertyNodePath ) )
+    def getNodeRootDir(self):
+        return os.path.dirname(os.path.realpath(self.propertyNodePath))
 
-    def getApplicationInfo( self, propertyNode ):
+    def getApplicationInfo(self, propertyNode):
 
         try:
 
-            nodeApplicationInfo = propertyNode.findall( './task' )
+            nodeApplicationInfo = propertyNode.findall('./task')
 
-            self.nodeVersion = nodeApplicationInfo[ 0 ].items()[ 3 ][ 1 ]
-            self.nodeVendor = nodeApplicationInfo[ 0 ].items()[ 2 ][ 1 ]
-            self.nodeFamily = nodeApplicationInfo[ 0 ].items()[ 4 ][ 1 ]
-            self.nodeArch = nodeApplicationInfo[ 0 ].items()[ 0 ][ 1 ]
-            self.nodeTask = nodeApplicationInfo[ 0 ].items()[ 1 ][ 1 ]
+            self.nodeVersion = nodeApplicationInfo[0].items()[3][1]
+            self.nodeVendor = nodeApplicationInfo[0].items()[2][1]
+            self.nodeFamily = nodeApplicationInfo[0].items()[4][1]
+            self.nodeArch = nodeApplicationInfo[0].items()[0][1]
+            self.nodeTask = nodeApplicationInfo[0].items()[1][1]
 
         except:
             self.nodeVersion = 'undefined'
@@ -116,402 +116,402 @@ class node( QGraphicsItem, QObject ):
 
         
 
-    def queryApplicationInfo( self ):
+    def queryApplicationInfo(self):
 
         return self.nodeVersion, self.nodeVendor, self.nodeFamily, self.nodeArch, self.nodeTask
-        #       [ 1 ][ 1 ]          [ 3 ][ 1 ]      [ 4 ][ 1 ]      [ 0 ][ 1 ]      [ 2 ][ 1 ]
+        #       [1][1]          [3][1]      [4][1]      [0][1]      [2][1]
         #       ('modelling',   'R 15',       'CINEMA 4D',  'x64',      'MAXON')
-        #       [ 2 ][ 1 ]      [ 3 ][ 1 ]     [ 4 ][ 1 ]   [ 0 ][ 1 ]  [ 2 ][ 1 ]
+        #       [2][1]      [3][1]     [4][1]   [0][1]  [2][1]
 
-    def setNodePosition( self ):
-        self.propertyNode = ET.parse( self.propertyNodePath )
+    def setNodePosition(self):
+        self.propertyNode = ET.parse(self.propertyNodePath)
 
         try:
-            logging.info( 'new style reading' )
-            nodePosition = self.propertyNode.findall( './node' )
+            logging.info('new style reading')
+            nodePosition = self.propertyNode.findall('./node')
 
-            positionX = nodePosition[ 0 ].items()[ 0 ][ 1 ]
-            positionY = nodePosition[ 0 ].items()[ 1 ][ 1 ]
+            positionX = nodePosition[0].items()[0][1]
+            positionY = nodePosition[0].items()[1][1]
 
         except:
-            logging.info( 'old style reading' )
-            positionX = self.propertyNode.findall( './positionX' )
-            positionY = self.propertyNode.findall( './positionY' )
+            logging.info('old style reading')
+            positionX = self.propertyNode.findall('./positionX')
+            positionY = self.propertyNode.findall('./positionY')
 
-            positionX = positionX[ 0 ].items()[ 0 ][ 1 ]
-            positionY = positionY[ 0 ].items()[ 0 ][ 1 ]
+            positionX = positionX[0].items()[0][1]
+            positionY = positionY[0].items()[0][1]
 
-        self.setPos( QPointF( float( positionX ), float( positionY ) ) )
+        self.setPos(QPointF(float(positionX), float(positionY)))
 
-        self.getApplicationInfo( self.propertyNode )
+        self.getApplicationInfo(self.propertyNode)
     
 
-    def hoverEnterEvent( self, event ):
+    def hoverEnterEvent(self, event):
         self.hovered = True
 
-    def hoverLeaveEvent( self, event ):
+    def hoverLeaveEvent(self, event):
         self.hovered = False
 
 
-    def mousePressEvent( self, event ):
-        self.scene.nodeSelect.emit( self )
+    def mousePressEvent(self, event):
+        self.scene.nodeSelect.emit(self)
 
-    def mouseDoubleClickEvent( self, event ):
-        if self.label.startswith( 'LDR_AST' ):
-            self.mainWindow.getAssetContent( None, self.label )
-        elif self.label.startswith( 'LDR_SHT' ):
-            self.mainWindow.getShotContent( None, self.label )
-        #elif self.label.startswith( 'LDR_LIB' ):
+    def mouseDoubleClickEvent(self, event):
+        if self.label.startswith('LDR_AST'):
+            self.mainWindow.getAssetContent(None, self.label)
+        elif self.label.startswith('LDR_SHT'):
+            self.mainWindow.getShotContent(None, self.label)
+        #elif self.label.startswith('LDR_LIB'):
         #    pass
 
 
         else:
             searchString = self.nodeVendor + ' ' + self.nodeFamily + ' ' + self.nodeVersion + ' ' + self.nodeArch
-            searchIndex = self.mainWindow.toolsComboBox.findText( QString( searchString ), Qt.MatchContains ) - 2
+            searchIndex = self.mainWindow.toolsComboBox.findText(QString(searchString), Qt.MatchContains) - 2
 
             if searchIndex < 0:
-                if not str( self.nodeFamily + ' ' + self.nodeVersion ) in [ self.mainWindow.toolsComboBox.itemText( i ) for i in range( self.mainWindow.toolsComboBox.count() ) ]:
-                    logging.warning( 'application family not available' )
-                    QMessageBox.critical( self.mainWindow, 'application warning', str( '%s not available.' %str( self.nodeFamily + ' ' + self.nodeVersion ) ), QMessageBox.Abort, QMessageBox.Abort )
+                if not str(self.nodeFamily + ' ' + self.nodeVersion) in [self.mainWindow.toolsComboBox.itemText(i) for i in range(self.mainWindow.toolsComboBox.count())]:
+                    logging.warning('application family not available')
+                    QMessageBox.critical(self.mainWindow, 'application warning', str('%s not available.' %str(self.nodeFamily + ' ' + self.nodeVersion)), QMessageBox.Abort, QMessageBox.Abort)
                     return
 
                 elif self.nodeArch == 'x64':
-                    reply = QMessageBox.warning( self.mainWindow, 'architecture warning', str( 'x64 version of %s not available. continue using x32?' %self.nodeFamily ), QMessageBox.Yes | QMessageBox.No, QMessageBox.No )
+                    reply = QMessageBox.warning(self.mainWindow, 'architecture warning', str('x64 version of %s not available. continue using x32?' %self.nodeFamily), QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
 
                     if reply == QMessageBox.Yes:
-                        searchString = str( self.nodeVendor + ' ' + self.nodeFamily + ' ' + self.nodeVersion + ' ' + 'x32' )
-                        searchIndex = self.mainWindow.toolsComboBox.findText( QString( searchString ), Qt.MatchContains ) - 2
-                        logging.warning( 'x64 not available. using x32 version.' )
+                        searchString = str(self.nodeVendor + ' ' + self.nodeFamily + ' ' + self.nodeVersion + ' ' + 'x32')
+                        searchIndex = self.mainWindow.toolsComboBox.findText(QString(searchString), Qt.MatchContains) - 2
+                        logging.warning('x64 not available. using x32 version.')
                     else:
                         return
                 elif self.nodeArch == 'x32':
-                    reply = QMessageBox.warning( self.mainWindow, 'architecture warning', str( 'x32 version of %s not available. continue using x64?' %self.nodeFamily ), QMessageBox.Yes | QMessageBox.No, QMessageBox.No )
+                    reply = QMessageBox.warning(self.mainWindow, 'architecture warning', str('x32 version of %s not available. continue using x64?' %self.nodeFamily), QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
 
                     if reply == QMessageBox.Yes:
-                        searchString = str( self.nodeVendor + ' ' + self.nodeFamily + ' ' + self.nodeVersion + ' ' + 'x64' )
-                        searchIndex = self.mainWindow.toolsComboBox.findText( QString( searchString ), Qt.MatchContains ) - 2
-                        logging.warning( 'x32 not available. using x64 version.' )
+                        searchString = str(self.nodeVendor + ' ' + self.nodeFamily + ' ' + self.nodeVersion + ' ' + 'x64')
+                        searchIndex = self.mainWindow.toolsComboBox.findText(QString(searchString), Qt.MatchContains) - 2
+                        logging.warning('x32 not available. using x64 version.')
                     else:
                         return
                 else:
-                    logging.warning( 'some weird shit' )
+                    logging.warning('some weird shit')
 
-            elif os.path.exists( os.path.join( self.location, 'locked' ) ):
-                QMessageBox.critical( self.mainWindow, 'node warning', str( '%s is currently in use.' %str( self.label ) ), QMessageBox.Abort, QMessageBox.Abort )
+            elif os.path.exists(os.path.join(self.location, 'locked')):
+                QMessageBox.critical(self.mainWindow, 'node warning', str('%s is currently in use.' %str(self.label)), QMessageBox.Abort, QMessageBox.Abort)
                 return
 
-            elif os.path.exists( os.path.join( self.location, 'checkedOut' ) ):
-                QMessageBox.critical( self.mainWindow, 'node warning', str( '%s is currently checked out.' %str( self.label ) ), QMessageBox.Abort, QMessageBox.Abort )
+            elif os.path.exists(os.path.join(self.location, 'checkedOut')):
+                QMessageBox.critical(self.mainWindow, 'node warning', str('%s is currently checked out.' %str(self.label)), QMessageBox.Abort, QMessageBox.Abort)
                 return
 
 
             args = []
 
-            for arg in self._tools[ searchIndex ][ 10 ]:
-                args.append( arg )
+            for arg in self._tools[searchIndex][10]:
+                args.append(arg)
 
             if self.nodeFamily == 'Maya':
-                for arg in [ '-proj', self.location, '-file' ]:
+                for arg in ['-proj', self.location, '-file']:
                     #print self.location
-                    args.append( arg )
+                    args.append(arg)
 
-            projectRoot = os.path.join( self.location, 'project' )
+            projectRoot = os.path.join(self.location, 'project')
 
-            #print self._tools[ searchIndex ][ 7 ]
-            extension = os.path.splitext( self._tools[ searchIndex ][ 7 ] )[ 1 ]
+            #print self._tools[searchIndex][7]
+            extension = os.path.splitext(self._tools[searchIndex][7])[1]
 
 
-            files = glob.glob1( projectRoot, str( '*' + extension ) )
+            files = glob.glob1(projectRoot, str('*' + extension))
 
             absFiles = []
 
             for relFile in files:
                 if not relFile in self.exclusions:
-                    absFiles.append( os.path.join( projectRoot, relFile ) )
+                    absFiles.append(os.path.join(projectRoot, relFile))
 
 
             if not 'DDL' in self.label:
-                newestFile = max( absFiles, key=os.path.getctime )
-                self.mainWindow.runTask( self, self._tools[ searchIndex ][ 1 ][ 0 ], newestFile, args )
+                newestFile = max(absFiles, key=os.path.getctime)
+                self.mainWindow.runTask(self, self._tools[searchIndex][1][0], newestFile, args)
             else:
-                ok, jobDeadline = jobDeadlineUi.getDeadlineJobData( self.location, self.mainWindow )
+                ok, jobDeadline = jobDeadlineUi.getDeadlineJobData(self.location, self.mainWindow)
 
                 if ok:
-                    txtFile = os.path.join( self.location, 'project', 'deadlineJob.txt' )
-                    jobFile = open( txtFile, 'w' )
+                    txtFile = os.path.join(self.location, 'project', 'deadlineJob.txt')
+                    jobFile = open(txtFile, 'w')
 
                     for element in jobDeadline:
-                        jobFile.write( element )
-                        jobFile.write( ' ' )
+                        jobFile.write(element)
+                        jobFile.write(' ')
 
                     jobFile.close()
 
-                    self.mainWindow.submitDeadlineJob( txtFile )
+                    self.mainWindow.submitDeadlineJob(txtFile)
 
-                    #os.system( 'bash ' + txtFile )
+                    #os.system('bash ' + txtFile)
 
 
-    def dataReady( self ):
+    def dataReady(self):
         cursorBox = self.mainWindow.statusBox.textCursor()
-        cursorBox.movePosition( cursorBox.End )
-        cursorBox.insertText( "%s (%s): %s" %( datetime.datetime.now(), self.pid, str( self.process.readAll() ) ) )
+        cursorBox.movePosition(cursorBox.End)
+        cursorBox.insertText("%s (%s): %s" %(datetime.datetime.now(), self.pid, str(self.process.readAll())))
         self.mainWindow.statusBox.ensureCursorVisible()
     '''
-    def hoverEnterEvent( self, event ):
+    def hoverEnterEvent(self, event):
         pass
     
-    def hoverLeaveEvent( self, event ):
+    def hoverLeaveEvent(self, event):
         pass
     '''
 
-    def resizeWidth( self ):
-        outputListTextWidth = [ 0 ]
-        inputListTextWidth = [ 0 ]
+    def resizeWidth(self):
+        outputListTextWidth = [0]
+        inputListTextWidth = [0]
 
         for i in self.inputList:
-            inputListTextWidth.append( int( i.childrenBoundingRect().width() ) )
+            inputListTextWidth.append(int(i.childrenBoundingRect().width()))
 
         for i in self.outputList:
-            outputListTextWidth.append( int( i.childrenBoundingRect().width() ) )
+            outputListTextWidth.append(int(i.childrenBoundingRect().width()))
 
-        self.rect.setWidth( max( ( self.labelBoundingRect + 40 + 20 ), ( max( outputListTextWidth ) + 80 ) + ( max( inputListTextWidth ) ) ) )
+        self.rect.setWidth(max((self.labelBoundingRect + 40 + 20), (max(outputListTextWidth) + 80) + (max(inputListTextWidth))))
                 
-    def resizeHeight( self ):
-        self.rect.setHeight( ( ( max( len( self.inputs ) + 1, len( self.outputs ) + 1 ) * 20 ) ) )
-        self.gradient = QLinearGradient( self.rect.topLeft(), self.rect.bottomLeft() )
+    def resizeHeight(self):
+        self.rect.setHeight(((max(len(self.inputs) + 1, len(self.outputs) + 1) * 20)))
+        self.gradient = QLinearGradient(self.rect.topLeft(), self.rect.bottomLeft())
 
-    def resize( self ):
+    def resize(self):
         self.resizeHeight()
         self.resizeWidth()
 
-    def boundingRect( self ):
+    def boundingRect(self):
         return self.rect
 
-    def paint( self, painter, option, widget ):
-        painter.setRenderHint( QPainter.Antialiasing )
+    def paint(self, painter, option, widget):
+        painter.setRenderHint(QPainter.Antialiasing)
 
-        pen = QPen( Qt.SolidLine )
-        pen.setColor( Qt.black )
-        pen.setWidth( 0 )
+        pen = QPen(Qt.SolidLine)
+        pen.setColor(Qt.black)
+        pen.setWidth(0)
 
         try:
 
             if option.state & QStyle.State_Selected:
                 self.updatePropertyNodeXML()
-                self.setZValue( 1 )
-                pen.setWidth( 1 )
-                pen.setColor( Qt.green )
-                self.gradient.setColorAt( 0, self.taskColorItem )
-                self.gradient.setColorAt( 1, self.applicationColorItem.darker( 160 ) )
+                self.setZValue(1)
+                pen.setWidth(1)
+                pen.setColor(Qt.green)
+                self.gradient.setColorAt(0, self.taskColorItem)
+                self.gradient.setColorAt(1, self.applicationColorItem.darker(160))
 
-                if os.path.exists( os.path.join( self.location, 'locked' ) ):
-                    self.gradient.setColorAt( 0, self.taskColorItem )
-                    self.gradient.setColorAt( 1, Qt.red )
+                if os.path.exists(os.path.join(self.location, 'locked')):
+                    self.gradient.setColorAt(0, self.taskColorItem)
+                    self.gradient.setColorAt(1, Qt.red)
 
-                elif os.path.exists( os.path.join( self.location, 'checkedOut' ) ):
-                    self.gradient.setColorAt( 0, self.taskColorItem )
-                    self.gradient.setColorAt( 1, Qt.white )
+                elif os.path.exists(os.path.join(self.location, 'checkedOut')):
+                    self.gradient.setColorAt(0, self.taskColorItem)
+                    self.gradient.setColorAt(1, Qt.white)
 
             elif option.state & QStyle.State_MouseOver or self.hovered:
-                pen.setWidth( 1 )
-                pen.setColor( Qt.yellow )
-                self.gradient.setColorAt( 0, self.taskColorItem )
-                self.gradient.setColorAt( 1, self.applicationColorItem.darker( 160 ) )
+                pen.setWidth(1)
+                pen.setColor(Qt.yellow)
+                self.gradient.setColorAt(0, self.taskColorItem)
+                self.gradient.setColorAt(1, self.applicationColorItem.darker(160))
 
-                if os.path.exists( os.path.join( self.location, 'locked' ) ):
-                    self.gradient.setColorAt( 0, self.taskColorItem )
-                    self.gradient.setColorAt( 1, Qt.red )
+                if os.path.exists(os.path.join(self.location, 'locked')):
+                    self.gradient.setColorAt(0, self.taskColorItem)
+                    self.gradient.setColorAt(1, Qt.red)
 
-                elif os.path.exists( os.path.join( self.location, 'checkedOut' ) ):
-                    self.gradient.setColorAt( 0, self.taskColorItem )
-                    self.gradient.setColorAt( 1, Qt.white )
+                elif os.path.exists(os.path.join(self.location, 'checkedOut')):
+                    self.gradient.setColorAt(0, self.taskColorItem)
+                    self.gradient.setColorAt(1, Qt.white)
 
-            elif os.path.exists( os.path.join( self.location, 'locked' ) ):
-                self.gradient.setColorAt( 0, self.taskColorItem )
-                self.gradient.setColorAt( 1, Qt.red )
+            elif os.path.exists(os.path.join(self.location, 'locked')):
+                self.gradient.setColorAt(0, self.taskColorItem)
+                self.gradient.setColorAt(1, Qt.red)
 
-            elif os.path.exists( os.path.join( self.location, 'checkedOut' ) ):
-                self.gradient.setColorAt( 0, self.taskColorItem )
-                self.gradient.setColorAt( 1, Qt.white )
+            elif os.path.exists(os.path.join(self.location, 'checkedOut')):
+                self.gradient.setColorAt(0, self.taskColorItem)
+                self.gradient.setColorAt(1, Qt.white)
 
             else:
-                pen.setWidth( 0 )
-                self.setZValue( 0 )
-                self.gradient.setColorAt( 0, self.taskColorItem )
-                self.gradient.setColorAt( 1, self.applicationColorItem.darker( 160 ) )
+                pen.setWidth(0)
+                self.setZValue(0)
+                self.gradient.setColorAt(0, self.taskColorItem)
+                self.gradient.setColorAt(1, self.applicationColorItem.darker(160))
 
 
-            painter.setBrush( self.gradient )
+            painter.setBrush(self.gradient)
 
-            painter.setPen( pen )
+            painter.setPen(pen)
 
-            painter.drawRoundedRect( self.rect, 10.0, 10.0 )
+            painter.drawRoundedRect(self.rect, 10.0, 10.0)
 
             for i in self.outputList:
-                i.setPos( self.boundingRect().width() - i.rect.width(), i.pos().y() )
+                i.setPos(self.boundingRect().width() - i.rect.width(), i.pos().y())
 
-            self.rect.setWidth( self.rect.width() )
+            self.rect.setWidth(self.rect.width())
             self.arrangeOutputs()
             self.arrangeInputs()
             self.resize()
         except:
-            logging.warning( 'paint error for node %s (corrupt propertyNode.xml?)' %( self.label ) )
+            logging.warning('paint error for node %s (corrupt propertyNode.xml?)' %(self.label))
         
-    def arrangeOutputs( self ):
+    def arrangeOutputs(self):
         for output in self.outputs:
-            position = QPointF( self.boundingRect().width() - output.rect.width(), ( ( output.boundingRect().height() * ( self.outputs.index( output ) + 1 ) ) ) )
-            output.setPos( position )
+            position = QPointF(self.boundingRect().width() - output.rect.width(), ((output.boundingRect().height() * (self.outputs.index(output) + 1))))
+            output.setPos(position)
 
-    def arrangeInputs( self ):
+    def arrangeInputs(self):
         for input in self.inputs:
-            position = QPointF( 0, ( ( self.inputs.index( input ) + 1 ) * input.boundingRect().height() ) )
-            input.setPos( position )
+            position = QPointF(0, ((self.inputs.index(input) + 1) * input.boundingRect().height()))
+            input.setPos(position)
         
     #add existing outputs from file system
-    def addOutputs( self ):
+    def addOutputs(self):
         
-        self.outputRootDir = os.path.join( str( self.location ), 'output' )
+        self.outputRootDir = os.path.join(str(self.location), 'output')
         
-        allOutputs = os.listdir( self.outputRootDir )
+        allOutputs = os.listdir(self.outputRootDir)
         
         for i in allOutputs:
             if not i in self.exclusions:
-                self.newOutput( self, i )
+                self.newOutput(self, i)
 
     #add existing inputs from file system
-    def addInputs( self ):
-        self.inputRootDir = os.path.join( str( self.location ), 'input' )
-        allInputs = os.listdir( self.inputRootDir )
+    def addInputs(self):
+        self.inputRootDir = os.path.join(str(self.location), 'input')
+        allInputs = os.listdir(self.inputRootDir)
         for i in allInputs:
             if not i in self.exclusions:
-                input = self.newInput( self.scene )
+                input = self.newInput(self.scene)
                 try:
-                    lookupDir = os.path.dirname( os.path.join( self.inputRootDir, os.readlink( os.path.join( self.inputRootDir, i ) ) ) )
+                    lookupDir = os.path.dirname(os.path.join(self.inputRootDir, os.readlink(os.path.join(self.inputRootDir, i))))
                 except:
-                    lookupDir = os.path.dirname( os.path.join( self.inputRootDir, os.path.join( self.inputRootDir, i ) ) )
+                    lookupDir = os.path.dirname(os.path.join(self.inputRootDir, os.path.join(self.inputRootDir, i)))
 
 
-                if not i in os.listdir( lookupDir ) and os.path.basename( os.path.dirname( lookupDir ) ).startswith( 'LDR' ) == True:
-                    os.remove( os.path.join( self.inputRootDir, i ) )
-                    logging.warning( 'orphaned input found on node %s: %s removed' %( self.label, i ) )
+                if not i in os.listdir(lookupDir) and os.path.basename(os.path.dirname(lookupDir)).startswith('LDR') == True:
+                    os.remove(os.path.join(self.inputRootDir, i))
+                    logging.warning('orphaned input found on node %s: %s removed' %(self.label, i))
 
                 else:
                     
-                    logging.info( 'input is still valid. %s kept' %( i ) )
+                    logging.info('input is still valid. %s kept' %(i))
 
     #add new dynamic input
-    def newInput( self, scene ):
-        input = portInput( self, scene, self.mainWindow )
-        input.setParentItem( self )
+    def newInput(self, scene):
+        input = portInput(self, scene, self.mainWindow)
+        input.setParentItem(self)
 
-        self.inputList.append( input )
+        self.inputList.append(input)
         
-        self.inputMaxWidth.append( input.childrenBoundingRect().width() )
+        self.inputMaxWidth.append(input.childrenBoundingRect().width())
         
         self.resizeHeight()
         
-    def updatePropertyNodeXML( self ):
+    def updatePropertyNodeXML(self):
         pos = self.scenePos()
-        propertyNode = ET.parse( self.propertyNodePath )
+        propertyNode = ET.parse(self.propertyNodePath)
         propertyNodeRoot = propertyNode.getroot()
         
         try:
             #new style positioning...
-            nodePosition = propertyNodeRoot.find( 'node' )
+            nodePosition = propertyNodeRoot.find('node')
 
-            nodePosition.set( 'positionX', '%s' %pos.x() )
-            nodePosition.set( 'positionY', '%s' %pos.y() )
+            nodePosition.set('positionX', '%s' %pos.x())
+            nodePosition.set('positionY', '%s' %pos.y())
 
 
         except:
             #old style positioning...
-            positionX = propertyNodeRoot.find( 'positionX' )
-            positionY = propertyNodeRoot.find( 'positionY' )
+            positionX = propertyNodeRoot.find('positionX')
+            positionY = propertyNodeRoot.find('positionY')
 
-            positionX.set( 'value', '%s' %pos.x() )
-            positionY.set( 'value', '%s' %pos.y() )
+            positionX.set('value', '%s' %pos.x())
+            positionY.set('value', '%s' %pos.y())
         
-        xmlDoc = open( self.propertyNodePath, 'w' )
+        xmlDoc = open(self.propertyNodePath, 'w')
         
-        xmlDoc.write( '<?xml version="1.0"?>' )
-        xmlDoc.write( ET.tostring( propertyNodeRoot ) )
+        xmlDoc.write('<?xml version="1.0"?>')
+        xmlDoc.write(ET.tostring(propertyNodeRoot))
         xmlDoc.close()
 
     #add new dynamic output:
-    def newOutput( self, node, name ):
-        output = portOutput( self, name, self.mainWindow )
+    def newOutput(self, node, name):
+        output = portOutput(self, name, self.mainWindow)
 
-        if len( name.split( '.' ) ) > 1:
+        if len(name.split('.')) > 1:
 
-            output.addText( node, name.split( '.' )[ 3 ] )
+            output.addText(node, name.split('.')[3])
 
         else:
-            output.addText( node, name )
+            output.addText(node, name)
         
-        self.outputs.append( output )
+        self.outputs.append(output)
 
-        output.setParentItem( self )
-        self.outputList.append( output )
+        output.setParentItem(self)
+        self.outputList.append(output)
         
-        self.rect.setWidth( self.rect.width() )
+        self.rect.setWidth(self.rect.width())
         
-        self.outputMaxWidth.append( output.childrenBoundingRect().width() )
+        self.outputMaxWidth.append(output.childrenBoundingRect().width())
         
         self.resizeHeight()
 
-    def newOutputButton( self ):
-        outputButton = portOutputButton( self, 'create new output', self.mainWindow )
+    def newOutputButton(self):
+        outputButton = portOutputButton(self, 'create new output', self.mainWindow)
         
-        outputButton.setParentItem( self )
+        outputButton.setParentItem(self)
     
-    def sendFromNodeToBox( self, text ):
-        self.scene.textMessage.emit( text )
+    def sendFromNodeToBox(self, text):
+        self.scene.textMessage.emit(text)
         
-    def getLabel( self ):
+    def getLabel(self):
         return self.label
 
-    def addText( self, scene, text ):
-        self.setData( 0, text )
-        nodeLabel = QGraphicsTextItem( text )
+    def addText(self, scene, text):
+        self.setData(0, text)
+        nodeLabel = QGraphicsTextItem(text)
         self.label = text
-        nodeLabelColor = ( QColor( 255, 255, 255 ) )
-        nodeLabelColor.setNamedColor( '#080808' )
-        nodeLabel.setDefaultTextColor( nodeLabelColor )
-        nodeLabel.setPos( QPointF( 25, 0 ) )
-        nodeLabel.setParentItem( self )
+        nodeLabelColor = (QColor(255, 255, 255))
+        nodeLabelColor.setNamedColor('#080808')
+        nodeLabel.setDefaultTextColor(nodeLabelColor)
+        nodeLabel.setPos(QPointF(25, 0))
+        nodeLabel.setParentItem(self)
         self.labelBoundingRect = nodeLabel.boundingRect().width()
 
         self.resizeWidth()
 
-    def setApplicationColor( self ):
-        self.applicationColorItem.setNamedColor( self.taskColor )
+    def setApplicationColor(self):
+        self.applicationColorItem.setNamedColor(self.taskColor)
 
-    def setTaskColor( self ):
+    def setTaskColor(self):
         index = 0
 
-        if os.path.basename( self.location )[ :7 ].startswith( 'LDR' ):
-            if os.path.basename( self.location )[ :7 ].endswith( 'AST' ):
+        if os.path.basename(self.location)[:7].startswith('LDR'):
+            if os.path.basename(self.location)[:7].endswith('AST'):
                 self.taskColor = '#FFFF00'
-            elif os.path.basename( self.location )[ :7 ].endswith( 'SHT' ):
+            elif os.path.basename(self.location)[:7].endswith('SHT'):
                 self.taskColor = '#0000FF'
-            elif os.path.basename( self.location )[ :7 ].endswith( 'LIB' ):
+            elif os.path.basename(self.location)[:7].endswith('LIB'):
                 self.taskColor = '#00FF00'
-        elif os.path.basename( self.location )[ :7 ].startswith( 'SVR' ):
-            if os.path.basename( self.location )[ :7 ].endswith( 'AST' ):
+        elif os.path.basename(self.location)[:7].startswith('SVR'):
+            if os.path.basename(self.location)[:7].endswith('AST'):
                 self.taskColor = '#FFFF33'
-            elif os.path.basename( self.location )[ :7 ].endswith( 'SHT' ):
+            elif os.path.basename(self.location)[:7].endswith('SHT'):
                 self.taskColor = '#3333FF'
 
         else:
 
             for i in self._tasks:
-                if [ item for item in i if self.nodeTask in item ]:
-                    logging.info( 'task color description found' )
-                    self.taskColor = self._tasks[ index ][ 0 ][ 1 ]
+                if [item for item in i if self.nodeTask in item]:
+                    logging.info('task color description found')
+                    self.taskColor = self._tasks[index][0][1]
                     break
                 else:
                     index += 1
 
-        self.taskColorItem.setNamedColor( self.taskColor )
+        self.taskColorItem.setNamedColor(self.taskColor)
 
 

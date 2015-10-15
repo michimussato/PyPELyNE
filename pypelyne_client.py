@@ -193,7 +193,7 @@ class PypelyneMainWindow(QMainWindow):
 
         self.openPushButton.setEnabled(False)
 
-        self.computeValueApplications()
+        self.compute_value_applications()
         self.computeValueTasks()
         self.computeValueOutputs()
 
@@ -228,6 +228,7 @@ class PypelyneMainWindow(QMainWindow):
         self.addProjects()
         
         # Tools
+        self.tools_dict = {}
         self.addTools()
 
         self.audioFolderContent = []
@@ -635,12 +636,6 @@ class PypelyneMainWindow(QMainWindow):
             threading.Timer(0.5, self.fromStopToSkip).start()
             #threading.Timer(1, self.fromStopToSkipChangeUi).start()
 
-
-
-
-
-
-        
     def getCurrentPlatform(self):
         return self.currentPlatform
         
@@ -725,8 +720,6 @@ class PypelyneMainWindow(QMainWindow):
         for nodeExeArg in args[0]:
             arguments.append(nodeExeArg)
 
-
-
         arguments.append(newestFile)
         #print newestFile
         #print args[0]
@@ -734,9 +727,6 @@ class PypelyneMainWindow(QMainWindow):
 
         #for i in arguments:
         #    print i
-
-
-
 
         #if executable.startswith('"') and executable.endswith('"'):
         #print executable[1:-2], arguments
@@ -746,11 +736,8 @@ class PypelyneMainWindow(QMainWindow):
             executable = executable[:-1]
         #print executable, arguments
 
-
-
         newScreenCast = screenCast(self, os.path.basename(node.getNodeAsset()), node.getLabel(), node.getNodeProject())
         newTimeTracker = timeTracker(os.path.basename(node.getNodeAsset()), node.getLabel(), node.getNodeProject())
-
 
         process = QProcess(self)
 
@@ -761,7 +748,7 @@ class PypelyneMainWindow(QMainWindow):
         process.readyReadStandardError.connect(lambda: self.dataReadyErr(process, pColor))
         process.started.connect(lambda: self.taskOnStarted(node, process, newScreenCast, newTimeTracker))
         #process.started.connect(lambda: )
-        process.finished.connect(lambda: self.taskOnFinished(node, process, newScreenCast, newTimeTracker))
+        process.finished.connect(lambda: self.task_on_finished(node, process, newScreenCast, newTimeTracker))
         currentDir = os.getcwd()
         os.chdir(node.getNodeRootDir())
         #print node.getNodeRootDir()
@@ -788,7 +775,6 @@ class PypelyneMainWindow(QMainWindow):
 
         #print tarDirRoot
         #print os.getcwd()
-
 
         arguments = []
         arguments.append('cvL')
@@ -821,7 +807,6 @@ class PypelyneMainWindow(QMainWindow):
 
         process.start(self.tarExec, arguments)
 
-
         '''
         checkOutFilePath = os.path.join(node.getNodeRootDir(), 'checkedOut')
         checkOutFile = open(checkOutFilePath, 'a')
@@ -841,7 +826,6 @@ class PypelyneMainWindow(QMainWindow):
         except:
             #print 'check in failed'
             logging.warning('check in failed')
-
 
     def taskOnStarted(self, node, qprocess, screenCast, timeTracker):
 
@@ -866,13 +850,11 @@ class PypelyneMainWindow(QMainWindow):
             screenCast.start()
             self.screenCasts.append(screenCast)
             self.addNewScreenCast.emit()
-        #
 
         timeTracker.start()
         self.timeTrackers.append(timeTracker)
 
-
-    def taskOnFinished(self, node, qprocess, screenCast, timeTracker):
+    def task_on_finished(self, node, qprocess, screenCast, timeTracker):
         logging.info('task %s finished' %node.getLabel())
         #
         # #pid = self.process.pid()
@@ -893,19 +875,17 @@ class PypelyneMainWindow(QMainWindow):
 
         self.openNodes.remove(node)
         self.qprocesses.remove(qprocess)
-        #print self.qprocesses
+        # print self.qprocesses
 
-
-
-
-    def computeValueApplications(self):
-
-        self.sendTextToBox('registering applications for current platform (%s) found at %s:\n' %(self.currentPlatform, self.valueApplicationsXML))
+    def compute_value_applications(self):
+        self.sendTextToBox('registering applications for current platform (%s) found at %s:\n' % (self.currentPlatform, self.valueApplicationsXML))
 
         self.valueApplications = ET.parse(self.valueApplicationsXML)
         self.valueApplicationsRoot = self.valueApplications.getroot()
 
-        #print 'hallo'
+        print type(self.valueApplicationsRoot)
+
+        # print 'hallo'
 #         families = self.valueApplications.findall('./family')
 #         for i in families:
 #             print i.items()[0][1]
@@ -943,70 +923,76 @@ class PypelyneMainWindow(QMainWindow):
 
                     for subsubdirectory in subsubdirectories:
 
-                        #print subsubdirectory
+                        # print subsubdirectory
                         directoryList.append(directory.items()[0][1] + os.sep + subdirectory.items()[0][1] + os.sep + subsubdirectory.items()[0][1])
-
-
-
-
-                
 
             for vendor in family:
                 for version in vendor:
-                    #templates = []
-                    #workspace = version.findall('./workspace')
-                    #for template in version:
-                    #    templates.append(template.items()[0][1])
+                    # templates = []
+                    # workspace = version.findall('./workspace')
+                    # for template in version:
+                    # templates.append(template.items()[0][1])
                     for platform in version:
                         for executable in platform:
                             flags = []
                             for flag in executable:
                                 flags.append(flag.items()[0][1])
                             if not executable.items()[0][1] == 'None' and platform.items()[0][1] == self.currentPlatform:
-
-                                #command = ["\"" + executable.items()[0][1] + "\" " + ' '.join(flags)]
+                                # command = ["\"" + executable.items()[0][1] + "\" " + ' '.join(flags)]
                                 command = ["\"" + executable.items()[0][1] + "\""]
 
                                 path = re.findall(r'"([^"]*)"', command[0])[0]
 
-                                familyValue = family.items()[1][1]
-                                familyAbbreviation = family.items()[0][1]
-                                vendorValue = vendor.items()[0][1]
-                                versionValue = version.items()[0][1]
-                                versionTemplate = version.items()[1][1]
-                                versionWorkspace = version.items()[2][1]
-                                #versionTemplates = templates
-                                #versionWorkspaceTemplate = version.items()[2][1]
-                                #print 'versionTemplate = %s' % version.items()[1][1]
+                                family_value = family.items()[1][1]
+                                family_abbreviation = family.items()[0][1]
+                                vendor_value = vendor.items()[0][1]
+                                version_value = version.items()[0][1]
+                                version_template = version.items()[1][1]
+                                version_workspace = version.items()[2][1]
+                                # version_templates = templates
+                                # version_workspaceTemplate = version.items()[2][1]
+                                # print 'version_template = %s' % version.items()[1][1]
                                 platformValue = platform.items()[0][1]
-                                executableArch = executable.tag
+                                executable_arch = executable.tag
 
                                 if os.path.exists(os.path.normpath(path)):
-
-                                    #self._tools.append((vendor.items()[0][1] + ' ' + family.items()[1][1] + ' ' + version.items()[0][1] + ' ' + platform.items()[0][1] + ' ' + executable.tag, command, familyAbbreviation))
-                                    #self._tools.append((vendorValue + ' ' + familyValue + ' ' + versionValue + ' ' + platformValue + ' ' + executableArch, command, familyAbbreviation, vendorValue, familyValue, versionValue, executableArch))
-                                    logging.info('application' + vendorValue + ' ' + familyValue + ' ' + versionValue + ' ' + executableArch + ' found on this machine.')
-                                    self._tools.append((vendorValue + ' ' + familyValue + ' ' + versionValue + ' ' + executableArch, command, familyAbbreviation, vendorValue, familyValue, versionValue, executableArch, versionTemplate, directoryList, defaultOutputList, flags, versionWorkspace))
-                                    self.sendTextToBox('\t' + vendorValue + ' ' + familyValue + ' ' + versionValue + ' ' + executableArch + ' found.\n')
+                                    # self._tools.append((vendor.items()[0][1] + ' ' + family.items()[1][1] + ' ' + version.items()[0][1] + ' ' + platform.items()[0][1] + ' ' + executable.tag, command, family_abbreviation))
+                                    # self._tools.append((vendor_value + ' ' + family_value + ' ' + version_value + ' ' + platformValue + ' ' + executable_arch, command, family_abbreviation, vendor_value, family_value, version_value, executable_arch))
+                                    logging.info('application' + vendor_value + ' ' + family_value + ' ' + version_value + ' ' + executable_arch + ' found on this machine.')
+                                    self._tools.append((vendor_value + ' ' + family_value + ' ' + version_value + ' ' + executable_arch, command, family_abbreviation, vendor_value, family_value, version_value, executable_arch, version_template, directoryList, defaultOutputList, flags, version_workspace))
+                                    self.tools_dict = {
+                                                        'label': vendor_value + ' ' + family_value + ' ' + version_value + ' ' + executable_arch,
+                                                        'family_abbreviation': family_abbreviation,
+                                                        'vendor_value': vendor_value,
+                                                        'family_value': family_value,
+                                                        'version_value': version_value,
+                                                        'executable_arch': executable_arch,
+                                                        'version_template': version_template,
+                                                        'directoryList': directoryList,
+                                                        'defaultOutputList': defaultOutputList,
+                                                        'version_workspace': version_workspace,
+                                                        'executable': command,
+                                                        'flags': flags,
+                                                        }
+                                    print self.tools_dict
+                                    self.sendTextToBox('\t' + vendor_value + ' ' + family_value + ' ' + version_value + ' ' + executable_arch + ' found.\n')
 
                                 else:
                                     logging.warning('path not found: %s. application not added to tools dropdown' %(path))
-                                    self.sendTextToBox('\t' + vendorValue + ' ' + familyValue + ' ' + versionValue + ' ' + executableArch + ' not found.')
+                                    self.sendTextToBox('\t' + vendor_value + ' ' + family_value + ' ' + version_value + ' ' + executable_arch + ' not found.')
 
 
         self.sendTextToBox('initialization done.\n\n')
 
-        #print self._tools
+        # print self._tools
     
 #     @pyqtSlot()
 #     def test(self):
 #         print 'test'
 
-    
     def getOutputs(self):
         return self._outputs
 
-    
     def getTasks(self):
         return self._tasks
         
@@ -1017,8 +1003,7 @@ class PypelyneMainWindow(QMainWindow):
         def callback():
             self.locateContent(contentFiles)
         return callback
-    
-    
+
     def locateContent(self, contentFiles):
         #print contentFiles
         if os.path.exists(contentFiles):

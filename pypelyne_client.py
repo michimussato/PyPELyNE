@@ -959,7 +959,19 @@ class PypelyneMainWindow(QMainWindow):
                                     # self._tools.append((vendor.items()[0][1] + ' ' + family.items()[1][1] + ' ' + version.items()[0][1] + ' ' + platform.items()[0][1] + ' ' + executable.tag, command, family_abbreviation))
                                     # self._tools.append((vendor_value + ' ' + family_value + ' ' + version_value + ' ' + platformValue + ' ' + executable_arch, command, family_abbreviation, vendor_value, family_value, version_value, executable_arch))
                                     logging.info('application' + vendor_value + ' ' + family_value + ' ' + version_value + ' ' + executable_arch + ' found on this machine.')
-                                    self._tools.append((vendor_value + ' ' + family_value + ' ' + version_value + ' ' + executable_arch, command, family_abbreviation, vendor_value, family_value, version_value, executable_arch, version_template, directoryList, defaultOutputList, flags, version_workspace))
+                                    self._tools.append((vendor_value + ' ' + family_value + ' ' + version_value + ' ' + executable_arch,
+                                                        command,
+                                                        family_abbreviation,
+                                                        vendor_value,
+                                                        family_value,
+                                                        version_value,
+                                                        executable_arch,
+                                                        version_template,
+                                                        directoryList,
+                                                        defaultOutputList,
+                                                        flags,
+                                                        version_workspace
+                                                        ))
                                     self.tools_dict = {
                                                         'label': vendor_value + ' ' + family_value + ' ' + version_value + ' ' + executable_arch,
                                                         'family_abbreviation': family_abbreviation,

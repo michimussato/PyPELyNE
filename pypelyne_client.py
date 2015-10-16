@@ -29,7 +29,19 @@ from src.listScreenCasts import *
 from src.nodeWidget import *
 from src.playerWidget import *
 
-from conf.valuePyPELyNE import *
+# from conf.valuePyPELyNE import *
+
+from settings import EXCLUSIONS, AUDIO_EXTENSIONS, IMAGE_EXTENSIONS, MOVIE_EXTENSIONS, ARCHIVE_SEPARATOR
+from settings import USE_SERVER, USE_SCREEN_CAST, SERVER_IP, SERVER_PORT, SERVER_PORT_RANGE, PROJECT_ROOT_SERVER
+from settings import LIBRARY_ROOT_SERVER, PROJECTS_ROOT_SERVER_DARWIN, ASSETS_ROOT_SERVER_DARWIN
+from settings import ASSETS_ROOT_SERVER_WIN, PROJECTS_ROOT_SERVER_LINUX, ASSETS_ROOT_SERVER_LINUX
+from settings import FILE_EXPLORER_DARWIN, PROJECTS_ROOT_DARWIN, PROJECTS_ROOT_DARWIN_ALT, LIBRARY_ROOT_DARWIN
+from settings import AUDIO_FOLDER_DARWIN, SCREEN_CAST_EXEC_DARWIN, SEQUENCE_EXEC_DARWIN, SEQUENCE_EXEC_RV_DARWIN
+from settings import TAR_EXEC_DARWIN, FILE_EXPLORER_WIN, PROJECTS_ROOT_WIN, LIBRARY_ROOT_WIN, AUDIO_FOLDER_WIN
+from settings import SCREEN_CAST_EXEC_WIN, SEQUENCE_EXEC_WIN, SEQUENCE_EXEC_RV_WIN, TAR_EXEC_WIN
+from settings import FILE_EXPLORER_LINUX_GNOME, FILE_EXPLORER_LINUX_KDE, PROJECTS_ROOT_LINUX, LIBRARY_ROOT_LINUX
+from settings import AUDIO_FOLDER_LINUX, SCREEN_CAST_EXEC_LINUX, SEQUENCE_EXEC_LINUX, SEQUENCE_EXEC_RV_LINUX
+from settings import TAR_EXEC_LINUX, PROJECTS_ROOT_SERVER_WIN
 
 import xml.etree.ElementTree as ET
 
@@ -50,7 +62,7 @@ class PypelyneMainWindow(QMainWindow):
 
         # logging.basicConfig(level = logging.INFO)
 
-        self.serverHost = serverIP
+        self.serverHost = SERVER_IP
         self.serverPort = int(SERVER_PORT)
         self.portRange = int(SERVER_PORT_RANGE)
 
@@ -62,7 +74,7 @@ class PypelyneMainWindow(QMainWindow):
 
         # self.connectServer()
 
-        if useServer:
+        if USE_SERVER:
             logging.info('connecting to server')
             logging.info('server ip is %s' % self.serverHost)
             counter = 1
@@ -77,7 +89,6 @@ class PypelyneMainWindow(QMainWindow):
                     logging.info('connection failed')
                     logging.info('trying next port')
                     if counter < self.portRange:
-
                         #warning('port %s in use' %(self.port))
                         counter += 1
                         self.serverPort += 1
@@ -93,73 +104,72 @@ class PypelyneMainWindow(QMainWindow):
         self.currentPlatform = platform.system()
         self.user = getpass.getuser()
         
-        self.exclusions = exclusions
-        self.audioExtensions = audioExtensions
-        self.imageExtensions = imageExtensions
-        self.movieExtensions = movieExtensions
-        self.tarSep = archiveSeparator
-        self.screenCastActive = screenCastActive
+        self.exclusions = EXCLUSIONS
+        self.audioExtensions = AUDIO_EXTENSIONS
+        self.imageExtensions = IMAGE_EXTENSIONS
+        self.movieExtensions = MOVIE_EXTENSIONS
+        self.tarSep = ARCHIVE_SEPARATOR
+        self.screenCastActive = USE_SCREEN_CAST
 
         self.setProjectsRoot()
 
         if self.currentPlatform == "Windows":
-
             # print 'platform not fully supported'
             logging.info('Windows not fully supported')
-            self.fileExplorer = fileExplorerWin
-            self.tarExec = tarExecWin
+            self.fileExplorer = FILE_EXPLORER_WIN
+            self.tarExec = TAR_EXEC_WIN
             # self.projectsRoot = projectsRootWin
-            self.libraryRoot = libraryRootWin
-            self.audioFolder = audioFolderWin
-            if screenCastExecWin[1:].startswith(':' + os.sep):
-                self.screenCastExec = screenCastExecWin
+            self.libraryRoot = LIBRARY_ROOT_WIN
+            self.audioFolder = AUDIO_FOLDER_WIN
+            if SCREEN_CAST_EXEC_WIN[1:].startswith(':' + os.sep):
+                self.screenCastExec = SCREEN_CAST_EXEC_WIN
             else:
-                self.screenCastExec = os.path.join(self.pypelyneRoot, screenCastExecWin)
-            if len(sequenceExecRvWin) <= 0 or not os.path.exists(sequenceExecRvWin):
-                self.sequenceExec = sequenceExecWin
+                self.screenCastExec = os.path.join(self.pypelyneRoot, SCREEN_CAST_EXEC_WIN)
+            if len(SEQUENCE_EXEC_RV_WIN) <= 0 or not os.path.exists(SEQUENCE_EXEC_RV_WIN):
+                self.sequenceExec = SEQUENCE_EXEC_WIN
                 self.rv = False
             else:
-                self.sequenceExec = sequenceExecRvWin
+                self.sequenceExec = SEQUENCE_EXEC_RV_WIN
                 self.rv = True
         elif self.currentPlatform == "Darwin":
             logging.info('welcome to pypelyne for darwin')
-            self.fileExplorer = fileExplorerDarwin
-            self.tarExec = tarExecDarwin
+            self.fileExplorer = FILE_EXPLORER_DARWIN
+            self.tarExec = TAR_EXEC_DARWIN
             # self.projectsRoot = projectsRootDarwin
-            self.libraryRoot = libraryRootDarwin
-            self.audioFolder = audioFolderDarwin
-            if screenCastExecDarwin.startswith(os.sep):
-                self.screenCastExec = screenCastExecDarwin
+            self.libraryRoot = LIBRARY_ROOT_DARWIN
+            self.audioFolder = AUDIO_FOLDER_DARWIN
+            if SCREEN_CAST_EXEC_DARWIN.startswith(os.sep):
+                self.screenCastExec = SCREEN_CAST_EXEC_DARWIN
             else:
-                self.screenCastExec = os.path.join(self.pypelyneRoot, screenCastExecDarwin)
-            if len(sequenceExecRvDarwin) <= 0 or not os.path.exists(sequenceExecRvDarwin):
-                self.sequenceExec = sequenceExecDarwin
+                self.screenCastExec = os.path.join(self.pypelyneRoot, SCREEN_CAST_EXEC_DARWIN)
+            if len(SEQUENCE_EXEC_RV_DARWIN) <= 0 or not os.path.exists(SEQUENCE_EXEC_RV_DARWIN):
+                self.sequenceExec = SEQUENCE_EXEC_DARWIN
                 self.rv = False
             else:
-                self.sequenceExec = sequenceExecRvDarwin
+                self.sequenceExec = SEQUENCE_EXEC_RV_DARWIN
                 self.rv = True
         elif self.currentPlatform == "Linux":
             logging.info('linux not fully supported')
-            if os.path.exists(fileExplorerLinuxGnome):
-                self.fileExplorer = fileExplorerLinuxGnome
-            elif os.path.exists(fileExplorerLinuxKDE):
-                self.fileExplorer = fileExplorerLinuxKDE
+            if os.path.exists(FILE_EXPLORER_LINUX_GNOME):
+                self.fileExplorer = FILE_EXPLORER_LINUX_GNOME
+            elif os.path.exists(FILE_EXPLORER_LINUX_KDE):
+                self.fileExplorer = FILE_EXPLORER_LINUX_KDE
             else:
                 logging.warning('no valid file explorer found for linux')
             # quit()
-            self.tarExec = tarExecLinux
+            self.tarExec = TAR_EXEC_LINUX
             # self.projectsRoot = projectsRootLinux
-            self.libraryRoot = libraryRootLinux
-            self.audioFolder = audioFolderLinux
-            if screenCastExecLinux.startswith(os.sep):
-                self.screenCastExec = screenCastExecLinux
+            self.libraryRoot = LIBRARY_ROOT_LINUX
+            self.audioFolder = AUDIO_FOLDER_LINUX
+            if SCREEN_CAST_EXEC_LINUX.startswith(os.sep):
+                self.screenCastExec = SCREEN_CAST_EXEC_LINUX
             else:
-                self.screenCastExec = os.path.join(self.pypelyneRoot, screenCastExecLinux)
-            if len(sequenceExecRvLinux) <= 0 or not os.path.exists(sequenceExecRvLinux):
-                self.sequenceExec = sequenceExecLinux
+                self.screenCastExec = os.path.join(self.pypelyneRoot, SCREEN_CAST_EXEC_LINUX)
+            if len(SEQUENCE_EXEC_RV_LINUX) <= 0 or not os.path.exists(SEQUENCE_EXEC_RV_LINUX):
+                self.sequenceExec = SEQUENCE_EXEC_LINUX
                 self.rv = False
             else:
-                self.sequenceExec = sequenceExecRvLinux
+                self.sequenceExec = SEQUENCE_EXEC_RV_LINUX
                 self.rv = True
         else:
             print 'platform unknown. not supported. bye.'
@@ -314,7 +324,7 @@ class PypelyneMainWindow(QMainWindow):
             self.serverAlive = True
             # self.socket.close()
         except socket.error:
-            self.projectsRoot = projectsRootWin
+            self.projectsRoot = PROJECTS_ROOT_WIN
             self.serverAlive = False
 
     def setProjectsRootLinux(self):
@@ -327,7 +337,7 @@ class PypelyneMainWindow(QMainWindow):
             self.serverAlive = True
             # self.socket.close()
         except socket.error:
-            self.projectsRoot = projectsRootLinux
+            self.projectsRoot = PROJECTS_ROOT_LINUX
             self.serverAlive = False
 
     def setProjectsRootDarwin(self):
@@ -343,14 +353,14 @@ class PypelyneMainWindow(QMainWindow):
                 # self.socket.close()
             except socket.error:
                 logging.warning('looks like server connection died')
-                self.projectsRoot = projectsRootDarwin
+                self.projectsRoot = PROJECTS_ROOT_DARWIN
                 self.serverAlive = False
 
         else:
-            if os.path.exists(projectsRootDarwin):
-                self.projectsRoot = projectsRootDarwin
-            elif os.path.exists(projectsRootDarwinAlt):
-                self.projectsRoot = projectsRootDarwinAlt
+            if os.path.exists(PROJECTS_ROOT_DARWIN):
+                self.projectsRoot = PROJECTS_ROOT_DARWIN
+            elif os.path.exists(PROJECTS_ROOT_DARWIN_ALT):
+                self.projectsRoot = PROJECTS_ROOT_DARWIN_ALT
             else:
                 logging.warning('no predefinded projectsRoot found')
 
@@ -361,13 +371,13 @@ class PypelyneMainWindow(QMainWindow):
 
     def exportToLibrary(self, node):
         print 'exportToLibrary', node
-        dateTime = datetime.datetime.now().strftime('%Y-%m-%d_%H%M-%S')
-        currentDir = os.getcwd()
-        exportSrcNodeDir = node.location
-        exportSrcNodeDirInputs = os.path.join(exportSrcNodeDir, 'input')
+        date_time = datetime.datetime.now().strftime('%Y-%m-%d_%H%M-%S')
+        current_dir = os.getcwd()
+        export_src_node_dir = node.location
+        export_src_node_dir_inputs = os.path.join(export_src_node_dir, 'input')
         # exportSrcNodeDirOutputs = os.path.join(exportSrcNodeDir, 'output')
         exportDstDirRoot = self.libraryRoot
-        exportDstName = self.getCurrentProject() + self.tarSep + os.path.basename(os.path.dirname(node.getNodeAsset())) + self.tarSep + os.path.basename(node.getNodeAsset()) + self.tarSep + node.label + self.tarSep + dateTime
+        exportDstName = self.getCurrentProject() + self.tarSep + os.path.basename(os.path.dirname(node.getNodeAsset())) + self.tarSep + os.path.basename(node.getNodeAsset()) + self.tarSep + node.label + self.tarSep + date_time
         exportDstDir = os.path.join(exportDstDirRoot, exportDstName)
         exportDstNameInput = os.path.join(exportDstDir, 'input')
         exportDstNameOutput = os.path.join(exportDstDir, 'output')
@@ -383,12 +393,12 @@ class PypelyneMainWindow(QMainWindow):
         # shutil.copytree('/Volumes/pili/pypelyne_projects/0000-00-00___test___test/content/assets/test/SVR_AST__test/input', '/Volumes/pili/pypelyne_assets/0000-00-00___test___test_____assets_____test_____SVR_AST__test_____2015-09-04_1311-41/output', symlinks = False)
         #                   /Volumes/pili/pypelyne_projects/0000-00-00___test___test/content/assets/test/SVR_AST__test/input
 
-        shutil.copytree(exportSrcNodeDirInputs, exportDstNameOutput, symlinks=False)
+        shutil.copytree(export_src_node_dir_inputs, exportDstNameOutput, symlinks=False)
 
         os.chdir(exportDstDir)
         os.symlink(os.path.relpath(exportDstNameOutput, exportDstDir), 'live')
         os.path.relpath(exportDstNameOutput, exportDstDir)
-        os.chdir(currentDir)
+        os.chdir(current_dir)
         # shutil.copytree(exportSrcNodeDirOutputs, exportDstNameInput, symlinks = False)
 
     def screenCastsWindow(self):
@@ -974,16 +984,16 @@ class PypelyneMainWindow(QMainWindow):
                                                         ))
                                     self.tools_dict = {
                                                         'label': vendor_value + ' ' + family_value + ' ' + version_value + ' ' + executable_arch,
+                                                        'vendor': vendor_value,
+                                                        'family': family_value,
                                                         'family_abbreviation': family_abbreviation,
-                                                        'vendor_value': vendor_value,
-                                                        'family_value': family_value,
-                                                        'version_value': version_value,
-                                                        'executable_arch': executable_arch,
-                                                        'version_template': version_template,
-                                                        'directoryList': directoryList,
-                                                        'defaultOutputList': defaultOutputList,
-                                                        'version_workspace': version_workspace,
+                                                        'version': version_value,
+                                                        'template': version_template,
+                                                        'directory_list': directoryList,
+                                                        'default_outputs': defaultOutputList,
+                                                        'workspace': version_workspace,
                                                         'executable': command,
+                                                        'architecture': executable_arch,
                                                         'flags': flags,
                                                         }
                                     print self.tools_dict

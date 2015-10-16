@@ -1,0 +1,33 @@
+{
+  "family": {
+    "-value": "NukeX",
+    "-abbrev": "NUX",
+    "vendor": {
+      "-value": "The Foundry",
+      "version": {
+        "-value": "7.0v8",
+        "-template": "null_thefoundry_nukex_708.nk",
+        "-workspace": "None",
+        "platform": [
+          {
+            "-value": "Windows",
+            "x32": { "-value": "None" },
+            "x64": { "-value": "None" }
+          },
+          {
+            "-value": "Darwin",
+            "x32": { "-value": "None" },
+            "x64": {
+              "-value": "/Applications/Nuke7.0v8/Nuke7.0v8.app/Nuke7.0v8",
+              "flag": [
+                { "-value": "--nukex" },
+                { "-value": "-V" },
+                { "-value": "2" }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "family": {
+    "-value": "HDRLightStudio",
+    "-abbrev": "LST",
+    "vendor": {
+      "-value": "Lightmap",
+      "version": {
+        "-value": "4",
+        "-template": "None",
+        "-workspace": "None",
+        "platform": [
+          {
+            "-value": "Windows",
+            "x32": { "-value": "None" },
+            "x64": { "-value": "None" }
+          },
+          {
+            "-value": "Darwin",
+            "x32": { "-value": "None" },
+            "x64": { "-value": "/Applications/HDRLightStudio.app/Contents/MacOS/HDRLightStudio" }
+          }
+        ]
+      }
+    }
+  }
+}

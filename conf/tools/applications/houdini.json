@@ -1,0 +1,33 @@
+{
+  "family": {
+    "-value": "Houdini",
+    "-abbrev": "HOU",
+    "directory": [
+      { "-value": "scripts" },
+      { "-value": "otls" },
+      { "-value": "desktop" },
+      { "-value": "toolbar" },
+      { "-value": "gallery" }
+    ],
+    "vendor": {
+      "-value": "Side Effects Software",
+      "version": {
+        "-value": "13.0.314",
+        "-template": "null_sidefx_houdini_130260.hip",
+        "-workspace": "None",
+        "platform": [
+          {
+            "-value": "Windows",
+            "x32": { "-value": "None" },
+            "x64": { "-value": "None" }
+          },
+          {
+            "-value": "Darwin",
+            "x32": { "-value": "None" },
+            "x64": { "-value": "/Applications/Houdini 13.0.314/Houdini FX.app/Contents/MacOS/houdini" }
+          }
+        ]
+      }
+    }
+  }
+}

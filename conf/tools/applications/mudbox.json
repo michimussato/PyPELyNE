@@ -1,0 +1,45 @@
+{
+  "family": {
+    "-value": "Mudbox",
+    "-abbrev": "MUD",
+    "vendor": {
+      "-value": "Autodesk",
+      "version": [
+        {
+          "-value": "2013",
+          "-template": "null_autodesk_mudbox_2013.mud",
+          "-workspace": "None",
+          "platform": [
+            {
+              "-value": "Windows",
+              "x32": { "-value": "None" },
+              "x64": { "-value": "None" }
+            },
+            {
+              "-value": "Darwin",
+              "x32": { "-value": "None" },
+              "x64": { "-value": "/Applications/Autodesk/Mudbox2013/Mudbox.app/Contents/MacOS/Mudbox" }
+            }
+          ]
+        },
+        {
+          "-value": "2015",
+          "-template": "null_autodesk_mudbox_2015.mud",
+          "-workspace": "None",
+          "platform": [
+            {
+              "-value": "Windows",
+              "x32": { "-value": "None" },
+              "x64": { "-value": "None" }
+            },
+            {
+              "-value": "Darwin",
+              "x32": { "-value": "None" },
+              "x64": { "-value": "/Applications/Autodesk/Mudbox2015/Mudbox.app/Contents/MacOS/Mudbox" }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

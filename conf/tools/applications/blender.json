@@ -1,0 +1,26 @@
+{
+  "family": {
+    "-value": "Blender",
+    "-abbrev": "BLD",
+    "vendor": {
+      "-value": "Blender Foundation",
+      "version": {
+        "-value": "2.6.9",
+        "-template": "null_blenderfoundation_blender_269.blend",
+        "-workspace": "None",
+        "platform": [
+          {
+            "-value": "Windows",
+            "x32": { "-value": "None" },
+            "x64": { "-value": "None" }
+          },
+          {
+            "-value": "Darwin",
+            "x32": { "-value": "None" },
+            "x64": { "-value": "/Applications/Blender/blender.app/Contents/MacOS/blender" }
+          }
+        ]
+      }
+    }
+  }
+}

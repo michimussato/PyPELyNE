@@ -1,0 +1,45 @@
+{
+  "family": {
+    "value": "Photoshop",
+    "abbrev": "PSH",
+    "vendor": {
+      "value": "Adobe",
+      "version": [
+        {
+          "value": "CS6",
+          "template": "null_adobe_photoshop_CS6.psd",
+          "workspace": "None",
+          "platform": [
+            {
+              "value": "Windows",
+              "x32": { "value": "None" },
+              "x64": { "value": "None" }
+            },
+            {
+              "value": "Darwin",
+              "x32": { "value": "None" },
+              "x64": { "value": "/Applications/Adobe Photoshop CS6/Adobe Photoshop CS6.app/Contents/MacOS/Adobe Photoshop CS6" }
+            }
+          ]
+        },
+        {
+          "value": "CC12",
+          "template": "null_adobe_photoshop_CC12.psd",
+          "workspace": "None",
+          "platform": [
+            {
+              "value": "Windows",
+              "x32": { "value": "None" },
+              "x64": { "value": "C:\\Program Files\\Adobe\\Adobe Photoshop CC (64 Bit)\\Photoshop.exe" }
+            },
+            {
+              "value": "Darwin",
+              "x32": { "value": "None" },
+              "x64": { "value": "/Applications/Adobe Photoshop CC/Adobe Photoshop CC.app/Contents/MacOS/Adobe Photoshop CC" }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

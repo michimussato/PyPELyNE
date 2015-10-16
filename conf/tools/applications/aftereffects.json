@@ -1,0 +1,45 @@
+{
+  "family": {
+    "value": "After Effects",
+    "abbrev": "AFX",
+    "vendor": {
+      "value": "Adobe",
+      "version": [
+        {
+          "value": "CS6",
+          "template": "null_adobe_aftereffects_CS6.aep",
+          "workspace": "None",
+          "platform": [
+            {
+              "value": "Windows",
+              "x32": { "value": "None" },
+              "x64": { "value": "None" }
+            },
+            {
+              "value": "Darwin",
+              "x32": { "value": "None" },
+              "x64": { "value": "/Applications/Adobe After Effects CS6/Adobe After Effects CS6.app/Contents/MacOS/After Effects" }
+            }
+          ]
+        },
+        {
+          "value": "CC12",
+          "template": "null_adobe_aftereffects_CC12.aep",
+          "workspace": "None",
+          "platform": [
+            {
+              "value": "Windows",
+              "x32": { "value": "None" },
+              "x64": { "value": "C:\\Program Files\\Adobe\\Adobe After Effects CC\\Support Files\\AfterFX.exe" }
+            },
+            {
+              "value": "Darwin",
+              "x32": { "value": "None" },
+              "x64": { "value": "/Applications/Adobe After Effects CC/Adobe After Effects CC.app/Contents/MacOS/After Effects" }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

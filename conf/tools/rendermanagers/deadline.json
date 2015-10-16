@@ -1,0 +1,79 @@
+{
+  "family": {
+    "value": "Deadline",
+    "abbrev": "DDL",
+    "vendor": {
+      "value": "Thinkbox Software",
+      "version": [
+        {
+          "value": "5.2.4949 (Monitor)",
+          "template": "None",
+          "workspace": "None",
+          "platform": [
+            {
+              "value": "Windows",
+              "x32": { "value": "None" },
+              "x64": { "value": "None" }
+            },
+            {
+              "value": "Darwin",
+              "x32": { "value": "None" },
+              "x64": { "value": "/Applications/Deadline/Resources/bin/deadlinemonitor" }
+            }
+          ]
+        },
+        {
+          "value": "5.2.4949 (Job Monitor)",
+          "template": "None",
+          "workspace": "None",
+          "platform": [
+            {
+              "value": "Windows",
+              "x32": { "value": "None" },
+              "x64": { "value": "None" }
+            },
+            {
+              "value": "Darwin",
+              "x32": { "value": "None" },
+              "x64": { "value": "/Applications/Deadline/Resources/bin/deadlinejobmonitor" }
+            }
+          ]
+        },
+        {
+          "value": "5.2.4949 (Slave)",
+          "template": "None",
+          "workspace": "None",
+          "platform": [
+            {
+              "value": "Windows",
+              "x32": { "value": "None" },
+              "x64": { "value": "None" }
+            },
+            {
+              "value": "Darwin",
+              "x32": { "value": "None" },
+              "x64": { "value": "/Applications/Deadline/Resources/bin/deadlineslave" }
+            }
+          ]
+        },
+        {
+          "value": "5.2.4949 (Submitter)",
+          "template": "None",
+          "workspace": "None",
+          "platform": [
+            {
+              "value": "Windows",
+              "x32": { "value": "None" },
+              "x64": { "value": "None" }
+            },
+            {
+              "value": "Darwin",
+              "x32": { "value": "None" },
+              "x64": { "value": "/Applications/Deadline/Resources/bin/deadlinecommand" }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

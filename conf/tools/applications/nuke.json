@@ -1,0 +1,57 @@
+{
+  "family": {
+    "-value": "Nuke",
+    "-abbrev": "NUK",
+    "vendor": {
+      "-value": "The Foundry",
+      "version": [
+        {
+          "-value": "7.0v8",
+          "-template": "null_thefoundry_nuke_708.nk",
+          "-workspace": "None",
+          "platform": [
+            {
+              "-value": "Windows",
+              "x32": { "-value": "None" },
+              "x64": { "-value": "None" }
+            },
+            {
+              "-value": "Darwin",
+              "x32": { "-value": "None" },
+              "x64": {
+                "-value": "/Applications/Nuke7.0v8/Nuke7.0v8.app/Nuke7.0v8",
+                "flag": [
+                  { "-value": "-V" },
+                  { "-value": "2" }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "-value": "8.0v3",
+          "-template": "None",
+          "-workspace": "None",
+          "platform": [
+            {
+              "-value": "Windows",
+              "x32": { "-value": "None" },
+              "x64": { "-value": "C:\\Program Files\\Nuke8.0v3\\Nuke8.0.exe" }
+            },
+            {
+              "-value": "Darwin",
+              "x32": { "-value": "None" },
+              "x64": {
+                "-value": "/Applications/Nuke8.0v3/Nuke8.0v3.app/Nuke8.0v3",
+                "flag": [
+                  { "-value": "-V" },
+                  { "-value": "2" }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

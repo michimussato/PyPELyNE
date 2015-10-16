@@ -1,0 +1,45 @@
+{
+  "family": {
+    "value": "ZBrush",
+    "abbrev": "ZBR",
+    "vendor": {
+      "value": "Pixologic",
+      "version": [
+        {
+          "value": "4R5",
+          "template": "null_pixologic_zbrush_4r5.zpr",
+          "workspace": "None",
+          "platform": [
+            {
+              "value": "Windows",
+              "x32": { "value": "None" },
+              "x64": { "value": "None" }
+            },
+            {
+              "value": "Darwin",
+              "x32": { "value": "/Applications/ZBrushOSX 4R5/ZBrush.app" },
+              "x64": { "value": "None" }
+            }
+          ]
+        },
+        {
+          "value": "4R6",
+          "template": "null_pixologic_zbrush_4r6.ZPR",
+          "workspace": "None",
+          "platform": [
+            {
+              "value": "Windows",
+              "x32": { "value": "None" },
+              "x64": { "value": "None" }
+            },
+            {
+              "value": "Darwin",
+              "x32": { "value": "/Applications/ZBrushOSX 4R6/ZBrush.app" },
+              "x64": { "value": "None" }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

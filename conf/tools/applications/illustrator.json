@@ -1,0 +1,45 @@
+{
+  "family": {
+    "value": "Illustrator",
+    "abbrev": "ILU",
+    "vendor": {
+      "value": "Adobe",
+      "version": [
+        {
+          "value": "CS6",
+          "template": "None",
+          "workspace": "None",
+          "platform": [
+            {
+              "value": "Windows",
+              "x32": { "value": "None" },
+              "x64": { "value": "None" }
+            },
+            {
+              "value": "Darwin",
+              "x32": { "value": "None" },
+              "x64": { "value": "/Applications/Adobe Illustrator CS6/Adobe Illustrator.app/Contents/MacOS/Adobe Illustrator" }
+            }
+          ]
+        },
+        {
+          "value": "CC12",
+          "template": "null_adobe_illustrator_CC12.ai",
+          "workspace": "None",
+          "platform": [
+            {
+              "value": "Windows",
+              "x32": { "value": "None" },
+              "x64": { "value": "C:\\Program Files\\Adobe\\Adobe Illustrator CC (64 Bit)\\Support Files\\Contents\\Windows\\Illustrator.exe" }
+            },
+            {
+              "value": "Darwin",
+              "x32": { "value": "None" },
+              "x64": { "value": "/Applications/Adobe Illustrator CC/Adobe Illustrator.app/Contents/MacOS/Adobe Illustrator" }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

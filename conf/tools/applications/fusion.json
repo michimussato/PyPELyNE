@@ -1,0 +1,45 @@
+{
+  "family": {
+    "-value": "Fusion",
+    "-abbrev": "FSN",
+    "vendor": {
+      "-value": "Blackmagicdesign",
+      "version": [
+        {
+          "-value": "7",
+          "-template": "null_blackmagicdesign_fusion7.comp",
+          "-workspace": "None",
+          "platform": [
+            {
+              "-value": "Windows",
+              "x32": { "-value": "None" },
+              "x64": { "-value": "C:\\Program Files\\Blackmagic Design\\Fusion\\Fusion.exe" }
+            },
+            {
+              "-value": "Darwin",
+              "x32": { "-value": "None" },
+              "x64": { "-value": "None" }
+            }
+          ]
+        },
+        {
+          "-value": "8",
+          "-template": "None",
+          "-workspace": "None",
+          "platform": [
+            {
+              "-value": "Windows",
+              "x32": { "-value": "None" },
+              "x64": { "-value": "None" }
+            },
+            {
+              "-value": "Darwin",
+              "x32": { "-value": "None" },
+              "x64": { "-value": "/Applications/Blackmagic Fusion 8/Fusion.app/Contents/MacOS/Fusion" }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

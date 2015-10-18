@@ -271,4 +271,4 @@ class newLoaderUI(QDialog):
         dialog = newLoaderUI(contentDirectory, exclusions)
         result = dialog.exec_()
         loaderName, sourceSaverLocation, tabIndex = dialog.onOk()
-        return result == QDialog.Accepted, loaderName, sourceSaverLocation, tabIndex
+        return result == QDialog.Accepted, loaderName, sourceSaverLocation

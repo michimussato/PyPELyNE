@@ -158,10 +158,10 @@ class node(QGraphicsItem, QObject):
     def mouseDoubleClickEvent(self, event):
         print self.mainWindow._tools
 
-        if self.label.startswith('LDR_AST'):
-            self.mainWindow.getAssetContent(None, self.label)
-        elif self.label.startswith('LDR_SHT'):
-            self.mainWindow.getShotContent(None, self.label)
+        if self.label.startswith('LDR'):
+            self.mainWindow.get_content(node_label=self.label)
+        # elif self.label.startswith('LDR_SHT'):
+        #     self.mainWindow.getShotContent(None, self.label)
         #elif self.label.startswith('LDR_LIB'):
         #    pass
 
@@ -470,6 +470,10 @@ class node(QGraphicsItem, QObject):
     def getLabel(self):
         return self.label
 
+    @property
+    def _label(self):
+        return self.label
+
     def addText(self, scene, text):
         self.setData(0, text)
         nodeLabel = QGraphicsTextItem(text)
@@ -489,18 +493,26 @@ class node(QGraphicsItem, QObject):
     def setTaskColor(self):
         index = 0
 
+        # print self.location
+        # print self.location[:7]
+
         if os.path.basename(self.location)[:7].startswith('LDR'):
-            if os.path.basename(self.location)[:7].endswith('AST'):
-                self.taskColor = '#FFFF00'
-            elif os.path.basename(self.location)[:7].endswith('SHT'):
-                self.taskColor = '#0000FF'
-            elif os.path.basename(self.location)[:7].endswith('LIB'):
+            if os.path.basename(self.location)[:7].endswith('LIB'):
                 self.taskColor = '#00FF00'
+            else:
+                for tab in self.mainWindow.content_tabs:
+                    if os.path.basename(self.location)[:7].endswith(tab['abbreviation']):
+                        self.taskColor = tab['loader_color']
+                        break
+
         elif os.path.basename(self.location)[:7].startswith('SVR'):
-            if os.path.basename(self.location)[:7].endswith('AST'):
-                self.taskColor = '#FFFF33'
-            elif os.path.basename(self.location)[:7].endswith('SHT'):
-                self.taskColor = '#3333FF'
+            for tab in self.mainWindow.content_tabs:
+                if os.path.basename(self.location)[:7].endswith(tab['abbreviation']):
+                    self.taskColor = tab['saver_color']
+            # if os.path.basename(self.location)[:7].endswith('AST'):
+            #     self.taskColor = '#FFFF33'
+            # elif os.path.basename(self.location)[:7].endswith('SHT'):
+            #     self.taskColor = '#3333FF'
 
         else:
 

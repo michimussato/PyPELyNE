@@ -12,11 +12,13 @@ import os
 
 
 class newOutputUI(QDialog):
-    def __init__(self, output_dir, outputs, main_window, parent = None):
+    def __init__(self, output_dir, outputs, main_window, node, parent = None):
         super(newOutputUI, self).__init__(parent)
 
         self.mainWindow = main_window
         self.pypelyneRoot = self.mainWindow.getPypelyneRoot()
+
+        self.node = node
         
         self.currentPlatform = self.mainWindow.getCurrentPlatform()
 
@@ -77,7 +79,9 @@ class newOutputUI(QDialog):
             # self.comboBoxVersion.addItem('select')
         
     def setStatus(self):
-        usedNames = os.listdir(self.outputDir)
+        # usedNames = os.listdir(self.outputDir)
+        print self.node._label
+        usedNames = os.listdir(os.path.join(self.mainWindow._projects_root, self.mainWindow._current_project, 'content', self.mainWindow._current_content['content'], self.mainWindow._current_content_item, self.node._label, 'output'))
         #print usedNames
 
         #task[2][ 1]
@@ -119,8 +123,8 @@ class newOutputUI(QDialog):
     
     # http://stackoverflow.com/questions/18196799/how-can-i-show-a-pyqt-modal-dialog-and-get-data-out-of-its-controls-once-its-clo
     @staticmethod
-    def getNewOutputData(output_dir, outputs, main_window):
-        dialog = newOutputUI(output_dir, outputs, main_window)
+    def getNewOutputData(output_dir, outputs, main_window, node):
+        dialog = newOutputUI(output_dir, outputs, main_window, node)
         result = dialog.exec_()
         output_name, output_index = dialog.onOk()
         return output_name, result == QDialog.Accepted, output_index

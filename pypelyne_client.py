@@ -53,6 +53,8 @@ except:
 
 app = None
 
+# TODO: jumping from shots to asset loader does not update tab widget title correctly
+
 
 class PypelyneMainWindow(QMainWindow):
     addNewScreenCast = pyqtSignal()
@@ -72,7 +74,9 @@ class PypelyneMainWindow(QMainWindow):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
-        self.content_tabs = [{'content': 'assets', 'abbreviation': 'AST'}, {'content': 'shots', 'abbreviation': 'SHT'}, {'content': 'sequences', 'abbreviation': 'SEQ'}]
+        self.content_tabs = [{'content': 'assets', 'abbreviation': 'AST', 'loader_color': '#FFFF00', 'saver_color': '#FFFF33'},
+                             {'content': 'shots', 'abbreviation': 'SHT', 'loader_color': '#0000FF', 'saver_color': '#3333FF'},
+                             {'content': 'sequences', 'abbreviation': 'SEQ', 'loader_color': '#00FFFF', 'saver_color': '#33FFFF'}]
 
         # self.connectServer()
 
@@ -675,7 +679,7 @@ class PypelyneMainWindow(QMainWindow):
     def _current_content(self):
         current_content_index = self.assetsShotsTabWidget.currentIndex()
         # current_
-        print self.content_tabs[current_content_index]
+        # print self.content_tabs[current_content_index]
         return self.content_tabs[current_content_index]
 
     def getCurrentContent(self):
@@ -1187,9 +1191,9 @@ class PypelyneMainWindow(QMainWindow):
 
 
 
-        print tab_index
-        print self.content_tabs[tab_index]
-        print self.content_tabs[tab_index]['content']
+        # print tab_index
+        # print self.content_tabs[tab_index]
+        # print self.content_tabs[tab_index]['content']
 
         text, ok = QInputDialog.getText(self, 'create new %s' %(self.content_tabs[tab_index]['content']), 'enter %s name:' %(self.content_tabs[tab_index]['content']))
 
@@ -1281,10 +1285,12 @@ class PypelyneMainWindow(QMainWindow):
                         #print nodeSrcRootDir
                         #print os.path.join(nodeDstAssetDir, inputNode)
 
-                        if inputContent == 'assets':
-                            content = 'AST'
-                        elif inputContent == 'shots':
-                            content = 'SHT'
+
+
+                        # if inputContent == 'assets':
+                        #     content = 'AST'
+                        # elif inputContent == 'shots':
+                        #     content = 'SHT'
 
                         outputItems = nodeSrc.outputList
 
@@ -1306,23 +1312,7 @@ class PypelyneMainWindow(QMainWindow):
                                 #else:
                                 #    print '\t\t\t\tnot found'
 
-                        elif nodeSrcRootDir == os.path.join(nodeDstAssetDir, 'LDR_' + content + '__' + inputAsset):
-                            logging.info('\t\tnodeSrc is a loader')
-                            logging.info('\t\tnodeSrc is %s' %(nodeSrc.data(0).toPyObject()))
-                            logging.info('\t\tlooking for output called %s' %(inputOutput))
-                            for outputItem in outputItems:
-                                logging.info('\t\t\tprocessing output %s' %(outputItem.data(0).toPyObject().split('.')[3]))
-                                #print nodeSrc.data(0).toPyObject()
-                                logging.info('\t\tlooking for output called %s' %(inputOutput))
-                                searchString = outputItem.data(0).toPyObject().split('.')[3]
-                                if searchString == inputOutput:
-                                    logging.info('\t\t\t\t found output %s' %(outputItem.data(0).toPyObject().split('.')[3]))
-                                    startItem = outputItem
-                                    #endItem = nodeDst.inputList[len(nodeDst.inputs)]
-                                    #connectionLine = bezierLine(self, self.scene, startItem, endItem)
-                                    #break
-                                #else:
-                                #    print '\t\t\t\tnot found'
+
 
                         #special case for library loader
                         elif nodeSrc.label.startswith('LDR_LIB__'):
@@ -1337,6 +1327,26 @@ class PypelyneMainWindow(QMainWindow):
                                 if searchString == inputOutput:
                                     logging.info('\t\t\t\t found output %s' %(outputItem.data(0).toPyObject().split('.')[3]))
                                     startItem = outputItem
+
+                        else:
+                            for tab in self.content_tabs:
+                                if nodeSrcRootDir == os.path.join(nodeDstAssetDir, 'LDR_' + tab['abbreviation'] + '__' + inputAsset):
+                                    logging.info('\t\tnodeSrc is a loader')
+                                    logging.info('\t\tnodeSrc is %s' %(nodeSrc.data(0).toPyObject()))
+                                    logging.info('\t\tlooking for output called %s' %(inputOutput))
+                                    for outputItem in outputItems:
+                                        logging.info('\t\t\tprocessing output %s' %(outputItem.data(0).toPyObject().split('.')[3]))
+                                        #print nodeSrc.data(0).toPyObject()
+                                        logging.info('\t\tlooking for output called %s' %(inputOutput))
+                                        searchString = outputItem.data(0).toPyObject().split('.')[3]
+                                        if searchString == inputOutput:
+                                            logging.info('\t\t\t\t found output %s' %(outputItem.data(0).toPyObject().split('.')[3]))
+                                            startItem = outputItem
+                                            #endItem = nodeDst.inputList[len(nodeDst.inputs)]
+                                            #connectionLine = bezierLine(self, self.scene, startItem, endItem)
+                                            #break
+                                        #else:
+                                        #    print '\t\t\t\tnot found'
 
 
 
@@ -1394,8 +1404,8 @@ class PypelyneMainWindow(QMainWindow):
         '''
         print 'computeConnections...'
         nodeList = self.scene.getNodeList()
-        for node in nodeList:
-            print node.data(0).toPyObject()
+        # for node in nodeList:
+        #     print node.data(0).toPyObject()
         #print any(node for node in nodeList if node.data(0).toPyObject() == 'fnuzjr')
         #for node in nodeList:
         #    if node.data(0).toPyObject() == 'fnuzjr':
@@ -1413,10 +1423,10 @@ class PypelyneMainWindow(QMainWindow):
                         string = input.split('.')
                         x = 0
                         for node in nodeList:
-                            print x, node.data(0).toPyObject()
+                            # print x, node.data(0).toPyObject()
                             x += 1
-                            print 'nodeList 123:', nodeList
-                            print string[2]
+                            # print 'nodeList 123:', nodeList
+                            # print string[2]
                             if node.data(0).toPyObject() == string[2] or str(node.data(0).toPyObject()).startswith('LDR'):
 
                                 sourceNodeIndex = nodeList.index(node)
@@ -1433,9 +1443,9 @@ class PypelyneMainWindow(QMainWindow):
                                             print 'if: startItem =', startItem
 
                                     else:
-                                        print 'hallo'
+                                        # print 'hallo'
                                         if str(output.data(0).toPyObject()).split('.')[3] == string[3]:
-                                            print 'velo'
+                                            # print 'velo'
                                             startItem = output
 
                         endItem = currentNode.inputList[len(currentNode.inputs)]
@@ -1487,8 +1497,14 @@ class PypelyneMainWindow(QMainWindow):
 
         if button is not None:
             button_text = button.text()
+            content = self._current_content['content']
         elif node_label is not None:
             button_text = node_label.split('__')[1]
+            for tab in self.content_tabs:
+                if tab['abbreviation'] == node_label.split('__')[0].split('_')[1]:
+                    content = tab['content']
+                    break
+
         ######
 
         for tab in self.content_tabs:
@@ -1504,7 +1520,7 @@ class PypelyneMainWindow(QMainWindow):
         self.addRectangular()
         self.scene.clearNodeList()
 
-        content_root = os.path.join(self.projectsRoot, self._current_project, 'content', self._current_content['content'])
+        content_root = os.path.join(self.projectsRoot, self._current_project, 'content', content)
         content_items = os.listdir(os.path.join(content_root, str(button_text)))
 
         for node_item in content_items:
@@ -1550,8 +1566,8 @@ class PypelyneMainWindow(QMainWindow):
         self.shotsRoot = os.path.join(self.projectsRoot, currentProject, 'content', 'shots')
         shotContent = os.listdir(os.path.join(self.shotsRoot, str(buttonText)))
         
-        self.shotsGroupBox.setTitle('looking at ' + currentProject + os.sep + 'shots' + os.sep + buttonText)
-        self.assetsGroupBox.setTitle('looking at ' + currentProject + os.sep + 'shots' + os.sep + buttonText)
+        for tab in self.content_tabs:
+            self.group_boxes[self.content_tabs.index(tab)].setTitle('looking at ' + self._current_project + os.sep + self._current_content['content'] + os.sep + button_text)
         
         self.currentContent = currentProject + os.sep + 'content' + os.sep + 'shots' + os.sep + buttonText
 
@@ -1602,8 +1618,8 @@ class PypelyneMainWindow(QMainWindow):
         self.assetsRoot = os.path.join(self.projectsRoot, currentProject, 'content', 'assets')
         assetContent = os.listdir(os.path.normpath(os.path.join(str(self.assetsRoot), str(buttonText))))
 
-        self.shotsGroupBox.setTitle('looking at ' + currentProject + os.sep + 'assets' + os.sep + buttonText)
-        self.assetsGroupBox.setTitle('looking at ' + currentProject + os.sep + 'assets' + os.sep + buttonText)
+        for tab in self.content_tabs:
+            self.group_boxes[self.content_tabs.index(tab)].setTitle('looking at ' + self._current_project + os.sep + self._current_content['content'] + os.sep + button_text)
         
         self.currentContent = currentProject + os.sep + 'content' + os.sep + 'assets' + os.sep + buttonText
 
@@ -1688,9 +1704,10 @@ class PypelyneMainWindow(QMainWindow):
             widget_content = QWidget()
             widget_content.setLayout(layout_content_scroll)
 
+            # TODO: refactor assetsShotTabWidget name
             self.assetsShotsTabWidget.addTab(widget_content, tab['content'])
 
-        print self.buttons
+        # print self.buttons
         self.assetsShotsTabWidget.setCurrentIndex(current_index)
 
         '''
@@ -1920,7 +1937,7 @@ class PypelyneMainWindow(QMainWindow):
         
         self.toolsComboBox.insertSeparator(1)
 
-        print self._tools
+        # print self._tools
         
         for tool in self._tools:
             # print type(tool)

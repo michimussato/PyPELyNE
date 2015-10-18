@@ -1,26 +1,52 @@
 {
-  "family": {
-    "-value": "Blender",
-    "-abbrev": "BLD",
-    "vendor": {
-      "-value": "Blender Foundation",
-      "version": {
-        "-value": "2.6.9",
-        "-template": "null_blenderfoundation_blender_269.blend",
-        "-workspace": "None",
-        "platform": [
-          {
-            "-value": "Windows",
-            "x32": { "-value": "None" },
-            "x64": { "-value": "None" }
-          },
-          {
-            "-value": "Darwin",
-            "x32": { "-value": "None" },
-            "x64": { "-value": "/Applications/Blender/blender.app/Contents/MacOS/blender" }
+  "family": "Blender",
+  "abbreviation": "BLD",
+  "vendor": "Blender Foundation",
+  "versions": [
+    {
+      "release": "2.6.9",
+      "project_template": "null_blenderfoundation_blender_269.blend",
+      "project_workspace": "None",
+      "project_directories": ["dir1", "dir2%dir"],
+      "default_outputs": ["SEQ__01", "PLB__04"],
+      "platforms": [
+        {
+          "windows": {
+            "x32": {
+              "executable": "None",
+              "flags": []
+            },
+            "x64": {
+              "executable": "None",
+              "flags": []
+            }
           }
-        ]
-      }
+        },
+        {
+          "darwin": {
+            "x32": {
+              "executable": "None",
+              "flags": []
+            },
+            "x64": {
+              "executable": "/Applications/Blender/blender.app/Contents/MacOS/blender",
+              "flags": []
+            }
+          }
+        },
+        {
+          "linux": {
+            "x32": {
+              "executable": "None",
+              "flags": []
+            },
+            "x64": {
+              "executable": "None",
+              "flags": []
+            }
+          }
+        }
+      ]
     }
-  }
+  ]
 }

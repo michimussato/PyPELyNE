@@ -1,58 +1,97 @@
 {
-  "family": {
-    "value": "Maya",
-    "abbrev": "MAY",
-    "directory": [
-      { "value": "externalFiles" },
-      { "value": "incrementalSave" },
-      { "value": "sourceimages" },
-      {
-        "value": "tmp",
-        "subdirectory": {
-          "value": "renderData",
-          "subdirectory": { "value": "mentalray" }
-        }
-      },
-      { "value": "uvLayout" }
-    ],
-    "vendor": {
-      "value": "Autodesk",
-      "version": [
+  "family": "Maya",
+  "abbreviation": "MAY",
+  "vendor": "Autodesk",
+  "versions": [
+    {
+      "release": "2013",
+      "project_template": "null_autodesk_maya2013.ma",
+      "project_workspace": "null_autodesk_maya2013_workspace.mel",
+      "project_directories": [],
+      "default_outputs": [],
+      "platforms": [
         {
-          "value": "2013",
-          "template": "null_autodesk_maya2013.ma",
-          "workspace": "null_autodesk_maya2013_workspace.mel",
-          "platform": [
-            {
-              "value": "Windows",
-              "x32": { "value": "C:\\Program Files (x86)\\Autodesk\\Maya2013\\bin\\maya.exe" },
-              "x64": { "value": "C:\\Program Files\\Autodesk\\Maya2013\\bin\\maya.exe" }
+          "windows": {
+            "x32": {
+              "executable": "C:\\Program Files (x86)\\Autodesk\\Maya2013\\bin\\maya.exe",
+              "flags": []
             },
-            {
-              "value": "Darwin",
-              "x32": { "value": "None" },
-              "x64": { "value": "/Applications/Autodesk/maya2013/Maya.app/Contents/bin/maya" }
+            "x64": {
+              "executable": "C:\\Program Files\\Autodesk\\Maya2013\\bin\\maya.exe",
+              "flags": []
             }
-          ]
+          }
         },
         {
-          "value": "2014",
-          "template": "null_autodesk_maya2014.ma",
-          "workspace": "null_autodesk_maya2014_workspace.mel",
-          "platform": [
-            {
-              "value": "Windows",
-              "x32": { "value": "C:\\Program Files (x86)\\Autodesk\\Maya2014\\bin\\maya.exe" },
-              "x64": { "value": "C:\\Program Files\\Autodesk\\Maya2014\\bin\\maya.exe" }
+          "darwin": {
+            "x32": {
+              "executable": "None",
+              "flags": []
             },
-            {
-              "value": "Darwin",
-              "x32": { "value": "None" },
-              "x64": { "value": "/Applications/Autodesk/maya2014/Maya.app/Contents/MacOS/Maya" }
+            "x64": {
+              "executable": "/Applications/Autodesk/maya2013/Maya.app/Contents/bin/maya",
+              "flags": []
             }
-          ]
+          }
+        },
+        {
+          "linux": {
+            "x32": {
+              "executable": "None",
+              "flags": []
+            },
+            "x64": {
+              "executable": "None",
+              "flags": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "release": "2014",
+      "project_template": "null_autodesk_maya2014.ma",
+      "project_workspace": "null_autodesk_maya2014_workspace.mel",
+      "project_directories": [],
+      "default_outputs": [],
+      "platforms": [
+        {
+          "windows": {
+            "x32": {
+              "executable": "C:\\Program Files (x86)\\Autodesk\\Maya2014\\bin\\maya.exe",
+              "flags": []
+            },
+            "x64": {
+              "executable": "C:\\Program Files\\Autodesk\\Maya2014\\bin\\maya.exe",
+              "flags": []
+            }
+          }
+        },
+        {
+          "darwin": {
+            "x32": {
+              "executable": "None",
+              "flags": []
+            },
+            "x64": {
+              "executable": "/Applications/Autodesk/maya2014/Maya.app/Contents/MacOS/Maya",
+              "flags": []
+            }
+          }
+        },
+        {
+          "linux": {
+            "x32": {
+              "executable": "None",
+              "flags": []
+            },
+            "x64": {
+              "executable": "None",
+              "flags": []
+            }
+          }
         }
       ]
     }
-  }
+  ]
 }

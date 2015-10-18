@@ -1,45 +1,52 @@
 {
-  "family": {
-    "-value": "Fusion",
-    "-abbrev": "FSN",
-    "vendor": {
-      "-value": "Blackmagicdesign",
-      "version": [
+  "family": "Fusion",
+  "abbreviation": "FSN",
+  "vendor": "Blackmagicdesign",
+  "versions": [
+    {
+      "release": "7",
+      "project_template": "null_blackmagicdesign_fusion7.comp",
+      "project_workspace": "None",
+      "project_directories": [],
+      "default_outputs": [],
+      "platforms": [
         {
-          "-value": "7",
-          "-template": "null_blackmagicdesign_fusion7.comp",
-          "-workspace": "None",
-          "platform": [
-            {
-              "-value": "Windows",
-              "x32": { "-value": "None" },
-              "x64": { "-value": "C:\\Program Files\\Blackmagic Design\\Fusion\\Fusion.exe" }
+          "windows": {
+            "x32": {
+              "executable": "None",
+              "flags": []
             },
-            {
-              "-value": "Darwin",
-              "x32": { "-value": "None" },
-              "x64": { "-value": "None" }
+            "x64": {
+              "executable": "C:\\Program Files\\Blackmagic Design\\Fusion\\Fusion.exe",
+              "flags": []
             }
-          ]
+          }
         },
         {
-          "-value": "8",
-          "-template": "None",
-          "-workspace": "None",
-          "platform": [
-            {
-              "-value": "Windows",
-              "x32": { "-value": "None" },
-              "x64": { "-value": "None" }
+          "darwin": {
+            "x32": {
+              "executable": "None",
+              "flags": []
             },
-            {
-              "-value": "Darwin",
-              "x32": { "-value": "None" },
-              "x64": { "-value": "/Applications/Blackmagic Fusion 8/Fusion.app/Contents/MacOS/Fusion" }
+            "x64": {
+              "executable": "None",
+              "flags": []
             }
-          ]
+          }
+        },
+        {
+          "linux": {
+            "x32": {
+              "executable": "None",
+              "flags": []
+            },
+            "x64": {
+              "executable": "None",
+              "flags": []
+            }
+          }
         }
       ]
     }
-  }
+  ]
 }

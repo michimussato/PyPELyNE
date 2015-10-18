@@ -1,57 +1,97 @@
 {
-  "family": {
-    "value": "RealFlow",
-    "abbrev": "RFL",
-    "directory": [
-      { "value": "images" },
-      { "value": "initialState" },
-      { "value": "log" },
-      { "value": "meshes" },
-      { "value": "objects" },
-      { "value": "particles" },
-      {
-        "value": "preview",
-        "subdirectory": { "value": "images" }
-      }
-    ],
-    "vendor": {
-      "value": "Next Limit",
-      "version": [
+  "family": "RealFlow",
+  "abbreviation": "RFL",
+  "vendor": "Next Limit",
+  "versions": [
+    {
+      "release": "6.0.0.0055",
+      "project_template": "null_nextlimit_realflow_6000055.flw",
+      "project_workspace": "None",
+      "project_directories": ["images", "initialState", "log", "meshes", "objects", "particles", "preview", "preview#images"],
+      "default_outputs": [],
+      "platforms": [
         {
-          "value": "6.0.0.0055",
-          "template": "null_nextlimit_realflow_6000055.flw",
-          "workspace": "None",
-          "platform": [
-            {
-              "value": "Windows",
-              "x32": { "value": "None" },
-              "x64": { "value": "None" }
+          "windows": {
+            "x32": {
+              "executable": "None",
+              "flags": []
             },
-            {
-              "value": "Darwin",
-              "x32": { "value": "/Applications/RealFlow 2012/RealFlow.app/Contents/MacOS/RealFlow" },
-              "x64": { "value": "None" }
+            "x64": {
+              "executable": "None",
+              "flags": []
             }
-          ]
+          }
         },
         {
-          "value": "7.0.1.0131",
-          "template": "null_nextlimit_realflow_7010131.flw",
-          "workspace": "None",
-          "platform": [
-            {
-              "value": "Windows",
-              "x32": { "value": "None" },
-              "x64": { "value": "None" }
+          "darwin": {
+            "x32": {
+              "executable": "/Applications/RealFlow 2012/RealFlow.app/Contents/MacOS/RealFlow",
+              "flags": []
             },
-            {
-              "value": "Darwin",
-              "x32": { "value": "/Applications/RealFlow 2013/RealFlow.app/Contents/MacOS/RealFlow" },
-              "x64": { "value": "None" }
+            "x64": {
+              "executable": "None",
+              "flags": []
             }
-          ]
+          }
+        },
+        {
+          "linux": {
+            "x32": {
+              "executable": "None",
+              "flags": []
+            },
+            "x64": {
+              "executable": "None",
+              "flags": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "release": "7.0.1.0131",
+      "project_template": "null_nextlimit_realflow_7010131.flw",
+      "project_workspace": "None",
+      "project_directories": ["images", "initialState", "log", "meshes", "objects", "particles", "preview", "preview#images"],
+      "default_outputs": [],
+      "platforms": [
+        {
+          "windows": {
+            "x32": {
+              "executable": "None",
+              "flags": []
+            },
+            "x64": {
+              "executable": "None",
+              "flags": []
+            }
+          }
+        },
+        {
+          "darwin": {
+            "x32": {
+              "executable": "/Applications/RealFlow 2013/RealFlow.app/Contents/MacOS/RealFlow",
+              "flags": []
+            },
+            "x64": {
+              "executable": "None",
+              "flags": []
+            }
+          }
+        },
+        {
+          "linux": {
+            "x32": {
+              "executable": "None",
+              "flags": []
+            },
+            "x64": {
+              "executable": "None",
+              "flags": []
+            }
+          }
         }
       ]
     }
-  }
+  ]
 }

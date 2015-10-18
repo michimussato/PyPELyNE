@@ -1,33 +1,52 @@
 {
-  "family": {
-    "-value": "NukeX",
-    "-abbrev": "NUX",
-    "vendor": {
-      "-value": "The Foundry",
-      "version": {
-        "-value": "7.0v8",
-        "-template": "null_thefoundry_nukex_708.nk",
-        "-workspace": "None",
-        "platform": [
-          {
-            "-value": "Windows",
-            "x32": { "-value": "None" },
-            "x64": { "-value": "None" }
-          },
-          {
-            "-value": "Darwin",
-            "x32": { "-value": "None" },
+  "family": "NukeX",
+  "abbreviation": "NUX",
+  "vendor": "The Foundry",
+  "versions": [
+    {
+      "release": "7.0v8",
+      "project_template": "null_thefoundry_nukex_708.nk",
+      "project_workspace": "None",
+      "project_directories": [],
+      "default_outputs": ["SEQ__test"],
+      "platforms": [
+        {
+          "windows": {
+            "x32": {
+              "executable": "None",
+              "flags": []
+            },
             "x64": {
-              "-value": "/Applications/Nuke7.0v8/Nuke7.0v8.app/Nuke7.0v8",
-              "flag": [
-                { "-value": "--nukex" },
-                { "-value": "-V" },
-                { "-value": "2" }
-              ]
+              "executable": "None",
+              "flags": []
             }
           }
-        ]
-      }
+        },
+        {
+          "darwin": {
+            "x32": {
+              "executable": "None",
+              "flags": []
+            },
+            "x64": {
+              "executable": "/Applications/Nuke7.0v8/Nuke7.0v8.app/Nuke7.0v8",
+              "flags": ["--nukex", "-V", "2"]
+            }
+          }
+        },
+        {
+          "linux": {
+            "x32": {
+              "executable": "None",
+              "flags": []
+            },
+            "x64": {
+              "executable": "None",
+              "flags": []
+            }
+          }
+        }
+      ]
     }
-  }
+  ]
 }

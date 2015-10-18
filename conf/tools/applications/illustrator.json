@@ -1,45 +1,52 @@
 {
-  "family": {
-    "value": "Illustrator",
-    "abbrev": "ILU",
-    "vendor": {
-      "value": "Adobe",
-      "version": [
+  "family": "Illustrator",
+  "abbreviation": "ILU",
+  "vendor": "Adobe",
+  "versions": [
+    {
+      "release": "CS6",
+      "project_template": "None",
+      "project_workspace": "None",
+      "project_directories": [],
+      "default_outputs": [],
+      "platforms": [
         {
-          "value": "CS6",
-          "template": "None",
-          "workspace": "None",
-          "platform": [
-            {
-              "value": "Windows",
-              "x32": { "value": "None" },
-              "x64": { "value": "None" }
+          "windows": {
+            "x32": {
+              "executable": "None",
+              "flags": []
             },
-            {
-              "value": "Darwin",
-              "x32": { "value": "None" },
-              "x64": { "value": "/Applications/Adobe Illustrator CS6/Adobe Illustrator.app/Contents/MacOS/Adobe Illustrator" }
+            "x64": {
+              "executable": "None",
+              "flags": []
             }
-          ]
+          }
         },
         {
-          "value": "CC12",
-          "template": "null_adobe_illustrator_CC12.ai",
-          "workspace": "None",
-          "platform": [
-            {
-              "value": "Windows",
-              "x32": { "value": "None" },
-              "x64": { "value": "C:\\Program Files\\Adobe\\Adobe Illustrator CC (64 Bit)\\Support Files\\Contents\\Windows\\Illustrator.exe" }
+          "darwin": {
+            "x32": {
+              "executable": "None",
+              "flags": []
             },
-            {
-              "value": "Darwin",
-              "x32": { "value": "None" },
-              "x64": { "value": "/Applications/Adobe Illustrator CC/Adobe Illustrator.app/Contents/MacOS/Adobe Illustrator" }
+            "x64": {
+              "executable": "/Applications/Adobe Illustrator CS6/Adobe Illustrator.app/Contents/MacOS/Adobe Illustrator",
+              "flags": []
             }
-          ]
+          }
+        },
+        {
+          "linux": {
+            "x32": {
+              "executable": "None",
+              "flags": []
+            },
+            "x64": {
+              "executable": "None",
+              "flags": []
+            }
+          }
         }
       ]
     }
-  }
+  ]
 }

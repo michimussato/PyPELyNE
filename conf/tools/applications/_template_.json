@@ -1,0 +1,97 @@
+{
+  "family": "Family",
+  "abbreviation": "FAM",
+  "vendor": "Family Foundation",
+  "versions": [
+    {
+      "release": "1.2.3",
+      "project_template": "null_familyfoundation_family_123.template",
+      "project_workspace": "None",
+      "project_directories": ["dir1", "dir1#dir", "dir2#dir#dir5"],
+      "default_outputs": ["SEQ_01", "PLB_04"],
+      "platforms": [
+        {
+          "windows": {
+            "x32": {
+              "executable": "C:\\Program Files (x86)\\Family Foundation\\Family123.exe",
+              "flags": ["-flag1", "value", "-flag2", "-flag3"]
+            },
+            "x64": {
+              "executable": "None",
+              "flags": []
+            }
+          }
+        },
+        {
+          "darwin": {
+            "x32": {
+              "executable": "None",
+              "flags": []
+            },
+            "x64": {
+              "executable": "/Applications/Family/family.app/Contents/MacOS/family123",
+              "flags": []
+            }
+          }
+        },
+        {
+          "linux": {
+            "x32": {
+              "executable": "None",
+              "flags": []
+            },
+            "x64": {
+              "executable": "None",
+              "flags": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "release": "4.5.6",
+      "project_template": "null_familyfoundation_family_456.template",
+      "project_workspace": "None",
+      "project_directories": ["dir1", "dir1#dir"],
+      "default_outputs": ["SEQ_01", "PLB_04"],
+      "platforms": [
+        {
+          "windows": {
+            "x32": {
+              "executable": "C:\\Program Files (x86)\\Family Foundation\\Family456.exe",
+              "flags": ["-flag1", "value", "-flag2", "-flag3"]
+            },
+            "x64": {
+              "executable": "None",
+              "flags": []
+            }
+          }
+        },
+        {
+          "darwin": {
+            "x32": {
+              "executable": "None",
+              "flags": []
+            },
+            "x64": {
+              "executable": "/Applications/Family/family.app/Contents/MacOS/family456",
+              "flags": []
+            }
+          }
+        },
+        {
+          "linux": {
+            "x32": {
+              "executable": "None",
+              "flags": []
+            },
+            "x64": {
+              "executable": "None",
+              "flags": []
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

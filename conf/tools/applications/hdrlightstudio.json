@@ -1,26 +1,52 @@
 {
-  "family": {
-    "-value": "HDRLightStudio",
-    "-abbrev": "LST",
-    "vendor": {
-      "-value": "Lightmap",
-      "version": {
-        "-value": "4",
-        "-template": "None",
-        "-workspace": "None",
-        "platform": [
-          {
-            "-value": "Windows",
-            "x32": { "-value": "None" },
-            "x64": { "-value": "None" }
-          },
-          {
-            "-value": "Darwin",
-            "x32": { "-value": "None" },
-            "x64": { "-value": "/Applications/HDRLightStudio.app/Contents/MacOS/HDRLightStudio" }
+  "family": "HDRLightStudio",
+  "abbreviation": "LST",
+  "vendor": "Lightmap",
+  "versions": [
+    {
+      "release": "4",
+      "project_template": "None",
+      "project_workspace": "None",
+      "project_directories": [],
+      "default_outputs": [],
+      "platforms": [
+        {
+          "windows": {
+            "x32": {
+              "executable": "None",
+              "flags": []
+            },
+            "x64": {
+              "executable": "None",
+              "flags": []
+            }
           }
-        ]
-      }
+        },
+        {
+          "darwin": {
+            "x32": {
+              "executable": "None",
+              "flags": []
+            },
+            "x64": {
+              "executable": "/Applications/HDRLightStudio.app/Contents/MacOS/HDRLightStudio",
+              "flags": []
+            }
+          }
+        },
+        {
+          "linux": {
+            "x32": {
+              "executable": "None",
+              "flags": []
+            },
+            "x64": {
+              "executable": "None",
+              "flags": []
+            }
+          }
+        }
+      ]
     }
-  }
+  ]
 }

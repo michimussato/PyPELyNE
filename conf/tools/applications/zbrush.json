@@ -1,45 +1,97 @@
 {
-  "family": {
-    "value": "ZBrush",
-    "abbrev": "ZBR",
-    "vendor": {
-      "value": "Pixologic",
-      "version": [
+  "family": "ZBrush",
+  "abbreviation": "ZBR",
+  "vendor": "Pixologic",
+  "versions": [
+    {
+      "release": "4R5",
+      "project_template": "null_pixologic_zbrush_4r5.zpr",
+      "project_workspace": "None",
+      "project_directories": [],
+      "default_outputs": [],
+      "platforms": [
         {
-          "value": "4R5",
-          "template": "null_pixologic_zbrush_4r5.zpr",
-          "workspace": "None",
-          "platform": [
-            {
-              "value": "Windows",
-              "x32": { "value": "None" },
-              "x64": { "value": "None" }
+          "windows": {
+            "x32": {
+              "executable": "None",
+              "flags": []
             },
-            {
-              "value": "Darwin",
-              "x32": { "value": "/Applications/ZBrushOSX 4R5/ZBrush.app" },
-              "x64": { "value": "None" }
+            "x64": {
+              "executable": "None",
+              "flags": []
             }
-          ]
+          }
         },
         {
-          "value": "4R6",
-          "template": "null_pixologic_zbrush_4r6.ZPR",
-          "workspace": "None",
-          "platform": [
-            {
-              "value": "Windows",
-              "x32": { "value": "None" },
-              "x64": { "value": "None" }
+          "darwin": {
+            "x32": {
+              "executable": "/Applications/ZBrushOSX 4R5/ZBrush.app",
+              "flags": []
             },
-            {
-              "value": "Darwin",
-              "x32": { "value": "/Applications/ZBrushOSX 4R6/ZBrush.app" },
-              "x64": { "value": "None" }
+            "x64": {
+              "executable": "None",
+              "flags": []
             }
-          ]
+          }
+        },
+        {
+          "linux": {
+            "x32": {
+              "executable": "None",
+              "flags": []
+            },
+            "x64": {
+              "executable": "None",
+              "flags": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "release": "4R6",
+      "project_template": "null_pixologic_zbrush_4r6.ZPR",
+      "project_workspace": "None",
+      "project_directories": [],
+      "default_outputs": [],
+      "platforms": [
+        {
+          "windows": {
+            "x32": {
+              "executable": "None",
+              "flags": []
+            },
+            "x64": {
+              "executable": "None",
+              "flags": []
+            }
+          }
+        },
+        {
+          "darwin": {
+            "x32": {
+              "executable": "/Applications/ZBrushOSX 4R6/ZBrush.app",
+              "flags": []
+            },
+            "x64": {
+              "executable": "None",
+              "flags": []
+            }
+          }
+        },
+        {
+          "linux": {
+            "x32": {
+              "executable": "None",
+              "flags": []
+            },
+            "x64": {
+              "executable": "None",
+              "flags": []
+            }
+          }
         }
       ]
     }
-  }
+  ]
 }

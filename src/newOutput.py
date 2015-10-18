@@ -12,35 +12,25 @@ import os
 
 
 class newOutputUI(QDialog):
-    def __init__(self, outputDir, outputs, mainWindow, parent = None):
+    def __init__(self, output_dir, outputs, main_window, parent = None):
         super(newOutputUI, self).__init__(parent)
 
-        self.mainWindow = mainWindow
+        self.mainWindow = main_window
         self.pypelyneRoot = self.mainWindow.getPypelyneRoot()
-
         
         self.currentPlatform = self.mainWindow.getCurrentPlatform()
-        '''
-        if self.currentPlatform == "Windows":
-            self.ui = loadUi(r'C:\Users\michael.mussato.SCHERRERMEDIEN\Dropbox\development\workspace\PyPELyNE\ui\newOutput.ui', self)
-            
-        elif self.currentPlatform == "Linux" or self.currentPlatform == "Darwin":
-            self.ui = loadUi(r'/Users/michaelmussato/Dropbox/development/workspace/PyPELyNE/ui/newOutput.ui', self)
-        '''
 
         self.ui = loadUi(os.path.join(self.pypelyneRoot, 'ui', 'newOutput.ui'), self)
         self.setModal(True)
         
-        self.outputDir = outputDir
+        self.outputDir = output_dir
         self.outputs = outputs
         
         self.createUI()
         self.addComboBoxItems()
         self.createConnects()
-        
-    
-    def createUI(self):
 
+    def createUI(self):
         mimeTypes = [ ('arbitrary', None), ('.ass', 'ASS'), ('.exr', 'EXR'), ('.tga', 'TGA')]
 
         self.comboBoxOutput.addItem('select')
@@ -59,22 +49,10 @@ class newOutputUI(QDialog):
         
         self.labelFolder.setEnabled(False)
         self.labelStatus.setEnabled(False)
-        
     
     def addComboBoxItems(self):
-        
-        #self.applicationItems = [ [ 'Maya', 'MAY', [ '2013', '2014', '2015']], [ 'Cinema 4D', 'C4D', [ 'R14', 'R15', 'R16']]]
-        #for applicationItem in self.applicationItems:
-        #    self.comboBoxApplication.addItem(applicationItem[ 0])
-            
         for output in self.outputs:
-            self.comboBoxOutput.addItem(output[ 0][ 2][ 1])
-        '''
-        self.tasks = [ [ 'Model', 'MDL'], [ 'Shader', 'SHD']]
-        for task in self.tasks:
-            self.comboBoxOutput.addItem(taskOutput[ 0])
-        '''
-        
+            self.comboBoxOutput.addItem(output[0][2][1])
 
     def createConnects(self):
         self.buttonOk.clicked.connect(self.onOk)
@@ -97,8 +75,6 @@ class newOutputUI(QDialog):
                 # self.comboBoxVersion.addItem(version)
         # else:
             # self.comboBoxVersion.addItem('select')
-
-        
         
     def setStatus(self):
         usedNames = os.listdir(self.outputDir)
@@ -130,8 +106,7 @@ class newOutputUI(QDialog):
             self.buttonOk.setEnabled(True)
             self.labelStatus.setText(self.outputs[ self.comboBoxOutput.currentIndex() - 1][ 0][ 1][ 1] + '__' + self.lineEditOutputName.text())
             #self.labelStatus.setText(self.outputDir + os.sep + self.taskItems[ self.comboBoxTask.currentIndex() - 1][ 1] + '_' + self.applicationItems[ self.comboBoxApplication.currentIndex() - 1][ 1] + '__' + self.lineEditNodeName.text())
-            
-    
+
     def onCancel(self):
         self.reject()
         
@@ -139,16 +114,13 @@ class newOutputUI(QDialog):
         self.outputName = self.outputs[ self.comboBoxOutput.currentIndex() - 1][ 0][ 1][ 1] + '__' + self.lineEditOutputName.text()
         self.outputIndex = self.comboBoxOutput.currentIndex() - 1
         self.mimeIndex = self.comboBoxMime.currentIndex()
-        #self.taskIndex = self.comboBoxTask.currentIndex() - 1
-        #print self.nodeName
         self.accept()
         return self.outputName, self.outputIndex
     
-    
     # http://stackoverflow.com/questions/18196799/how-can-i-show-a-pyqt-modal-dialog-and-get-data-out-of-its-controls-once-its-clo
     @staticmethod
-    def getNewOutputData(outputDir, outputs, mainWindow):
-        dialog = newOutputUI(outputDir, outputs, mainWindow)
+    def getNewOutputData(output_dir, outputs, main_window):
+        dialog = newOutputUI(output_dir, outputs, main_window)
         result = dialog.exec_()
-        outputName, outputIndex = dialog.onOk()
-        return outputName, result == QDialog.Accepted, outputIndex
+        output_name, output_index = dialog.onOk()
+        return output_name, result == QDialog.Accepted, output_index

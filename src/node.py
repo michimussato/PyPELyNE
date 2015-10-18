@@ -33,7 +33,7 @@ class node(QGraphicsItem, QObject):
         self.asset = os.path.dirname(self.location)
         self.project = os.path.dirname(os.path.dirname (os.path.dirname(self.asset)))
         self.scene = scene
-        self._tools = self.mainWindow.getTools()
+        # self._tools = self.mainWindow.getTools()
         self._tasks = self.mainWindow.getTasks()
         self.exclusions = self.mainWindow.getExclusions()
         self.now = datetime.datetime.now()
@@ -152,11 +152,12 @@ class node(QGraphicsItem, QObject):
     def hoverLeaveEvent(self, event):
         self.hovered = False
 
-
     def mousePressEvent(self, event):
         self.scene.nodeSelect.emit(self)
 
     def mouseDoubleClickEvent(self, event):
+        print self.mainWindow._tools
+
         if self.label.startswith('LDR_AST'):
             self.mainWindow.getAssetContent(None, self.label)
         elif self.label.startswith('LDR_SHT'):
@@ -164,12 +165,11 @@ class node(QGraphicsItem, QObject):
         #elif self.label.startswith('LDR_LIB'):
         #    pass
 
-
         else:
-            searchString = self.nodeVendor + ' ' + self.nodeFamily + ' ' + self.nodeVersion + ' ' + self.nodeArch
-            searchIndex = self.mainWindow.toolsComboBox.findText(QString(searchString), Qt.MatchContains) - 2
+            search_string = self.nodeVendor + ' ' + self.nodeFamily + ' ' + self.nodeVersion + ' ' + self.nodeArch
+            search_index = self.mainWindow.toolsComboBox.findText(QString(search_string), Qt.MatchContains)
 
-            if searchIndex < 0:
+            if search_index < 3:
                 if not str(self.nodeFamily + ' ' + self.nodeVersion) in [self.mainWindow.toolsComboBox.itemText(i) for i in range(self.mainWindow.toolsComboBox.count())]:
                     logging.warning('application family not available')
                     QMessageBox.critical(self.mainWindow, 'application warning', str('%s not available.' %str(self.nodeFamily + ' ' + self.nodeVersion)), QMessageBox.Abort, QMessageBox.Abort)
@@ -179,8 +179,8 @@ class node(QGraphicsItem, QObject):
                     reply = QMessageBox.warning(self.mainWindow, 'architecture warning', str('x64 version of %s not available. continue using x32?' %self.nodeFamily), QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
 
                     if reply == QMessageBox.Yes:
-                        searchString = str(self.nodeVendor + ' ' + self.nodeFamily + ' ' + self.nodeVersion + ' ' + 'x32')
-                        searchIndex = self.mainWindow.toolsComboBox.findText(QString(searchString), Qt.MatchContains) - 2
+                        search_string = str(self.nodeVendor + ' ' + self.nodeFamily + ' ' + self.nodeVersion + ' ' + 'x32')
+                        search_index = self.mainWindow.toolsComboBox.findText(QString(search_string), Qt.MatchContains) - 2
                         logging.warning('x64 not available. using x32 version.')
                     else:
                         return
@@ -188,8 +188,8 @@ class node(QGraphicsItem, QObject):
                     reply = QMessageBox.warning(self.mainWindow, 'architecture warning', str('x32 version of %s not available. continue using x64?' %self.nodeFamily), QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
 
                     if reply == QMessageBox.Yes:
-                        searchString = str(self.nodeVendor + ' ' + self.nodeFamily + ' ' + self.nodeVersion + ' ' + 'x64')
-                        searchIndex = self.mainWindow.toolsComboBox.findText(QString(searchString), Qt.MatchContains) - 2
+                        search_string = str(self.nodeVendor + ' ' + self.nodeFamily + ' ' + self.nodeVersion + ' ' + 'x64')
+                        search_index = self.mainWindow.toolsComboBox.findText(QString(search_string), Qt.MatchContains) - 2
                         logging.warning('x32 not available. using x64 version.')
                     else:
                         return
@@ -207,7 +207,7 @@ class node(QGraphicsItem, QObject):
 
             args = []
 
-            for arg in self._tools[searchIndex][10]:
+            for arg in self._tools[search_index][10]:
                 args.append(arg)
 
             if self.nodeFamily == 'Maya':
@@ -217,8 +217,8 @@ class node(QGraphicsItem, QObject):
 
             projectRoot = os.path.join(self.location, 'project')
 
-            #print self._tools[searchIndex][7]
-            extension = os.path.splitext(self._tools[searchIndex][7])[1]
+            #print self._tools[search_index][7]
+            extension = os.path.splitext(self._tools[search_index][7])[1]
 
 
             files = glob.glob1(projectRoot, str('*' + extension))
@@ -232,7 +232,7 @@ class node(QGraphicsItem, QObject):
 
             if not 'DDL' in self.label:
                 newestFile = max(absFiles, key=os.path.getctime)
-                self.mainWindow.runTask(self, self._tools[searchIndex][1][0], newestFile, args)
+                self.mainWindow.runTask(self, self._tools[search_index][1][0], newestFile, args)
             else:
                 ok, jobDeadline = jobDeadlineUi.getDeadlineJobData(self.location, self.mainWindow)
 
@@ -251,10 +251,10 @@ class node(QGraphicsItem, QObject):
                     #os.system('bash ' + txtFile)
 
 
-    def dataReady(self):
-        cursorBox = self.mainWindow.statusBox.textCursor()
-        cursorBox.movePosition(cursorBox.End)
-        cursorBox.insertText("%s (%s): %s" %(datetime.datetime.now(), self.pid, str(self.process.readAll())))
+    def data_ready(self):
+        cursor_box = self.mainWindow.statusBox.textCursor()
+        cursor_box.movePosition(cursor_box.End)
+        cursor_box.insertText("%s (%s): %s" %(datetime.datetime.now(), self.pid, str(self.process.readAll())))
         self.mainWindow.statusBox.ensureCursorVisible()
     '''
     def hoverEnterEvent(self, event):

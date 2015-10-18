@@ -1,57 +1,97 @@
 {
-  "family": {
-    "-value": "Nuke",
-    "-abbrev": "NUK",
-    "vendor": {
-      "-value": "The Foundry",
-      "version": [
+  "family": "Nuke",
+  "abbreviation": "NUK",
+  "vendor": "The Foundry",
+  "versions": [
+    {
+      "release": "7.0v8",
+      "project_template": "null_thefoundry_nuke_708.nk",
+      "project_workspace": "None",
+      "project_directories": [],
+      "default_outputs": [],
+      "platforms": [
         {
-          "-value": "7.0v8",
-          "-template": "null_thefoundry_nuke_708.nk",
-          "-workspace": "None",
-          "platform": [
-            {
-              "-value": "Windows",
-              "x32": { "-value": "None" },
-              "x64": { "-value": "None" }
+          "windows": {
+            "x32": {
+              "executable": "None",
+              "flags": []
             },
-            {
-              "-value": "Darwin",
-              "x32": { "-value": "None" },
-              "x64": {
-                "-value": "/Applications/Nuke7.0v8/Nuke7.0v8.app/Nuke7.0v8",
-                "flag": [
-                  { "-value": "-V" },
-                  { "-value": "2" }
-                ]
-              }
+            "x64": {
+              "executable": "None",
+              "flags": []
             }
-          ]
+          }
         },
         {
-          "-value": "8.0v3",
-          "-template": "None",
-          "-workspace": "None",
-          "platform": [
-            {
-              "-value": "Windows",
-              "x32": { "-value": "None" },
-              "x64": { "-value": "C:\\Program Files\\Nuke8.0v3\\Nuke8.0.exe" }
+          "darwin": {
+            "x32": {
+              "executable": "None",
+              "flags": []
             },
-            {
-              "-value": "Darwin",
-              "x32": { "-value": "None" },
-              "x64": {
-                "-value": "/Applications/Nuke8.0v3/Nuke8.0v3.app/Nuke8.0v3",
-                "flag": [
-                  { "-value": "-V" },
-                  { "-value": "2" }
-                ]
-              }
+            "x64": {
+              "executable": "/Applications/Nuke7.0v8/Nuke7.0v8.app/Nuke7.0v8",
+              "flags": ["-V", "2"]
             }
-          ]
+          }
+        },
+        {
+          "linux": {
+            "x32": {
+              "executable": "None",
+              "flags": []
+            },
+            "x64": {
+              "executable": "None",
+              "flags": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "release": "8.0v3",
+      "project_template": "None",
+      "project_workspace": "None",
+      "project_directories": [],
+      "default_outputs": [],
+      "platforms": [
+        {
+          "windows": {
+            "x32": {
+              "executable": "None",
+              "flags": []
+            },
+            "x64": {
+              "executable": "C:\\Program Files\\Nuke8.0v3\\Nuke8.0.exe",
+              "flags": []
+            }
+          }
+        },
+        {
+          "darwin": {
+            "x32": {
+              "executable": "None",
+              "flags": []
+            },
+            "x64": {
+              "executable": "/Applications/Nuke8.0v3/Nuke8.0v3.app/Nuke8.0v3",
+              "flags": ["-V", "2"]
+            }
+          }
+        },
+        {
+          "linux": {
+            "x32": {
+              "executable": "None",
+              "flags": []
+            },
+            "x64": {
+              "executable": "None",
+              "flags": []
+            }
+          }
         }
       ]
     }
-  }
+  ]
 }

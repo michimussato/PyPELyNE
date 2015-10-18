@@ -1,45 +1,52 @@
 {
-  "family": {
-    "value": "After Effects",
-    "abbrev": "AFX",
-    "vendor": {
-      "value": "Adobe",
-      "version": [
+  "family": "After Effects",
+  "abbreviation": "AFX",
+  "vendor": "Adobe",
+  "versions": [
+    {
+      "release": "CS6",
+      "project_template": "null_adobe_aftereffects_CS6.aep",
+      "project_workspace": "None",
+      "project_directories": [],
+      "default_outputs": [],
+      "platforms": [
         {
-          "value": "CS6",
-          "template": "null_adobe_aftereffects_CS6.aep",
-          "workspace": "None",
-          "platform": [
-            {
-              "value": "Windows",
-              "x32": { "value": "None" },
-              "x64": { "value": "None" }
+          "windows": {
+            "x32": {
+              "executable": "None",
+              "flags": []
             },
-            {
-              "value": "Darwin",
-              "x32": { "value": "None" },
-              "x64": { "value": "/Applications/Adobe After Effects CS6/Adobe After Effects CS6.app/Contents/MacOS/After Effects" }
+            "x64": {
+              "executable": "None",
+              "flags": []
             }
-          ]
+          }
         },
         {
-          "value": "CC12",
-          "template": "null_adobe_aftereffects_CC12.aep",
-          "workspace": "None",
-          "platform": [
-            {
-              "value": "Windows",
-              "x32": { "value": "None" },
-              "x64": { "value": "C:\\Program Files\\Adobe\\Adobe After Effects CC\\Support Files\\AfterFX.exe" }
+          "darwin": {
+            "x32": {
+              "executable": "None",
+              "flags": []
             },
-            {
-              "value": "Darwin",
-              "x32": { "value": "None" },
-              "x64": { "value": "/Applications/Adobe After Effects CC/Adobe After Effects CC.app/Contents/MacOS/After Effects" }
+            "x64": {
+              "executable": "/Applications/Adobe After Effects CS6/Adobe After Effects CS6.app/Contents/MacOS/After Effects",
+              "flags": []
             }
-          ]
+          }
+        },
+        {
+          "linux": {
+            "x32": {
+              "executable": "None",
+              "flags": []
+            },
+            "x64": {
+              "executable": "None",
+              "flags": []
+            }
+          }
         }
       ]
     }
-  }
+  ]
 }

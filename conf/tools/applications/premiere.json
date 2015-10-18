@@ -1,45 +1,97 @@
 {
-  "family": {
-    "value": "Premiere",
-    "abbrev": "PRM",
-    "vendor": {
-      "value": "Adobe",
-      "version": [
+  "family": "Premiere",
+  "abbreviation": "PRM",
+  "vendor": "Adobe",
+  "versions": [
+    {
+      "release": "CS6",
+      "project_template": "null_adobe_premiere_CS6.prproj",
+      "project_workspace": "None",
+      "project_directories": [],
+      "default_outputs": [],
+      "platforms": [
         {
-          "value": "CS6",
-          "template": "null_adobe_premiere_CS6.prproj",
-          "workspace": "None",
-          "platform": [
-            {
-              "value": "Windows",
-              "x32": { "value": "None" },
-              "x64": { "value": "None" }
+          "windows": {
+            "x32": {
+              "executable": "None",
+              "flags": []
             },
-            {
-              "value": "Darwin",
-              "x32": { "value": "None" },
-              "x64": { "value": "/Applications/Adobe Premiere Pro CS6/Adobe Premiere Pro CS6.app/Contents/MacOS/Adobe Premiere Pro CS6" }
+            "x64": {
+              "executable": "None",
+              "flags": []
             }
-          ]
+          }
         },
         {
-          "value": "CC12",
-          "template": "null_adobe_premiere_CC12.prproj",
-          "workspace": "None",
-          "platform": [
-            {
-              "value": "Windows",
-              "x32": { "value": "None" },
-              "x64": { "value": "C:\\Program Files\\Adobe\\Adobe Premiere Pro CC\\Adobe Premiere Pro.exe" }
+          "darwin": {
+            "x32": {
+              "executable": "None",
+              "flags": []
             },
-            {
-              "value": "Darwin",
-              "x32": { "value": "None" },
-              "x64": { "value": "/Applications/Adobe Premiere Pro CC/Adobe Premiere Pro CC.app/Contents/MacOS/Adobe Premiere Pro CC" }
+            "x64": {
+              "executable": "/Applications/Adobe Premiere Pro CS6/Adobe Premiere Pro CS6.app/Contents/MacOS/Adobe Premiere Pro CS6",
+              "flags": []
             }
-          ]
+          }
+        },
+        {
+          "linux": {
+            "x32": {
+              "executable": "None",
+              "flags": []
+            },
+            "x64": {
+              "executable": "None",
+              "flags": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "release": "CC12",
+      "project_template": "null_adobe_premiere_CC12.prproj",
+      "project_workspace": "None",
+      "project_directories": [],
+      "default_outputs": [],
+      "platforms": [
+        {
+          "windows": {
+            "x32": {
+              "executable": "None",
+              "flags": []
+            },
+            "x64": {
+              "executable": "C:\\Program Files\\Adobe\\Adobe Premiere Pro CC\\Adobe Premiere Pro.exe",
+              "flags": []
+            }
+          }
+        },
+        {
+          "darwin": {
+            "x32": {
+              "executable": "None",
+              "flags": []
+            },
+            "x64": {
+              "executable": "/Applications/Adobe Premiere Pro CC/Adobe Premiere Pro CC.app/Contents/MacOS/Adobe Premiere Pro CC",
+              "flags": []
+            }
+          }
+        },
+        {
+          "linux": {
+            "x32": {
+              "executable": "None",
+              "flags": []
+            },
+            "x64": {
+              "executable": "None",
+              "flags": []
+            }
+          }
         }
       ]
     }
-  }
+  ]
 }

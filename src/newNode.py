@@ -7,6 +7,7 @@ Created on Apr 27, 2015
 from PyQt4.QtGui import *
 from PyQt4.uic import *
 from newOutput import *
+import re
 
 import platform, os
 
@@ -46,7 +47,7 @@ import platform, os
 
 
 class newNodeUI(QDialog):
-    def __init__(self, nodeDir, tools, tasks, mainWindow, parent = None):
+    def __init__(self, nodeDir, tasks, mainWindow, parent = None):
         super(newNodeUI, self).__init__(parent)
         
         #self.currentPlatform = platform.system()
@@ -65,11 +66,11 @@ class newNodeUI(QDialog):
         self.setModal(True)
         
         self.nodeDir = nodeDir
-        self.tools = tools
+        # self.tools = tools
         self.tasks = tasks
         
         self.createUI()
-        self.addComboBoxItems()
+        self.add_combo_box_items()
         self.createConnects()
 
         #self.deadlinePlugins, self.deadlineGroups, self.deadlinePools = self.configureRenderJobWidget.getDeadlineItems()
@@ -133,14 +134,15 @@ class newNodeUI(QDialog):
         #self.configureRenderJobScrollArea.setVisible(False)
         
     
-    def addComboBoxItems(self):
+    def add_combo_box_items(self):
         
         #self.applicationItems = [['Maya', 'MAY', ['2013', '2014', '2015']], ['Cinema 4D', 'C4D', ['R14', 'R15', 'R16']]]
         #for applicationItem in self.applicationItems:
         #    self.comboBoxApplication.addItem(applicationItem[0])
             
-        for tool in self.tools:
-            self.comboBoxApplication.addItem(tool[0])
+        for tool in self.mainWindow._tools:
+            print tool
+            self.comboBoxApplication.addItem(tool['label'], self.mainWindow._tools.index(tool))
 
         #self.comboBoxApplication.addItem('Thinkbox Software Deadline 5.2')
         '''
@@ -178,50 +180,67 @@ class newNodeUI(QDialog):
         # else:
             # self.comboBoxVersion.addItem('select')
 
-        
+
         
     def setStatus(self):
-        usedNames = os.listdir(self.nodeDir)
+        print self.nodeDir
 
-        #task[2][1]
+        nodes_dir = os.listdir(os.path.join(self.mainWindow._projects_root, self.mainWindow._current_project, 'content', self.mainWindow._current_content['content'], self.mainWindow._current_content_item))
 
-        #print self.tasks[self.comboBoxTask.currentIndex() - 1][1][1]
-        #print self.tools[self.comboBoxApplication.currentIndex() - 1][2]
-        
-        #print len(self.tools)
-        #print self.comboBoxApplication.currentIndex()
+        usedNames = nodes_dir
 
-        #self.labelRenderManager.setVisible(False)
-        #self.comboBoxRenderManager.setVisible(False)
-        #self.configureRenderJobScrollArea.setVisible(False)
+        print self.nodeDir
+        print os.path.join(self.mainWindow._projects_root, self.mainWindow._current_project, 'content', self.mainWindow._current_content['content'], self.mainWindow._current_content_item)
+        print usedNames
 
         self.comboBoxTask.setVisible(True)
         self.labelTask.setVisible(True)
 
-        #self.configureRenderJobWidget.comboBoxDeadlinePlugin.clear()
-        #self.configureRenderJobWidget.comboBoxDeadlineGroup.clear()
-        #self.configureRenderJobWidget.comboBoxDeadlinePool.clear()
+        index_combobox = self.comboBoxApplication.currentIndex()
+        index_tools, can_convert = self.comboBoxApplication.itemData(index_combobox).toInt()
 
+        # print self.mainWindow._tools[index_tools]['executable']
+        # print self.mainWindow._tools[index_tools]['abbreviation']
 
-        if self.comboBoxTask.currentIndex() == 0 \
+        # print self.lineEditNodeName.text()
+        try:
+            valid_string = bool(re.match(r'[\w-]*$', self.lineEditNodeName.text()))
+            # bool(re.match("^[A-Za-z0-9_-]*$", self.lineEditNodeName.text()))
+            # bool(re.match("^[\w\d_-]*$", self.lineEditNodeName.text()))
+        except UnicodeEncodeError, e:
+            print 'error captured:', e
+            valid_string = False
+        finally:
+            try:
+                if any(invalid_char in str(self.lineEditNodeName.text()) for invalid_char in ['__', '-']):
+                    valid_string = False
+            except UnicodeEncodeError, e:
+                print 'error captured:', e
+                valid_string = False
+
+        if not valid_string:
+        # elif ' ' in self.lineEditNodeName.text() \
+        #         or '-' in self.lineEditNodeName.text() \
+        #         or '__' in self.lineEditNodeName.text():
+            self.buttonOk.setEnabled(False)
+            self.labelStatus.setText('invalid character')
+
+        elif self.comboBoxTask.currentIndex() == 0 \
                 or self.comboBoxApplication.currentIndex() == 0 \
                 or self.lineEditNodeName.text() == '':
             self.buttonOk.setEnabled(False)
             self.labelStatus.setText('')
-            
-        elif self.tasks[self.comboBoxTask.currentIndex() - 1][1][1] + '_' + str(self.tools[self.comboBoxApplication.currentIndex() - 1][2]) + '__' + self.lineEditNodeName.text() in usedNames:
+
+        elif self.tasks[self.comboBoxTask.currentIndex() - 1][1][1] + '_' + self.mainWindow._tools[index_tools]['abbreviation'] + '__' + self.lineEditNodeName.text() in usedNames:
             self.buttonOk.setEnabled(False)
             self.labelStatus.setText('already exists')
 
-        elif ' ' in self.lineEditNodeName.text() \
-                or '-' in self.lineEditNodeName.text() \
-                or '__' in self.lineEditNodeName.text():
-            self.buttonOk.setEnabled(False)
-            self.labelStatus.setText('invalid character')
-            
+        # elif re.match("^[A-Za-z0-9_-]*$", my_little_string)
+
+
         else:
             self.buttonOk.setEnabled(True)
-            self.labelStatus.setText(self.tasks[self.comboBoxTask.currentIndex() - 1][1][1] + '_' + str(self.tools[self.comboBoxApplication.currentIndex() - 1][2]) + '__' + self.lineEditNodeName.text())
+            self.labelStatus.setText(self.tasks[self.comboBoxTask.currentIndex() - 1][1][1] + '_' + self.mainWindow._tools[index_tools]['abbreviation'] + '__' + self.lineEditNodeName.text())
             #self.labelStatus.setText(self.nodeDir + os.sep + self.taskItems[self.comboBoxTask.currentIndex() - 1][1] + '_' + self.applicationItems[self.comboBoxApplication.currentIndex() - 1][1] + '__' + self.lineEditNodeName.text())
             
     
@@ -229,11 +248,13 @@ class newNodeUI(QDialog):
         self.reject()
         
     def onOk(self):
+        index_combobox = self.comboBoxApplication.currentIndex()
+        index_tools, can_convert = self.comboBoxApplication.itemData(index_combobox).toInt()
         #print 'onOk'
-        try:
-            self.nodeName = self.tasks[self.comboBoxTask.currentIndex() - 1][1][1] + '_' + str(self.tools[self.comboBoxApplication.currentIndex() - 1][2]) + '__' + self.lineEditNodeName.text()
-        except:
-            self.nodeName = self.tasks[self.comboBoxTask.currentIndex() - 1][1][1] + '_' + 'DDL' + '__' + self.lineEditNodeName.text()
+        # try:
+        self.nodeName = self.tasks[self.comboBoxTask.currentIndex() - 1][1][1] + '_' + self.mainWindow._tools[index_tools]['abbreviation'] + '__' + self.lineEditNodeName.text()
+        # except:
+        #     self.nodeName = self.tasks[self.comboBoxTask.currentIndex() - 1][1][1] + '_' + 'DDL' + '__' + self.lineEditNodeName.text()
         self.toolIndex = self.comboBoxApplication.currentIndex() - 1
         self.taskIndex = self.comboBoxTask.currentIndex() - 1
         #self.toolTemplate = self.tools[self.comboBoxApplication.currentIndex() - 1]
@@ -244,8 +265,8 @@ class newNodeUI(QDialog):
     
     # http://stackoverflow.com/questions/18196799/how-can-i-show-a-pyqt-modal-dialog-and-get-data-out-of-its-controls-once-its-clo
     @staticmethod
-    def getNewNodeData(nodeDir, tools, tasks, mainWindow):
-        dialog = newNodeUI(nodeDir, tools, tasks, mainWindow)
+    def getNewNodeData(nodeDir, tasks, mainWindow):
+        dialog = newNodeUI(nodeDir, tasks, mainWindow)
         result = dialog.exec_()
         nodeName, toolIndex, taskIndex = dialog.onOk()
         return nodeName, result == QDialog.Accepted, toolIndex, taskIndex

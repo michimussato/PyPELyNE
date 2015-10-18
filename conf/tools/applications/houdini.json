@@ -1,33 +1,52 @@
 {
-  "family": {
-    "-value": "Houdini",
-    "-abbrev": "HOU",
-    "directory": [
-      { "-value": "scripts" },
-      { "-value": "otls" },
-      { "-value": "desktop" },
-      { "-value": "toolbar" },
-      { "-value": "gallery" }
-    ],
-    "vendor": {
-      "-value": "Side Effects Software",
-      "version": {
-        "-value": "13.0.314",
-        "-template": "null_sidefx_houdini_130260.hip",
-        "-workspace": "None",
-        "platform": [
-          {
-            "-value": "Windows",
-            "x32": { "-value": "None" },
-            "x64": { "-value": "None" }
-          },
-          {
-            "-value": "Darwin",
-            "x32": { "-value": "None" },
-            "x64": { "-value": "/Applications/Houdini 13.0.314/Houdini FX.app/Contents/MacOS/houdini" }
+  "family": "Houdini",
+  "abbreviation": "HOU",
+  "vendor": "Side Effects Software",
+  "versions": [
+    {
+      "release": "13.0.314",
+      "project_template": "null_sidefx_houdini_130260.hip",
+      "project_workspace": "None",
+      "project_directories": ["scripts", "otls", "desktop", "toolbar", "gallery"],
+      "default_outputs": [],
+      "platforms": [
+        {
+          "windows": {
+            "x32": {
+              "executable": "None",
+              "flags": []
+            },
+            "x64": {
+              "executable": "None",
+              "flags": []
+            }
           }
-        ]
-      }
+        },
+        {
+          "darwin": {
+            "x32": {
+              "executable": "None",
+              "flags": []
+            },
+            "x64": {
+              "executable": "/Applications/Houdini 13.0.314/Houdini FX.app/Contents/MacOS/houdini",
+              "flags": []
+            }
+          }
+        },
+        {
+          "linux": {
+            "x32": {
+              "executable": "None",
+              "flags": []
+            },
+            "x64": {
+              "executable": "None",
+              "flags": []
+            }
+          }
+        }
+      ]
     }
-  }
+  ]
 }

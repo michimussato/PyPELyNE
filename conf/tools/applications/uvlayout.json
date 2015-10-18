@@ -1,29 +1,52 @@
 {
-  "family": {
-    "value": "UVLayout",
-    "abbrev": "UVL",
-    "vendor": {
-      "value": "Headus",
-      "version": {
-        "value": "2.08.01",
-        "template": "None",
-        "workspace": "None",
-        "platform": [
-          {
-            "value": "Windows",
+  "family": "UVLayout",
+  "abbreviation": "UVL",
+  "vendor": "Headus",
+  "versions": [
+    {
+      "release": "2.08.01",
+      "project_template": "None",
+      "project_workspace": "None",
+      "project_directories": [],
+      "default_outputs": [],
+      "platforms": [
+        {
+          "windows": {
             "x32": {
-              "value": "C:\\Program Files (x86)\\headus UVLayout v2 Professional\\howin32.exe",
-              "flag": { "value": "-launch" }
+              "executable": "C:\\Program Files (x86)\\headus UVLayout v2 Professional\\howin32.exe",
+              "flags": ["-launch"]
             },
-            "x64": { "value": "None" }
-          },
-          {
-            "value": "Darwin",
-            "x32": { "value": "/Applications/headus-UVLayoutPro.app/Contents/MacOS/headus-launch" },
-            "x64": { "value": "None" }
+            "x64": {
+              "executable": "None",
+              "flags": []
+            }
           }
-        ]
-      }
+        },
+        {
+          "darwin": {
+            "x32": {
+              "executable": "/Applications/headus-UVLayoutPro.app/Contents/MacOS/headus-launch",
+              "flags": []
+            },
+            "x64": {
+              "executable": "None",
+              "flags": []
+            }
+          }
+        },
+        {
+          "linux": {
+            "x32": {
+              "executable": "None",
+              "flags": []
+            },
+            "x64": {
+              "executable": "None",
+              "flags": []
+            }
+          }
+        }
+      ]
     }
-  }
+  ]
 }

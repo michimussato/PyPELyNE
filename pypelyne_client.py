@@ -72,6 +72,8 @@ class PypelyneMainWindow(QMainWindow):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
+        self.content_tabs = [{'content': 'assets', 'abbreviation': 'AST'}, {'content': 'shots', 'abbreviation': 'SHT'}, {'content': 'sequences', 'abbreviation': 'SEQ'}]
+
         # self.connectServer()
 
         if USE_SERVER:
@@ -102,7 +104,16 @@ class PypelyneMainWindow(QMainWindow):
 
         self.pypelyneRoot = os.getcwd()
         self.currentPlatform = platform.system()
+        self.operating_system = self.currentPlatform.lower()
+        if sys.maxsize > 2**32:
+            self.architecture = 'x64'
+        else:
+            self.architecture = 'x32'
         self.user = getpass.getuser()
+
+        self.tools = None
+
+        self.current_content_item = None
         
         self.exclusions = EXCLUSIONS
         self.audioExtensions = AUDIO_EXTENSIONS
@@ -203,7 +214,7 @@ class PypelyneMainWindow(QMainWindow):
 
         self.openPushButton.setEnabled(False)
 
-        self.compute_value_applications()
+        # self.compute_value_applications()
         self.computeValueTasks()
         self.computeValueOutputs()
 
@@ -238,7 +249,7 @@ class PypelyneMainWindow(QMainWindow):
         self.addProjects()
         
         # Tools
-        self.tools_dict = {}
+        # self.tools_dict = {}
         self.addTools()
 
         self.audioFolderContent = []
@@ -247,7 +258,7 @@ class PypelyneMainWindow(QMainWindow):
             logging.info('audioFolder found at %s' % self.audioFolder)
             self.addPlayer()
 
-        self.runToolPushButton.clicked.connect(self.runTool)
+        self.runToolPushButton.clicked.connect(self.run_tool)
         
         self.checkBoxConsole.stateChanged.connect(self.toggleConsole)
         self.checkBoxNodeName.stateChanged.connect(self.toggleNodeName)
@@ -648,10 +659,25 @@ class PypelyneMainWindow(QMainWindow):
 
     def getCurrentPlatform(self):
         return self.currentPlatform
+
+    @property
+    def _pypelyne_root(self):
+        return self.pypelyneRoot
+
+    @property
+    def _projects_root(self):
+        return self.projectsRoot
         
     def getProjectsRoot(self):
         return self.projectsRoot
-    
+
+    @property
+    def _current_content(self):
+        current_content_index = self.assetsShotsTabWidget.currentIndex()
+        # current_
+        print self.content_tabs[current_content_index]
+        return self.content_tabs[current_content_index]
+
     def getCurrentContent(self):
         return self.currentContent
 
@@ -703,7 +729,7 @@ class PypelyneMainWindow(QMainWindow):
         #print self._tasks
             #print category.items()
 
-    def newProcessColor(self):
+    def new_process_color(self):
         pColorR = random.randint(20, 235)
         pColorG = random.randint(20, 235)
         pColorB = random.randint(20, 235)
@@ -751,10 +777,10 @@ class PypelyneMainWindow(QMainWindow):
 
         process = QProcess(self)
 
-        pColor = self.newProcessColor()
+        pColor = self.new_process_color()
 
         #process.readyRead.connect(lambda: self.dataReady(process))
-        process.readyReadStandardOutput.connect(lambda: self.dataReadyStd(process, pColor))
+        process.readyReadStandardOutput.connect(lambda: self.data_ready_std(process, pColor))
         process.readyReadStandardError.connect(lambda: self.dataReadyErr(process, pColor))
         process.started.connect(lambda: self.taskOnStarted(node, process, newScreenCast, newTimeTracker))
         #process.started.connect(lambda: )
@@ -807,10 +833,10 @@ class PypelyneMainWindow(QMainWindow):
         arguments.append(node.getNodeRootDir())
         arguments.append('.')
 
-        pColor = self.newProcessColor()
+        pColor = self.new_process_color()
 
         process = QProcess(self)
-        process.readyReadStandardOutput.connect(lambda: self.dataReadyStd(process, pColor))
+        process.readyReadStandardOutput.connect(lambda: self.data_ready_std(process, pColor))
         process.readyReadStandardError.connect(lambda: self.dataReadyErr(process, pColor))
         process.started.connect(lambda: self.checkOutOnStarted(process))
         process.finished.connect(lambda: self.checkoutOnFinished(process, node, tarName))
@@ -866,28 +892,106 @@ class PypelyneMainWindow(QMainWindow):
 
     def task_on_finished(self, node, qprocess, screenCast, timeTracker):
         logging.info('task %s finished' %node.getLabel())
-        #
-        # #pid = self.process.pid()
-        #
-        # #self.mainWindow.sendTextToBox("%s: stopped %s (PID %s).\n" %(datetime.datetime.now(), self.data(0).toPyObject(), self.pid))
-        #
-        # #print self.screenCast
-        #
+
         if self.screenCastActive and screenCast in self.screenCasts:
             screenCast.stop()
             self.screenCasts.remove(screenCast)
             self.addNewScreenCast.emit()
-        #
+
         timeTracker.stop()
         self.timeTrackers.remove(timeTracker)
-        #
+
         os.remove(os.path.join(node.getNodeRootDir(), 'locked'))
 
         self.openNodes.remove(node)
         self.qprocesses.remove(qprocess)
-        # print self.qprocesses
 
-    def compute_value_applications(self):
+    @property
+    def _tools(self):
+        if self.tools is None:
+            print 'parsing tools'
+            self.tools = []
+
+            app_conf_root = os.path.join(os.path.abspath(r'conf'), r'tools', r'applications')
+
+            app_conf_files = [os.path.join(app_conf_root, f) for f in os.listdir(app_conf_root) if not f.startswith('_') and f not in self.exclusions and f.split('.')[-1].endswith('json')]
+
+            # print app_conf_files
+
+            # app_conf_files.append(os.path.join(app_conf_root, 'blender.json'))
+            # app_conf_files.append(os.path.join(app_conf_root, 'aftereffects.json'))
+            # app_conf_files.append(os.path.join(app_conf_root, 'maya.json'))
+            # app_conf_files.append(os.path.join(app_conf_root, 'nukex.json'))
+            # app_conf_files.append(os.path.join(app_conf_root, 'uvlayout.json'))
+
+            for app_conf_file in app_conf_files:
+                tool = {}
+
+                json_file = open(app_conf_file)
+                app_conf = json.load(json_file)
+
+                for version in app_conf['versions']:
+
+                    project_directories = []
+                    default_outputs = []
+
+                    for project_directory in version['project_directories']:
+                        project_directory = project_directory.replace('%', os.sep)
+                        project_directories.append(project_directory)
+
+                    for default_output in version['default_outputs']:
+                        default_outputs.append(default_output)
+
+                    for platform in version['platforms']:
+                        if platform.has_key(self.operating_system):
+                            if platform[self.operating_system].has_key(self.architecture):
+                                # executable = "\"" + platform[self.operating_system][self.architecture]['executable'] + "\""
+                                executable = os.path.normpath(platform[self.operating_system][self.architecture]['executable'])
+                                flags = []
+                                for flag in platform[self.operating_system][self.architecture]['flags']:
+                                    flags.append(flag)
+
+                                # executable_normpath = os.path.normpath(platform[self.operating_system][self.architecture]['executable'])
+
+                                label = app_conf['vendor'] + ' ' + app_conf['family'] + ' ' + version['release'] + ' ' + self.architecture
+
+                                if os.path.exists(executable):
+                                    # print 'tool exists %s' % executable_normpath
+                                    vendor = app_conf['vendor']
+                                    family = app_conf['family']
+                                    abbreviation = app_conf['abbreviation']
+                                    release = version['release']
+
+                                    # platform = platform[self.operating_system]
+
+                                    project_workspace = version['project_workspace']
+                                    project_template = version['project_template']
+
+                                    tool['label'] = label
+                                    tool['executable'] = executable
+                                    tool['abbreviation'] = abbreviation
+                                    tool['vendor'] = vendor
+                                    tool['family'] = family
+                                    tool['release'] = release
+                                    tool['architecture'] = self.architecture
+
+                                    tool['project_template'] = project_template
+                                    tool['project_directories'] = project_directories
+                                    tool['default_outputs'] = default_outputs
+                                    tool['flags'] = flags
+                                    tool['project_workspace'] = project_workspace
+
+                                    self.tools.append(tool.copy())
+                                else:
+                                    print 'tool does not exist (not added): %s' % label
+
+        return self.tools
+
+    def compute_value_applications_(self):
+        return self._tools
+
+    '''
+    def compute_value_applications_(self):
         self.sendTextToBox('registering applications for current platform (%s) found at %s:\n' % (self.currentPlatform, self.valueApplicationsXML))
 
         self.valueApplications = ET.parse(self.valueApplicationsXML)
@@ -895,12 +999,12 @@ class PypelyneMainWindow(QMainWindow):
 
         print type(self.valueApplicationsRoot)
 
+        tools = []
+
         # print 'hallo'
-#         families = self.valueApplications.findall('./family')
-#         for i in families:
-#             print i.items()[0][1]
-        
-        self._tools = []
+        # families = self.valueApplications.findall('./family')
+        # for i in families:
+        #     print i.items()[0][1]
         
         for family in self.valueApplicationsRoot:
 
@@ -912,7 +1016,7 @@ class PypelyneMainWindow(QMainWindow):
 
             for defaultOutput in defaultOutputs:
                 defaultOutputList.append(defaultOutput.items()[0][1])
-                #print defaultOutput.items()[0][1]
+                # print defaultOutput.items()[0][1]
 
             #print directories
             for directory in directories:
@@ -996,17 +1100,27 @@ class PypelyneMainWindow(QMainWindow):
                                                         'architecture': executable_arch,
                                                         'flags': flags,
                                                         }
-                                    print self.tools_dict
+
+                                    tools.append(self.tools_dict)
+
                                     self.sendTextToBox('\t' + vendor_value + ' ' + family_value + ' ' + version_value + ' ' + executable_arch + ' found.\n')
 
                                 else:
                                     logging.warning('path not found: %s. application not added to tools dropdown' %(path))
                                     self.sendTextToBox('\t' + vendor_value + ' ' + family_value + ' ' + version_value + ' ' + executable_arch + ' not found.')
 
-
+        # print self.valueApplicationsRoot
+        # print self.tools_dict
+        # print tools
+        # for tool in tools:
+        #     print tool
+        print self._tools
+        # for tool in self._tools:
+        #     print tool
         self.sendTextToBox('initialization done.\n\n')
 
         # print self._tools
+    '''
     
 #     @pyqtSlot()
 #     def test(self):
@@ -1051,7 +1165,7 @@ class PypelyneMainWindow(QMainWindow):
         
         self.sendTextToBox('content at %s cloned to %s\n' %(contentFiles, cloneDestination))
         
-        self.addContent()
+        self.add_content()
         self.assetsShotsTabWidget.setCurrentIndex(tabIndex)
     
     def removeContent(self, contentFiles):
@@ -1062,86 +1176,40 @@ class PypelyneMainWindow(QMainWindow):
         logging.info('content removed from filesystem: %s' %(contentFiles))
         self.sendTextToBox('content removed from filesystem: %s\n' %(contentFiles))
         
-        self.addContent()
+        self.add_content()
         self.refreshProjects()
         self.assetsShotsTabWidget.setCurrentIndex(tabIndex)
+
+
     
-    def createNewContent(self):
-        self.items = ['asset', 'shot']
-        tabIndex = self.assetsShotsTabWidget.currentIndex()
-        # tabPosition 0 = assets
-        # tabPosition 1 = shots
+    def create_new_content(self):
+        tab_index = self.assetsShotsTabWidget.currentIndex()
 
-        text, ok = QInputDialog.getText(self, 'create new %s' %(self.items[tabIndex]), 'enter %s name:' %(self.items[tabIndex]))
-        
-        
-        
-        if tabIndex == 0:
-            newContentPath = self.assetsRoot
+
+
+        print tab_index
+        print self.content_tabs[tab_index]
+        print self.content_tabs[tab_index]['content']
+
+        text, ok = QInputDialog.getText(self, 'create new %s' %(self.content_tabs[tab_index]['content']), 'enter %s name:' %(self.content_tabs[tab_index]['content']))
+
+        current_target = os.path.join(self.projectsRoot, self._current_project, 'content', self.content_tabs[tab_index]['content'])
             
-        elif tabIndex == 1:
-            newContentPath = self.shotsRoot
-            
-        newContent = os.path.join(newContentPath, str(text))
-        #logging.info('newContent = %s' %(newContent))
+        new_content = os.path.join(current_target, str(text))
 
-
-        #for char in list(text):
-        #    if not char in [r'.', r' ', r',', r'/', r'\\']:
+        # TODO: capture invalid characters. see newNode.setStatus()
 
         if ok:
-            if not os.path.exists(newContent):
-                os.makedirs(newContent, mode = 0777)
-                self.addContent()
-                self.sendTextToBox('content created on filesystem: %s\n' %(newContent))
-                logging.info('content created on filesystem: %s' %(newContent))
+            if not os.path.exists(new_content):
+                os.makedirs(new_content, mode = 0777)
+                self.add_content()
+                self.sendTextToBox('content created on filesystem: %s\n' % new_content)
+                logging.info('content created on filesystem: %s' % new_content)
 
             else:
-                self.sendTextToBox('content not created because it already exists (%s)\n' %(newContent))
+                self.sendTextToBox('content not created because it already exists (%s)\n' % new_content)
                 self.sendTextToBox('choose different name.\n')
-                logging.warning('content not created because it already exists (%s)' %(newContent))
-
-        #    else:
-        #        self.sendTextToBox('invalid characters: %s\n' %text)
-            
-        
-        #self.createNewContent()
-        self.assetsShotsTabWidget.setCurrentIndex(tabIndex)
-            
-    
-#     def mousePressEvent(self, event):
-#         self.menu = QMenu()
-#         
-#         #objectClicked = self.itemAt(pos)
-#         
-#         items = []
-#         
-#         #self.menu.addAction('new node', self.newNodeDialog(pos))
-#         
-#         if isinstance(QPushButton):
-#             
-#         
-#         if isinstance(objectClicked, QPushButton):
-#             items.append('delete this asset')
-# 
-# 
-#                 
-#         if isinstance(objectClicked, QPushButton):
-#             items.append('delete this shot')
-# 
-#                 
-#         
-# 
-#                 
-#                 
-#         for item in items:
-# 
-#             self.menu.addAction(item, self.removeObject(objectClicked))
-#         
-# 
-#         
-#         self.menu.move(QCursor.pos())
-#         self.menu.show()
+                logging.warning('content not created because it already exists (%s)' % new_content)
 
     def getPypelyneRoot(self):
         return self.pypelyneRoot
@@ -1407,10 +1475,54 @@ class PypelyneMainWindow(QMainWindow):
             else:
                 print 'node %s has no input' %(node.data(0).toPyObject())
 
-        
     def getPropertyPaths(self):
         return self.propertyNodePathAssets, self.propertyNodePathShots
 
+    @property
+    def _current_content_item(self):
+        return str(self.current_content_item)
+
+    def get_content(self, button = None, node_label = None):
+
+
+        if button is not None:
+            button_text = button.text()
+        elif node_label is not None:
+            button_text = node_label.split('__')[1]
+        ######
+
+        for tab in self.content_tabs:
+            self.group_boxes[self.content_tabs.index(tab)].setTitle('looking at ' + self._current_project + os.sep + self._current_content['content'] + os.sep + button_text)
+
+        self.current_content_item = button_text
+
+        # self.group_boxes[self.content_tabs.index(self._current_content)].setTitle('looking at ' + self._current_project + os.sep + self._current_content + os.sep + button_text)
+
+        self.nodeView.setVisible(True)
+
+        self.scene.clear()
+        self.addRectangular()
+        self.scene.clearNodeList()
+
+        content_root = os.path.join(self.projectsRoot, self._current_project, 'content', self._current_content['content'])
+        content_items = os.listdir(os.path.join(content_root, str(button_text)))
+
+        for node_item in content_items:
+            if node_item not in self.exclusions:
+                if os.path.isdir(os.path.join(content_root, str(button_text), node_item)):
+
+                    property_node_path = os.path.join(content_root, str(button_text), node_item, 'propertyNode.xml')
+
+                    new_node = node(self, self.scene, property_node_path)
+                    new_node.addText(self.scene, node_item)
+                    self.scene.addToNodeList(new_node)
+                else:
+                    logging.warning('shots: nodeItem %s is not a directory' % node_item)
+            else:
+                os.remove(os.path.join(content_root, str(button_text), node_item))
+                logging.info('exclusion %s found and cleaned' % node_item)
+
+        self.computeConnections()
 
     def getShotContent(self, shotButton = None, nodeShtLabel = None):
         #print shotButton
@@ -1468,7 +1580,9 @@ class PypelyneMainWindow(QMainWindow):
         self.assetsRoot = os.path.join(self.projectsRoot, currentProject)
         return currentProject
         
-            
+    @property
+    def _current_project(self):
+        return str(self.projectComboBox.currentText())
     
     def getAssetContent(self, assetButton = None, nodeAstLabel = None):
 
@@ -1507,17 +1621,83 @@ class PypelyneMainWindow(QMainWindow):
                     logging.warning('assets: nodeItem %s is not a directory' %(nodeItem))
             else:
                 os.remove(os.path.join(self.assetsRoot, str(buttonText), nodeItem))
-                logging.info('exclusion %s found and cleaned' %(nodeItem))
+                logging.info('exclusion %s found and cleaned' % nodeItem)
 
-                
         self.computeConnections()
 
+    def print_sth(self):
+        print 'hallo'
 
-    def addContent(self):
-        
+    def add_content(self):
+        current_index = self.assetsShotsTabWidget.currentIndex()
+
+        self.assetsShotsTabWidget.clear()
+
+        self.buttons = {}
+        self.group_boxes = {}
+        # for i in range(1,10,1)
+        #     buttons[i] = 100 / i
+        #     print x[i]
+
+        for tab in self.content_tabs:
+            content = []
+
+            # currentProject = str(self.projectComboBox.currentText())
+
+            # print 'self.content_tabs[self.content_tabs.index(tab)]', self.content_tabs[self.content_tabs.index(tab)]['content']
+
+            content_root = os.path.join(self.projectsRoot, self._current_project, 'content', self.content_tabs[self.content_tabs.index(tab)]['content'])
+
+            try:
+                for i in os.listdir(content_root):
+                    if i not in self.exclusions:
+                        content.append(i)
+            except:
+                logging.warning('no %s_root found' % self.content_tabs[self.content_tabs.index(tab)]['content'])
+
+            self.group_boxes[self.content_tabs.index(tab)] = QGroupBox(self._current_project)
+            layout_content = QHBoxLayout()
+            create_content_push_button = QPushButton('create new %s' % self.content_tabs[self.content_tabs.index(tab)]['content'])
+            create_content_push_button.clicked.connect(self.create_new_content)
+            layout_content.addWidget(create_content_push_button)
+
+
+            self.buttons[self.content_tabs.index(tab)] = QButtonGroup()
+            # content_button_group.buttonClicked[QAbstractButton].connect(self.getContent)
+            # self.buttons[self.content_tabs.index(tab)].buttonClicked[QAbstractButton].connect(self.print_sth)
+            self.buttons[self.content_tabs.index(tab)].buttonClicked[QAbstractButton].connect(self.get_content)
+
+            for i in content:
+                content_push_button = QPushButton(i)
+                content_push_button.setContextMenuPolicy(Qt.CustomContextMenu)
+                self.connect(content_push_button, SIGNAL('customContextMenuRequested(const QPoint&)'), self.content_context_menu)
+                layout_content.addWidget(content_push_button)
+                self.buttons[self.content_tabs.index(tab)].addButton(content_push_button)
+                logging.info('%s %s found' % (self.content_tabs[self.content_tabs.index(tab)]['content'], i))
+
+            layout_content.addItem(QSpacerItem(1, 1, QSizePolicy.Expanding, QSizePolicy.Minimum))
+
+            self.group_boxes[self.content_tabs.index(tab)].setLayout(layout_content)
+            scroll_content = QScrollArea()
+            scroll_content.setWidget(self.group_boxes[self.content_tabs.index(tab)])
+            scroll_content.setWidgetResizable(True)
+            scroll_content.setFixedHeight(90)
+            layout_content_scroll = QVBoxLayout()
+            layout_content_scroll.addWidget(scroll_content)
+
+            widget_content = QWidget()
+            widget_content.setLayout(layout_content_scroll)
+
+            self.assetsShotsTabWidget.addTab(widget_content, tab['content'])
+
+        print self.buttons
+        self.assetsShotsTabWidget.setCurrentIndex(current_index)
+
+        '''
+
         assets = []
         shots = []
-        
+
         currentProject = str(self.projectComboBox.currentText())
         self.assetsRoot = os.path.join(self.projectsRoot, currentProject, 'content', 'assets')
         self.shotsRoot = os.path.join(self.projectsRoot, currentProject, 'content', 'shots')
@@ -1534,32 +1714,28 @@ class PypelyneMainWindow(QMainWindow):
                     shots.append(i)
         except:
             logging.warning('no shotsRoot found')
-    
-    
+
         #Assets
 
         self.assetsGroupBox = QGroupBox(currentProject)
         layoutAssets = QHBoxLayout()
         self.createAssetPushButton = QPushButton('create new asset')
-        self.createAssetPushButton.clicked.connect(self.createNewContent)
+        self.createAssetPushButton.clicked.connect(self.create_new_content)
         layoutAssets.addWidget(self.createAssetPushButton)
-        
+
         self.assetButtonGroup = QButtonGroup()
         self.assetButtonGroup.buttonClicked[QAbstractButton].connect(self.getAssetContent)
-        
+
         for i in assets:
             assetPushButton = QPushButton(i)
             assetPushButton.setContextMenuPolicy(Qt.CustomContextMenu)
-            self.connect(assetPushButton, SIGNAL('customContextMenuRequested(const QPoint&)'), self.contentContextMenu)
+            self.connect(assetPushButton, SIGNAL('customContextMenuRequested(const QPoint&)'), self.content_context_menu)
             layoutAssets.addWidget(assetPushButton)
             self.assetButtonGroup.addButton(assetPushButton)
             logging.info('asset %s found' %(i))
-            
+
         layoutAssets.addItem(QSpacerItem(1, 1, QSizePolicy.Expanding, QSizePolicy.Minimum))
-        
-        
-        
-        
+
         self.assetsGroupBox.setLayout(layoutAssets)
         scrollAssets = QScrollArea()
         scrollAssets.setWidget(self.assetsGroupBox)
@@ -1567,11 +1743,9 @@ class PypelyneMainWindow(QMainWindow):
         scrollAssets.setFixedHeight(90)
         layoutAssetsScroll = QVBoxLayout()
         layoutAssetsScroll.addWidget(scrollAssets)
-        
+
         widgetAssets = QWidget()
         widgetAssets.setLayout(layoutAssetsScroll)
-        
-        
         
         #Shots
         
@@ -1579,7 +1753,7 @@ class PypelyneMainWindow(QMainWindow):
         layoutShots = QHBoxLayout()
         
         self.createShotPushButton = QPushButton('create new shot')
-        self.createShotPushButton.clicked.connect(self.createNewContent)
+        self.createShotPushButton.clicked.connect(self.create_new_content)
         layoutShots.addWidget(self.createShotPushButton)
         
         self.shotButtonGroup = QButtonGroup()
@@ -1588,15 +1762,12 @@ class PypelyneMainWindow(QMainWindow):
         for i in shots:
             shotPushButton = QPushButton(i)
             shotPushButton.setContextMenuPolicy(Qt.CustomContextMenu)
-            self.connect(shotPushButton, SIGNAL('customContextMenuRequested(const QPoint&)'), self.contentContextMenu)
+            self.connect(shotPushButton, SIGNAL('customContextMenuRequested(const QPoint&)'), self.content_context_menu)
             layoutShots.addWidget(shotPushButton)
             self.shotButtonGroup.addButton(shotPushButton)
             logging.info('shot %s found' %(i))
         
         layoutShots.addItem(QSpacerItem(1, 1, QSizePolicy.Expanding, QSizePolicy.Minimum))
-        
-        
-        
         
         self.shotsGroupBox.setLayout(layoutShots)
         scrollShots = QScrollArea()
@@ -1608,54 +1779,34 @@ class PypelyneMainWindow(QMainWindow):
         
         widgetShots = QWidget()
         widgetShots.setLayout(layoutShotsScroll)
-        
-        
-        #test
-        testGroupBox = QGroupBox()
-        layoutTest = QHBoxLayout()
-        
-        self.testButtonGroup = QButtonGroup()
-        self.testButtonGroup.buttonClicked[QAbstractButton].connect(self.printShit)
-        #testButtonGroup.buttonClicked[QAbstractButton].connect(self.printShit)
-        
-        for i in range(30):
-            createTestPushButton = QPushButton('%d' %i)
-            layoutTest.addWidget(createTestPushButton)
-            self.testButtonGroup.addButton(createTestPushButton)
-            
-        
-        layoutTest.addItem(QSpacerItem(1, 1, QSizePolicy.Expanding, QSizePolicy.Minimum))
-        
-        
-        testGroupBox.setLayout(layoutTest)
-        scrollTest = QScrollArea()
-        scrollTest.setWidget(testGroupBox) 
-        scrollTest.setWidgetResizable(True)
-        layoutTestScroll = QVBoxLayout()
-        layoutTestScroll.addWidget(scrollTest)
-        
-        widgetTest = QWidget()
-        widgetTest.setLayout(layoutTestScroll)
 
         self.assetsShotsTabWidget.clear()
-        
+
         self.assetsShotsTabWidget.addTab(widgetAssets, 'assets')
         self.assetsShotsTabWidget.addTab(widgetShots, 'shots')
+    '''
 
-    def contentContextMenu(self, point):
+    def content_context_menu(self, point):
         
         sendingButton = self.sender()
         sendingButtonText = sendingButton.text()
 
-        tabIndex = self.assetsShotsTabWidget.currentIndex()
-        
-        if tabIndex == 0:
-            currentTarget = self.assetsRoot
+        tab_index = self.assetsShotsTabWidget.currentIndex()
+
+        # print tab_index
+        # print self.content_tabs[tab_index]
+        # print self.content_tabs[tab_index]['content']
+        # print self.content_tabs
+
+        current_target = os.path.join(self.projectsRoot, self._current_project, 'content', self.content_tabs[tab_index]['content'])
+
+        # if tab_index == 0:
+        #     current_target = self.assetsRoot
+        #
+        # elif tab_index == 1:
+        #     current_target = self.shotsRoot
             
-        elif tabIndex == 1:
-            currentTarget = self.shotsRoot
-            
-        contentLocation = os.path.join(str(currentTarget), str(sendingButtonText))
+        contentLocation = os.path.join(str(current_target), str(sendingButtonText))
 
         popMenu = QMenu(self)
         popMenu.addAction('open directory', lambda: self.locateContent(contentLocation))
@@ -1746,7 +1897,7 @@ class PypelyneMainWindow(QMainWindow):
         
         if not indexText == 'select project' and not indexText == 'create new project':
             self.assetsShotsTabWidget.clear()
-            self.addContent()
+            self.add_content()
             self.assetsShotsTabWidget.setVisible(True)
             #self.nodeView.setVisible(True)
             self.openPushButton.setEnabled(True)
@@ -1759,23 +1910,28 @@ class PypelyneMainWindow(QMainWindow):
             self.assetsShotsTabWidget.clear()
             #print 'no project selected'
             self.openPushButton.setEnabled(False)
-            
-        
-        
         
         self.scene.clear()
         
         
     def addTools(self):
-        
         self.toolsComboBox.clear()
         self.toolsComboBox.addItem('run tool instance')
         
         self.toolsComboBox.insertSeparator(1)
+
+        print self._tools
         
-        for i in self._tools:
-            
-            item = self.toolsComboBox.addItem(i[0])
+        for tool in self._tools:
+            # print type(tool)
+            # print tool
+            # print tool['project_template']
+
+            # string = tool['label'].encode("ascii")
+            # print type(string)
+            self.toolsComboBox.addItem(tool['label'], self._tools.index(tool))
+            # print tool['executable']
+            # print 'success'
 
     def submitDeadlineJob(self, jobFile):
 
@@ -1794,97 +1950,81 @@ class PypelyneMainWindow(QMainWindow):
 
         process = QProcess(self)
 
-        pColor = self.newProcessColor()
+        pColor = self.new_process_color()
 
-        process.readyReadStandardOutput.connect(lambda: self.dataReadyStd(process, pColor))
+        process.readyReadStandardOutput.connect(lambda: self.data_ready_std(process, pColor))
         process.readyReadStandardError.connect(lambda: self.dataReadyErr(process, pColor))
         process.started.connect(lambda: self.toolOnStarted(process))
         process.finished.connect(lambda: self.toolOnFinished(process))
 
         process.start(executable, arguments)
 
+    def run_tool(self):
+        index_combobox = self.toolsComboBox.currentIndex()
+        index_tools, can_convert = self.toolsComboBox.itemData(index_combobox).toInt()
 
-
-    def runTool(self):
-
-        index = self.toolsComboBox.currentIndex() - 2
-
-        if index < 0:
-            self.sendTextToBox("%s: nothing to run\n" %datetime.datetime.now())
+        if index_combobox < 2:
+            self.sendTextToBox("%s: nothing to run\n" % datetime.datetime.now())
 
         else:
-
-            path = re.findall(r'"([^"]*)"', self._tools[index][1][0])[0]
-
-            if os.path.exists(os.path.normpath(path)):
-                logging.info('%s: starting %s' %(datetime.datetime.now(), self._tools[index][0]))
-                self.sendTextToBox('%s: starting %s. Enjoy!\n' %(datetime.datetime.now(), self._tools[index][0]))
+            if os.path.exists(os.path.normpath(self._tools[index_tools]['executable'])):
+                logging.info('%s: starting %s' % (datetime.datetime.now(), self._tools[index_tools]['executable']))
+                self.sendTextToBox('%s: starting %s. Enjoy!\n' % (datetime.datetime.now(), self._tools[index_tools]['executable']))
 
                 process = QProcess(self)
 
-                pColor = self.newProcessColor()
+                process_color = self.new_process_color()
 
-                process.readyReadStandardOutput.connect(lambda: self.dataReadyStd(process, pColor))
-                process.readyReadStandardError.connect(lambda: self.dataReadyErr(process, pColor))
+                process.readyReadStandardOutput.connect(lambda: self.data_ready_std(process, process_color))
+                process.readyReadStandardError.connect(lambda: self.dataReadyErr(process, process_color))
                 process.started.connect(lambda: self.toolOnStarted(process))
                 process.finished.connect(lambda: self.toolOnFinished(process))
 
-                try:
-                    toolTemplate = self._tools[index][7]
-                except:
-                    toolTemplate = 'None'
+                temp_pypelyne_dir = os.path.join(os.path.expanduser('~'), 'pypelyne_temp')
+                current_dir = os.getcwd()
+                date_time = datetime.datetime.now().strftime('%Y-%m-%d_%H%M-%S')
 
-                tempDir = os.path.join(os.path.expanduser('~'), 'pypelyne_temp')
-                currentDir = os.getcwd()
-                dateTime = datetime.datetime.now().strftime('%Y-%m-%d_%H%M-%S')
-                executable = self._tools[index][1][0]
+                if not os.path.exists(temp_pypelyne_dir):
+                    os.makedirs(temp_pypelyne_dir, mode=0777)
 
-                if not os.path.exists(tempDir):
-                    os.makedirs(tempDir, mode=0777)
+                if not self._tools[index_tools]['project_template'] == 'None':
+                    name, extension = os.path.splitext(self._tools[index_tools]['project_template'])
+                    temp_project = str(name + '.' + date_time + extension)
+                    temp_project_dir = str(name + '.' + date_time)
+                    src = os.path.join('src', 'template_documents', self._tools[index_tools]['project_template'])
+                    dst = os.path.join(temp_pypelyne_dir, temp_project_dir, temp_project)
 
-                if not toolTemplate == 'None':
-
-                    tempProject = str(os.path.splitext(toolTemplate)[0] + '.' + dateTime + os.path.splitext(toolTemplate)[1])
-                    tempProjectDir = str(os.path.splitext(toolTemplate)[0] + '.' + dateTime)
-                    src = os.path.join('src', 'template_documents', toolTemplate)
-                    dst = os.path.join(tempDir, tempProjectDir, tempProject)
-
-                    os.makedirs(os.path.join(tempDir, tempProjectDir), mode=0777)
+                    os.makedirs(os.path.join(temp_pypelyne_dir, temp_project_dir), mode=0777)
 
                     shutil.copyfile(src, dst)
 
-                    os.chdir(os.path.join(tempDir, tempProjectDir))
-
-                    #executable = self._tools[index][1][0]
-
-                    executable = executable.replace('\"', '')
-                    executable = executable.replace('\'', '')
-                    if executable.endswith(' '):
-                        executable = executable[:-1]
+                    os.chdir(os.path.join(temp_pypelyne_dir, temp_project_dir))
 
                     arguments = QStringList()
+
+                    for flag in self._tools[index_tools]['flags']:
+                        arguments.append(flag)
+
                     arguments.append(dst)
 
-                    process.start(executable, arguments)
-                    os.chdir(currentDir)
+                    process.start(self._tools[index_tools]['executable'], arguments)
+                    os.chdir(current_dir)
 
-                elif self._tools[index][4].lower() == 'deadline':
-                    #executable = self._tools[index][1][0]
-                    os.chdir(tempDir)
-                    process.start(executable)
-                    os.chdir(currentDir)
+                elif self._tools[index_tools]['family'].lower() == 'deadline':
+                    os.chdir(temp_pypelyne_dir)
+                    process.start(self._tools[index_tools]['executable'])
+                    os.chdir(current_dir)
                 else:
-                    #executable = self._tools[index][1][0]
-                    #print self._tools[index]
-                    os.makedirs(os.path.join(tempDir, 'no_template_' + self._tools[index][4] + '_' + self._tools[index][5] + '.' +  dateTime), mode=0777)
-                    os.chdir(tempDir)
+                    temp_project_dir = 'no_template_' + self._tools[index_tools]['vendor'] + '_' + self._tools[index_tools]['family'] + '_' + self._tools[index_tools]['release'] + '.' +  date_time
+                    temp_project_dir_full = os.path.join(temp_pypelyne_dir, temp_project_dir)
+                    os.makedirs(temp_project_dir_full, mode=0777)
 
-                    process.start(executable)
-                    os.chdir(currentDir)
+                    os.chdir(temp_project_dir_full)
 
+                    process.start(self._tools[index_tools]['executable'])
+                    os.chdir(current_dir)
             else:
-                self.sendTextToBox("%s: cannot start %s. is it installed?\n" %(datetime.datetime.now(), self._tools[index][0]))
-
+                self.sendTextToBox("%s: cannot start %s. is it installed?\n" % (datetime.datetime.now(), self._tools[index_tools]['executable']))
 
         self.toolsComboBox.setCurrentIndex(0)
 
@@ -1918,39 +2058,33 @@ class PypelyneMainWindow(QMainWindow):
         cursorBox.insertText(str(text))
         self.statusBox.ensureCursorVisible()
     
-    def dataReadyStd(self, process, pColor):
-        #palette = QPalette()
-        #color = QColor(0, 255, 0)
+    def data_ready_std(self, process, process_color):
         box = self.statusBox
-        #palette.setColor(QPalette.Foreground, Qt.red)
-        #box.setPalette(palette)
-        #box.setTextColor(color)
-        cursorBox = box.textCursor()
-        cursorBox.movePosition(cursorBox.End)
+        cursor_box = box.textCursor()
+        cursor_box.movePosition(cursor_box.End)
 
-        # get the current format
-        stdFormat = cursorBox.charFormat()
-        newFormat = cursorBox.charFormat()
+        std_format = cursor_box.charFormat()
+        new_format = cursor_box.charFormat()
 
-        stdFormat.setBackground(Qt.white)
-        stdFormat.setForeground(Qt.black)
+        std_format.setBackground(Qt.white)
+        std_format.setForeground(Qt.black)
 
         # modify it
-        newFormat.setBackground(pColor)
-        newFormat.setForeground(pColor.lighter(160))
+        new_format.setBackground(process_color)
+        new_format.setForeground(process_color.lighter(160))
         # apply it
-        cursorBox.setCharFormat(newFormat)
+        cursor_box.setCharFormat(new_format)
 
-        cursorBox.insertText('%s (std):   %s' %(datetime.datetime.now(), str(process.readAllStandardOutput())))
-        logging.info( '%s (std):   %s' %(datetime.datetime.now(), str(process.readAllStandardOutput())) )
+        cursor_box.insertText('%s (std):   %s' % (datetime.datetime.now(), str(process.readAllStandardOutput())))
+        logging.info( '%s (std):   %s' % (datetime.datetime.now(), str(process.readAllStandardOutput())))
 
-        cursorBox.movePosition(cursorBox.End)
-        format = cursorBox.charFormat()
-        format.setBackground(Qt.white)
-        format.setForeground(Qt.black)
-        cursorBox.setCharFormat(stdFormat)
+        cursor_box.movePosition(cursor_box.End)
+        char_format = cursor_box.charFormat()
+        char_format.setBackground(Qt.white)
+        char_format.setForeground(Qt.black)
+        cursor_box.setCharFormat(std_format)
 
-        cursorBox.insertText('\n')
+        cursor_box.insertText('\n')
 
         self.statusBox.ensureCursorVisible()
 

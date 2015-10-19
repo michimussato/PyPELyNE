@@ -28,14 +28,14 @@ class SceneView(QGraphicsScene):
         super(SceneView, self).__init__(parent)
 
         self.mainWindow = main_window
-        self.pypelyneRoot = self.mainWindow.getPypelyneRoot()
-        self.currentPlatform = self.mainWindow.getCurrentPlatform()
-        self.projectsRoot = str(self.mainWindow.getProjectsRoot())
+        self.pypelyneRoot = self.mainWindow._pypelyne_root
+        self.currentPlatform = self.mainWindow._current_platform
+        self.projectsRoot = str(self.mainWindow._projects_root)
 
-        self.exclusions = self.mainWindow.getExclusions()
-        self.imageExtensions = self.mainWindow.getImageExtensions()
-        self.movieExtensions = self.mainWindow.getMovieExtensions()
-        self.sequenceExec = self.mainWindow.getSequenceExec()
+        self.exclusions = self.mainWindow._exclusions
+        self.imageExtensions = self.mainWindow._image_extensions
+        self.movieExtensions = self.mainWindow._movie_extensions
+        self.sequenceExec = self.mainWindow._sequence_exec
 
         self.line = None
         # rect = self.setSceneRect(QRectF(0, 0, 0, 0))
@@ -45,8 +45,12 @@ class SceneView(QGraphicsScene):
     def addToNodeList(self, node):
         self.nodeList.append(node)
 
-    def getNodeList(self):
+    @property
+    def _node_list(self):
         return self.nodeList
+
+    # def getNodeList(self):
+    #     return self.nodeList
         
     def clearNodeList(self):
         self.nodeList = []
@@ -133,13 +137,13 @@ class SceneView(QGraphicsScene):
         
         self.menu = QMenu()
 
-        currentProject = self.mainWindow.getCurrentProject()
-        currentContent = self.mainWindow.getCurrentContent()
-        #print self.mainWindow.getCurrentContent()
-        #print self.mainWindow.getProjectsRoot()
-        #print os.path.join(str(self.mainWindow.getProjectsRoot()), str(self.mainWindow.getCurrentContent()))
+        # currentProject = self.mainWindow.getCurrentProject()
+        # currentContent = self.mainWindow._current_content
+        # print self.mainWindow._current_content
+        # print self.mainWindow._projects_root
+        # print os.path.join(str(self.mainWindow._projects_root), str(self.mainWindow._current_content))
 
-        #icon = QIcon
+        # icon = QIcon
         
         objectClicked = self.itemAt(pos)
 
@@ -821,7 +825,7 @@ class SceneView(QGraphicsScene):
         return callback
 
     def newOutputAuto(self, node, defaultOutput):
-        # currentContent = str(self.mainWindow.getCurrentContent())
+        # currentContent = str(self.mainWindow._current_content)
 
         nodeRootDir = node.getNodeRootDir()
 
@@ -833,9 +837,9 @@ class SceneView(QGraphicsScene):
 
     def newOutputDialog(self, node):
 
-        currentContent = str(self.mainWindow.getCurrentContent())
+        currentContent = str(self.mainWindow._current_content)
         # currentProject = str(self.mainWindow.projectComboBox.currentText())
-        outputs = self.mainWindow.getOutputs()
+        outputs = self.mainWindow._outputs
 
         outputDir = os.path.join(self.projectsRoot, currentContent, str(node.data(0).toPyObject()), 'output')
 
@@ -886,7 +890,7 @@ class SceneView(QGraphicsScene):
         def callback():
             currentProject = str(self.mainWindow.projectComboBox.currentText())
 
-            currentContent = str(self.mainWindow.getCurrentContent())
+            currentContent = str(self.mainWindow._current_content)
 
 
 
@@ -943,19 +947,19 @@ class SceneView(QGraphicsScene):
     def newSaverDialog(self, pos):
         def callback():
 
-            #currentContent = str(self.mainWindow.getCurrentContent())
-            #currentProject = str(self.mainWindow.projectComboBox.currentText())
+            # currentContent = str(self.mainWindow._current_content)
+            # currentProject = str(self.mainWindow.projectComboBox.currentText())
 
             
-            #nodeDir = os.path.join(self.projectsRoot, currentContent)
+            # nodeDir = os.path.join(self.projectsRoot, currentContent)
 
-            #print nodeDir
+            # print nodeDir
 
-            #projectsRoot = str(self.mainWindow.getProjectsRoot())
-            #currentTarget = str(self.mainWindow.getCurrentContent())
-            currentContent = str(self.mainWindow.getCurrentContent())
-            #print currentContent.split(os.sep)[2]
-            currentProject = str(self.mainWindow.projectComboBox.currentText())
+            # projectsRoot = str(self.mainWindow._projects_root)
+            # currentTarget = str(self.mainWindow._current_content)
+            # currentContent = str(self.mainWindow._current_content)
+            # print currentContent.split(os.sep)[2]
+            # currentProject = str(self.mainWindow.projectComboBox.currentText())
 
             # print self.mainWindow._current_content['content']
             # self.mainWindow._current_content
@@ -1250,13 +1254,14 @@ class SceneView(QGraphicsScene):
     def mousePressEvent(self, event):
         pos = event.scenePos()
 
-        print 'pos = %s' %pos
+        # print 'pos = %s' %pos
         
         if event.button() == Qt.MidButton:
-            print 'MidButton'
+            # print 'MidButton'
+            pass
           
         elif event.button() == Qt.LeftButton:
-            print 'LeftButton'
+            # print 'LeftButton'
             item = self.itemAt(event.scenePos())
             if event.button() == Qt.LeftButton and (isinstance(item, portOutput)):
                 self.line = QGraphicsLineItem(QLineF(event.scenePos(), event.scenePos()))
@@ -1272,19 +1277,21 @@ class SceneView(QGraphicsScene):
             modifiers = QApplication.keyboardModifiers()
             pos = event.scenePos()
             if modifiers == Qt.ControlModifier:
-                print "Control + Click: (%d, %d)" % (pos.x(), pos.y())
+                # print "Control + Click: (%d, %d)" % (pos.x(), pos.y())
+                pass
 
             else:
                 pass
                 # print "Click: (%d, %d)" % (pos.x(), pos.y())
 
         elif event.button() == Qt.RightButton:
-            print 'RightButton'
+            # print 'RightButton'
 
             self.contextMenu(pos)
 
         else:
             print 'def mousePressEvent problem'
+
 
         super(SceneView, self).mousePressEvent(event)
 
@@ -1352,7 +1359,7 @@ class SceneView(QGraphicsScene):
                             startItemOutputDir = os.path.join(str(startItemRootDir), 'live', str(startItemOutputLabel))
                             endItemInputDir = os.path.join(str(endItemRootDir), 'input', str(startItemOutputLabel))
 
-                            # currentContent = str(self.mainWindow.getCurrentContent())
+                            # currentContent = str(self.mainWindow._current_content)
 
                             cwd = os.getcwd()
                             dst = endItemInputDir
@@ -1402,8 +1409,6 @@ class SceneView(QGraphicsScene):
 
             except IndexError, e:
                 print 'error captured:', e
-
-        
         
         self.line = None
 

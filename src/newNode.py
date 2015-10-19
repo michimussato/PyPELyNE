@@ -52,8 +52,8 @@ class newNodeUI(QDialog):
         
         #self.currentPlatform = platform.system()
         self.mainWindow = mainWindow
-        self.pypelyneRoot = self.mainWindow.getPypelyneRoot()
-        self.currentPlatform = self.mainWindow.getCurrentPlatform()
+        self.pypelyneRoot = self.mainWindow._pypelyne_root
+        self.currentPlatform = self.mainWindow._current_platform
         '''
         if self.currentPlatform == "Windows":
             self.ui = loadUi(r'C:\Users\michael.mussato.SCHERRERMEDIEN\Dropbox\development\workspace\PyPELyNE\ui\newNode.ui', self)

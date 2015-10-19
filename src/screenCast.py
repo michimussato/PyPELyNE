@@ -19,7 +19,7 @@ class screenCast(QProcess):
         self.taskName = taskName
         self.makingOfDir = os.path.join(self.projectPath, 'making_of')
 
-        self.user = getpass.getuser()
+        self.user = self.mainWindow._user
 
         if not os.path.exists(self.makingOfDir):
             os.makedirs(self.makingOfDir, mode=0777)

@@ -27,15 +27,15 @@ class node(QGraphicsItem, QObject):
         self.propertyNodePath = propertyNodePath
         self.mainWindow = mainWindow
         self.pypelyneRoot = self.mainWindow.pypelyneRoot
-        self.user = self.mainWindow.getUser()
+        self.user = self.mainWindow._user
         self.location = self.getNodeRootDir()
         self.loaderSaver = os.path.basename(self.location)[:7]
         self.asset = os.path.dirname(self.location)
         self.project = os.path.dirname(os.path.dirname (os.path.dirname(self.asset)))
         self.scene = scene
         # self._tools = self.mainWindow.getTools()
-        self._tasks = self.mainWindow.getTasks()
-        self.exclusions = self.mainWindow.getExclusions()
+        self.tasks = self.mainWindow.getTasks()
+        self.exclusions = self.mainWindow._exclusions
         self.now = datetime.datetime.now()
         self.nowStr = str(self.now)
         self.rect = QRectF(0, 0, 200, 40)
@@ -516,10 +516,10 @@ class node(QGraphicsItem, QObject):
 
         else:
 
-            for i in self._tasks:
+            for i in self.tasks:
                 if [item for item in i if self.nodeTask in item]:
                     logging.info('task color description found')
-                    self.taskColor = self._tasks[index][0][1]
+                    self.taskColor = self.tasks[index][0][1]
                     break
                 else:
                     index += 1

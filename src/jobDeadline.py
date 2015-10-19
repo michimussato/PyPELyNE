@@ -11,8 +11,8 @@ class jobAddArgUi(QWidget):
         super(jobAddArgUi, self).__init__(parent)
 
         self.mainWindow = mainWindow
-        self.pypelyneRoot = self.mainWindow.getPypelyneRoot()
-        self.currentPlatform = self.mainWindow.getCurrentPlatform()
+        self.pypelyneRoot = self.mainWindow._pypelyne_root
+        self.currentPlatform = self.mainWindow._current_platform
         self.ui = loadUi(os.path.join(self.pypelyneRoot, 'ui', 'jobAddArg.ui'), self)
         self.pushButtonDelete.setVisible(False)
 
@@ -34,8 +34,8 @@ class jobAddPropUi(QWidget):
         super(jobAddPropUi, self).__init__(parent)
 
         self.mainWindow = mainWindow
-        self.pypelyneRoot = self.mainWindow.getPypelyneRoot()
-        self.currentPlatform = self.mainWindow.getCurrentPlatform()
+        self.pypelyneRoot = self.mainWindow._pypelyne_root
+        self.currentPlatform = self.mainWindow._current_platform
         self.ui = loadUi(os.path.join(self.pypelyneRoot, 'ui', 'jobAddProp.ui'), self)
         self.pushButtonDelete.setVisible(False)
 
@@ -57,9 +57,9 @@ class jobDeadlineUi(QDialog):
         super(jobDeadlineUi, self).__init__(parent)
 
         self.mainWindow = mainWindow
-        self.pypelyneRoot = self.mainWindow.getPypelyneRoot()
-        self.currentPlatform = self.mainWindow.getCurrentPlatform()
-        self.exclusions = mainWindow.getExclusions()
+        self.pypelyneRoot = self.mainWindow._pypelyne_root
+        self.currentPlatform = self.mainWindow._current_platform
+        self.exclusions = mainWindow._exclusions
         self.taskRoot = taskRoot
         self.projectName = os.path.basename(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(self.taskRoot)))))
         self.assetName = os.path.basename(os.path.dirname(self.taskRoot))

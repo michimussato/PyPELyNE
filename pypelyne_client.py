@@ -115,7 +115,7 @@ class PypelyneMainWindow(QMainWindow):
             self.architecture = 'x32'
         self.user = getpass.getuser()
 
-        self.tools = None
+
 
         self.current_content_item = None
         
@@ -249,6 +249,8 @@ class PypelyneMainWindow(QMainWindow):
         # self.nodeView.resizeEvent = self.graphicsView_resizeEvent
         self.nodeView.setBackgroundBrush(QBrush(QColor(60, 60, 60, 255), Qt.SolidPattern))
 
+        self.tools = None
+
         # Projects
         self.addProjects()
         
@@ -288,6 +290,139 @@ class PypelyneMainWindow(QMainWindow):
         # self.scene.nodeMenuArea.connect(self.updateNodeMenu)
 
     # def connectServer(self):
+
+    @property
+    def _user(self):
+        return self.user
+
+    @property
+    def _exclusions(self):
+        return self.exclusions
+
+    @property
+    def _image_extensions(self):
+        return self.imageExtensions
+
+    @property
+    def _movie_extensions(self):
+        return self.movieExtensions
+
+    @property
+    def _sequence_exec(self):
+        return self.sequenceExec
+
+    @property
+    def _current_platform(self):
+        return self.currentPlatform
+
+    @property
+    def _pypelyne_root(self):
+        return self.pypelyneRoot
+
+    @property
+    def _projects_root(self):
+        return self.projectsRoot
+
+    @property
+    def _current_content(self):
+        current_content_index = self.assetsShotsTabWidget.currentIndex()
+        return self.content_tabs[current_content_index]
+
+    @property
+    def _tools(self):
+        if self.tools is None:
+            logging.info('parsing tools')
+
+            app_conf_root = os.path.join(os.path.abspath(r'conf'), r'tools', r'applications')
+            app_conf_files = [os.path.join(app_conf_root, f) for f in os.listdir(app_conf_root) if not f.startswith('_') and f not in self.exclusions and f.split('.')[-1].endswith('json')]
+
+            self.tools = []
+
+            # self._tools.append(os.path.join(app_conf_root, 'blender_json'))
+
+            for app_conf_file in app_conf_files:
+                tool = {}
+
+                json_file = open(app_conf_file)
+                app_conf = json.load(json_file)
+
+                for version in app_conf['versions']:
+
+                    project_directories = []
+                    default_outputs = []
+
+                    for project_directory in version['project_directories']:
+                        project_directory = project_directory.replace('%', os.sep)
+                        project_directories.append(project_directory)
+
+                    for default_output in version['default_outputs']:
+                        default_outputs.append(default_output)
+
+                    for platform in version['platforms']:
+                        if platform.has_key(self.operating_system):
+
+                            # for architecture in platform[self.operating_system]:
+                            #     executable_x32 = architecture['x32']
+                            #     flags_x32 =architecture['flags']
+                            #     executable_x64 = architecture['x64']
+                            #     flags_x64 =
+
+
+                            if platform[self.operating_system].has_key(self.architecture):
+                                # executable = "\"" + platform[self.operating_system][self.architecture]['executable'] + "\""
+                                executable = os.path.normpath(platform[self.operating_system][self.architecture]['executable'])
+                                flags = []
+                                for flag in platform[self.operating_system][self.architecture]['flags']:
+                                    flags.append(flag)
+
+                                # executable_normpath = os.path.normpath(platform[self.operating_system][self.architecture]['executable'])
+
+                                label = app_conf['vendor'] + ' ' + app_conf['family'] + ' ' + version['release'] + ' ' + self.architecture
+
+                                if os.path.exists(executable):
+                                    source_file = os.path.join(app_conf_root, app_conf_file)
+
+                                    # print 'tool exists %s' % executable_normpath
+                                    vendor = app_conf['vendor']
+                                    family = app_conf['family']
+                                    abbreviation = app_conf['abbreviation']
+                                    release = version['release']
+
+                                    # platform = platform[self.operating_system]
+
+                                    project_workspace = version['project_workspace']
+                                    project_template = version['project_template']
+
+                                    tool['source_file'] = source_file
+                                    tool['label'] = label
+                                    tool['executable'] = executable
+                                    tool['abbreviation'] = abbreviation
+                                    tool['vendor'] = vendor
+                                    tool['family'] = family
+                                    tool['release'] = release
+                                    tool['architecture'] = self.architecture
+
+                                    tool['project_template'] = project_template
+                                    tool['project_directories'] = project_directories
+                                    tool['default_outputs'] = default_outputs
+                                    tool['flags'] = flags
+                                    tool['project_workspace'] = project_workspace
+
+                                    self.tools.append(tool.copy())
+                                else:
+                                    logging.warning('tool not found on this machine (not added): %s' % label)
+
+        # print 'returning tools'
+        print self.tools
+        return self.tools
+
+    @property
+    def _outputs(self):
+        return self.outputs
+
+    @property
+    def _tasks(self):
+        return self.tasks
 
     def receiveSerialized(self, sock):
         # read the length of the data, letter by letter until we reach EOL
@@ -417,7 +552,6 @@ class PypelyneMainWindow(QMainWindow):
         # shutil.copytree(exportSrcNodeDirOutputs, exportDstNameInput, symlinks = False)
 
     def screenCastsWindow(self):
-
         if self.screenCastsWindowOpen == None:
             self.screenCastsUI = listScreenCastsUI(self, self)
             self.screenCastsUI.show()
@@ -433,11 +567,10 @@ class PypelyneMainWindow(QMainWindow):
         # print 'emitted'
         self.screenCastsWindowOpen = None
 
-    def getUser(self):
-        return self.user
+    # def getUser(self):
+    #     return self.user
 
-    def closeEvent(self, event):
-
+    def _closeEvent(self, event):
         if len(self.timeTrackers) > 0 or len(self.screenCasts) > 0 or len(self.qprocesses) > 0:
 
             if len(self.qprocesses) > 0:
@@ -472,20 +605,19 @@ class PypelyneMainWindow(QMainWindow):
         else:
             event.ignore()
 
-    def getExclusions(self):
-        return self.exclusions
+    # def getExclusions(self):
+    #     return self.exclusions
 
-    def getImageExtensions(self):
-        return self.imageExtensions
+    # def getImageExtensions(self):
+    #     return self.imageExtensions
 
-    def getMovieExtensions(self):
-        return self.movieExtensions
+    # def getMovieExtensions(self):
+    #     return self.movieExtensions
 
-    def getSequenceExec(self):
-        return self.sequenceExec
+    # def getSequenceExec(self):
+    #     return self.sequenceExec
 
     def addPlayer(self):
-
         self.playerUi = playerWidgetUi(self)
         self.horizontalLayout.addWidget(self.playerUi)
         # self.playerUi.radioButtonPlay.clicked.connect(self.playAudio)
@@ -530,8 +662,8 @@ class PypelyneMainWindow(QMainWindow):
     def playerContextMenu(self, point):
         self.playerContextMenu.exec_(self.playerUi.pushButtonPlayStop.mapToGlobal(point))
 
-    def cb(self, event):
-        print 'cb:', event.type, event.u
+    # def cb(self, event):
+    #     print 'cb:', event.type, event.u
 
     def playAudioCallback(self, track = None):
         def callback():
@@ -539,8 +671,6 @@ class PypelyneMainWindow(QMainWindow):
         return callback
 
     def playAudio(self, track = None):
-        #print track
-
         # https://forum.videolan.org/viewtopic.php?t=107039
 
         if len(os.listdir(self.audioFolder)) == 0:
@@ -609,8 +739,6 @@ class PypelyneMainWindow(QMainWindow):
         else:
             logging.info('already on air')
 
-
-
     def fromStopToSkip(self):
         if self.playerExists == True:
             self.playerUi.pushButtonPlayStop.clicked.disconnect(self.stopAudio)
@@ -618,17 +746,12 @@ class PypelyneMainWindow(QMainWindow):
             self.playerUi.pushButtonPlayStop.setText('skip')
             logging.info('setting pushButtonPlayStop function to skip')
 
-
     def fromSkipToStop(self):
         if self.playerExists == True:
             self.playerUi.pushButtonPlayStop.clicked.disconnect(self.skipAudio)
             self.playerUi.pushButtonPlayStop.clicked.connect(self.stopAudio)
             self.playerUi.pushButtonPlayStop.setText('stop')
             logging.info('setting pushButtonPlayStop function to stop')
-
-
-
-
 
     def stopAudio(self):
         if self.playerExists == True:
@@ -645,8 +768,6 @@ class PypelyneMainWindow(QMainWindow):
             except:
                 logging.warning('error or not playing')
 
-
-
     def skipAudio(self, trackID = None):
         if self.playerExists == True:
             if not trackID == False:
@@ -661,40 +782,25 @@ class PypelyneMainWindow(QMainWindow):
             threading.Timer(0.5, self.fromStopToSkip).start()
             #threading.Timer(1, self.fromStopToSkipChangeUi).start()
 
-    def getCurrentPlatform(self):
-        return self.currentPlatform
-
-    @property
-    def _pypelyne_root(self):
-        return self.pypelyneRoot
-
-    @property
-    def _projects_root(self):
-        return self.projectsRoot
+    # def getCurrentPlatform(self):
+    #     return self.currentPlatform
         
-    def getProjectsRoot(self):
-        return self.projectsRoot
+    # def getProjectsRoot(self):
+    #     return self.projectsRoot
 
-    @property
-    def _current_content(self):
-        current_content_index = self.assetsShotsTabWidget.currentIndex()
-        # current_
-        # print self.content_tabs[current_content_index]
-        return self.content_tabs[current_content_index]
+    # def getCurrentContent(self):
+    #     return self.currentContent
 
-    def getCurrentContent(self):
-        return self.currentContent
-
-    def addRectangular(self):
-        #self.scene.addRect(QRectF(0, 0, self.mapSize), Qt.red)
-        pass
+    # def addRectangular(self):
+    #     self.scene.addRect(QRectF(0, 0, self.mapSize), Qt.red)
+    #     pass
 
     def computeValueOutputs(self):
         #print os.path.join(self.pypelyneRoot, 'conf', 'valueOutputs.xml')
         self.valueOutputs = ET.parse(os.path.join(self.pypelyneRoot, 'conf', 'valueOutputs.xml'))
         self.valueOutputsRoot = self.valueOutputs.getroot()
 
-        self._outputs = []
+        self.outputs = []
         categoryList = []
         mimeList = []
         itemList = []
@@ -703,10 +809,10 @@ class PypelyneMainWindow(QMainWindow):
             itemList.append(category.items())
             for mime in category:
                 itemList.append(mime.items())
-                #category.items().append(mime)
-                #self._outputs.append(category.itemssubmissionCmdArgs())
+                # category.items().append(mime)
+                # self._outputs.append(category.itemssubmissionCmdArgs())
 
-            self._outputs.append(itemList)
+            self.outputs.append(itemList)
             itemList = []
 
             #print category.items()
@@ -725,10 +831,10 @@ class PypelyneMainWindow(QMainWindow):
         self.valueTasks = ET.parse(os.path.join(self.pypelyneRoot, 'conf', 'valueTasks.xml'))
         self.valueTasksRoot = self.valueTasks.getroot()
 
-        self._tasks = []
+        self.tasks = []
 
         for category in self.valueTasksRoot:
-            self._tasks.append(category.items())
+            self.tasks.append(category.items())
 
         #print self._tasks
             #print category.items()
@@ -742,8 +848,8 @@ class PypelyneMainWindow(QMainWindow):
 
         return pColor
 
+    # TODO: refactor
     def runTask(self, node, executable, newestFile, *args):
-
         #print executable
 
         makingOfDir = os.path.join(self.getCurrentProject(), 'making_of')
@@ -802,19 +908,19 @@ class PypelyneMainWindow(QMainWindow):
         return callback
 
     def checkOut(self, node):
-        #self.tarSep = '_____'
+        # self.tarSep = '_____'
         dateTime = datetime.datetime.now().strftime('%Y-%m-%d_%H%M-%S')
-        #executable = self.tarExec
+        # executable = self.tarExec
         pigz = os.path.join(self.pypelyneRoot, 'payload', 'pigz', 'darwin', 'pigz')
         tarDirRoot = os.path.join(self.projectsRoot, self.getCurrentProject(), 'check_out')
-        #print self.getCurrentContent()
+        # print self._current_content
         tarName = dateTime + self.tarSep + self.getCurrentProject() + self.tarSep + os.path.basename(os.path.dirname(node.getNodeAsset())) + self.tarSep + os.path.basename(node.getNodeAsset()) + self.tarSep + node.label + '.tar.gz'
 
         if not os.path.exists(tarDirRoot):
             os.makedirs(tarDirRoot, mode=0777)
 
-        #print tarDirRoot
-        #print os.getcwd()
+        # print tarDirRoot
+        # print os.getcwd()
 
         arguments = []
         arguments.append('cvL')
@@ -910,231 +1016,14 @@ class PypelyneMainWindow(QMainWindow):
         self.openNodes.remove(node)
         self.qprocesses.remove(qprocess)
 
-    @property
-    def _tools(self):
-        if self.tools is None:
-            print 'parsing tools'
-            self.tools = []
+    # def compute_value_applications_(self):
+    #     return self._tools
 
-            app_conf_root = os.path.join(os.path.abspath(r'conf'), r'tools', r'applications')
-
-            app_conf_files = [os.path.join(app_conf_root, f) for f in os.listdir(app_conf_root) if not f.startswith('_') and f not in self.exclusions and f.split('.')[-1].endswith('json')]
-
-            # print app_conf_files
-
-            # app_conf_files.append(os.path.join(app_conf_root, 'blender.json'))
-            # app_conf_files.append(os.path.join(app_conf_root, 'aftereffects.json'))
-            # app_conf_files.append(os.path.join(app_conf_root, 'maya.json'))
-            # app_conf_files.append(os.path.join(app_conf_root, 'nukex.json'))
-            # app_conf_files.append(os.path.join(app_conf_root, 'uvlayout.json'))
-
-            for app_conf_file in app_conf_files:
-                tool = {}
-
-                json_file = open(app_conf_file)
-                app_conf = json.load(json_file)
-
-                for version in app_conf['versions']:
-
-                    project_directories = []
-                    default_outputs = []
-
-                    for project_directory in version['project_directories']:
-                        project_directory = project_directory.replace('%', os.sep)
-                        project_directories.append(project_directory)
-
-                    for default_output in version['default_outputs']:
-                        default_outputs.append(default_output)
-
-                    for platform in version['platforms']:
-                        if platform.has_key(self.operating_system):
-                            if platform[self.operating_system].has_key(self.architecture):
-                                # executable = "\"" + platform[self.operating_system][self.architecture]['executable'] + "\""
-                                executable = os.path.normpath(platform[self.operating_system][self.architecture]['executable'])
-                                flags = []
-                                for flag in platform[self.operating_system][self.architecture]['flags']:
-                                    flags.append(flag)
-
-                                # executable_normpath = os.path.normpath(platform[self.operating_system][self.architecture]['executable'])
-
-                                label = app_conf['vendor'] + ' ' + app_conf['family'] + ' ' + version['release'] + ' ' + self.architecture
-
-                                if os.path.exists(executable):
-                                    # print 'tool exists %s' % executable_normpath
-                                    vendor = app_conf['vendor']
-                                    family = app_conf['family']
-                                    abbreviation = app_conf['abbreviation']
-                                    release = version['release']
-
-                                    # platform = platform[self.operating_system]
-
-                                    project_workspace = version['project_workspace']
-                                    project_template = version['project_template']
-
-                                    tool['label'] = label
-                                    tool['executable'] = executable
-                                    tool['abbreviation'] = abbreviation
-                                    tool['vendor'] = vendor
-                                    tool['family'] = family
-                                    tool['release'] = release
-                                    tool['architecture'] = self.architecture
-
-                                    tool['project_template'] = project_template
-                                    tool['project_directories'] = project_directories
-                                    tool['default_outputs'] = default_outputs
-                                    tool['flags'] = flags
-                                    tool['project_workspace'] = project_workspace
-
-                                    self.tools.append(tool.copy())
-                                else:
-                                    print 'tool does not exist (not added): %s' % label
-
-        return self.tools
-
-    def compute_value_applications_(self):
-        return self._tools
-
-    '''
-    def compute_value_applications_(self):
-        self.sendTextToBox('registering applications for current platform (%s) found at %s:\n' % (self.currentPlatform, self.valueApplicationsXML))
-
-        self.valueApplications = ET.parse(self.valueApplicationsXML)
-        self.valueApplicationsRoot = self.valueApplications.getroot()
-
-        print type(self.valueApplicationsRoot)
-
-        tools = []
-
-        # print 'hallo'
-        # families = self.valueApplications.findall('./family')
-        # for i in families:
-        #     print i.items()[0][1]
-        
-        for family in self.valueApplicationsRoot:
-
-            directoryList = []
-            defaultOutputList = []
-
-            directories = family.findall('./directory')
-            defaultOutputs = family.findall('./defaultOutput')
-
-            for defaultOutput in defaultOutputs:
-                defaultOutputList.append(defaultOutput.items()[0][1])
-                # print defaultOutput.items()[0][1]
-
-            #print directories
-            for directory in directories:
-                #print directory.items()[0][1]
-                
-                directoryList.append(directory.items()[0][1])
-
-                subdirectories = directory.findall('./subdirectory')
-                #print subdirectories
-
-                #subdirectoryList = []
-
-                for subdirectory in subdirectories:
-                    #print subdirectory.items()
-                    directoryList.append(directory.items()[0][1] + os.sep + subdirectory.items()[0][1])
-
-                    subsubdirectories = subdirectory.findall('./subdirectory')
-
-                    for subsubdirectory in subsubdirectories:
-
-                        # print subsubdirectory
-                        directoryList.append(directory.items()[0][1] + os.sep + subdirectory.items()[0][1] + os.sep + subsubdirectory.items()[0][1])
-
-            for vendor in family:
-                for version in vendor:
-                    # templates = []
-                    # workspace = version.findall('./workspace')
-                    # for template in version:
-                    # templates.append(template.items()[0][1])
-                    for platform in version:
-                        for executable in platform:
-                            flags = []
-                            for flag in executable:
-                                flags.append(flag.items()[0][1])
-                            if not executable.items()[0][1] == 'None' and platform.items()[0][1] == self.currentPlatform:
-                                # command = ["\"" + executable.items()[0][1] + "\" " + ' '.join(flags)]
-                                command = ["\"" + executable.items()[0][1] + "\""]
-
-                                path = re.findall(r'"([^"]*)"', command[0])[0]
-
-                                family_value = family.items()[1][1]
-                                family_abbreviation = family.items()[0][1]
-                                vendor_value = vendor.items()[0][1]
-                                version_value = version.items()[0][1]
-                                version_template = version.items()[1][1]
-                                version_workspace = version.items()[2][1]
-                                # version_templates = templates
-                                # version_workspaceTemplate = version.items()[2][1]
-                                # print 'version_template = %s' % version.items()[1][1]
-                                platformValue = platform.items()[0][1]
-                                executable_arch = executable.tag
-
-                                if os.path.exists(os.path.normpath(path)):
-                                    # self._tools.append((vendor.items()[0][1] + ' ' + family.items()[1][1] + ' ' + version.items()[0][1] + ' ' + platform.items()[0][1] + ' ' + executable.tag, command, family_abbreviation))
-                                    # self._tools.append((vendor_value + ' ' + family_value + ' ' + version_value + ' ' + platformValue + ' ' + executable_arch, command, family_abbreviation, vendor_value, family_value, version_value, executable_arch))
-                                    logging.info('application' + vendor_value + ' ' + family_value + ' ' + version_value + ' ' + executable_arch + ' found on this machine.')
-                                    self._tools.append((vendor_value + ' ' + family_value + ' ' + version_value + ' ' + executable_arch,
-                                                        command,
-                                                        family_abbreviation,
-                                                        vendor_value,
-                                                        family_value,
-                                                        version_value,
-                                                        executable_arch,
-                                                        version_template,
-                                                        directoryList,
-                                                        defaultOutputList,
-                                                        flags,
-                                                        version_workspace
-                                                        ))
-                                    self.tools_dict = {
-                                                        'label': vendor_value + ' ' + family_value + ' ' + version_value + ' ' + executable_arch,
-                                                        'vendor': vendor_value,
-                                                        'family': family_value,
-                                                        'family_abbreviation': family_abbreviation,
-                                                        'version': version_value,
-                                                        'template': version_template,
-                                                        'directory_list': directoryList,
-                                                        'default_outputs': defaultOutputList,
-                                                        'workspace': version_workspace,
-                                                        'executable': command,
-                                                        'architecture': executable_arch,
-                                                        'flags': flags,
-                                                        }
-
-                                    tools.append(self.tools_dict)
-
-                                    self.sendTextToBox('\t' + vendor_value + ' ' + family_value + ' ' + version_value + ' ' + executable_arch + ' found.\n')
-
-                                else:
-                                    logging.warning('path not found: %s. application not added to tools dropdown' %(path))
-                                    self.sendTextToBox('\t' + vendor_value + ' ' + family_value + ' ' + version_value + ' ' + executable_arch + ' not found.')
-
-        # print self.valueApplicationsRoot
-        # print self.tools_dict
-        # print tools
-        # for tool in tools:
-        #     print tool
-        print self._tools
-        # for tool in self._tools:
-        #     print tool
-        self.sendTextToBox('initialization done.\n\n')
-
-        # print self._tools
-    '''
-    
-#     @pyqtSlot()
-#     def test(self):
-#         print 'test'
-
-    def getOutputs(self):
-        return self._outputs
+    # def getOutputs(self):
+    #     return self.outputs
 
     def getTasks(self):
-        return self._tasks
+        return self.tasks
         
     def getTools(self):
         return self._tools
@@ -1215,8 +1104,8 @@ class PypelyneMainWindow(QMainWindow):
                 self.sendTextToBox('choose different name.\n')
                 logging.warning('content not created because it already exists (%s)' % new_content)
 
-    def getPypelyneRoot(self):
-        return self.pypelyneRoot
+    # def getPypelyneRoot(self):
+    #     return self.pypelyneRoot
 
     def setNodeWidget(self, node):
         self.widgetUi = nodeWidgetUi(self)
@@ -1233,10 +1122,6 @@ class PypelyneMainWindow(QMainWindow):
         #self.widgetUi.labelVersion.setText(self.nodeApplicationInfo[0])
         #self.widgetUi.labelExecutable.setText(node.data(0).toPyObject())
 
-
-
-
-
     def clearNodeWidget(self):
         #self.nodeWidgets = []
         self.nodeMenuArea.takeWidget()
@@ -1246,10 +1131,9 @@ class PypelyneMainWindow(QMainWindow):
         self.configWindow.show()
 
     def computeConnections(self):
-        #try:
         logging.info('computeConnections...')
         # get all nodes
-        nodeList = self.scene.getNodeList()
+        nodeList = self.scene._node_list
         # for each node
         for nodeDst in nodeList:
             logging.info('%s:' %(nodeDst.data(0).toPyObject()))
@@ -1403,7 +1287,7 @@ class PypelyneMainWindow(QMainWindow):
         :return:
         '''
         print 'computeConnections...'
-        nodeList = self.scene.getNodeList()
+        nodeList = self.scene._node_list
         # for node in nodeList:
         #     print node.data(0).toPyObject()
         #print any(node for node in nodeList if node.data(0).toPyObject() == 'fnuzjr')
@@ -1517,7 +1401,7 @@ class PypelyneMainWindow(QMainWindow):
         self.nodeView.setVisible(True)
 
         self.scene.clear()
-        self.addRectangular()
+        # self.addRectangular()
         self.scene.clearNodeList()
 
         content_root = os.path.join(self.projectsRoot, self._current_project, 'content', content)
@@ -1668,8 +1552,8 @@ class PypelyneMainWindow(QMainWindow):
                 for i in os.listdir(content_root):
                     if i not in self.exclusions:
                         content.append(i)
-            except:
-                logging.warning('no %s_root found' % self.content_tabs[self.content_tabs.index(tab)]['content'])
+            except WindowsError, e:
+                logging.warning('no %s root found: %s' % (self.content_tabs[self.content_tabs.index(tab)]['content'], e))
 
             self.group_boxes[self.content_tabs.index(tab)] = QGroupBox(self._current_project)
             layout_content = QHBoxLayout()

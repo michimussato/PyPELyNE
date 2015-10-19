@@ -11,40 +11,40 @@
       "default_outputs": [],
       "platforms": [
         {
-          "windows": {
-            "x32": {
-              "executable": "None",
+          "windows": [
+            {
+              "x32": "None",
               "flags": []
             },
-            "x64": {
-              "executable": "None",
+            {
+              "x64": "None",
               "flags": []
             }
-          }
+          ]
         },
         {
-          "darwin": {
-            "x32": {
-              "executable": "None",
+          "darwin": [
+            {
+              "x32": "/Applications/Blender/blender.app/Contents/MacOS/blender",
               "flags": []
             },
-            "x64": {
-              "executable": "/Applications/Blender/blender.app/Contents/MacOS/blender",
+            {
+              "x64": "/Applications/Blender/blender.app/Contents/MacOS/blender",
               "flags": []
             }
-          }
+          ]
         },
         {
-          "linux": {
-            "x32": {
-              "executable": "None",
+          "linux": [
+            {
+              "x32": "None",
               "flags": []
             },
-            "x64": {
-              "executable": "None",
+            {
+              "x64": "None",
               "flags": []
             }
-          }
+          ]
         }
       ]
     }

@@ -46,7 +46,7 @@ class listScreenCastsUI(QDialog):
         super (listScreenCastsUI, self).__init__(parent)
 
         self.mainWindow = mainWindow
-        self.pypelyneRoot = self.mainWindow.getPypelyneRoot()
+        self.pypelyneRoot = self.mainWindow._pypelyne_root
         self.processes = self.mainWindow.qprocesses
         self.screenCasts = None
         #self.ui = loadUi(r'/Users/michaelmussato/Dropbox/development/workspace/PyPELyNE/ui/screenCasts.ui')

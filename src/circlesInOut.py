@@ -20,15 +20,15 @@ class portOutput(QGraphicsItem):
         self.setFlags(QGraphicsItem.ItemIsSelectable)
 
         self.mainWindow = mainWindow
-        #print mainWindow.exclusions
-        #self.exclusions = self.mainWindow.getExclusions()
-        self.exclusions = self.mainWindow.exclusions
-        #self.pypelyneRoot = self.mainWindow.getPypelyneRoot()
-        self.pypelyneRoot = self.mainWindow.pypelyneRoot
-        #self.projectsRoot = self.mainWindow.getProjectsRoot()
-        self.projectsRoot = self.mainWindow.projectsRoot
-        #self.currentPlatform = self.mainWindow.getCurrentPlatform()
-        self.currentPlatform = self.mainWindow.currentPlatform
+        # print mainWindow.exclusions
+        # self.exclusions = self.mainWindow.getExclusions()
+        self.exclusions = self.mainWindow._exclusions
+        # self.pypelyneRoot = self.mainWindow._pypelyne_root
+        self.pypelyneRoot = self.mainWindow._pypelyne_root
+        # self.projectsRoot = self.mainWindow.getProjectsRoot()
+        self.projectsRoot = self.mainWindow._projects_root
+        # self.currentPlatform = self.mainWindow._current_platform
+        self.currentPlatform = self.mainWindow._current_platform
 
         self.node = node
         self.nodeRoot = self.node.location
@@ -37,7 +37,7 @@ class portOutput(QGraphicsItem):
         self.setAcceptHoverEvents(True)
 
         #self._outputs = self.mainWindow.getOutputs()
-        self._outputs = self.mainWindow._outputs
+        self.outputs = self.mainWindow._outputs
 
         self.portOutputColorItem = QColor(0, 0, 0)
         self.portOutputRingColorItem = QColor(0, 0, 0)
@@ -159,7 +159,7 @@ class portOutput(QGraphicsItem):
 
         index = 0
         found = False
-        for i in self._outputs:
+        for i in self.outputs:
             if found == False:
                 
                 for j in i:
@@ -168,7 +168,7 @@ class portOutput(QGraphicsItem):
                             found = True
                             outputIndex = index
 
-                            self.portOutputColor = self._outputs[outputIndex][0][0][1]
+                            self.portOutputColor = self.outputs[outputIndex][0][0][1]
 
                             break
                 index += 1
@@ -323,7 +323,7 @@ class portInput(QGraphicsItem):
 
         self.mainWindow = mainWindow
 
-        self._outputs = self.mainWindow._outputs
+        self.outputs = self.mainWindow._outputs
 
         self.portInputColorItem = QColor(0, 0, 0)
         self.portInputRingColorItem = QColor(0, 0, 0)
@@ -457,7 +457,7 @@ class portInput(QGraphicsItem):
         #print self.nodeInput
         index = 0
         found = False
-        for i in self._outputs:
+        for i in self.outputs:
             if found == False:
 
                 for j in i:
@@ -470,7 +470,7 @@ class portInput(QGraphicsItem):
                             #print 'found = %s' %(found)
                             inputIndex = index
 
-                            self.portInputColor = self._outputs[inputIndex][0][0][1]
+                            self.portInputColor = self.outputs[inputIndex][0][0][1]
 
                             break
                 index += 1

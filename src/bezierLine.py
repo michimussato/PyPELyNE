@@ -14,7 +14,7 @@ class bezierLine(QGraphicsPathItem):
     def __init__(self, mainwindow, scene, startItem, endItem, *args, **kwargs):
         super(bezierLine, self).__init__(*args, **kwargs)
         self.mainwindow = mainwindow
-        self._outputs = self.mainwindow._outputs
+        self.outputs = self.mainwindow._outputs
         self.startItemOutputDir = startItem.outputDir
         self.startItemLiveDir = startItem.liveDir
         self.scene = scene
@@ -121,14 +121,14 @@ class bezierLine(QGraphicsPathItem):
 
         index = 0
         found = False
-        for i in self._outputs:
+        for i in self.outputs:
             if found == False:
                 for j in i:
                     if found == False:
                         if [item for item in j if self.nodeOutput in item and not 'mime' in item]:
                             found = True
                             outputIndex = index
-                            self.pathColor = self._outputs[outputIndex][0][0][1]
+                            self.pathColor = self.outputs[outputIndex][0][0][1]
                             break
 
                 index += 1

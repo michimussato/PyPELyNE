@@ -44,10 +44,10 @@ class newLoaderUI(QDialog):
         super(newLoaderUI, self).__init__(parent)
 
         self.mainWindow = mainWindow
-        self.exclusions = self.mainWindow.getExclusions()
-        self.pypelyneRoot = self.mainWindow.getPypelyneRoot()
+        self.exclusions = self.mainWindow._exclusions
+        self.pypelyneRoot = self.mainWindow._pypelyne_root
         
-        self.currentPlatform = self.mainWindow.getCurrentPlatform()
+        self.currentPlatform = self.mainWindow._current_platform
         self.activeItemPath = activeItemPath
         self.contentDirectory = os.path.dirname(os.path.dirname(activeItemPath))
         #contentDirectory 

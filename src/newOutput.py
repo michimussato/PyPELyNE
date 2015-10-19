@@ -16,11 +16,11 @@ class newOutputUI(QDialog):
         super(newOutputUI, self).__init__(parent)
 
         self.mainWindow = main_window
-        self.pypelyneRoot = self.mainWindow.getPypelyneRoot()
+        self.pypelyneRoot = self.mainWindow._pypelyne_root
 
         self.node = node
         
-        self.currentPlatform = self.mainWindow.getCurrentPlatform()
+        self.currentPlatform = self.mainWindow._current_platform
 
         self.ui = loadUi(os.path.join(self.pypelyneRoot, 'ui', 'newOutput.ui'), self)
         self.setModal(True)

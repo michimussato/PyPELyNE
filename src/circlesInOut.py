@@ -151,11 +151,13 @@ class portOutput(QGraphicsItem):
         painter.drawEllipse(self.rect)
 
     def setPortOutputColor(self):
-        if len(str(self.data(0).toPyObject()).split('.')) > 1:
-            self.nodeOutput = str(self.data(0).toPyObject()).split('.')[3].split('__')[0]
+        # print self.data(0)
+        if len(str(self.data(0)).split('.')) > 1:
+
+            self.nodeOutput = str(self.data(0)).split('.')[3].split('__')[0]
 
         else:
-            self.nodeOutput = str(self.data(0).toPyObject()).split('__')[0]
+            self.nodeOutput = str(self.data(0)).split('__')[0]
 
         index = 0
         found = False
@@ -164,7 +166,7 @@ class portOutput(QGraphicsItem):
                 
                 for j in i:
                     if found == False:
-                        if [item for item in j if self.nodeOutput in item and not 'mime' in item]:
+                        if [item for item in j if self.nodeOutput in item and 'mime' not in item]:
                             found = True
                             outputIndex = index
 

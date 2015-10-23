@@ -142,7 +142,12 @@ class newNodeUI(QDialog):
             
         for tool in self.mainWindow._tools:
             print tool
-            self.comboBoxApplication.addItem(tool['label'], self.mainWindow._tools.index(tool))
+            if tool['executable_x32'] is not None:
+                self.comboBoxApplication.addItem(tool['label_x32'], self.mainWindow._tools.index(tool))
+            if tool['executable_x64'] is not None:
+                self.comboBoxApplication.addItem(tool['label_x64'], self.mainWindow._tools.index(tool))
+
+            # self.comboBoxApplication.addItem(tool['label'], self.mainWindow._tools.index(tool))
 
         #self.comboBoxApplication.addItem('Thinkbox Software Deadline 5.2')
         '''
@@ -189,15 +194,16 @@ class newNodeUI(QDialog):
 
         usedNames = nodes_dir
 
-        print self.nodeDir
-        print os.path.join(self.mainWindow._projects_root, self.mainWindow._current_project, 'content', self.mainWindow._current_content['content'], self.mainWindow._current_content_item)
-        print usedNames
+        # print self.nodeDir
+        # print os.path.join(self.mainWindow._projects_root, self.mainWindow._current_project, 'content', self.mainWindow._current_content['content'], self.mainWindow._current_content_item)
+        # print usedNames
 
         self.comboBoxTask.setVisible(True)
         self.labelTask.setVisible(True)
 
         index_combobox = self.comboBoxApplication.currentIndex()
-        index_tools, can_convert = self.comboBoxApplication.itemData(index_combobox).toInt()
+        print self.comboBoxApplication.itemData(index_combobox)
+        index_tools = self.comboBoxApplication.itemData(index_combobox)
 
         # print self.mainWindow._tools[index_tools]['executable']
         # print self.mainWindow._tools[index_tools]['abbreviation']
@@ -249,7 +255,7 @@ class newNodeUI(QDialog):
         
     def onOk(self):
         index_combobox = self.comboBoxApplication.currentIndex()
-        index_tools, can_convert = self.comboBoxApplication.itemData(index_combobox).toInt()
+        index_tools = self.comboBoxApplication.itemData(index_combobox)
         #print 'onOk'
         # try:
         self.nodeName = self.tasks[self.comboBoxTask.currentIndex() - 1][1][1] + '_' + self.mainWindow._tools[index_tools]['abbreviation'] + '__' + self.lineEditNodeName.text()

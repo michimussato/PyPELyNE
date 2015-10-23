@@ -1,12 +1,13 @@
 {
+  "family_enable": true or false,
   "family": "Family",
-  "abbreviation": "FAM",
   "vendor": "Family Foundation",
-  "versions": [
+  "abbreviation": "FAM",
+  "releases": [
     {
-      "release": "1.2.3",
-      "project_template": "null_familyfoundation_family_123.template",
-      "project_workspace": "None",
+      "release_number": "1.2.3",
+      "project_template": "null_familyfoundation_family_123.template" or null,
+      "project_workspace": "null_familyfoundation_family_123.workspace" or null,
       "project_directories": ["dir1", "dir1#dir", "dir2#dir#dir5"],
       "default_outputs": ["SEQ_01", "PLB_04"],
       "platforms": [
@@ -17,7 +18,7 @@
               "flags": ["-flag1", "value", "-flag2", "-flag3"]
             },
             "x64": {
-              "executable": "None",
+              "executable": null,
               "flags": []
             }
           }
@@ -25,7 +26,7 @@
         {
           "darwin": {
             "x32": {
-              "executable": "None",
+              "executable": null,
               "flags": []
             },
             "x64": {
@@ -37,11 +38,11 @@
         {
           "linux": {
             "x32": {
-              "executable": "None",
+              "executable": null,
               "flags": []
             },
             "x64": {
-              "executable": "None",
+              "executable": null,
               "flags": []
             }
           }
@@ -50,10 +51,10 @@
     },
     {
       "release": "4.5.6",
-      "project_template": "null_familyfoundation_family_456.template",
-      "project_workspace": "None",
-      "project_directories": ["dir1", "dir1#dir"],
-      "default_outputs": ["SEQ_01", "PLB_04"],
+      "project_template": "null_familyfoundation_family_456.template" or null,
+      "project_workspace": "null_familyfoundation_family_456.workspace" or null,
+      "project_directories": ["dir1#dir"],
+      "default_outputs": [],
       "platforms": [
         {
           "windows": {
@@ -62,7 +63,7 @@
               "flags": ["-flag1", "value", "-flag2", "-flag3"]
             },
             "x64": {
-              "executable": "None",
+              "executable": null,
               "flags": []
             }
           }
@@ -70,7 +71,7 @@
         {
           "darwin": {
             "x32": {
-              "executable": "None",
+              "executable": null,
               "flags": []
             },
             "x64": {
@@ -82,11 +83,11 @@
         {
           "linux": {
             "x32": {
-              "executable": "None",
+              "executable": null,
               "flags": []
             },
             "x64": {
-              "executable": "None",
+              "executable": null,
               "flags": []
             }
           }

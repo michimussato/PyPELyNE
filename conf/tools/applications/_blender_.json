@@ -16,27 +16,27 @@
           "windows":
             {
               "executable_x32": "C:\\Program Files (x86)\\Blender Foundation\\Blender\\blender.exe",
-              "flags_x32": ["-key1", "-key2", "value"],
+              "flags_x32": [],
               "executable_x64": "C:\\Program Files\\Blender Foundation\\Blender\\blender.exe",
-              "flags_x64": ["-key1", "-key2", "value"]
+              "flags_x64": []
             }
 
         },
         {
           "darwin":
             {
-              "executable_x32": "/Applications/djv-1.1.0-OSX-64.app/Contents/MacOS/djv-1.1.0-OSX-64",
-              "flags_x32": ["-key1", "-key2", "value32"],
+              "executable_x32": null,
+              "flags_x32": [],
               "executable_x64": "/Applications/Blender/blender.app/Contents/MacOS/blender",
-              "flags_x64": ["-key1", "-key2", "value64"]
+              "flags_x64": []
             }
 
         },
         {
           "linux": {
-            "executable_x32": "None",
+            "executable_x32": null,
             "flags_x32": [],
-            "executable_x64": "None",
+            "executable_x64": null,
             "flags_x64": []
           }
         }

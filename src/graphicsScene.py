@@ -841,7 +841,7 @@ class SceneView(QGraphicsScene):
         # currentProject = str(self.mainWindow.projectComboBox.currentText())
         outputs = self.mainWindow._outputs
 
-        outputDir = os.path.join(self.projectsRoot, currentContent, str(node.data(0).toPyObject()), 'output')
+        outputDir = os.path.join(self.projectsRoot, currentContent, str(node.data(0)), 'output')
 
         print node._label
 
@@ -1082,10 +1082,21 @@ class SceneView(QGraphicsScene):
 
                 ET.SubElement(property_node, 'node', { 'positionX':posX, 'positionY':posY })
 
+                print self.mainWindow._tools[tool_index]
+
+                # ET.SubElement(property_node, 'task', {'family':self.mainWindow._tools[tool_index]['family'],
+                #                                       'vendor':self.mainWindow._tools[tool_index]['vendor'],
+                #                                       'version':self.mainWindow._tools[tool_index]['release_number'],
+                #                                       'arch':self.mainWindow._tools[tool_index]['executable_x64'],
+                #                                       'nodetask':toolTask
+                #                                       })
+
+
+
                 ET.SubElement(property_node, 'task', {'family':self.mainWindow._tools[tool_index]['family'],
                                                       'vendor':self.mainWindow._tools[tool_index]['vendor'],
-                                                      'version':self.mainWindow._tools[tool_index]['release'],
-                                                      'arch':self.mainWindow._tools[tool_index]['architecture'],
+                                                      'version':self.mainWindow._tools[tool_index]['release_number'],
+                                                      'arch':'x64',
                                                       'nodetask':toolTask
                                                       })
                 
@@ -1126,7 +1137,7 @@ class SceneView(QGraphicsScene):
 
 
 
-        reply = QMessageBox.warning(self.mainWindow, str('about to delete item'), str('are you sure to \ndelete %s %s \nand its contents?' %(item.data(2).toPyObject(), item.label)), QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        reply = QMessageBox.warning(self.mainWindow, str('about to delete item'), str('are you sure to \ndelete %s %s \nand its contents?' %(item.data(2), item.label)), QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
 
         #print yes
 

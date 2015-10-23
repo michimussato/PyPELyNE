@@ -349,6 +349,7 @@ class PypelyneMainWindow(QMainWindow):
 
             app_conf_files = []
             app_conf_files.append(os.path.join(app_conf_root, '_blender_.json'))
+            app_conf_files.append(os.path.join(app_conf_root, '_maya_.json'))
 
             for app_conf_file in app_conf_files:
                 source_file = os.path.join(app_conf_root, app_conf_file)
@@ -366,21 +367,21 @@ class PypelyneMainWindow(QMainWindow):
 
                     # all the family related stuff
                     # source_file = source_file
-                    family = app_conf['family']
-                    vendor = app_conf['vendor']
-                    abbreviation = app_conf['abbreviation']
+                    family = app_conf[u'family']
+                    vendor = app_conf[u'vendor']
+                    abbreviation = app_conf[u'abbreviation']
 
-                    for release in app_conf['releases']:
+                    for release in app_conf[u'releases']:
                         # type(release) = dict
-                        logging.info('checking system for release: %s' % release['release_number'])
+                        logging.info('checking system for release: %s' % release[u'release_number'])
 
                         # and all the version/release related stuff
-                        release_number = release['release_number']
-                        project_template = release['project_template']
-                        project_workspace = release['project_workspace']
-                        project_directories = release['project_directories']
+                        release_number = release[u'release_number']
+                        project_template = release[u'project_template']
+                        project_workspace = release[u'project_workspace']
+                        project_directories = release[u'project_directories']
                         default_outputs = release[u'default_outputs']
-                        architecture_fallback = release['architecture_fallback']
+                        architecture_fallback = release[u'architecture_fallback']
 
                         if self.architecture == 'x64' and architecture_fallback:
                             architecture_fallback = True
@@ -404,17 +405,17 @@ class PypelyneMainWindow(QMainWindow):
                             if platform.has_key(self.operating_system):
                                 # general information:
 
-                                executable_x32 = platform[self.operating_system]['executable_x32']
-                                executable_x64 = platform[self.operating_system]['executable_x64']
+                                executable_x32 = platform[self.operating_system][u'executable_x32']
+                                executable_x64 = platform[self.operating_system][u'executable_x64']
 
-                                flags_x32 = platform[self.operating_system]['flags_x32']
-                                flags_x64 = platform[self.operating_system]['flags_x64']
+                                flags_x32 = platform[self.operating_system][u'flags_x32']
+                                flags_x64 = platform[self.operating_system][u'flags_x64']
 
                                 executables = []
 
                                 for executable in [executable_x32, executable_x64]:
                                     if executable is None:
-                                        logging.warning('no executable defined')
+                                        logging.warning('executable is %s' % executable)
                                     elif os.path.exists(executable):
                                         # print executables
                                         executables.append(executable)
@@ -422,48 +423,29 @@ class PypelyneMainWindow(QMainWindow):
                                     else:
                                         logging.warning('executable %s not found on this machine.' % executable)
 
-                                # tool['abbreviation'] = abbreviation
-                                # tool['label_x32'] = label_x32
-                                # tool['label_x64'] = label_x64
-                                # tool['source_file'] = source_file
-                                # tool['architecture_fallback'] = architecture_fallback
+                                tool[u'family'] = family
+                                tool[u'vendor'] = vendor
+                                tool[u'abbreviation'] = abbreviation
+                                tool[u'release_number'] = release_number
+                                tool[u'project_template'] = project_template
+                                tool[u'project_workspace'] = project_workspace
+                                tool[u'project_directories'] = project_directories_list
+                                tool[u'default_outputs'] = default_outputs
+                                tool[u'architecture_fallback'] = architecture_fallback
+                                tool[u'label_x32'] = label_x32
+                                tool[u'label_x64'] = label_x64
+                                tool[u'project_directories'] = project_directories
+                                tool[u'flags_x32'] = flags_x32
+                                tool[u'flags_x64'] = flags_x64
 
-                                tool['family'] = family
-                                tool['vendor'] = vendor
-                                tool['abbreviation'] = abbreviation
-                                tool['release_number'] = release_number
-                                tool['project_template'] = project_template
-                                tool['project_workspace'] = project_workspace
-                                tool['project_directories'] = project_directories_list
-                                tool['default_outputs'] = default_outputs
-                                tool['architecture_fallback'] = architecture_fallback
-                                tool['label_x32'] = label_x32
-                                tool['label_x64'] = label_x64
-                                tool['project_directories'] = project_directories
-                                tool['flags_x32'] = flags_x32
-                                tool['flags_x64'] = flags_x64
-
-                                # tool['executable'] = executable
                                 if executable_x32 in executables:
-                                    tool['executable_x32'] = executable_x32
+                                    tool[u'executable_x32'] = executable_x32
                                 else:
-                                    tool['executable_x32'] = None
+                                    tool[u'executable_x32'] = None
                                 if executable_x64 in executables:
-                                    tool['executable_x64'] = executable_x64
+                                    tool[u'executable_x64'] = executable_x64
                                 else:
-                                    tool['executable_x64'] = None
-
-                                # tool['vendor'] = vendor
-                                # tool['family'] = family
-                                # tool['release_number'] = release_number
-                                # tool['architecture'] = self.architecture
-                                # tool['project_template'] = project_template
-                                # tool['project_directories'] = project_directories
-                                # tool['default_outputs'] = default_outputs
-                                # tool['flags_x32'] = flags_x32
-                                # tool['flags_x64'] = flags_x64
-                                # tool['flags'] = flags
-                                # tool['project_workspace'] = project_workspace
+                                    tool[u'executable_x64'] = None
 
                                 self.tools.append(tool.copy())
 
@@ -1175,7 +1157,7 @@ class PypelyneMainWindow(QMainWindow):
         self.nodeApplicationInfo = node.queryApplicationInfo()
 
 
-        self.widgetUi.labelNode.setText(node.data(0).toPyObject())
+        self.widgetUi.labelNode.setText(node.data(0))
         self.widgetUi.labelApplication.setText(self.nodeApplicationInfo[2] + ' ' + self.nodeApplicationInfo[0])
         #self.widgetUi.labelVersion.setText(self.nodeApplicationInfo[0])
         #self.widgetUi.labelExecutable.setText(node.data(0).toPyObject())
@@ -1194,7 +1176,7 @@ class PypelyneMainWindow(QMainWindow):
         nodeList = self.scene._node_list
         # for each node
         for nodeDst in nodeList:
-            logging.info('%s:' %(nodeDst.data(0).toPyObject()))
+            logging.info('%s:' %(nodeDst.data(0)))
             # get node inputs
             nodeRootDir = nodeDst.getNodeRootDir()
             nodeInputDir = os.sep.join([str(nodeRootDir), 'input'])
@@ -1242,12 +1224,12 @@ class PypelyneMainWindow(QMainWindow):
 
                         if nodeSrcRootDir == os.path.join(nodeDstAssetDir, inputNode):
                             logging.info('\t\tnodeSrc is a task')
-                            logging.info('\t\tnodeSrc is %s' %(nodeSrc.data(0).toPyObject()))
+                            logging.info('\t\tnodeSrc is %s' %(nodeSrc.data(0)))
                             logging.info('\t\tlooking for output called %s' %(inputOutput))
                             for outputItem in outputItems:
-                                logging.info('\t\t\tprocessing output %s' %(outputItem.data(0).toPyObject()))
-                                if outputItem.data(0).toPyObject() == inputOutput:
-                                    logging.info('\t\t\t\t found output %s' %(outputItem.data(0).toPyObject()))
+                                logging.info('\t\t\tprocessing output %s' %(outputItem.data(0)))
+                                if outputItem.data(0) == inputOutput:
+                                    logging.info('\t\t\t\t found output %s' %(outputItem.data(0)))
                                     startItem = outputItem
                                     #startItem =
                                     #break
@@ -1259,30 +1241,30 @@ class PypelyneMainWindow(QMainWindow):
                         #special case for library loader
                         elif nodeSrc.label.startswith('LDR_LIB__'):
                             logging.info('\t\tnodeSrc is a library loader')
-                            logging.info('\t\tnodeSrc is %s' %(nodeSrc.data(0).toPyObject()))
+                            logging.info('\t\tnodeSrc is %s' %(nodeSrc.data(0)))
                             logging.info('\t\tlooking for output called %s' %(inputOutput))
                             for outputItem in outputItems:
-                                logging.info('\t\t\tprocessing output %s' %(outputItem.data(0).toPyObject().split('.')[3]))
+                                logging.info('\t\t\tprocessing output %s' %(outputItem.data(0).split('.')[3]))
                                 #print nodeSrc.data(0).toPyObject()
                                 logging.info('\t\tlooking for output called %s' %(inputOutput))
-                                searchString = outputItem.data(0).toPyObject().split('.')[3]
+                                searchString = outputItem.data(0).split('.')[3]
                                 if searchString == inputOutput:
-                                    logging.info('\t\t\t\t found output %s' %(outputItem.data(0).toPyObject().split('.')[3]))
+                                    logging.info('\t\t\t\t found output %s' %(outputItem.data(0).split('.')[3]))
                                     startItem = outputItem
 
                         else:
                             for tab in self.content_tabs:
                                 if nodeSrcRootDir == os.path.join(nodeDstAssetDir, 'LDR_' + tab['abbreviation'] + '__' + inputAsset):
                                     logging.info('\t\tnodeSrc is a loader')
-                                    logging.info('\t\tnodeSrc is %s' %(nodeSrc.data(0).toPyObject()))
+                                    logging.info('\t\tnodeSrc is %s' %(nodeSrc.data(0)))
                                     logging.info('\t\tlooking for output called %s' %(inputOutput))
                                     for outputItem in outputItems:
-                                        logging.info('\t\t\tprocessing output %s' %(outputItem.data(0).toPyObject().split('.')[3]))
+                                        logging.info('\t\t\tprocessing output %s' %(outputItem.data(0).split('.')[3]))
                                         #print nodeSrc.data(0).toPyObject()
                                         logging.info('\t\tlooking for output called %s' %(inputOutput))
-                                        searchString = outputItem.data(0).toPyObject().split('.')[3]
+                                        searchString = outputItem.data(0).split('.')[3]
                                         if searchString == inputOutput:
-                                            logging.info('\t\t\t\t found output %s' %(outputItem.data(0).toPyObject().split('.')[3]))
+                                            logging.info('\t\t\t\t found output %s' %(outputItem.data(0).split('.')[3]))
                                             startItem = outputItem
                                             #endItem = nodeDst.inputList[len(nodeDst.inputs)]
                                             #connectionLine = bezierLine(self, self.scene, startItem, endItem)
@@ -1320,7 +1302,7 @@ class PypelyneMainWindow(QMainWindow):
                     logging.info('input data is in exclusions list')
 
                 else:
-                    logging.info('node %s has no input' %(node.data(0).toPyObject()))
+                    logging.info('node %s has no input' %(node.data(0)))
 
 
         #except:
@@ -1354,7 +1336,7 @@ class PypelyneMainWindow(QMainWindow):
         #        print 'node found at index %s' %(nodeList.index(node))
         for node in nodeList:
             currentNode = node
-            print 'processing %s (%s)' %(node.data(0).toPyObject(), node)
+            print 'processing %s (%s)' %(node.data(0), node)
             nodeRootDir = node.getNodeRootDir()
             nodeInputDir = os.sep.join([str(nodeRootDir), 'input'])
             print 'nodeInputDir = %s' %nodeInputDir
@@ -1369,7 +1351,7 @@ class PypelyneMainWindow(QMainWindow):
                             x += 1
                             # print 'nodeList 123:', nodeList
                             # print string[2]
-                            if node.data(0).toPyObject() == string[2] or str(node.data(0).toPyObject()).startswith('LDR'):
+                            if node.data(0) == string[2] or str(node.data(0)).startswith('LDR'):
 
                                 sourceNodeIndex = nodeList.index(node)
 
@@ -1378,21 +1360,21 @@ class PypelyneMainWindow(QMainWindow):
                                 outputList = node.outputList
 
                                 for output in outputList:
-                                    print 'processing =', output.data(0).toPyObject()
-                                    if len(str(output.data(0).toPyObject()).split('.')) == 1:
-                                        if output.data(0).toPyObject() == string[3]:
+                                    print 'processing =', output.data(0)
+                                    if len(str(output.data(0)).split('.')) == 1:
+                                        if output.data(0) == string[3]:
                                             startItem = output
                                             print 'if: startItem =', startItem
 
                                     else:
                                         # print 'hallo'
-                                        if str(output.data(0).toPyObject()).split('.')[3] == string[3]:
+                                        if str(output.data(0)).split('.')[3] == string[3]:
                                             # print 'velo'
                                             startItem = output
 
                         endItem = currentNode.inputList[len(currentNode.inputs)]
 
-                        print 'new line from %s to %s' %(startItem.data(0).toPyObject(), endItem)
+                        print 'new line from %s to %s' %(startItem.data(0), endItem)
 
 
 
@@ -1425,7 +1407,7 @@ class PypelyneMainWindow(QMainWindow):
                         print 'input data is in exclusions list'
                     
             else:
-                print 'node %s has no input' %(node.data(0).toPyObject())
+                print 'node %s has no input' %(node.data(0))
 
     def getPropertyPaths(self):
         return self.propertyNodePathAssets, self.propertyNodePathShots
@@ -1871,76 +1853,84 @@ class PypelyneMainWindow(QMainWindow):
             self.openPushButton.setEnabled(False)
         
         self.scene.clear()
-        
+
+    # TODO: create method that returns the dicts for x_32 and x_64 (to shorten run_item = {})
+    # newNode.py:137 ff
+    # here:
         
     def addTools(self):
         self.toolsComboBox.clear()
         self.toolsComboBox.addItem('run tool instance')
         
         self.toolsComboBox.insertSeparator(1)
-
-        # print self._tools
         
         for tool in self._tools:
-            print tool
+            # print tool
             index = self._tools.index(tool)
-            # print tool
-            # print type(tool)
-            # print tool
-            # print tool['project_template']
-
-            # string = tool['label'].encode("ascii")
-            # print type(string)
 
             executable = []
-            self.run_items = []
+            # self.run_items = []
 
-            if tool['executable_x32'] is not None:
-                executable.append(self._tools[index]['executable_x32'])
-                for flag_x32 in self._tools[index]['flags_x32']:
+            if tool[u'executable_x32'] is not None:
+                executable.append(self._tools[index][u'executable_x32'])
+                for flag_x32 in self._tools[index][u'flags_x32']:
                     executable.append(flag_x32)
-                # executable_x32 = executable
-                self.toolsComboBox.addItem(tool['label_x32'], {'project_template': tool['project_template'],
-                                                               'abbreviation': tool['abbreviation'],
-                                                               'vendor': tool['vendor'],
-                                                               'family': tool['family'],
-                                                               'architecture_fallback': tool['architecture_fallback'],
-                                                               'flags': tool['flags_x32'],
-                                                               'release_number': tool['release_number'],
-                                                               'project_directories': tool['project_directories'],
-                                                               'default_outputs': tool['default_outputs'],
-                                                               'executable': tool['executable_x32'],
-                                                               'project_workspace': tool['project_workspace'],
-                                                               'label': tool['label_x32']
-                                                               }.copy())
-                # self.run_items.append(new_button)
-                print executable
+
+                run_item = self.get_dict_x32(tool)
+
+                self.toolsComboBox.addItem(tool[u'label_x32'], run_item.copy())
+
                 executable[:] = []
-            if tool['executable_x64'] is not None:
-                executable.append(self._tools[index]['executable_x64'])
-                for flag_x64 in self._tools[index]['flags_x64']:
+
+            if tool[u'executable_x64'] is not None:
+                executable.append(self._tools[index][u'executable_x64'])
+                for flag_x64 in self._tools[index][u'flags_x64']:
                     executable.append(flag_x64)
-                # executable_x64 = executable
-                self.toolsComboBox.addItem(tool['label_x64'], {'project_template': tool['project_template'],
-                                                               'abbreviation': tool['abbreviation'],
-                                                               'vendor': tool['vendor'],
-                                                               'family': tool['family'],
-                                                               'label': tool['label_x64'],
-                                                               'executable': tool['executable_x64'],
-                                                               'architecture_fallback': tool['architecture_fallback'],
-                                                               'release_number': tool['release_number'],
-                                                               'project_directories': tool['project_directories'],
-                                                               'default_outputs': tool['default_outputs'],
-                                                               'project_workspace': tool['project_workspace'],
-                                                               'flags': tool['flags_x64']
-                                                               }.copy())
-                # self.run_items.append(new_button)
-                print executable
+
+                run_item = self.get_dict_x64(tool)
+
+                self.toolsComboBox.addItem(tool[u'label_x64'], run_item.copy())
+
                 executable[:] = []
 
+            del executable
+            # del run_item
 
-            # print tool['executable']
-            # print 'success'
+    def get_dict_x32(self, tool):
+        dict_x32 = {
+                    u'project_template': tool[u'project_template'],
+                    u'abbreviation': tool[u'abbreviation'],
+                    u'vendor': tool[u'vendor'],
+                    u'family': tool[u'family'],
+                    u'architecture_fallback': tool[u'architecture_fallback'],
+                    u'flags': tool[u'flags_x32'],
+                    u'release_number': tool[u'release_number'],
+                    u'project_directories': tool[u'project_directories'],
+                    u'default_outputs': tool[u'default_outputs'],
+                    u'executable': tool[u'executable_x32'],
+                    u'project_workspace': tool[u'project_workspace'],
+                    u'label': tool[u'label_x32']
+                    }
+
+        return dict_x32
+
+    def get_dict_x64(self, tool):
+        dict_x64 = {
+                    u'project_template': tool[u'project_template'],
+                    u'abbreviation': tool[u'abbreviation'],
+                    u'vendor': tool[u'vendor'],
+                    u'family': tool[u'family'],
+                    u'label': tool[u'label_x64'],
+                    u'executable': tool[u'executable_x64'],
+                    u'architecture_fallback': tool[u'architecture_fallback'],
+                    u'release_number': tool[u'release_number'],
+                    u'project_directories': tool[u'project_directories'],
+                    u'default_outputs': tool[u'default_outputs'],
+                    u'project_workspace': tool[u'project_workspace'],
+                    u'flags': tool[u'flags_x64']
+                    }
+
+        return dict_x64
 
     def submitDeadlineJob(self, jobFile):
 
@@ -1980,8 +1970,6 @@ class PypelyneMainWindow(QMainWindow):
         # print self.toolsComboBox.itemData(index_combobox)['executable']
         # print index_tools
 
-
-
         if index_combobox < 2:
             self.sendTextToBox("%s: nothing to run\n" % datetime.datetime.now())
 
@@ -2007,7 +1995,7 @@ class PypelyneMainWindow(QMainWindow):
             if not os.path.exists(temp_pypelyne_dir):
                 os.makedirs(temp_pypelyne_dir, mode=0777)
 
-            if not dict_combobox['project_template'] == 'None':
+            if dict_combobox['project_template'] is not None:
                 name, extension = os.path.splitext(dict_combobox['project_template'])
                 temp_project = str(name + '.' + date_time + extension)
                 temp_project_dir = str(name + '.' + date_time)
@@ -2036,7 +2024,7 @@ class PypelyneMainWindow(QMainWindow):
                 process.start(dict_combobox['executable'])
                 os.chdir(current_dir)
             else:
-                temp_project_dir = 'no_template_' + dict_combobox['vendor'] + '_' + dict_combobox['family'] + '_' + dict_combobox['release'] + '.' +  date_time
+                temp_project_dir = 'no_template_' + dict_combobox['vendor'] + '_' + dict_combobox['family'] + '_' + dict_combobox['release_number'] + '.' +  date_time
                 temp_project_dir_full = os.path.join(temp_pypelyne_dir, temp_project_dir)
                 os.makedirs(temp_project_dir_full, mode=0777)
 

@@ -14,6 +14,10 @@ import json
 import logging
 from operator import *
 
+import sip
+sip.setapi('QString', 2)
+sip.setapi('QVariant', 2)
+
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 from PyQt4.uic import *
@@ -109,13 +113,17 @@ class PypelyneMainWindow(QMainWindow):
         self.pypelyneRoot = os.getcwd()
         self.currentPlatform = platform.system()
         self.operating_system = self.currentPlatform.lower()
-        if sys.maxsize > 2**32:
-            self.architecture = 'x64'
-        else:
-            self.architecture = 'x32'
+
+        self.architectures = ['x32', 'x64']
+
+        if sys.maxsize <= 2**32:
+            self.architecture = self.architectures[0]
+        elif sys.maxsize > 2**32:
+            self.architecture = self.architectures[1]
+
         self.user = getpass.getuser()
 
-
+        print self.operating_system, self.architecture, self.user
 
         self.current_content_item = None
         
@@ -331,89 +339,139 @@ class PypelyneMainWindow(QMainWindow):
     @property
     def _tools(self):
         if self.tools is None:
+
             logging.info('parsing tools')
 
             app_conf_root = os.path.join(os.path.abspath(r'conf'), r'tools', r'applications')
-            app_conf_files = [os.path.join(app_conf_root, f) for f in os.listdir(app_conf_root) if not f.startswith('_') and f not in self.exclusions and f.split('.')[-1].endswith('json')]
+            # app_conf_files = [os.path.join(app_conf_root, f) for f in os.listdir(app_conf_root) if not f.startswith('_') and f not in self.exclusions and f.split('.')[-1].endswith('json')]
 
             self.tools = []
 
-            # self._tools.append(os.path.join(app_conf_root, 'blender_json'))
+            app_conf_files = []
+            app_conf_files.append(os.path.join(app_conf_root, '_blender_.json'))
 
             for app_conf_file in app_conf_files:
+                source_file = os.path.join(app_conf_root, app_conf_file)
                 tool = {}
 
                 json_file = open(app_conf_file)
                 app_conf = json.load(json_file)
 
-                for version in app_conf['versions']:
+                logging.info('processing source file: %s' % source_file)
 
-                    project_directories = []
-                    default_outputs = []
+                # print app_conf
 
-                    for project_directory in version['project_directories']:
-                        project_directory = project_directory.replace('%', os.sep)
-                        project_directories.append(project_directory)
+                if app_conf['family_enable']:
+                    logging.info('checking system for family: %s' % app_conf['family'])
 
-                    for default_output in version['default_outputs']:
-                        default_outputs.append(default_output)
+                    # all the family related stuff
+                    # source_file = source_file
+                    family = app_conf['family']
+                    vendor = app_conf['vendor']
+                    abbreviation = app_conf['abbreviation']
 
-                    for platform in version['platforms']:
-                        if platform.has_key(self.operating_system):
+                    for release in app_conf['releases']:
+                        # type(release) = dict
+                        logging.info('checking system for release: %s' % release['release_number'])
 
-                            # for architecture in platform[self.operating_system]:
-                            #     executable_x32 = architecture['x32']
-                            #     flags_x32 =architecture['flags']
-                            #     executable_x64 = architecture['x64']
-                            #     flags_x64 =
+                        # and all the version/release related stuff
+                        release_number = release['release_number']
+                        project_template = release['project_template']
+                        project_workspace = release['project_workspace']
+                        project_directories = release['project_directories']
+                        default_outputs = release[u'default_outputs']
+                        architecture_fallback = release['architecture_fallback']
 
+                        if self.architecture == 'x64' and architecture_fallback:
+                            architecture_fallback = True
+                        elif self.architecture == 'x32':
+                            architecture_fallback = False
 
-                            if platform[self.operating_system].has_key(self.architecture):
-                                # executable = "\"" + platform[self.operating_system][self.architecture]['executable'] + "\""
-                                executable = os.path.normpath(platform[self.operating_system][self.architecture]['executable'])
-                                flags = []
-                                for flag in platform[self.operating_system][self.architecture]['flags']:
-                                    flags.append(flag)
+                        label_x32 = vendor + ' ' + family + ' ' + release_number + ' (%s)' % self.architectures[0]
+                        label_x64 = vendor + ' ' + family + ' ' + release_number + ' (%s)' % self.architectures[1]
 
-                                # executable_normpath = os.path.normpath(platform[self.operating_system][self.architecture]['executable'])
+                        project_directories_list = []
+                        # default_outputs_list = []
 
-                                label = app_conf['vendor'] + ' ' + app_conf['family'] + ' ' + version['release'] + ' ' + self.architecture
+                        for project_directory in project_directories:
+                            project_directory = project_directory.replace('%', os.sep)
+                            project_directories_list.append(project_directory)
 
-                                if os.path.exists(executable):
-                                    source_file = os.path.join(app_conf_root, app_conf_file)
+                        # for default_output in default_outputs:
+                        #     default_outputs_list.append(default_output)
 
-                                    # print 'tool exists %s' % executable_normpath
-                                    vendor = app_conf['vendor']
-                                    family = app_conf['family']
-                                    abbreviation = app_conf['abbreviation']
-                                    release = version['release']
+                        for platform in release['platforms']:
+                            if platform.has_key(self.operating_system):
+                                # general information:
 
-                                    # platform = platform[self.operating_system]
+                                executable_x32 = platform[self.operating_system]['executable_x32']
+                                executable_x64 = platform[self.operating_system]['executable_x64']
 
-                                    project_workspace = version['project_workspace']
-                                    project_template = version['project_template']
+                                flags_x32 = platform[self.operating_system]['flags_x32']
+                                flags_x64 = platform[self.operating_system]['flags_x64']
 
-                                    tool['source_file'] = source_file
-                                    tool['label'] = label
-                                    tool['executable'] = executable
-                                    tool['abbreviation'] = abbreviation
-                                    tool['vendor'] = vendor
-                                    tool['family'] = family
-                                    tool['release'] = release
-                                    tool['architecture'] = self.architecture
+                                executables = []
 
-                                    tool['project_template'] = project_template
-                                    tool['project_directories'] = project_directories
-                                    tool['default_outputs'] = default_outputs
-                                    tool['flags'] = flags
-                                    tool['project_workspace'] = project_workspace
+                                for executable in [executable_x32, executable_x64]:
+                                    if executable is None:
+                                        logging.warning('no executable defined')
+                                    elif os.path.exists(executable):
+                                        # print executables
+                                        executables.append(executable)
+                                        logging.info('executable %s found on this machine.' % executable)
+                                    else:
+                                        logging.warning('executable %s not found on this machine.' % executable)
 
-                                    self.tools.append(tool.copy())
+                                # tool['abbreviation'] = abbreviation
+                                # tool['label_x32'] = label_x32
+                                # tool['label_x64'] = label_x64
+                                # tool['source_file'] = source_file
+                                # tool['architecture_fallback'] = architecture_fallback
+
+                                tool['family'] = family
+                                tool['vendor'] = vendor
+                                tool['abbreviation'] = abbreviation
+                                tool['release_number'] = release_number
+                                tool['project_template'] = project_template
+                                tool['project_workspace'] = project_workspace
+                                tool['project_directories'] = project_directories_list
+                                tool['default_outputs'] = default_outputs
+                                tool['architecture_fallback'] = architecture_fallback
+                                tool['label_x32'] = label_x32
+                                tool['label_x64'] = label_x64
+                                tool['project_directories'] = project_directories
+                                tool['flags_x32'] = flags_x32
+                                tool['flags_x64'] = flags_x64
+
+                                # tool['executable'] = executable
+                                if executable_x32 in executables:
+                                    tool['executable_x32'] = executable_x32
                                 else:
-                                    logging.warning('tool not found on this machine (not added): %s' % label)
+                                    tool['executable_x32'] = None
+                                if executable_x64 in executables:
+                                    tool['executable_x64'] = executable_x64
+                                else:
+                                    tool['executable_x64'] = None
 
-        # print 'returning tools'
-        print self.tools
+                                # tool['vendor'] = vendor
+                                # tool['family'] = family
+                                # tool['release_number'] = release_number
+                                # tool['architecture'] = self.architecture
+                                # tool['project_template'] = project_template
+                                # tool['project_directories'] = project_directories
+                                # tool['default_outputs'] = default_outputs
+                                # tool['flags_x32'] = flags_x32
+                                # tool['flags_x64'] = flags_x64
+                                # tool['flags'] = flags
+                                # tool['project_workspace'] = project_workspace
+
+                                self.tools.append(tool.copy())
+
+                                print 'tool', tool
+
+                else:
+                    logging.info('source file skipped (reason: disabled): %s' % source_file)
+
         return self.tools
 
     @property
@@ -1824,13 +1882,63 @@ class PypelyneMainWindow(QMainWindow):
         # print self._tools
         
         for tool in self._tools:
+            print tool
+            index = self._tools.index(tool)
+            # print tool
             # print type(tool)
             # print tool
             # print tool['project_template']
 
             # string = tool['label'].encode("ascii")
             # print type(string)
-            self.toolsComboBox.addItem(tool['label'], self._tools.index(tool))
+
+            executable = []
+            self.run_items = []
+
+            if tool['executable_x32'] is not None:
+                executable.append(self._tools[index]['executable_x32'])
+                for flag_x32 in self._tools[index]['flags_x32']:
+                    executable.append(flag_x32)
+                # executable_x32 = executable
+                self.toolsComboBox.addItem(tool['label_x32'], {'project_template': tool['project_template'],
+                                                               'abbreviation': tool['abbreviation'],
+                                                               'vendor': tool['vendor'],
+                                                               'family': tool['family'],
+                                                               'architecture_fallback': tool['architecture_fallback'],
+                                                               'flags': tool['flags_x32'],
+                                                               'release_number': tool['release_number'],
+                                                               'project_directories': tool['project_directories'],
+                                                               'default_outputs': tool['default_outputs'],
+                                                               'executable': tool['executable_x32'],
+                                                               'project_workspace': tool['project_workspace'],
+                                                               'label': tool['label_x32']
+                                                               }.copy())
+                # self.run_items.append(new_button)
+                print executable
+                executable[:] = []
+            if tool['executable_x64'] is not None:
+                executable.append(self._tools[index]['executable_x64'])
+                for flag_x64 in self._tools[index]['flags_x64']:
+                    executable.append(flag_x64)
+                # executable_x64 = executable
+                self.toolsComboBox.addItem(tool['label_x64'], {'project_template': tool['project_template'],
+                                                               'abbreviation': tool['abbreviation'],
+                                                               'vendor': tool['vendor'],
+                                                               'family': tool['family'],
+                                                               'label': tool['label_x64'],
+                                                               'executable': tool['executable_x64'],
+                                                               'architecture_fallback': tool['architecture_fallback'],
+                                                               'release_number': tool['release_number'],
+                                                               'project_directories': tool['project_directories'],
+                                                               'default_outputs': tool['default_outputs'],
+                                                               'project_workspace': tool['project_workspace'],
+                                                               'flags': tool['flags_x64']
+                                                               }.copy())
+                # self.run_items.append(new_button)
+                print executable
+                executable[:] = []
+
+
             # print tool['executable']
             # print 'success'
 
@@ -1862,70 +1970,82 @@ class PypelyneMainWindow(QMainWindow):
 
     def run_tool(self):
         index_combobox = self.toolsComboBox.currentIndex()
-        index_tools, can_convert = self.toolsComboBox.itemData(index_combobox).toInt()
+        dict_combobox = self.toolsComboBox.itemData(index_combobox)
+
+        # pydict = eval( str( self.toolsComboBox.itemData(index_combobox).toString() ) )
+        #
+        # print pydict
+
+        # print self.toolsComboBox.itemData(index_combobox)
+        # print self.toolsComboBox.itemData(index_combobox)['executable']
+        # print index_tools
+
+
 
         if index_combobox < 2:
             self.sendTextToBox("%s: nothing to run\n" % datetime.datetime.now())
 
         else:
-            if os.path.exists(os.path.normpath(self._tools[index_tools]['executable'])):
-                logging.info('%s: starting %s' % (datetime.datetime.now(), self._tools[index_tools]['executable']))
-                self.sendTextToBox('%s: starting %s. Enjoy!\n' % (datetime.datetime.now(), self._tools[index_tools]['executable']))
+            # if not self._tools[index_tools]['executable_x64'] is None:
+            #     if os.path.exists(os.path.normpath(self._tools[index_tools]['executable_x64'])):
+            logging.info('%s: starting %s' % (datetime.datetime.now(), dict_combobox['executable']))
+            self.sendTextToBox('%s: starting %s. Enjoy!\n' % (datetime.datetime.now(), dict_combobox['executable']))
 
-                process = QProcess(self)
+            process = QProcess(self)
 
-                process_color = self.new_process_color()
+            process_color = self.new_process_color()
 
-                process.readyReadStandardOutput.connect(lambda: self.data_ready_std(process, process_color))
-                process.readyReadStandardError.connect(lambda: self.dataReadyErr(process, process_color))
-                process.started.connect(lambda: self.toolOnStarted(process))
-                process.finished.connect(lambda: self.toolOnFinished(process))
+            process.readyReadStandardOutput.connect(lambda: self.data_ready_std(process, process_color))
+            process.readyReadStandardError.connect(lambda: self.dataReadyErr(process, process_color))
+            process.started.connect(lambda: self.toolOnStarted(process))
+            process.finished.connect(lambda: self.toolOnFinished(process))
 
-                temp_pypelyne_dir = os.path.join(os.path.expanduser('~'), 'pypelyne_temp')
-                current_dir = os.getcwd()
-                date_time = datetime.datetime.now().strftime('%Y-%m-%d_%H%M-%S')
+            temp_pypelyne_dir = os.path.join(os.path.expanduser('~'), 'pypelyne_temp')
+            current_dir = os.getcwd()
+            date_time = datetime.datetime.now().strftime('%Y-%m-%d_%H%M-%S')
 
-                if not os.path.exists(temp_pypelyne_dir):
-                    os.makedirs(temp_pypelyne_dir, mode=0777)
+            if not os.path.exists(temp_pypelyne_dir):
+                os.makedirs(temp_pypelyne_dir, mode=0777)
 
-                if not self._tools[index_tools]['project_template'] == 'None':
-                    name, extension = os.path.splitext(self._tools[index_tools]['project_template'])
-                    temp_project = str(name + '.' + date_time + extension)
-                    temp_project_dir = str(name + '.' + date_time)
-                    src = os.path.join('src', 'template_documents', self._tools[index_tools]['project_template'])
-                    dst = os.path.join(temp_pypelyne_dir, temp_project_dir, temp_project)
+            if not dict_combobox['project_template'] == 'None':
+                name, extension = os.path.splitext(dict_combobox['project_template'])
+                temp_project = str(name + '.' + date_time + extension)
+                temp_project_dir = str(name + '.' + date_time)
+                src = os.path.join('src', 'template_documents', dict_combobox['project_template'])
+                dst = os.path.join(temp_pypelyne_dir, temp_project_dir, temp_project)
 
-                    os.makedirs(os.path.join(temp_pypelyne_dir, temp_project_dir), mode=0777)
+                os.makedirs(os.path.join(temp_pypelyne_dir, temp_project_dir), mode=0777)
 
-                    shutil.copyfile(src, dst)
+                shutil.copyfile(src, dst)
 
-                    os.chdir(os.path.join(temp_pypelyne_dir, temp_project_dir))
+                os.chdir(os.path.join(temp_pypelyne_dir, temp_project_dir))
 
-                    arguments = QStringList()
+                # arguments = QStringList()
+                arguments = []
 
-                    for flag in self._tools[index_tools]['flags']:
-                        arguments.append(flag)
+                for flag in dict_combobox['flags']:
+                    arguments.append(flag)
 
-                    arguments.append(dst)
+                arguments.append(dst)
 
-                    process.start(self._tools[index_tools]['executable'], arguments)
-                    os.chdir(current_dir)
+                process.start(dict_combobox['executable'], arguments)
+                os.chdir(current_dir)
 
-                elif self._tools[index_tools]['family'].lower() == 'deadline':
-                    os.chdir(temp_pypelyne_dir)
-                    process.start(self._tools[index_tools]['executable'])
-                    os.chdir(current_dir)
-                else:
-                    temp_project_dir = 'no_template_' + self._tools[index_tools]['vendor'] + '_' + self._tools[index_tools]['family'] + '_' + self._tools[index_tools]['release'] + '.' +  date_time
-                    temp_project_dir_full = os.path.join(temp_pypelyne_dir, temp_project_dir)
-                    os.makedirs(temp_project_dir_full, mode=0777)
-
-                    os.chdir(temp_project_dir_full)
-
-                    process.start(self._tools[index_tools]['executable'])
-                    os.chdir(current_dir)
+            elif dict_combobox['family'].lower() == 'deadline':
+                os.chdir(temp_pypelyne_dir)
+                process.start(dict_combobox['executable'])
+                os.chdir(current_dir)
             else:
-                self.sendTextToBox("%s: cannot start %s. is it installed?\n" % (datetime.datetime.now(), self._tools[index_tools]['executable']))
+                temp_project_dir = 'no_template_' + dict_combobox['vendor'] + '_' + dict_combobox['family'] + '_' + dict_combobox['release'] + '.' +  date_time
+                temp_project_dir_full = os.path.join(temp_pypelyne_dir, temp_project_dir)
+                os.makedirs(temp_project_dir_full, mode=0777)
+
+                os.chdir(temp_project_dir_full)
+
+                process.start(dict_combobox['executable'])
+                os.chdir(current_dir)
+                # else:
+                #     self.sendTextToBox("%s: cannot start %s. is it installed?\n" % (datetime.datetime.now(), self._tools[index_tools]['executable']))
 
         self.toolsComboBox.setCurrentIndex(0)
 

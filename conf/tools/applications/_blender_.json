@@ -1,50 +1,44 @@
 {
+  "family_enable": true,
   "family": "Blender",
-  "abbreviation": "BLD",
   "vendor": "Blender Foundation",
-  "versions": [
+  "abbreviation": "BLD",
+  "releases": [
     {
-      "release": "2.6.9",
+      "release_number": "2.6.9",
       "project_template": "null_blenderfoundation_blender_269.blend",
-      "project_workspace": "None",
+      "project_workspace": null,
       "project_directories": [],
       "default_outputs": [],
+      "architecture_fallback": true,
       "platforms": [
         {
-          "windows": [
+          "windows":
             {
-              "x32": "None",
-              "flags": []
-            },
-            {
-              "x64": "None",
-              "flags": []
+              "executable_x32": "C:\\Program Files (x86)\\Blender Foundation\\Blender\\blender.exe",
+              "flags_x32": ["-key1", "-key2", "value"],
+              "executable_x64": "C:\\Program Files\\Blender Foundation\\Blender\\blender.exe",
+              "flags_x64": ["-key1", "-key2", "value"]
             }
-          ]
+
         },
         {
-          "darwin": [
+          "darwin":
             {
-              "x32": "/Applications/Blender/blender.app/Contents/MacOS/blender",
-              "flags": []
-            },
-            {
-              "x64": "/Applications/Blender/blender.app/Contents/MacOS/blender",
-              "flags": []
+              "executable_x32": "/Applications/djv-1.1.0-OSX-64.app/Contents/MacOS/djv-1.1.0-OSX-64",
+              "flags_x32": ["-key1", "-key2", "value32"],
+              "executable_x64": "/Applications/Blender/blender.app/Contents/MacOS/blender",
+              "flags_x64": ["-key1", "-key2", "value64"]
             }
-          ]
+
         },
         {
-          "linux": [
-            {
-              "x32": "None",
-              "flags": []
-            },
-            {
-              "x64": "None",
-              "flags": []
-            }
-          ]
+          "linux": {
+            "executable_x32": "None",
+            "flags_x32": [],
+            "executable_x64": "None",
+            "flags_x64": []
+          }
         }
       ]
     }

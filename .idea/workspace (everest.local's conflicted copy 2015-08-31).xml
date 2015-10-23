@@ -1,0 +1,1264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="8b3d9b3c-76fc-4536-be64-d067f9daab73" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/PyPELyNE_OSX.cmd" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/PyPELyNE_WIN.bat" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/getLocalIp.py" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/PyPELyNE_OSX" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/tool_integration/maya/shelf_pypelyne/PyPELyNE.xml" afterPath="$PROJECT_DIR$/src/tool_integration/maya/shelf_pypelyne/PyPELyNE.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/tool_integration/maya/scripts/python/computeReferences.py" afterPath="$PROJECT_DIR$/src/tool_integration/maya/scripts/python/computeReferences.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pypelyne_client.py" afterPath="$PROJECT_DIR$/pypelyne_client.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pypelyne_server.py" afterPath="$PROJECT_DIR$/pypelyne_server.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server_scripts/centos7/pypelyne_server/pypelyne_server.sh" afterPath="$PROJECT_DIR$/server_scripts/centos7/pypelyne_server/pypelyne_server.sh" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server_scripts/centos7/rr_server/rr_server.sh" afterPath="$PROJECT_DIR$/server_scripts/centos7/rr_server/rr_server.sh" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/conf/valueApplications.xml" afterPath="$PROJECT_DIR$/conf/valueApplications.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/conf/valuePyPELyNE.py" afterPath="$PROJECT_DIR$/conf/valuePyPELyNE.py" />
+    </list>
+    <ignored path="PyPELyNE.iws" />
+    <ignored path=".idea/workspace.xml" />
+    <ignored path="research/" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="TRACKING_ENABLED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ChangesViewManager" flattened_view="true" show_ignored="false" />
+  <component name="CreatePatchCommitExecutor">
+    <option name="PATCH_PATH" value="" />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
+  <component name="FavoritesManager">
+    <favorites_list name="PyPELyNE" />
+  </component>
+  <component name="FileEditorManager">
+    <splitter split-orientation="horizontal" split-proportion="0.52087796">
+      <split-first>
+        <leaf>
+          <file leaf-file-name="pypelyne_server.py" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/pypelyne_server.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="0.0">
+                  <caret line="33" column="0" selection-start-line="33" selection-start-column="0" selection-end-line="33" selection-end-column="0" />
+                  <folding>
+                    <element signature="e#62#94#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="pypelyne_client.py" pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/pypelyne_client.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="0.39008895">
+                  <caret line="444" column="65" selection-start-line="444" selection-start-column="65" selection-end-line="444" selection-end-column="65" />
+                  <folding>
+                    <element signature="e#0#105#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="pypelyne_server.sh" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/server_scripts/centos7/pypelyne_server/pypelyne_server.sh">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="0.0">
+                  <caret line="33" column="29" selection-start-line="33" selection-start-column="29" selection-end-line="33" selection-end-column="29" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="rr_server.sh" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/server_scripts/centos7/rr_server/rr_server.sh">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="0.0">
+                  <caret line="30" column="8" selection-start-line="30" selection-start-column="8" selection-end-line="30" selection-end-column="8" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+        </leaf>
+      </split-first>
+      <split-second>
+        <leaf>
+          <file leaf-file-name="computeAbsolutePaths.py" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/src/tool_integration/maya/scripts/python/computeAbsolutePaths.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="0.0">
+                  <caret line="85" column="28" selection-start-line="85" selection-start-column="28" selection-end-line="85" selection-end-column="28" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="graphicsScene.py" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/src/graphicsScene.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="-10.0">
+                  <caret line="176" column="49" selection-start-line="176" selection-start-column="42" selection-end-line="176" selection-end-column="49" />
+                  <folding>
+                    <element signature="e#57#82#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="pypelyne_client.py" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/pypelyne_client.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="-13.592592">
+                  <caret line="103" column="55" selection-start-line="103" selection-start-column="55" selection-end-line="103" selection-end-column="55" />
+                  <folding>
+                    <element signature="e#0#105#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="pypelyne_server.py" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/pypelyne_server.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="0.0">
+                  <caret line="35" column="0" selection-start-line="35" selection-start-column="0" selection-end-line="35" selection-end-column="0" />
+                  <folding>
+                    <element signature="e#62#94#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="valuePyPELyNE.py" pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/conf/valuePyPELyNE.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="0.534398">
+                  <caret line="29" column="53" selection-start-line="29" selection-start-column="53" selection-end-line="29" selection-end-column="53" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="node.py" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/src/node.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="0.0">
+                  <caret line="121" column="21" selection-start-line="121" selection-start-column="18" selection-end-line="121" selection-end-column="21" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+        </leaf>
+      </split-second>
+    </splitter>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="PREVIOUS_COMMIT_AUTHORS">
+      <list>
+        <option value="michimussato@gmail.com" />
+      </list>
+    </option>
+    <option name="ROOT_SYNC" value="DONT_SYNC" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/src/newOutput.py" />
+        <option value="$PROJECT_DIR$/src/jobArnold.py" />
+        <option value="$PROJECT_DIR$/src/timeTracker.py" />
+        <option value="$PROJECT_DIR$/src/screenCast.py" />
+        <option value="$PROJECT_DIR$/PyPELyNE_OSX" />
+        <option value="$PROJECT_DIR$/src/bezierLine.py" />
+        <option value="$PROJECT_DIR$/conf/structureTask.xml" />
+        <option value="$PROJECT_DIR$/src/errorClasses.py" />
+        <option value="$PROJECT_DIR$/src/jobDeadline.py" />
+        <option value="$PROJECT_DIR$/src/listScreenCasts.py" />
+        <option value="$PROJECT_DIR$/src/tool_integration/maya/scripts/python/computeAbsolutePaths.py" />
+        <option value="$PROJECT_DIR$/payload/thinkbox_deadline/darwin/DeadlineSlave" />
+        <option value="$PROJECT_DIR$/src/tool_integration/thinkbox_deadline/darwin/DeadlineSlaveLauncher" />
+        <option value="$PROJECT_DIR$/conf/__init__.py" />
+        <option value="$PROJECT_DIR$/conf/envVars_osx.txt" />
+        <option value="$PROJECT_DIR$/conf/valueTasks.xml" />
+        <option value="$PROJECT_DIR$/README.md" />
+        <option value="$PROJECT_DIR$/conf/valueOutputs.xml" />
+        <option value="$PROJECT_DIR$/src/circlesInOut.py" />
+        <option value="$PROJECT_DIR$/src/node.py" />
+        <option value="$PROJECT_DIR$/src/nodeWidget.py" />
+        <option value="$PROJECT_DIR$/src/playerWidget.py" />
+        <option value="$PROJECT_DIR$/pypelyne.py" />
+        <option value="$PROJECT_DIR$/src/graphicsScene.py" />
+        <option value="$PROJECT_DIR$/server_scripts/centos7/pypelyne_server/pypelyne_server.sh" />
+        <option value="$PROJECT_DIR$/src/tool_integration/maya/shelf_pypelyne/PyPELyNE.xml" />
+        <option value="$PROJECT_DIR$/src/template_documents/null_autodesk_maya2014_workspace.mel" />
+        <option value="$PROJECT_DIR$/src/template_documents/null_autodesk_maya2013_workspace.mel" />
+        <option value="$PROJECT_DIR$/src/tool_integration/maya/scripts/python/computeReferences.py" />
+        <option value="$PROJECT_DIR$/server_scripts/centos7/rr_server/rr_server.sh" />
+        <option value="$PROJECT_DIR$/pypelyne_server.py" />
+        <option value="$PROJECT_DIR$/conf/valueApplications.xml" />
+        <option value="$PROJECT_DIR$/conf/valuePyPELyNE.py" />
+        <option value="$PROJECT_DIR$/pypelyne_client.py" />
+        <option value="$PROJECT_DIR$/PyPELyNE_WIN" />
+      </list>
+    </option>
+  </component>
+  <component name="NamedScopeManager">
+    <order />
+  </component>
+  <component name="ProjectFrameBounds">
+    <option name="x" value="-1868" />
+    <option name="width" value="1868" />
+    <option name="height" value="1200" />
+  </component>
+  <component name="ProjectInspectionProfilesVisibleTreeState">
+    <entry key="Project Default">
+      <profile-state>
+        <expanded-state>
+          <State>
+            <id />
+          </State>
+        </expanded-state>
+        <selected-state>
+          <State>
+            <id>Buildout</id>
+          </State>
+        </selected-state>
+      </profile-state>
+    </entry>
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="false">
+    <OptionsSetting value="true" id="Add" />
+    <OptionsSetting value="true" id="Remove" />
+    <OptionsSetting value="true" id="Checkout" />
+    <OptionsSetting value="true" id="Update" />
+    <OptionsSetting value="true" id="Status" />
+    <OptionsSetting value="true" id="Edit" />
+    <ConfirmationsSetting value="0" id="Add" />
+    <ConfirmationsSetting value="0" id="Remove" />
+  </component>
+  <component name="ProjectView">
+    <navigator currentView="ProjectPane" proportions="" version="1">
+      <flattenPackages />
+      <showMembers />
+      <showModules />
+      <showLibraryContents />
+      <hideEmptyPackages />
+      <abbreviatePackageNames />
+      <autoscrollToSource />
+      <autoscrollFromSource />
+      <sortByType />
+    </navigator>
+    <panes>
+      <pane id="Scope" />
+      <pane id="ProjectPane">
+        <subPane>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="PyPELyNE" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="PyPELyNE" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="PyPELyNE" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="PyPELyNE" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="PyPELyNE" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="conf" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
+      <pane id="Scratches" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/research" />
+    <property name="recentsLimit" value="5" />
+    <property name="restartRequiresConfirmation" value="true" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PythonContentEntriesConfigurable" />
+    <property name="settings.editor.splitter.proportion" value="0.23047252" />
+    <property name="FullScreen" value="false" />
+    <property name="two.files.diff.last.used.file" value="$PROJECT_DIR$/pypelyne.py" />
+  </component>
+  <component name="PyConsoleOptionsProvider">
+    <option name="myPythonConsoleState">
+      <console-settings module-name="PyPELyNE" is-module-sdk="true">
+        <option name="myUseModuleSdk" value="true" />
+        <option name="myModuleName" value="PyPELyNE" />
+      </console-settings>
+    </option>
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/src/tool_integration/template_documents" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Python.pypelyne_client">
+    <configuration default="true" type="BashConfigurationType" factoryName="Bash">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="INTERPRETER_PATH" value="/bin/bash" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="PARAMETERS" value="" />
+      <module name="" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="PythonConfigurationType" factoryName="Python">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="/usr/bin/python" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="PyPELyNE" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <method />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Attests">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="PyPELyNE" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <method />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Doctests">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="PyPELyNE" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <method />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Nosetests">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="PyPELyNE" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <option name="PARAMS" value="" />
+      <option name="USE_PARAM" value="false" />
+      <method />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Unittests">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="PyPELyNE" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <option name="PUREUNITTEST" value="true" />
+      <option name="PARAMS" value="" />
+      <option name="USE_PARAM" value="false" />
+      <method />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="py.test">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="PyPELyNE" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <option name="testToRun" value="" />
+      <option name="keywords" value="" />
+      <option name="params" value="" />
+      <option name="USE_PARAM" value="false" />
+      <option name="USE_KEYWORD" value="false" />
+      <method />
+    </configuration>
+    <configuration default="false" name="pypelyne" type="PythonConfigurationType" factoryName="Python">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="PyPELyNE" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/pypelyne.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <method />
+    </configuration>
+    <configuration default="false" name="pypelyne_client" type="PythonConfigurationType" factoryName="Python">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="/usr/bin/python" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="PyPELyNE" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/pypelyne_client.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <method />
+    </configuration>
+    <list size="2">
+      <item index="0" class="java.lang.String" itemvalue="Python.pypelyne" />
+      <item index="1" class="java.lang.String" itemvalue="Python.pypelyne_client" />
+    </list>
+  </component>
+  <component name="ShelveChangesManager" show_recycled="false" />
+  <component name="StructureViewFactory">
+    <option name="ACTIVE_ACTIONS" value=",SHOW_INHERITED,SHOW_FIELDS" />
+  </component>
+  <component name="SvnConfiguration">
+    <configuration>$USER_HOME$/.subversion</configuration>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="8b3d9b3c-76fc-4536-be64-d067f9daab73" name="Default" comment="" />
+      <created>1434001686747</created>
+      <option name="number" value="Default" />
+      <updated>1434001686747</updated>
+    </task>
+    <task id="LOCAL-00008" summary="- mantra/ifd support&#10;- runTool now uses qprocess and creates a default scene to test with">
+      <created>1436681817956</created>
+      <option name="number" value="00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1436681817956</updated>
+    </task>
+    <task id="LOCAL-00009" summary="- runTool modifications">
+      <created>1436768761165</created>
+      <option name="number" value="00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1436768761165</updated>
+    </task>
+    <task id="LOCAL-00010" summary="- script clean ups&#10;- md modified">
+      <created>1437122885887</created>
+      <option name="number" value="00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1437122885887</updated>
+    </task>
+    <task id="LOCAL-00011" summary="- per-process-colored console output">
+      <created>1437341057391</created>
+      <option name="number" value="00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1437341057391</updated>
+    </task>
+    <task id="LOCAL-00012" summary="- colored console output now also for deadline submission&#10;- fixed mantra job submission arguments">
+      <created>1437659649639</created>
+      <option name="number" value="00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1437659649639</updated>
+    </task>
+    <task id="LOCAL-00013" summary="- md updated with some images">
+      <created>1437740613833</created>
+      <option name="number" value="00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1437740613833</updated>
+    </task>
+    <task id="LOCAL-00014" summary="- md updated with some images">
+      <created>1437740641968</created>
+      <option name="number" value="00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1437740641968</updated>
+    </task>
+    <task id="LOCAL-00015" summary="- md updated with some images, videos and links">
+      <created>1437741451313</created>
+      <option name="number" value="00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1437741451313</updated>
+    </task>
+    <task id="LOCAL-00016" summary="- md updated with some images, videos and links">
+      <created>1437742202442</created>
+      <option name="number" value="00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1437742202442</updated>
+    </task>
+    <task id="LOCAL-00017" summary="- md updated with some images, videos and links">
+      <created>1437742544411</created>
+      <option name="number" value="00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1437742544411</updated>
+    </task>
+    <task id="LOCAL-00018" summary="- md updated with some images, videos and links">
+      <created>1437742676375</created>
+      <option name="number" value="00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1437742676375</updated>
+    </task>
+    <task id="LOCAL-00019" summary="- md updated with some images, videos and links">
+      <created>1437742904477</created>
+      <option name="number" value="00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1437742904477</updated>
+    </task>
+    <task id="LOCAL-00020" summary="- md updated with some images, videos and links">
+      <created>1437743017176</created>
+      <option name="number" value="00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1437743017176</updated>
+    </task>
+    <task id="LOCAL-00021" summary="- md updated with some images, videos and links">
+      <created>1437743139347</created>
+      <option name="number" value="00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1437743139347</updated>
+    </task>
+    <task id="LOCAL-00022" summary="- md updated with some images, videos and links">
+      <created>1437743653262</created>
+      <option name="number" value="00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1437743653262</updated>
+    </task>
+    <task id="LOCAL-00023" summary="- md updated with some images, videos and links">
+      <created>1437743688731</created>
+      <option name="number" value="00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1437743688731</updated>
+    </task>
+    <task id="LOCAL-00024" summary="- md updated with some images, videos and links">
+      <created>1437745368263</created>
+      <option name="number" value="00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1437745368263</updated>
+    </task>
+    <task id="LOCAL-00025" summary="- md updated with some images, videos and links">
+      <created>1437745500781</created>
+      <option name="number" value="00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1437745500781</updated>
+    </task>
+    <task id="LOCAL-00026" summary="- md updated&#10;- osx launcher">
+      <created>1437828590290</created>
+      <option name="number" value="00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1437828590290</updated>
+    </task>
+    <task id="LOCAL-00027" summary="- first test with encapsulated env vars">
+      <created>1437833670140</created>
+      <option name="number" value="00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1437833670140</updated>
+    </task>
+    <task id="LOCAL-00028" summary="- bezierLine: commented&#10;- graphicsScene: typo&#10;- pypelyne: reworked computeConnections:&#10;   - now equally named inputs pipe upstream to the correct node/output">
+      <created>1438003081260</created>
+      <option name="number" value="00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1438003081260</updated>
+    </task>
+    <task id="LOCAL-00029" summary="- output circles of loaders now with color coding like">
+      <created>1438024199094</created>
+      <option name="number" value="00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1438024199094</updated>
+    </task>
+    <task id="LOCAL-00030" summary="- colored loader outputs buggy. wrong paths.">
+      <created>1438184736558</created>
+      <option name="number" value="00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1438184736558</updated>
+    </task>
+    <task id="LOCAL-00031" summary="- some cleanup on the conf/*.xml side">
+      <created>1438427962505</created>
+      <option name="number" value="00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1438427962505</updated>
+    </task>
+    <task id="LOCAL-00032" summary="- vlc included&#10;- colored circles fix&#10;- started to integrate a clone function...">
+      <created>1439036928733</created>
+      <option name="number" value="00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1439036928733</updated>
+    </task>
+    <task id="LOCAL-00033" summary="- context menu to copy standard input and output paths to clipboard&#10;- screencasts can now be stopped through gui&#10;- player ui simplified">
+      <created>1439278785064</created>
+      <option name="number" value="00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1439278785064</updated>
+    </task>
+    <task id="LOCAL-00034" summary="- player ui simplified">
+      <created>1439283867044</created>
+      <option name="number" value="00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1439283867044</updated>
+    </task>
+    <task id="LOCAL-00035" summary="- bug in open versionDir function. it always opened current.">
+      <created>1439362710992</created>
+      <option name="number" value="00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1439362710992</updated>
+    </task>
+    <task id="LOCAL-00036" summary="- print warning when a corrupted propertyNode.xml file was found">
+      <created>1439364348746</created>
+      <option name="number" value="00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1439364348746</updated>
+    </task>
+    <task id="LOCAL-00037" summary="- job execution behaviour not as expected: /path/to/ + exec is not equal to /path/to/exec in deadline o_O&#10;- job submission window has a new field with the according renderer help command">
+      <created>1439373878027</created>
+      <option name="number" value="00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1439373878027</updated>
+    </task>
+    <task id="LOCAL-00038" summary="- md updated">
+      <created>1439494798823</created>
+      <option name="number" value="00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1439494798823</updated>
+    </task>
+    <task id="LOCAL-00039" summary="- md updated">
+      <created>1439495039774</created>
+      <option name="number" value="00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1439495039774</updated>
+    </task>
+    <task id="LOCAL-00040" summary="- context menu cleanup and fix for text&#10;- delete dialog updated">
+      <created>1439619214276</created>
+      <option name="number" value="00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1439619214276</updated>
+    </task>
+    <task id="LOCAL-00041" summary="- live dir was not being removed when output was deleted. fixed">
+      <created>1439620216847</created>
+      <option name="number" value="00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1439620216847</updated>
+    </task>
+    <task id="LOCAL-00042" summary="- outputs now with cleanup function: remove all versions except current and live">
+      <created>1439718737098</created>
+      <option name="number" value="00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1439718737098</updated>
+    </task>
+    <task id="LOCAL-00043" summary="- reasearch folder removed">
+      <created>1439721967830</created>
+      <option name="number" value="00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1439721967831</updated>
+    </task>
+    <task id="LOCAL-00044" summary="- mp3 player now with support to choose which track to play">
+      <created>1439738550570</created>
+      <option name="number" value="00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1439738550570</updated>
+    </task>
+    <task id="LOCAL-00045" summary="- vlc.py now access payload vlc. vlc doesn't have to be installed anymore&#10;- variable fix for the audio player">
+      <created>1439740770071</created>
+      <option name="number" value="00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1439740770071</updated>
+    </task>
+    <task id="LOCAL-00046" summary="- output cleanup bug fixed (if there was an exclusion)&#10;- context menu reworked&#10;- open asset/shot preparation">
+      <created>1439758237147</created>
+      <option name="number" value="00046" />
+      <option name="project" value="LOCAL" />
+      <updated>1439758237147</updated>
+    </task>
+    <task id="LOCAL-00047" summary="- asset/shot loaders can now directly open the corresponding asset/shot">
+      <created>1439805645369</created>
+      <option name="number" value="00047" />
+      <option name="project" value="LOCAL" />
+      <updated>1439805645369</updated>
+    </task>
+    <task id="LOCAL-00048" summary="- screen casts added and removed to screenCastsList by signals&#10;- cleanUpNode function added&#10;- double click on LDR now opens containing tree">
+      <created>1439929800607</created>
+      <option name="number" value="00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1439929800607</updated>
+    </task>
+    <task id="LOCAL-00049" summary="- removed some print statements&#10;- pigz (2.3) and tar (bsdtar 2.8.3 - libarchive 2.8.3) added to payload for future multithreaded project gzip archiving and extraction">
+      <created>1439932029558</created>
+      <option name="number" value="00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1439932029558</updated>
+    </task>
+    <task id="LOCAL-00050" summary="- pypelyne configuration now in separate file&#10;- djv integrated into payload as default sequence viewer&#10;- if rv is installed, rv is used. otherwise djv&#10;- fix for deadline slave launcher: env vars were not available. now there is a launcher script in src/tool_integration/thinkbox_deadline&#10;- maya computeAbsolutePaths now converts to workspace relative paths&#10;- maya computeAbsolutePaths now also considers cacheFile nodes and aiImage nodes">
+      <created>1440240007323</created>
+      <option name="number" value="00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1440240007324</updated>
+    </task>
+    <task id="LOCAL-00051" summary="- wrong logic for choosing the sequence viewer">
+      <created>1440241019819</created>
+      <option name="number" value="00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1440241019819</updated>
+    </task>
+    <task id="LOCAL-00052" summary="- runTool and temp projects improved">
+      <created>1440242772582</created>
+      <option name="number" value="00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1440242772583</updated>
+    </task>
+    <task id="LOCAL-00053" summary="- check out task functionality">
+      <created>1440332570505</created>
+      <option name="number" value="00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1440332570506</updated>
+    </task>
+    <task id="LOCAL-00054" summary="- check out task functionality fix">
+      <created>1440333671042</created>
+      <option name="number" value="00054" />
+      <option name="project" value="LOCAL" />
+      <updated>1440333671042</updated>
+    </task>
+    <task id="LOCAL-00055" summary="- now with maya workspace.mel template (needed for proper check out)">
+      <created>1440343035506</created>
+      <option name="number" value="00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1440343035509</updated>
+    </task>
+    <task id="LOCAL-00056" summary="- nodeWidget separate file&#10;- playerWidget separate file&#10;- server/client preparation">
+      <created>1440669937541</created>
+      <option name="number" value="00056" />
+      <option name="project" value="LOCAL" />
+      <updated>1440669937542</updated>
+    </task>
+    <option name="localTasksCounter" value="57" />
+    <servers />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="-1868" y="0" width="1868" height="1200" extended-state="6" />
+    <editor active="true" />
+    <layout>
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.19206493" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.16167024" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25749466" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39945897" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2555261" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33453563" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32912534" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+    </layout>
+  </component>
+  <component name="Vcs.Log.UiProperties">
+    <option name="RECENTLY_FILTERED_USER_GROUPS">
+      <collection />
+    </option>
+    <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
+      <collection />
+    </option>
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="- some cleanup on the conf/*.xml side" />
+    <MESSAGE value="- vlc included&#10;- colored circles fix&#10;- started to integrate a clone function..." />
+    <MESSAGE value="- context menu to copy standard input and output paths to clipboard&#10;- screencasts can now be stopped through gui&#10;- player ui simplified" />
+    <MESSAGE value="- player ui simplified" />
+    <MESSAGE value="- bug in open versionDir function. it always opened current." />
+    <MESSAGE value="- print warning when a corrupted propertyNode.xml file was found" />
+    <MESSAGE value="- job execution behaviour not as expected: /path/to/ + exec is not equal to /path/to/exec in deadline o_O&#10;- job submission window has a new field with the according renderer help command" />
+    <MESSAGE value="- md updated" />
+    <MESSAGE value="- context menu cleanup and fix for text&#10;- delete dialog updated" />
+    <MESSAGE value="- live dir was not being removed when output was deleted. fixed" />
+    <MESSAGE value="- outputs now with cleanup function: remove all versions except current and live" />
+    <MESSAGE value="- reasearch folder removed" />
+    <MESSAGE value="- mp3 player now with support to choose which track to play" />
+    <MESSAGE value="- vlc.py now access payload vlc. vlc doesn't have to be installed anymore&#10;- variable fix for the audio player" />
+    <MESSAGE value="- output cleanup bug fixed (if there was an exclusion)&#10;- context menu reworked&#10;- open asset/shot preparation" />
+    <MESSAGE value="- asset/shot loaders can now directly open the corresponding asset/shot" />
+    <MESSAGE value="- screen casts added and removed to screenCastsList by signals&#10;- cleanUpNode function added&#10;- double click on LDR now opens containing tree" />
+    <MESSAGE value="- removed some print statements&#10;- pigz (2.3) and tar (bsdtar 2.8.3 - libarchive 2.8.3) added to payload for future multithreaded project gzip archiving and extraction" />
+    <MESSAGE value="- pypelyne configuration now in separate file&#10;- djv integrated into payload as default sequence viewer&#10;- if rv is installed, rv is used. otherwise djv&#10;- fix for deadline slave launcher: env vars were not available. now there is a launcher script in src/tool_integration/thinkbox_deadline&#10;- maya computeAbsolutePaths now converts to workspace relative paths&#10;- maya computeAbsolutePaths now also considers cacheFile nodes and aiImage nodes" />
+    <MESSAGE value="- wrong logic for choosing the sequence viewer" />
+    <MESSAGE value="- runTool and temp projects improved" />
+    <MESSAGE value="- check out task functionality" />
+    <MESSAGE value="- check out task functionality fix" />
+    <MESSAGE value="- now with maya workspace.mel template (needed for proper check out)" />
+    <MESSAGE value="- nodeWidget separate file&#10;- playerWidget separate file&#10;- server/client preparation" />
+    <option name="LAST_COMMIT_MESSAGE" value="- nodeWidget separate file&#10;- playerWidget separate file&#10;- server/client preparation" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/src/circlesInOut.py</url>
+          <line>221</line>
+          <option name="timeStamp" value="7" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/src/graphicsScene.py</url>
+          <line>1519</line>
+          <option name="timeStamp" value="9" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/src/graphicsScene.py</url>
+          <line>1603</line>
+          <option name="timeStamp" value="10" />
+        </line-breakpoint>
+      </breakpoints>
+      <option name="time" value="14" />
+    </breakpoint-manager>
+    <watches-manager />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/pypelyne_server.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="130" column="48" selection-start-line="130" selection-start-column="48" selection-end-line="130" selection-end-column="48" />
+          <folding>
+            <element signature="e#62#94#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/conf/valuePyPELyNE.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="15" column="31" selection-start-line="15" selection-start-column="31" selection-end-line="15" selection-end-column="31" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/node.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="121" column="21" selection-start-line="121" selection-start-column="18" selection-end-line="121" selection-end-column="21" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/bezierLine.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="259" column="36" selection-start-line="259" selection-start-column="36" selection-end-line="259" selection-end-column="36" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/node.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="346" column="26" selection-start-line="346" selection-start-column="26" selection-end-line="346" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/timeTracker.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="61" column="11" selection-start-line="61" selection-start-column="11" selection-end-line="61" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/bezierLine.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="261" column="36" selection-start-line="261" selection-start-column="36" selection-end-line="261" selection-end-column="36" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/bezierLine.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="263" column="41" selection-start-line="263" selection-start-column="41" selection-end-line="263" selection-end-column="41" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/bezierLine.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="263" column="41" selection-start-line="263" selection-start-column="41" selection-end-line="263" selection-end-column="41" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/bezierLine.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/bezierLine.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/vlc.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/timeTracker.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="5" column="0" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/newOutput.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="136" column="8" selection-start-line="136" selection-start-column="8" selection-end-line="136" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/player.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/parseApplications.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="13" column="26" selection-start-line="13" selection-start-column="6" selection-end-line="13" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/posixpath.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.33333334">
+          <caret line="65" column="0" selection-start-line="65" selection-start-column="0" selection-end-line="65" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/pypelyneConfigurationWindow.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.50660795">
+          <caret line="23" column="8" selection-start-line="23" selection-start-column="8" selection-end-line="23" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/listScreenCasts.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="68" column="0" selection-start-line="68" selection-start-column="0" selection-end-line="68" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/tool_integration/maya/plugin/pypelyneShelf.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-0.16651249">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/conf/envVars_osx.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.30232558">
+          <caret line="93" column="1" selection-start-line="93" selection-start-column="1" selection-end-line="93" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="53" column="13" selection-start-line="53" selection-start-column="13" selection-end-line="53" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/screenCast.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="18" column="9" selection-start-line="18" selection-start-column="9" selection-end-line="18" selection-end-column="21" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/newLoader.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="213" column="0" selection-start-line="213" selection-start-column="0" selection-end-line="213" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/jobDeadline.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="135" column="31" selection-start-line="135" selection-start-column="31" selection-end-line="135" selection-end-column="31" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/conf/valueTasks.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="3" column="3" selection-start-line="3" selection-start-column="3" selection-end-line="3" selection-end-column="3" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/conf/valueOutputs.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="16" column="63" selection-start-line="16" selection-start-column="63" selection-end-line="16" selection-end-column="63" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/newNode.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.33333334">
+          <caret line="233" column="74" selection-start-line="233" selection-start-column="73" selection-end-line="233" selection-end-column="74" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/playerWidget.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.32697546">
+          <caret line="16" column="0" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/nodeWidget.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.040871933">
+          <caret line="2" column="0" selection-start-line="2" selection-start-column="0" selection-end-line="5" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/bezierLine.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="172" column="19" selection-start-line="172" selection-start-column="17" selection-end-line="172" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/circlesInOut.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="239" column="0" selection-start-line="239" selection-start-column="0" selection-end-line="239" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/node.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="121" column="21" selection-start-line="121" selection-start-column="18" selection-end-line="121" selection-end-column="21" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/tool_integration/maya/shelf_pypelyne/PyPELyNE.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.17751479">
+          <caret line="8" column="145" selection-start-line="8" selection-start-column="145" selection-end-line="8" selection-end-column="145" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/template_documents/null_autodesk_maya2013_workspace.mel">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.15532544">
+          <caret line="7" column="19" selection-start-line="7" selection-start-column="19" selection-end-line="7" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/template_documents/null_autodesk_maya2014_workspace.mel">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.9556213">
+          <caret line="44" column="0" selection-start-line="44" selection-start-column="0" selection-end-line="44" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/tool_integration/maya/scripts/python/computeReferences.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-27.88889">
+          <caret line="119" column="0" selection-start-line="119" selection-start-column="0" selection-end-line="119" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server_scripts/centos7/pypelyne_server/pypelyne_server.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="33" column="29" selection-start-line="33" selection-start-column="29" selection-end-line="33" selection-end-column="29" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server_scripts/centos7/rr_server/rr_server.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="30" column="8" selection-start-line="30" selection-start-column="8" selection-end-line="30" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/tool_integration/maya/scripts/python/computeAbsolutePaths.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="85" column="28" selection-start-line="85" selection-start-column="28" selection-end-line="85" selection-end-column="28" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pypelyne_server.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="35" column="0" selection-start-line="35" selection-start-column="0" selection-end-line="35" selection-end-column="0" />
+          <folding>
+            <element signature="e#62#94#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/conf/valueApplications.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.75979775">
+          <caret line="578" column="22" selection-start-line="578" selection-start-column="22" selection-end-line="578" selection-end-column="22" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/graphicsScene.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-10.0">
+          <caret line="176" column="49" selection-start-line="176" selection-start-column="42" selection-end-line="176" selection-end-column="49" />
+          <folding>
+            <element signature="e#57#82#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pypelyne_client.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-13.592592">
+          <caret line="103" column="55" selection-start-line="103" selection-start-column="55" selection-end-line="103" selection-end-column="55" />
+          <folding>
+            <element signature="e#0#105#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/conf/valuePyPELyNE.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.534398">
+          <caret line="29" column="53" selection-start-line="29" selection-start-column="53" selection-end-line="29" selection-end-column="53" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+  </component>
+</project>

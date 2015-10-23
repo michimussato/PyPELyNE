@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<structureProject>
+	<contentBase value="content">
+		<assets value="assets">
+		</assets>
+		<assetsinactive value="assets_inactive">
+		</assetsinactive>
+		<shots value="shots">
+		</shots>
+		<shotsinactive value="shots_inactive">
+		</shotsinactive>
+	<makingofBase value="making_of">
+	</makingof>
+	<referencesBase value="references">
+	</references>
+	<timetrackerBase value="timetracker">
+	</timetracker>
+	<correspondenceBase value="correspondence">
+	</correspondence>
+	<finalBase value="final">
+	</final>
+</structureProject>

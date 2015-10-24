@@ -1,49 +1,39 @@
 {
+  "family_enable": true,
   "family": "Fusion",
-  "abbreviation": "FSN",
   "vendor": "Blackmagicdesign",
-  "versions": [
+  "abbreviation": "FSN",
+  "releases": [
     {
-      "release": "7",
+      "release_number": "7",
       "project_template": "null_blackmagicdesign_fusion7.comp",
-      "project_workspace": "None",
+      "project_workspace": null,
       "project_directories": [],
       "default_outputs": [],
+      "architecture_fallback": true,
       "platforms": [
         {
           "windows": {
-            "x32": {
-              "executable": "None",
-              "flags": []
-            },
-            "x64": {
-              "executable": "C:\\Program Files\\Blackmagic Design\\Fusion\\Fusion.exe",
-              "flags": []
-            }
+            "executable_x32": null,
+            "flags_x32": [],
+            "executable_x64": "C:\\Program Files\\Blackmagic Design\\Fusion\\Fusion.exe",
+            "flags_x64": []
           }
         },
         {
           "darwin": {
-            "x32": {
-              "executable": "None",
-              "flags": []
-            },
-            "x64": {
-              "executable": "None",
-              "flags": []
-            }
+            "executable_x32": null,
+            "flags_x32": [],
+            "executable_x64": null,
+            "flags_x64": []
           }
         },
         {
           "linux": {
-            "x32": {
-              "executable": "None",
-              "flags": []
-            },
-            "x64": {
-              "executable": "None",
-              "flags": []
-            }
+            "executable_x32": null,
+            "flags_x32": [],
+            "executable_x64": null,
+            "flags_x64": []
           }
         }
       ]

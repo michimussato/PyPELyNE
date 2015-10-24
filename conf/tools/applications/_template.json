@@ -39,11 +39,12 @@
       ]
     },
     {
-      "release": "4.5.6",
+      "release_number": "4.5.6",
       "project_template": "null_familyfoundation_family_456.template" or null,
       "project_workspace": "null_familyfoundation_family_456.workspace" or null,
       "project_directories": ["dir1#dir"],
       "default_outputs": [],
+      "architecture_fallback": true,
       "platforms": [
         {
           "windows": {

@@ -1,8 +1,3 @@
-'''
-Created on Apr 27, 2015
-
-@author: michaelmussato
-'''
 import platform
 import os
 import re
@@ -46,30 +41,28 @@ from newOutput import *
 
 
 class NewNodeUI(QDialog):
-    def __init__(self, nodeDir, tasks, mainWindow, parent = None):
+    def __init__(self, node_dir=None, tasks=None, main_window=None, parent=None):
         super(NewNodeUI, self).__init__(parent)
         
-        self.mainWindow = mainWindow
-        self.pypelyneRoot = self.mainWindow._pypelyne_root
-        self.currentPlatform = self.mainWindow._current_platform
+        self.main_window = main_window
+        self.pypelyne_root = self.main_window._pypelyne_root
+        self.current_platform = self.main_window._current_platform
 
         self.tool_data = None
 
-        self.ui = loadUi(os.path.join(self.pypelyneRoot, 'ui', 'newNode.ui'), self)
+        self.ui = loadUi(os.path.join(self.pypelyne_root, 'ui', 'newNode.ui'), self)
         self.setModal(True)
         
-        self.nodeDir = nodeDir
+        self.node_dir = node_dir
         # self.tools = tools
         self.tasks = tasks
         
-        self.createUI()
+        self.create_ui()
         self.add_combo_box_items()
-        self.createConnects()
+        self.create_connects()
 
-        #self.deadlinePlugins, self.deadlineGroups, self.deadlinePools = self.configureRenderJobWidget.getDeadlineItems()
-
-    def setConfigureRenderJobWidgetUi(self):
-        pass
+    # def set_configure_render_job_widget_ui(self):
+    #     pass
 
         '''deadline queries
         self.configureRenderJobWidget = configureRenderJobWidgetUi()
@@ -86,55 +79,54 @@ class NewNodeUI(QDialog):
             self.configureRenderJobWidget.comboBoxDeadlinePool.addItem(deadlinePool)
         '''
 
-    def clearConfigureRenderJobWidgetUi(self):
-        #self.nodeWidgets = []
+    def clear_configure_render_job_widget_ui(self):
+        # self.nodeWidgets = []
         self.configureRenderJobArea.takeWidget()
         
-    
-    def createUI(self):
+    def create_ui(self):
         self.comboBoxApplication.addItem('select')
         
-        #self.comboBoxVersion.addItem('select')
-        #self.comboBoxVersion.setEnabled(False)
+        # self.comboBoxVersion.addItem('select')
+        # self.comboBoxVersion.setEnabled(False)
         
         self.comboBoxTask.addItem('select')
 
-        #self.setConfigureRenderJobWidgetUi()
+        # self.setConfigureRenderJobWidgetUi()
         
         self.buttonOk.setEnabled(False)
         
         self.labelFolder.setEnabled(False)
         self.labelStatus.setEnabled(False)
 
-        #self.labelRenderManager.setVisible(False)
-        #self.comboBoxRenderManager.setVisible(False)
-        #self.configureRenderJobScrollArea.setVisible(False)
+        # self.labelRenderManager.setVisible(False)
+        # self.comboBoxRenderManager.setVisible(False)
+        # self.configureRenderJobScrollArea.setVisible(False)
 
     def add_combo_box_items(self):
         # executable = []
             
-        for tool_item in self.mainWindow._tool_items:
+        for tool_item in self.main_window._tool_items:
             self.comboBoxApplication.addItem(tool_item[u'label'], tool_item)
 
         for task in self.tasks:
             self.comboBoxTask.addItem(task[2][1])
 
-    def createConnects(self):
+    def create_connects(self):
         self.buttonOk.clicked.connect(self.onOk)
-        #self.buttonOk.accepted.connect(self.onOk)
+        # self.buttonOk.accepted.connect(self.onOk)
         self.buttonCancel.clicked.connect(self.onCancel)
-        self.lineEditNodeName.textChanged.connect(self.setStatus)
-        self.comboBoxApplication.activated.connect(self.setStatus)
-        #self.comboBoxApplication.activated.connect(self.updateVersions)
-        self.comboBoxTask.activated.connect(self.setStatus)
-        #self.comboBoxVersion.activated.connect(self.setStatus)
+        self.lineEditNodeName.textChanged.connect(self.set_status)
+        self.comboBoxApplication.activated.connect(self.set_status)
+        # self.comboBoxApplication.activated.connect(self.updateVersions)
+        self.comboBoxTask.activated.connect(self.set_status)
+        # self.comboBoxVersion.activated.connect(self.set_status)
         
-    def setStatus(self):
-        print self.nodeDir
+    def set_status(self):
+        # print self.nodeDir
 
-        nodes_dir = os.listdir(os.path.join(self.mainWindow._projects_root, self.mainWindow._current_project, 'content', self.mainWindow._current_content['content'], self.mainWindow._current_content_item))
+        nodes_dir = os.listdir(os.path.join(self.main_window._projects_root, self.main_window._current_project, 'content', self.main_window._current_content['content'], self.main_window._current_content_item))
 
-        usedNames = nodes_dir
+        used_names = nodes_dir
 
         self.comboBoxTask.setVisible(True)
         self.labelTask.setVisible(True)
@@ -169,7 +161,7 @@ class NewNodeUI(QDialog):
             self.buttonOk.setEnabled(False)
             self.labelStatus.setText('')
 
-        elif self.tasks[self.comboBoxTask.currentIndex() - 1][1][1] + '_' + self.tool_data['abbreviation'] + '__' + self.lineEditNodeName.text() in usedNames:
+        elif self.tasks[self.comboBoxTask.currentIndex() - 1][1][1] + '_' + self.tool_data['abbreviation'] + '__' + self.lineEditNodeName.text() in used_names:
             self.buttonOk.setEnabled(False)
             self.labelStatus.setText('already exists')
 
@@ -181,24 +173,15 @@ class NewNodeUI(QDialog):
         self.reject()
         
     def onOk(self):
-        index_combobox = self.comboBoxApplication.currentIndex()
-        # tool_data = self.comboBoxApplication.itemData(index_combobox)
-        # print 'onOk'
-        # try:
-        self.nodeName = self.tasks[self.comboBoxTask.currentIndex() - 1][1][1] + '_' + self.tool_data['abbreviation'] + '__' + self.lineEditNodeName.text()
-        # except:
-        #     self.nodeName = self.tasks[self.comboBoxTask.currentIndex() - 1][1][1] + '_' + 'DDL' + '__' + self.lineEditNodeName.text()
-        # self.toolIndex = self.comboBoxApplication.currentIndex() - 1
-        self.taskIndex = self.comboBoxTask.currentIndex() - 1
-        # self.toolTemplate = self.tools[self.comboBoxApplication.currentIndex() - 1]
-        # print self.nodeName
+        self.node_name = self.tasks[self.comboBoxTask.currentIndex() - 1][1][1] + '_' + self.tool_data['abbreviation'] + '__' + self.lineEditNodeName.text()
+        self.task_index = self.comboBoxTask.currentIndex() - 1
         self.accept()
-        return self.nodeName, self.tool_data, self.taskIndex
+        return self.node_name, self.tool_data, self.task_index
 
     @staticmethod
-    def getNewNodeData(nodeDir, tasks, mainWindow):
+    def get_new_node_data(node_dir, tasks, main_window):
         # http://stackoverflow.com/questions/18196799/how-can-i-show-a-pyqt-modal-dialog-and-get-data-out-of-its-controls-once-its-clo
-        dialog = NewNodeUI(nodeDir, tasks, mainWindow)
+        dialog = NewNodeUI(node_dir, tasks, main_window)
         result = dialog.exec_()
-        nodeName, tool_data, taskIndex = dialog.onOk()
-        return nodeName, result == QDialog.Accepted, tool_data, taskIndex
+        node_name, tool_data, task_index = dialog.onOk()
+        return node_name, result == QDialog.Accepted, tool_data, task_index

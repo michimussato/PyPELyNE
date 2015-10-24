@@ -1,94 +1,73 @@
 {
+  "family_enable": true,
   "family": "Mudbox",
-  "abbreviation": "MUD",
   "vendor": "Autodesk",
-  "versions": [
+  "abbreviation": "MUD",
+  "releases": [
     {
-      "release": "2013",
+      "release_number": "2013",
       "project_template": "null_autodesk_mudbox_2013.mud",
-      "project_workspace": "None",
+      "project_workspace": null,
       "project_directories": [],
       "default_outputs": [],
+      "architecture_fallback": true,
       "platforms": [
         {
           "windows": {
-            "x32": {
-              "executable": "None",
-              "flags": []
-            },
-            "x64": {
-              "executable": "None",
-              "flags": []
-            }
+            "executable_x32": null,
+            "flags_x32": [],
+            "executable_x64": null,
+            "flags_x64": []
           }
         },
         {
           "darwin": {
-            "x32": {
-              "executable": "None",
-              "flags": []
-            },
-            "x64": {
-              "executable": "/Applications/Autodesk/Mudbox2013/Mudbox.app/Contents/MacOS/Mudbox",
-              "flags": []
-            }
+            "executable_x32": null,
+            "flags_x32": [],
+            "executable_x64": "/Applications/Autodesk/Mudbox2013/Mudbox.app/Contents/MacOS/Mudbox",
+            "flags_x64": []
           }
         },
         {
           "linux": {
-            "x32": {
-              "executable": "None",
-              "flags": []
-            },
-            "x64": {
-              "executable": "None",
-              "flags": []
-            }
+            "executable_x32": null,
+            "flags_x32": [],
+            "executable_x64": null,
+            "flags_x64": []
           }
         }
       ]
     },
     {
-      "release": "2015",
+      "release_number": "2015",
       "project_template": "null_autodesk_mudbox_2015.mud",
-      "project_workspace": "None",
+      "project_workspace": null,
       "project_directories": [],
       "default_outputs": [],
+      "architecture_fallback": true,
       "platforms": [
         {
           "windows": {
-            "x32": {
-              "executable": "None",
-              "flags": []
-            },
-            "x64": {
-              "executable": "None",
-              "flags": []
-            }
+            "executable_x32": null,
+            "flags_x32": [],
+            "executable_x64": null,
+            "flags_x64": []
           }
         },
         {
           "darwin": {
-            "x32": {
-              "executable": "None",
-              "flags": []
-            },
-            "x64": {
-              "executable": "/Applications/Autodesk/Mudbox2015/Mudbox.app/Contents/MacOS/Mudbox",
-              "flags": []
-            }
+            "executable_x32": null,
+            "flags_x32": [],
+            "executable_x64": "/Applications/Autodesk/Mudbox2015/Mudbox.app/Contents/MacOS/Mudbox",
+            "flags_x64": []
           }
         },
         {
           "linux": {
-            "x32": {
-              "executable": "None",
-              "flags": []
-            },
-            "x64": {
-              "executable": "None",
-              "flags": []
-            }
+            "executable_x32": null,
+            "flags_x32": [],
+            "executable_x64": null,
+            "flags_x64": []
           }
         }
       ]

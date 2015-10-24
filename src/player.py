@@ -20,7 +20,7 @@ class playerUi(QWidget):
 
         self.player = None
 
-        #self.createConnects()
+        #self.create_connects()
 
 
     def createConnects(self):

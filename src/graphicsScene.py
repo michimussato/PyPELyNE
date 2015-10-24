@@ -173,7 +173,7 @@ class SceneView(QGraphicsScene):
                 self.menuNode = self.menu.addMenu('node')
 
                 if not nodeClicked.label.startswith('LDR') and not nodeClicked.label.startswith('SVR'):
-                    self.menuNode.addAction('open node directory', lambda: self.mainWindow.locateContent(nodeClicked.getNodeRootDir()))
+                    self.menuNode.addAction('open node directory', lambda: self.mainWindow.locate_content(nodeClicked.getNodeRootDir()))
 
                     if not os.path.exists(os.path.join(nodeClicked.getNodeRootDir(), 'locked')):
                         self.menuNode.addSeparator()
@@ -188,27 +188,27 @@ class SceneView(QGraphicsScene):
                             self.menuNode.addSeparator()
                             self.menuNode.addAction('check out node', self.mainWindow.checkOutCallback(nodeClicked))
 
-                elif nodeClicked.label.startswith('LDR_AST'):
+                elif nodeClicked.label.startswith('LDR'):
 
-                    self.menuNode.addAction('open asset tree', lambda: self.mainWindow.getAssetContent(None, nodeClicked.getLabel()))
+                    self.menuNode.addAction('open source tree', lambda: self.mainWindow.get_content(None, node_label=nodeClicked.getLabel()))
                     self.menuNode.addSeparator()
-                    self.menuNode.addAction('delete asset loader', self.removeObjectCallback(nodeClicked))
+                    self.menuNode.addAction('delete loader', self.removeObjectCallback(nodeClicked))
 
-                elif nodeClicked.label.startswith('LDR_SHT'):
-                    #self.menuNode.addAction('open shot', lambda: self.foo(nodeClicked.getNodeRootDir()))
-                    self.menuNode.addAction('open shot tree', lambda: self.mainWindow.getShotContent(None, nodeClicked.getLabel()))
-                    self.menuNode.addSeparator()
-                    self.menuNode.addAction('delete shot loader', self.removeObjectCallback(nodeClicked))
+                # elif nodeClicked.label.startswith('LDR_SHT'):
+                #     #self.menuNode.addAction('open shot', lambda: self.foo(nodeClicked.getNodeRootDir()))
+                #     self.menuNode.addAction('open shot tree', lambda: self.mainWindow.get_content(None, node_label=nodeClicked.getLabel()))
+                #     self.menuNode.addSeparator()
+                #     self.menuNode.addAction('delete shot loader', self.removeObjectCallback(nodeClicked))
 
-                elif nodeClicked.label.startswith('SVR_AST'):
-                    self.menuNode.addAction('delete asset saver', self.removeObjectCallback(nodeClicked))
+                elif nodeClicked.label.startswith('SVR'):
+                    self.menuNode.addAction('delete saver', self.removeObjectCallback(nodeClicked))
                     self.menuNode.addSeparator()
-                    self.menuNode.addAction('check out asset', self.mainWindow.checkOutCallback(nodeClicked))
+                    self.menuNode.addAction('check out tree', self.mainWindow.checkOutCallback(nodeClicked))
 
-                elif nodeClicked.label.startswith('SVR_SHT'):
-                    self.menuNode.addAction('delete shot saver', self.removeObjectCallback(nodeClicked))
-                    self.menuNode.addSeparator()
-                    self.menuNode.addAction('check out shot', self.mainWindow.checkOutCallback(nodeClicked))
+                # elif nodeClicked.label.startswith('SVR_SHT'):
+                #     self.menuNode.addAction('delete shot saver', self.removeObjectCallback(nodeClicked))
+                #     self.menuNode.addSeparator()
+                #     self.menuNode.addAction('check out shot', self.mainWindow.checkOutCallback(nodeClicked))
 
                 self.menuNode.addSeparator()
 
@@ -242,7 +242,7 @@ class SceneView(QGraphicsScene):
 
                 versions = self.getVersions(outputDir)
 
-                self.menuOutput.addAction('open output directory', lambda: self.mainWindow.locateContent(outputDir))
+                self.menuOutput.addAction('open output directory', lambda: self.mainWindow.locate_content(outputDir))
 
                 self.menuOutput.addSeparator()
 
@@ -358,7 +358,7 @@ class SceneView(QGraphicsScene):
                         except IndexError, e:
                             print 'error captured', e
 
-                        menuMakeLive.addAction('open directory', self.mainWindow.locateContentCallback(versionPath))
+                        menuMakeLive.addAction('open directory', self.mainWindow.locate_content_callback(versionPath))
 
                         deleteVersionAction = menuMakeLive.addAction('delete version', self.deleteContentCallback(versionPath))
 
@@ -792,7 +792,7 @@ class SceneView(QGraphicsScene):
                                     self.mainWindow._current_content['content'],
                                     self.mainWindow._current_content_item)
 
-            node_name, ok, tool_data, task_index = NewNodeUI.getNewNodeData(node_dir, tasks, self.mainWindow)
+            node_name, ok, tool_data, task_index = NewNodeUI.get_new_node_data(node_dir, tasks, self.mainWindow)
 
             if ok:
                 new_node_path = os.path.join(node_dir, str(node_name))

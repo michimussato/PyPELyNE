@@ -1,49 +1,39 @@
 {
+  "family_enable": true,
   "family": "Illustrator",
-  "abbreviation": "ILU",
   "vendor": "Adobe",
-  "versions": [
+  "abbreviation": "ILU",
+  "releases": [
     {
-      "release": "CS6",
-      "project_template": "None",
-      "project_workspace": "None",
+      "release_number": "CS6",
+      "project_template": null,
+      "project_workspace": null,
       "project_directories": [],
       "default_outputs": [],
+      "architecture_fallback": true,
       "platforms": [
         {
           "windows": {
-            "x32": {
-              "executable": "None",
-              "flags": []
-            },
-            "x64": {
-              "executable": "None",
-              "flags": []
-            }
+            "executable_x32": null,
+            "flags_x32": [],
+            "executable_x64": null,
+            "flags_x64": []
           }
         },
         {
           "darwin": {
-            "x32": {
-              "executable": "None",
-              "flags": []
-            },
-            "x64": {
-              "executable": "/Applications/Adobe Illustrator CS6/Adobe Illustrator.app/Contents/MacOS/Adobe Illustrator",
-              "flags": []
-            }
+            "executable_x32": null,
+            "flags_x32": [],
+            "executable_x64": "/Applications/Adobe Illustrator CS6/Adobe Illustrator.app/Contents/MacOS/Adobe Illustrator",
+            "flags_x64": []
           }
         },
         {
           "linux": {
-            "x32": {
-              "executable": "None",
-              "flags": []
-            },
-            "x64": {
-              "executable": "None",
-              "flags": []
-            }
+            "executable_x32": null,
+            "flags_x32": [],
+            "executable_x64": null,
+            "flags_x64": []
           }
         }
       ]

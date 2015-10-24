@@ -62,7 +62,7 @@ class node(QGraphicsItem, QObject):
         self.asset = os.path.dirname(self.location)
         self.project = os.path.dirname(os.path.dirname (os.path.dirname(self.asset)))
         self.scene = scene
-        # self._tools = self.mainWindow.getTools()
+        # self._tools = self.mainWindow.get_tools()
         self.tasks = self.mainWindow.getTasks()
         self.exclusions = self.mainWindow._exclusions
         self.now = datetime.datetime.now()
@@ -126,15 +126,17 @@ class node(QGraphicsItem, QObject):
         return os.path.dirname(self.meta_task_path)
 
     def getApplicationInfo(self):
-        # try:
-        self.nodeVersion = self.meta_tool['release_number']
-        self.nodeVendor = self.meta_tool['vendor']
-        self.nodeFamily = self.meta_tool['family']
-        self.nodeArch = self.meta_tool['architecture']
-        # print self.meta_tool
-        self.nodeTask = self.meta_task['task']
-        self.node_creator = self.meta_task['creator']
-        self.node_operating_system = self.meta_task['operating_system']
+        try:
+            self.nodeVersion = self.meta_tool['release_number']
+            self.nodeVendor = self.meta_tool['vendor']
+            self.nodeFamily = self.meta_tool['family']
+            self.nodeArch = self.meta_tool['architecture']
+            # print self.meta_tool
+            self.nodeTask = self.meta_task['task']
+            self.node_creator = self.meta_task['creator']
+            self.node_operating_system = self.meta_task['operating_system']
+        except TypeError, e:
+            print 'loader or saver? (%s)' % e
 
     def queryApplicationInfo(self):
 
@@ -149,10 +151,10 @@ class node(QGraphicsItem, QObject):
             pos_y = self.meta_task['pos_y']
             print 'json reading'
 
-        except KeyError, e:
+        except TypeError, e:
             print e
-
             try:
+                print self.propertyNodePath
                 self.propertyNode = ET.parse(self.propertyNodePath)
                 logging.info('new style reading xml')
                 nodePosition = self.propertyNode.findall('./node')
@@ -165,8 +167,8 @@ class node(QGraphicsItem, QObject):
                 pos_x = self.propertyNode.findall('./positionX')
                 pos_y = self.propertyNode.findall('./positionY')
 
-                pos_x = positionX[0].items()[0][1]
-                pos_y = positionY[0].items()[0][1]
+                pos_x = pos_x[0].items()[0][1]
+                pos_y = pos_y[0].items()[0][1]
 
         self.setPos(QPointF(float(pos_x), float(pos_y)))
 

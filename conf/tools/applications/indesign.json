@@ -1,94 +1,73 @@
 {
+  "family_enable": true,
   "family": "InDesign",
-  "abbreviation": "IND",
   "vendor": "Adobe",
-  "versions": [
+  "abbreviation": "IND",
+  "releases": [
     {
-      "release": "CS6",
+      "release_number": "CS6",
       "project_template": "null_adobe_indesign_CS6.indd",
-      "project_workspace": "None",
+      "project_workspace": null,
       "project_directories": [],
       "default_outputs": [],
+      "architecture_fallback": true,
       "platforms": [
         {
           "windows": {
-            "x32": {
-              "executable": "None",
-              "flags": []
-            },
-            "x64": {
-              "executable": "None",
-              "flags": []
-            }
+            "executable_x32": null,
+            "flags_x32": [],
+            "executable_x64": null,
+            "flags_x64": []
           }
         },
         {
           "darwin": {
-            "x32": {
-              "executable": "None",
-              "flags": []
-            },
-            "x64": {
-              "executable": "/Applications/Adobe InDesign CS6/Adobe InDesign CS6.app/Contents/MacOS/Adobe InDesign CS6",
-              "flags": []
-            }
+            "executable_x32": null,
+            "flags_x32": [],
+            "executable_x64": "/Applications/Adobe InDesign CS6/Adobe InDesign CS6.app/Contents/MacOS/Adobe InDesign CS6",
+            "flags_x64": []
           }
         },
         {
           "linux": {
-            "x32": {
-              "executable": "None",
-              "flags": []
-            },
-            "x64": {
-              "executable": "None",
-              "flags": []
-            }
+            "executable_x32": null,
+            "flags_x32": [],
+            "executable_x64": null,
+            "flags_x64": []
           }
         }
       ]
     },
     {
-      "release": "CC12",
+      "release_number": "CC12",
       "project_template": "null_adobe_indesign_CC12.indd",
-      "project_workspace": "None",
+      "project_workspace": null,
       "project_directories": [],
       "default_outputs": [],
+      "architecture_fallback": true,
       "platforms": [
         {
           "windows": {
-            "x32": {
-              "executable": "C:\\Program Files\\Adobe\\Adobe InDesign CC (64 bit)\\InDesign.exe",
-              "flags": []
-            },
-            "x64": {
-              "executable": "None",
-              "flags": []
-            }
+            "executable_x32": null,
+            "flags_x32": [],
+            "executable_x64": "C:\\Program Files\\Adobe\\Adobe InDesign CC (64 bit)\\InDesign.exe",
+            "flags_x64": []
           }
         },
         {
           "darwin": {
-            "x32": {
-              "executable": "None",
-              "flags": []
-            },
-            "x64": {
-              "executable": "/Applications/Adobe InDesign CC/Adobe InDesign CC.app/Contents/MacOS/Adobe InDesign CC",
-              "flags": []
-            }
+            "executable_x32": null,
+            "flags_x32": [],
+            "executable_x64": "/Applications/Adobe InDesign CC/Adobe InDesign CC.app/Contents/MacOS/Adobe InDesign CC",
+            "flags_x64": []
           }
         },
         {
           "linux": {
-            "x32": {
-              "executable": "None",
-              "flags": []
-            },
-            "x64": {
-              "executable": "None",
-              "flags": []
-            }
+            "executable_x32": null,
+            "flags_x32": [],
+            "executable_x64": null,
+            "flags_x64": []
           }
         }
       ]

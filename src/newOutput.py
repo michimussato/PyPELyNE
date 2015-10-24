@@ -63,8 +63,8 @@ class newOutputUI(QDialog):
         self.lineEditOutputName.textChanged.connect(self.setStatus)
         self.comboBoxOutput.activated.connect(self.setStatus)
         #self.comboBoxApplication.activated.connect(self.updateVersions)
-        #self.comboBoxTask.activated.connect(self.setStatus)
-        #self.comboBoxVersion.activated.connect(self.setStatus)
+        #self.comboBoxTask.activated.connect(self.set_status)
+        #self.comboBoxVersion.activated.connect(self.set_status)
         
     # def updateVersions(self):
         # print 'updating versions'

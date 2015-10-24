@@ -50,7 +50,7 @@ class node(QGraphicsItem, QObject):
         except IOError, e:
             print 'xml loading:', e
             self.propertyNodePath = property_node_path
-            print self.propertyNodePath
+            # print self.propertyNodePath
 
 
 
@@ -120,8 +120,8 @@ class node(QGraphicsItem, QObject):
         return self.inputPort
         
     def getNodeRootDir(self):
-        print self.meta_task_path
-        print os.path.dirname(self.meta_task_path)
+        # print self.meta_task_path
+        # print os.path.dirname(self.meta_task_path)
         # print os.path.dirname(os.path.realpath(self.meta_task_path))
         return os.path.dirname(self.meta_task_path)
 
@@ -135,24 +135,6 @@ class node(QGraphicsItem, QObject):
         self.nodeTask = self.meta_task['task']
         self.node_creator = self.meta_task['creator']
         self.node_operating_system = self.meta_task['operating_system']
-
-        #
-        # try:
-        #
-        #     nodeApplicationInfo = propertyNode.findall('./task')
-        #
-        #     self.nodeVersion = nodeApplicationInfo[0].items()[3][1]
-        #     self.nodeVendor = nodeApplicationInfo[0].items()[2][1]
-        #     self.nodeFamily = nodeApplicationInfo[0].items()[4][1]
-        #     self.nodeArch = nodeApplicationInfo[0].items()[0][1]
-        #     self.nodeTask = nodeApplicationInfo[0].items()[1][1]
-
-        # except:
-        #     self.nodeVersion = 'undefined'
-        #     self.nodeVendor = 'undefined'
-        #     self.nodeFamily = 'undefined'
-        #     self.nodeArch = 'undefined'
-        #     self.nodeTask = 'undefined'
 
     def queryApplicationInfo(self):
 
@@ -202,21 +184,12 @@ class node(QGraphicsItem, QObject):
         self.scene.nodeSelect.emit(self)
 
     def mouseDoubleClickEvent(self, event):
-        print self.mainWindow._tools
-
         if self.label.startswith('LDR'):
             self.mainWindow.get_content(node_label=self.label)
-        # elif self.label.startswith('LDR_SHT'):
-        #     self.mainWindow.getShotContent(None, self.label)
-        #elif self.label.startswith('LDR_LIB'):
-        #    pass
 
         else:
             search_string = self.nodeVendor + ' ' + self.nodeFamily + ' ' + self.nodeVersion + ' ' + self.nodeArch
             search_index = self.mainWindow.toolsComboBox.findText(search_string, Qt.MatchContains)
-
-            print search_string
-            print search_index
 
             if search_index < 3:
                 if not str(self.nodeFamily + ' ' + self.nodeVersion) in [self.mainWindow.toolsComboBox.itemText(i) for i in range(self.mainWindow.toolsComboBox.count())]:
@@ -257,7 +230,6 @@ class node(QGraphicsItem, QObject):
                 QMessageBox.critical(self.mainWindow, 'node warning', str('%s is currently checked out.' %str(self.label)), QMessageBox.Abort, QMessageBox.Abort)
                 return
 
-
             args = []
 
             for arg in self._tools[search_index][10]:
@@ -265,14 +237,11 @@ class node(QGraphicsItem, QObject):
 
             if self.nodeFamily == 'Maya':
                 for arg in ['-proj', self.location, '-file']:
-                    #print self.location
                     args.append(arg)
 
             projectRoot = os.path.join(self.location, 'project')
 
-            #print self._tools[search_index][7]
             extension = os.path.splitext(self._tools[search_index][7])[1]
-
 
             files = glob.glob1(projectRoot, str('*' + extension))
 
@@ -281,7 +250,6 @@ class node(QGraphicsItem, QObject):
             for relFile in files:
                 if not relFile in self.exclusions:
                     absFiles.append(os.path.join(projectRoot, relFile))
-
 
             if not 'DDL' in self.label:
                 newestFile = max(absFiles, key=os.path.getctime)
@@ -300,9 +268,6 @@ class node(QGraphicsItem, QObject):
                     jobFile.close()
 
                     self.mainWindow.submitDeadlineJob(txtFile)
-
-                    #os.system('bash ' + txtFile)
-
 
     def data_ready(self):
         cursor_box = self.mainWindow.statusBox.textCursor()
@@ -582,10 +547,10 @@ class node(QGraphicsItem, QObject):
         else:
 
             for i in self.tasks:
-                print i
-                print self.nodeTask
+                # print i
+                # print self.nodeTask
                 if [item for item in i if self.nodeTask in item]:
-                    print self.tasks[index][0][1]
+                    # print self.tasks[index][0][1]
                     logging.info('task color description found')
                     self.taskColor = self.tasks[index][0][1]
                     break

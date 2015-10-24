@@ -1,17 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="8b3d9b3c-76fc-4536-be64-d067f9daab73" name="Default" comment="- refactoring...&#10;- documentation started">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/doc/PyPELyNE.graphml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/conf/tools/applications/_uvlayout_.json" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/_pypelyne.py" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/conf/tools/applications/_blender_.json" afterPath="$PROJECT_DIR$/conf/tools/applications/_blender_.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/conf/tools/applications/_maya_.json" afterPath="$PROJECT_DIR$/conf/tools/applications/_maya_.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/conf/tools/applications/_template_.json" afterPath="$PROJECT_DIR$/conf/tools/applications/_template_.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/graphicsScene.py" afterPath="$PROJECT_DIR$/src/graphicsScene.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/newNode.py" afterPath="$PROJECT_DIR$/src/newNode.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/node.py" afterPath="$PROJECT_DIR$/src/node.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pypelyne_client.py" afterPath="$PROJECT_DIR$/pypelyne_client.py" />
+    <list default="true" id="8b3d9b3c-76fc-4536-be64-d067f9daab73" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="PyPELyNE.iws" />
@@ -34,14 +25,24 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="pypelyne_client.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="pypelyne_client.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pypelyne_client.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.89726025">
+            <state vertical-scroll-proportion="-7.2777777">
               <caret line="1572" column="45" selection-start-line="1572" selection-start-column="45" selection-end-line="1572" selection-end-column="45" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name=".gitignore" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/.gitignore">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.16129032">
+              <caret line="5" column="0" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -119,7 +120,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/template_documents/null_autodesk_maya2013_workspace.mel" />
         <option value="$PROJECT_DIR$/src/template_documents/null_autodesk_maya2014_workspace.mel" />
         <option value="$PROJECT_DIR$/src/tool_integration/maya/scripts/python/objBatchExport.py" />
         <option value="$PROJECT_DIR$/conf/valueFarm.xml" />
@@ -170,6 +170,7 @@
         <option value="$PROJECT_DIR$/conf/tools/applications/_template_.json" />
         <option value="$PROJECT_DIR$/conf/tools/applications/_blender_.json" />
         <option value="$PROJECT_DIR$/pypelyne_client.py" />
+        <option value="$PROJECT_DIR$/.gitignore" />
       </list>
     </option>
   </component>
@@ -239,20 +240,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="PyPELyNE" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="PyPELyNE" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="PyPELyNE" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -486,12 +473,6 @@
       <created>1434001686747</created>
       <option name="number" value="Default" />
       <updated>1434001686747</updated>
-    </task>
-    <task id="LOCAL-00035" summary="- bug in open versionDir function. it always opened current.">
-      <created>1439362710992</created>
-      <option name="number" value="00035" />
-      <option name="project" value="LOCAL" />
-      <updated>1439362710992</updated>
     </task>
     <task id="LOCAL-00036" summary="- print warning when a corrupted propertyNode.xml file was found">
       <created>1439364348746</created>
@@ -781,12 +762,18 @@
       <option name="project" value="LOCAL" />
       <updated>1445678682427</updated>
     </task>
-    <option name="localTasksCounter" value="84" />
+    <task id="LOCAL-00084" summary="- refactoring...&#10;- documentation started">
+      <created>1445702150363</created>
+      <option name="number" value="00084" />
+      <option name="project" value="LOCAL" />
+      <updated>1445702150363</updated>
+    </task>
+    <option name="localTasksCounter" value="85" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="18" y="22" width="1246" height="778" extended-state="0" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.19206493" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.28787878" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -798,7 +785,7 @@
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.16142385" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.22122449" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.22122449" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.21212122" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -842,7 +829,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="- context menu cleanup and fix for text&#10;- delete dialog updated" />
     <MESSAGE value="- live dir was not being removed when output was deleted. fixed" />
     <MESSAGE value="- outputs now with cleanup function: remove all versions except current and live" />
     <MESSAGE value="- reasearch folder removed" />
@@ -867,7 +853,8 @@
     <MESSAGE value="- md updated" />
     <MESSAGE value="- code cleanup" />
     <MESSAGE value="- refactoring..." />
-    <option name="LAST_COMMIT_MESSAGE" value="- refactoring..." />
+    <MESSAGE value="- refactoring...&#10;- documentation started" />
+    <option name="LAST_COMMIT_MESSAGE" value="- refactoring...&#10;- documentation started" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1269,11 +1256,19 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/pypelyne_client.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.89726025">
+        <state vertical-scroll-proportion="-7.2777777">
           <caret line="1572" column="45" selection-start-line="1572" selection-start-column="45" selection-end-line="1572" selection-end-column="45" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.16129032">
+          <caret line="5" column="0" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>

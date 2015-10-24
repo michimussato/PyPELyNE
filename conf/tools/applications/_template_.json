@@ -10,41 +10,30 @@
       "project_workspace": "null_familyfoundation_family_123.workspace" or null,
       "project_directories": ["dir1", "dir1#dir", "dir2#dir#dir5"],
       "default_outputs": ["SEQ_01", "PLB_04"],
+      "architecture_fallback": true,
       "platforms": [
         {
           "windows": {
-            "x32": {
-              "executable": "C:\\Program Files (x86)\\Family Foundation\\Family123.exe",
-              "flags": ["-flag1", "value", "-flag2", "-flag3"]
-            },
-            "x64": {
-              "executable": null,
-              "flags": []
-            }
+            "executable_x32": "C:\\Program Files (x86)\\Autodesk\\Maya2013\\bin\\maya.exe",
+            "flags_x32": [],
+            "executable_x64": "C:\\Program Files\\Autodesk\\Maya2013\\bin\\maya.exe",
+            "flags_x64": []
           }
         },
         {
           "darwin": {
-            "x32": {
-              "executable": null,
-              "flags": []
-            },
-            "x64": {
-              "executable": "/Applications/Family/family.app/Contents/MacOS/family123",
-              "flags": []
-            }
+            "executable_x32": "C:\\Program Files (x86)\\Autodesk\\Maya2013\\bin\\maya.exe",
+            "flags_x32": [],
+            "executable_x64": "C:\\Program Files\\Autodesk\\Maya2013\\bin\\maya.exe",
+            "flags_x64": []
           }
         },
         {
           "linux": {
-            "x32": {
-              "executable": null,
-              "flags": []
-            },
-            "x64": {
-              "executable": null,
-              "flags": []
-            }
+            "executable_x32": "C:\\Program Files (x86)\\Autodesk\\Maya2013\\bin\\maya.exe",
+            "flags_x32": [],
+            "executable_x64": "C:\\Program Files\\Autodesk\\Maya2013\\bin\\maya.exe",
+            "flags_x64": []
           }
         }
       ]
@@ -58,38 +47,26 @@
       "platforms": [
         {
           "windows": {
-            "x32": {
-              "executable": "C:\\Program Files (x86)\\Family Foundation\\Family456.exe",
-              "flags": ["-flag1", "value", "-flag2", "-flag3"]
-            },
-            "x64": {
-              "executable": null,
-              "flags": []
-            }
+            "executable_x32": "C:\\Program Files (x86)\\Autodesk\\Maya2013\\bin\\maya.exe",
+            "flags_x32": [],
+            "executable_x64": "C:\\Program Files\\Autodesk\\Maya2013\\bin\\maya.exe",
+            "flags_x64": []
           }
         },
         {
           "darwin": {
-            "x32": {
-              "executable": null,
-              "flags": []
-            },
-            "x64": {
-              "executable": "/Applications/Family/family.app/Contents/MacOS/family456",
-              "flags": []
-            }
+            "executable_x32": "C:\\Program Files (x86)\\Autodesk\\Maya2013\\bin\\maya.exe",
+            "flags_x32": [],
+            "executable_x64": "C:\\Program Files\\Autodesk\\Maya2013\\bin\\maya.exe",
+            "flags_x64": []
           }
         },
         {
           "linux": {
-            "x32": {
-              "executable": null,
-              "flags": []
-            },
-            "x64": {
-              "executable": null,
-              "flags": []
-            }
+            "executable_x32": "C:\\Program Files (x86)\\Autodesk\\Maya2013\\bin\\maya.exe",
+            "flags_x32": [],
+            "executable_x64": "C:\\Program Files\\Autodesk\\Maya2013\\bin\\maya.exe",
+            "flags_x64": []
           }
         }
       ]

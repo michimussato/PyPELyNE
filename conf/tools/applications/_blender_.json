@@ -13,24 +13,20 @@
       "architecture_fallback": true,
       "platforms": [
         {
-          "windows":
-            {
-              "executable_x32": "C:\\Program Files (x86)\\Blender Foundation\\Blender\\blender.exe",
-              "flags_x32": [],
-              "executable_x64": "C:\\Program Files\\Blender Foundation\\Blender\\blender.exe",
-              "flags_x64": []
-            }
-
+          "windows": {
+            "executable_x32": "C:\\Program Files (x86)\\Blender Foundation\\Blender\\blender.exe",
+            "flags_x32": [],
+            "executable_x64": "C:\\Program Files\\Blender Foundation\\Blender\\blender.exe",
+            "flags_x64": []
+          }
         },
         {
-          "darwin":
-            {
-              "executable_x32": null,
-              "flags_x32": [],
-              "executable_x64": "/Applications/Blender/blender.app/Contents/MacOS/blender",
-              "flags_x64": []
-            }
-
+          "darwin": {
+            "executable_x32": null,
+            "flags_x32": [],
+            "executable_x64": "/Applications/Blender/blender.app/Contents/MacOS/blender",
+            "flags_x64": []
+          }
         },
         {
           "linux": {

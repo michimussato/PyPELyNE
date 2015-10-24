@@ -60,6 +60,7 @@ app = None
 # TODO: jumping from shots to asset loader does not update tab widget title correctly
 
 
+# noinspection PyInterpreter,PyInterpreter
 class PypelyneMainWindow(QMainWindow):
     addNewScreenCast = pyqtSignal()
 
@@ -115,6 +116,8 @@ class PypelyneMainWindow(QMainWindow):
         self.operating_system = self.currentPlatform.lower()
 
         self.architectures = ['x32', 'x64']
+
+        self.tool_items = []
 
         if sys.maxsize <= 2**32:
             self.architecture = self.architectures[0]
@@ -264,7 +267,7 @@ class PypelyneMainWindow(QMainWindow):
         
         # Tools
         # self.tools_dict = {}
-        self.addTools()
+        self.add_tools()
 
         self.audioFolderContent = []
 
@@ -296,6 +299,9 @@ class PypelyneMainWindow(QMainWindow):
         # self.scene.nodeMenu.connect(self.setWidgetMenu)
         
         # self.scene.nodeMenuArea.connect(self.updateNodeMenu)
+
+        # print self._tools
+        # print self._tool_items
 
     # def connectServer(self):
 
@@ -339,6 +345,7 @@ class PypelyneMainWindow(QMainWindow):
     @property
     def _tools(self):
         if self.tools is None:
+            print 'def _tools(self):'
 
             logging.info('parsing tools')
 
@@ -350,6 +357,7 @@ class PypelyneMainWindow(QMainWindow):
             app_conf_files = []
             app_conf_files.append(os.path.join(app_conf_root, '_blender_.json'))
             app_conf_files.append(os.path.join(app_conf_root, '_maya_.json'))
+            app_conf_files.append(os.path.join(app_conf_root, '_uvlayout_.json'))
 
             for app_conf_file in app_conf_files:
                 source_file = os.path.join(app_conf_root, app_conf_file)
@@ -357,6 +365,7 @@ class PypelyneMainWindow(QMainWindow):
 
                 json_file = open(app_conf_file)
                 app_conf = json.load(json_file)
+                json_file.close()
 
                 logging.info('processing source file: %s' % source_file)
 
@@ -454,6 +463,7 @@ class PypelyneMainWindow(QMainWindow):
                 else:
                     logging.info('source file skipped (reason: disabled): %s' % source_file)
 
+        # print self.tools
         return self.tools
 
     @property
@@ -463,6 +473,53 @@ class PypelyneMainWindow(QMainWindow):
     @property
     def _tasks(self):
         return self.tasks
+
+    @property
+    def _tool_items(self):
+        if not self.tool_items:
+            # print 'def _tool_items(self):'
+
+            for tool in self._tools:
+                # self.tool_items = []
+                # for tool in self._tools:
+                # print tool
+                index = self._tools.index(tool)
+
+                executable = []
+                # self.run_items = []
+
+                if tool[u'executable_x32'] is not None:
+                    executable.append(self._tools[index][u'executable_x32'])
+                    for flag_x32 in self._tools[index][u'flags_x32']:
+                        executable.append(flag_x32)
+
+                    run_item = self.get_dict_x32(tool)
+
+                    self.tool_items.append(run_item.copy())
+
+                    # print run_item
+
+                    # self.toolsComboBox.addItem(tool[u'label_x32'], run_item.copy())
+
+                executable[:] = []
+
+                if tool[u'executable_x64'] is not None:
+                    executable.append(self._tools[index][u'executable_x64'])
+                    for flag_x64 in self._tools[index][u'flags_x64']:
+                        executable.append(flag_x64)
+
+                    run_item = self.get_dict_x64(tool)
+
+                    self.tool_items.append(run_item.copy())
+
+                    # print 'run_item', run_item
+
+                    # self.toolsComboBox.addItem(tool[u'label_x64'], run_item.copy())
+
+                executable[:] = []
+
+        # print 'self.tool_items', self.tool_items
+        return self.tool_items
 
     def receiveSerialized(self, sock):
         # read the length of the data, letter by letter until we reach EOL
@@ -1449,10 +1506,78 @@ class PypelyneMainWindow(QMainWindow):
         for node_item in content_items:
             if node_item not in self.exclusions:
                 if os.path.isdir(os.path.join(content_root, str(button_text), node_item)):
+                    node_path = os.path.join(content_root, str(button_text), node_item)
+                    # convert xml to json if propertyNode.xml is found
+                    property_node_path = os.path.join(node_path, 'propertyNode.xml')
+                    if os.path.exists(property_node_path):
+                        new_name = os.path.join(node_path, 'converted_propertyNode.xml')
 
-                    property_node_path = os.path.join(content_root, str(button_text), node_item, 'propertyNode.xml')
+                        property_node = ET.parse(property_node_path)
+                        logging.info('new style reading xml')
+                        node_position = property_node.findall('./node')
 
-                    new_node = node(self, self.scene, property_node_path)
+                        pos_x = node_position[0].items()[0][1]
+                        pos_y = node_position[0].items()[1][1]
+
+                        # print pos_x
+                        # print pos_y
+
+                        node_task = property_node.findall('./task')
+
+                        # for i in node_task[0].items():
+                        #     print i
+
+                        try:
+                            arch = node_task[0].items()[0][1]
+                            # print arch
+                            family = node_task[0].items()[4][1]
+                            # print family
+                            for tool in self._tools:
+                                # print tool
+                                if tool['family'] == family:
+                                    abbreviation = tool['abbreviation']
+                            # abbreviation = 'UVLayout'
+                            task = node_task[0].items()[1][1]
+                            vendor = node_task[0].items()[2][1]
+                            version = node_task[0].items()[3][1]
+
+                            meta_task = {}
+                            meta_tool = {}
+
+                            meta_task['pos_x'] = pos_x
+                            meta_task['pos_y'] = pos_y
+                            meta_task['creator'] = 'nobody'
+                            meta_task['operating_system'] = self.operating_system
+                            meta_task['task'] = task
+
+                            meta_tool['family'] = family
+                            meta_tool['architecture_fallback'] = False
+                            meta_tool['abbreviation'] = abbreviation
+                            meta_tool['architecture'] = arch
+                            meta_tool['vendor'] = vendor
+                            meta_tool['release_number'] = version
+
+                            meta_task_path = os.path.join(node_path, 'meta_task.json')
+                            meta_tool_path = os.path.join(node_path, 'meta_tool.json')
+
+                            with open(meta_task_path, 'w') as outfile:
+                                json.dump(meta_task, outfile)
+                                outfile.close()
+
+                            with open(meta_tool_path, 'w') as outfile:
+                                json.dump(meta_tool, outfile)
+                                outfile.close()
+
+                            os.rename(property_node_path, new_name)
+
+                        except IndexError, e:
+                            # TODO: special treatment for loaders and savers needed
+                            print e
+
+                    meta_task_path = os.path.join(content_root, str(button_text), node_item, 'meta_task.json')
+                    meta_tool_path = os.path.join(content_root, str(button_text), node_item, 'meta_tool.json')
+
+                    new_node = node(main_window=self, scene=self.scene, property_node_path=None, meta_task_path=meta_task_path, meta_tool_path=meta_tool_path)
                     new_node.addText(self.scene, node_item)
                     self.scene.addToNodeList(new_node)
                 else:
@@ -1463,55 +1588,55 @@ class PypelyneMainWindow(QMainWindow):
 
         self.computeConnections()
 
-    def getShotContent(self, shotButton = None, nodeShtLabel = None):
-        #print shotButton
-        #print nodeShtLabel
-
-        if not shotButton == None:
-            #print shotButton.text()
-            buttonText = shotButton.text()
-        elif not nodeShtLabel == None:
-            buttonText = nodeShtLabel.split('__')[1]
-            #print buttonText
-
-
-
-        
-        self.nodeView.setVisible(True)
-
-
-
-
-        self.scene.clear()
-        self.addRectangular()
-        self.scene.clearNodeList()
-        currentProject = str(self.projectComboBox.currentText())
-        self.shotsRoot = os.path.join(self.projectsRoot, currentProject, 'content', 'shots')
-        shotContent = os.listdir(os.path.join(self.shotsRoot, str(buttonText)))
-        
-        for tab in self.content_tabs:
-            self.group_boxes[self.content_tabs.index(tab)].setTitle('looking at ' + self._current_project + os.sep + self._current_content['content'] + os.sep + button_text)
-        
-        self.currentContent = currentProject + os.sep + 'content' + os.sep + 'shots' + os.sep + buttonText
-
-        for nodeItem in shotContent:
-            if not nodeItem in self.exclusions:
-                if os.path.isdir(os.path.join(self.shotsRoot, str(buttonText), nodeItem)):
-
-                    self.propertyNodePathShots = os.path.join(self.shotsRoot, str(buttonText), nodeItem, 'propertyNode.xml')
-
-                    newNode = node(self, self.scene, self.propertyNodePathShots)
-                    newNode.addText(self.scene, nodeItem)
-                    self.scene.addToNodeList(newNode)
-                else:
-                    logging.warning('shots: nodeItem %s is not a directory' %(nodeItem))
-
-            else:
-                os.remove(os.path.join(self.shotsRoot, str(buttonText), nodeItem))
-                logging.info('exclusion %s found and cleaned' %(nodeItem))
-
-                
-        self.computeConnections()
+    # def getShotContent(self, shotButton = None, nodeShtLabel = None):
+    #     #print shotButton
+    #     #print nodeShtLabel
+    #
+    #     if not shotButton == None:
+    #         #print shotButton.text()
+    #         buttonText = shotButton.text()
+    #     elif not nodeShtLabel == None:
+    #         buttonText = nodeShtLabel.split('__')[1]
+    #         #print buttonText
+    #
+    #
+    #
+    #
+    #     self.nodeView.setVisible(True)
+    #
+    #
+    #
+    #
+    #     self.scene.clear()
+    #     self.addRectangular()
+    #     self.scene.clearNodeList()
+    #     currentProject = str(self.projectComboBox.currentText())
+    #     self.shotsRoot = os.path.join(self.projectsRoot, currentProject, 'content', 'shots')
+    #     shotContent = os.listdir(os.path.join(self.shotsRoot, str(buttonText)))
+    #
+    #     for tab in self.content_tabs:
+    #         self.group_boxes[self.content_tabs.index(tab)].setTitle('looking at ' + self._current_project + os.sep + self._current_content['content'] + os.sep + button_text)
+    #
+    #     self.currentContent = currentProject + os.sep + 'content' + os.sep + 'shots' + os.sep + buttonText
+    #
+    #     for nodeItem in shotContent:
+    #         if not nodeItem in self.exclusions:
+    #             if os.path.isdir(os.path.join(self.shotsRoot, str(buttonText), nodeItem)):
+    #
+    #                 self.propertyNodePathShots = os.path.join(self.shotsRoot, str(buttonText), nodeItem, 'propertyNode.xml')
+    #
+    #                 newNode = node(self, self.scene, self.propertyNodePathShots)
+    #                 newNode.addText(self.scene, nodeItem)
+    #                 self.scene.addToNodeList(newNode)
+    #             else:
+    #                 logging.warning('shots: nodeItem %s is not a directory' %(nodeItem))
+    #
+    #         else:
+    #             os.remove(os.path.join(self.shotsRoot, str(buttonText), nodeItem))
+    #             logging.info('exclusion %s found and cleaned' %(nodeItem))
+    #
+    #
+    #     self.computeConnections()
             
         
     def getCurrentProject(self):
@@ -1523,46 +1648,46 @@ class PypelyneMainWindow(QMainWindow):
     def _current_project(self):
         return str(self.projectComboBox.currentText())
     
-    def getAssetContent(self, assetButton = None, nodeAstLabel = None):
-
-
-        if not assetButton == None:
-            buttonText = assetButton.text()
-        elif not nodeAstLabel == None:
-            buttonText = nodeAstLabel.split('__')[1]
-
-        self.nodeView.setVisible(True)
-
-
-        self.scene.clear()
-        self.addRectangular()
-        self.scene.clearNodeList()
-        currentProject = str(self.projectComboBox.currentText())
-        self.assetsRoot = os.path.join(self.projectsRoot, currentProject, 'content', 'assets')
-        assetContent = os.listdir(os.path.normpath(os.path.join(str(self.assetsRoot), str(buttonText))))
-
-        for tab in self.content_tabs:
-            self.group_boxes[self.content_tabs.index(tab)].setTitle('looking at ' + self._current_project + os.sep + self._current_content['content'] + os.sep + button_text)
-        
-        self.currentContent = currentProject + os.sep + 'content' + os.sep + 'assets' + os.sep + buttonText
-
-        for nodeItem in assetContent:
-
-            if not nodeItem in self.exclusions:
-                if os.path.isdir(os.path.join(self.assetsRoot, str(buttonText), nodeItem)):
-                    self.propertyNodePathAssets = os.path.join(self.assetsRoot, str(buttonText), nodeItem, 'propertyNode.xml')
-
-                    newNode = node(self, self.scene, self.propertyNodePathAssets)
-                    newNode.addText(self.scene, nodeItem)
-                    self.scene.addToNodeList(newNode)
-
-                else:
-                    logging.warning('assets: nodeItem %s is not a directory' %(nodeItem))
-            else:
-                os.remove(os.path.join(self.assetsRoot, str(buttonText), nodeItem))
-                logging.info('exclusion %s found and cleaned' % nodeItem)
-
-        self.computeConnections()
+    # def getAssetContent(self, assetButton = None, nodeAstLabel = None):
+    #
+    #
+    #     if not assetButton == None:
+    #         buttonText = assetButton.text()
+    #     elif not nodeAstLabel == None:
+    #         buttonText = nodeAstLabel.split('__')[1]
+    #
+    #     self.nodeView.setVisible(True)
+    #
+    #
+    #     self.scene.clear()
+    #     self.addRectangular()
+    #     self.scene.clearNodeList()
+    #     currentProject = str(self.projectComboBox.currentText())
+    #     self.assetsRoot = os.path.join(self.projectsRoot, currentProject, 'content', 'assets')
+    #     assetContent = os.listdir(os.path.normpath(os.path.join(str(self.assetsRoot), str(buttonText))))
+    #
+    #     for tab in self.content_tabs:
+    #         self.group_boxes[self.content_tabs.index(tab)].setTitle('looking at ' + self._current_project + os.sep + self._current_content['content'] + os.sep + button_text)
+    #
+    #     self.currentContent = currentProject + os.sep + 'content' + os.sep + 'assets' + os.sep + buttonText
+    #
+    #     for nodeItem in assetContent:
+    #
+    #         if not nodeItem in self.exclusions:
+    #             if os.path.isdir(os.path.join(self.assetsRoot, str(buttonText), nodeItem)):
+    #                 self.propertyNodePathAssets = os.path.join(self.assetsRoot, str(buttonText), nodeItem, 'propertyNode.xml')
+    #
+    #                 newNode = node(self, self.scene, self.propertyNodePathAssets)
+    #                 newNode.addText(self.scene, nodeItem)
+    #                 self.scene.addToNodeList(newNode)
+    #
+    #             else:
+    #                 logging.warning('assets: nodeItem %s is not a directory' %(nodeItem))
+    #         else:
+    #             os.remove(os.path.join(self.assetsRoot, str(buttonText), nodeItem))
+    #             logging.info('exclusion %s found and cleaned' % nodeItem)
+    #
+    #     self.computeConnections()
 
     def print_sth(self):
         print 'hallo'
@@ -1857,43 +1982,15 @@ class PypelyneMainWindow(QMainWindow):
     # newNode.py:137 ff
     # here:
         
-    def addTools(self):
+    def add_tools(self):
         self.toolsComboBox.clear()
         self.toolsComboBox.addItem('run tool instance')
         
         self.toolsComboBox.insertSeparator(1)
         
-        for tool in self._tools:
-            # print tool
-            index = self._tools.index(tool)
-
-            executable = []
-            # self.run_items = []
-
-            if tool[u'executable_x32'] is not None:
-                executable.append(self._tools[index][u'executable_x32'])
-                for flag_x32 in self._tools[index][u'flags_x32']:
-                    executable.append(flag_x32)
-
-                run_item = self.get_dict_x32(tool)
-
-                self.toolsComboBox.addItem(tool[u'label_x32'], run_item.copy())
-
-            executable[:] = []
-
-            if tool[u'executable_x64'] is not None:
-                executable.append(self._tools[index][u'executable_x64'])
-                for flag_x64 in self._tools[index][u'flags_x64']:
-                    executable.append(flag_x64)
-
-                run_item = self.get_dict_x64(tool)
-
-                self.toolsComboBox.addItem(tool[u'label_x64'], run_item.copy())
-
-            executable[:] = []
-
-            del executable
-            # del run_item
+        for tool_item in self._tool_items:
+            print tool_item
+            self.toolsComboBox.addItem(tool_item[u'label'], tool_item)
 
     def get_dict_x32(self, tool):
         dict_x32 = {

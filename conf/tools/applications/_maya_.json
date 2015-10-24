@@ -13,24 +13,20 @@
       "architecture_fallback": true,
       "platforms": [
         {
-          "windows":
-            {
-              "executable_x32": "C:\\Program Files (x86)\\Autodesk\\Maya2013\\bin\\maya.exe",
-              "flags_x32": [],
-              "executable_x64": "C:\\Program Files\\Autodesk\\Maya2013\\bin\\maya.exe",
-              "flags_x64": []
-            }
-
+          "windows": {
+            "executable_x32": "C:\\Program Files (x86)\\Autodesk\\Maya2013\\bin\\maya.exe",
+            "flags_x32": [],
+            "executable_x64": "C:\\Program Files\\Autodesk\\Maya2013\\bin\\maya.exe",
+            "flags_x64": []
+          }
         },
         {
-          "darwin":
-            {
-              "executable_x32": null,
-              "flags_x32": [],
-              "executable_x64": "/Applications/Autodesk/maya2013/Maya.app/Contents/bin/maya",
-              "flags_x64": []
-            }
-
+          "darwin": {
+            "executable_x32": null,
+            "flags_x32": [],
+            "executable_x64": "/Applications/Autodesk/maya2013/Maya.app/Contents/bin/maya",
+            "flags_x64": []
+          }
         },
         {
           "linux": {
@@ -51,24 +47,20 @@
       "architecture_fallback": true,
       "platforms": [
         {
-          "windows":
-            {
-              "executable_x32": "C:\\Program Files (x86)\\Autodesk\\Maya2014\\bin\\maya.exe",
-              "flags_x32": [],
-              "executable_x64": "C:\\Program Files\\Autodesk\\Maya2014\\bin\\maya.exe",
-              "flags_x64": []
-            }
-
+          "windows": {
+            "executable_x32": "C:\\Program Files (x86)\\Autodesk\\Maya2014\\bin\\maya.exe",
+            "flags_x32": [],
+            "executable_x64": "C:\\Program Files\\Autodesk\\Maya2014\\bin\\maya.exe",
+            "flags_x64": []
+          }
         },
         {
-          "darwin":
-            {
-              "executable_x32": null,
-              "flags_x32": [],
-              "executable_x64": "/Applications/Autodesk/maya2014/Maya.app/Contents/MacOS/Maya",
-              "flags_x64": []
-            }
-
+          "darwin": {
+            "executable_x32": null,
+            "flags_x32": [],
+            "executable_x64": "/Applications/Autodesk/maya2014/Maya.app/Contents/MacOS/Maya",
+            "flags_x64": []
+          }
         },
         {
           "linux": {
@@ -89,24 +81,20 @@
       "architecture_fallback": false,
       "platforms": [
         {
-          "windows":
-            {
-              "executable_x32": null,
-              "flags_x32": [],
-              "executable_x64": "D:\\dev\\common\\tools\\AppLaunchers\\MayaLauncher\\MayaLauncher.exe",
-              "flags_x64": []
-            }
-
+          "windows": {
+            "executable_x32": null,
+            "flags_x32": [],
+            "executable_x64": "D:\\dev\\common\\tools\\AppLaunchers\\MayaLauncher\\MayaLauncher.exe",
+            "flags_x64": []
+          }
         },
         {
-          "darwin":
-            {
-              "executable_x32": null,
-              "flags_x32": [],
-              "executable_x64": null,
-              "flags_x64": []
-            }
-
+          "darwin": {
+            "executable_x32": null,
+            "flags_x32": [],
+            "executable_x64": null,
+            "flags_x64": []
+          }
         },
         {
           "linux": {
@@ -127,24 +115,20 @@
       "architecture_fallback": true,
       "platforms": [
         {
-          "windows":
-            {
-              "executable_x32": null,
-              "flags_x32": [],
-              "executable_x64": "C:\\appnet\\applications\\maya\\2014-x64\\Maya2014\\bin\\maya.exe",
-              "flags_x64": []
-            }
-
+          "windows": {
+            "executable_x32": null,
+            "flags_x32": [],
+            "executable_x64": "C:\\appnet\\applications\\maya\\2014-x64\\Maya2014\\bin\\maya.exe",
+            "flags_x64": []
+          }
         },
         {
-          "darwin":
-            {
-              "executable_x32": null,
-              "flags_x32": [],
-              "executable_x64": null,
-              "flags_x64": []
-            }
-
+          "darwin": {
+            "executable_x32": null,
+            "flags_x32": [],
+            "executable_x64": null,
+            "flags_x64": []
+          }
         },
         {
           "linux": {

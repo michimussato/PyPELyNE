@@ -3,14 +3,13 @@ Created on Apr 27, 2015
 
 @author: michaelmussato
 '''
+import platform
+import os
+import re
 
 from PyQt4.QtGui import *
 from PyQt4.uic import *
 from newOutput import *
-import re
-
-import platform, os
-
 
 
 # class configureRenderJobWidgetUi(QWidget):
@@ -22,33 +21,33 @@ import platform, os
 #             self.ui = loadUi(r'C:\Users\michael.mussato.SCHERRERMEDIEN\Dropbox\development\workspace\PyPELyNE\ui\configureRenderJobWidget.ui', self)
 #         elif self.currentPlatform == "Linux" or self.currentPlatform == "Darwin":
 #             self.ui = loadUi(r'/Users/michaelmussato/Dropbox/development/workspace/PyPELyNE/ui/configureRenderJobWidget.ui', self)
-
+#
 #     def getDeadlineItems(self):
-
-
-
+#
+#
+#
 #         #self.deadlineGroupsString = os.popen('/Applications/Deadline/Resources/bin/deadlinecommand Groups').read()
-
+#
 #         self.deadlinePlugins = os.popen('/Applications/Deadline/Resources/bin/deadlinecommand Plugins').read().replace('\n',' ').split()
 #         self.deadlineGroups = os.popen('/Applications/Deadline/Resources/bin/deadlinecommand Groups').read().replace('\n',' ').split()
 #         self.deadlinePools = os.popen('/Applications/Deadline/Resources/bin/deadlinecommand Pools').read().replace('\n',' ').split()
-
+#
 #         return self.deadlinePlugins, self.deadlineGroups, self.deadlinePools
-
-
+#
+#
 #         #print self.deadlineGroups
 #         '''
 #         for group in self.deadlineGroups:
 #             self.comboBoxDeadlineGroup.addItem(group)
-
+#
 #         for pool in self.deadlinePools:
 #             self.comboBoxDeadlinePool.addItem(pool)
 #         '''
 
 
-class newNodeUI(QDialog):
+class NewNodeUI(QDialog):
     def __init__(self, nodeDir, tasks, mainWindow, parent = None):
-        super(newNodeUI, self).__init__(parent)
+        super(NewNodeUI, self).__init__(parent)
         
         self.mainWindow = mainWindow
         self.pypelyneRoot = self.mainWindow._pypelyne_root
@@ -79,7 +78,6 @@ class newNodeUI(QDialog):
 
         self.deadlinePlugins, self.deadlineGroups, self.deadlinePools = self.configureRenderJobWidget.getDeadlineItems()
 
-
         for deadlinePlugin in self.deadlinePlugins:
             self.configureRenderJobWidget.comboBoxDeadlinePlugin.addItem(deadlinePlugin)
         for deadlineGroup in self.deadlineGroups:
@@ -87,20 +85,6 @@ class newNodeUI(QDialog):
         for deadlinePool in self.deadlinePools:
             self.configureRenderJobWidget.comboBoxDeadlinePool.addItem(deadlinePool)
         '''
-
-        
-        # self.nodeVersion, self.nodeVendor, self.nodeFamily, self.nodeArch
-        #self.nodeApplicationInfo = node.queryApplicationInfo()
-
-
-        #self.widgetUi.labelNode.setText(node.data(0).toPyObject())
-        #self.widgetUi.labelApplication.setText(self.nodeApplicationInfo[2] + ' ' + self.nodeApplicationInfo[0])
-        #self.widgetUi.labelVersion.setText(self.nodeApplicationInfo[0])
-        #self.widgetUi.labelExecutable.setText(node.data(0).toPyObject())
-
-
-
-
 
     def clearConfigureRenderJobWidgetUi(self):
         #self.nodeWidgets = []
@@ -127,38 +111,10 @@ class newNodeUI(QDialog):
         #self.configureRenderJobScrollArea.setVisible(False)
 
     def add_combo_box_items(self):
-        executable = []
+        # executable = []
             
-        for tool in self.mainWindow._tools:
-
-            if tool[u'executable_x32'] is not None:
-                executable.append(tool[u'executable_x32'])
-                for flag_x32 in tool[u'flags_x32']:
-                    executable.append(flag_x32)
-
-                run_item = self.mainWindow.get_dict_x32(tool)
-
-                self.comboBoxApplication.addItem(tool[u'label_x32'], run_item.copy())
-
-                executable[:] = []
-
-            if tool[u'executable_x64'] is not None:
-                executable.append(tool[u'executable_x64'])
-                for flag_x64 in tool[u'flags_x64']:
-                    executable.append(flag_x64)
-
-                run_item = self.mainWindow.get_dict_x64(tool)
-
-                self.comboBoxApplication.addItem(tool[u'label_x64'], run_item.copy())
-
-                executable[:] = []
-
-            # print tool
-
-            # if tool['executable_x32'] is not None:
-            #     self.comboBoxApplication.addItem(tool['label_x32'], self.mainWindow._tools.index(tool))
-            # if tool['executable_x64'] is not None:
-            #     self.comboBoxApplication.addItem(tool['label_x64'], self.mainWindow._tools.index(tool))
+        for tool_item in self.mainWindow._tool_items:
+            self.comboBoxApplication.addItem(tool_item[u'label'], tool_item)
 
         for task in self.tasks:
             self.comboBoxTask.addItem(task[2][1])
@@ -242,7 +198,7 @@ class newNodeUI(QDialog):
     @staticmethod
     def getNewNodeData(nodeDir, tasks, mainWindow):
         # http://stackoverflow.com/questions/18196799/how-can-i-show-a-pyqt-modal-dialog-and-get-data-out-of-its-controls-once-its-clo
-        dialog = newNodeUI(nodeDir, tasks, mainWindow)
+        dialog = NewNodeUI(nodeDir, tasks, mainWindow)
         result = dialog.exec_()
         nodeName, tool_data, taskIndex = dialog.onOk()
         return nodeName, result == QDialog.Accepted, tool_data, taskIndex

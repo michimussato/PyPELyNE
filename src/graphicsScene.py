@@ -1068,7 +1068,7 @@ class SceneView(QGraphicsScene):
                                     self.mainWindow._current_content['content'],
                                     self.mainWindow._current_content_item)
 
-            node_name, ok, tool_data, task_index = newNodeUI.getNewNodeData(node_dir, tasks, self.mainWindow)
+            node_name, ok, tool_data, task_index = NewNodeUI.getNewNodeData(node_dir, tasks, self.mainWindow)
 
             taskNode = tasks[task_index]
             # toolTask = taskNode[2][1]
@@ -1084,6 +1084,8 @@ class SceneView(QGraphicsScene):
 
                 meta_task['creator'] = self.mainWindow.user
                 meta_task['operating_system'] = self.mainWindow.operating_system
+                # print self.mainWindow._tasks[task_index][1][2]
+                meta_task['task'] = self.mainWindow._tasks[task_index][1][1]
 
                 meta_tool['family'] = tool_data['family']
                 meta_tool['architecture_fallback'] = tool_data['architecture_fallback']
@@ -1092,7 +1094,7 @@ class SceneView(QGraphicsScene):
                 meta_tool['vendor'] = tool_data['vendor']
                 meta_tool['release_number'] = tool_data['release_number']
 
-                meta_node_path = os.path.join(new_node_path, 'meta_task.json')
+                meta_task_path = os.path.join(new_node_path, 'meta_task.json')
                 meta_tool_path = os.path.join(new_node_path, 'meta_tool.json')
 
                 # posX = pos_x
@@ -1140,13 +1142,15 @@ class SceneView(QGraphicsScene):
                 #
                 # xml_doc.close()
 
-                with open(meta_node_path, 'w') as outfile:
+                property_node_path = None
+
+                with open(meta_task_path, 'w') as outfile:
                     json.dump(meta_task, outfile)
 
                 with open(meta_tool_path, 'w') as outfile:
                     json.dump(meta_tool, outfile)
                 
-                new_node = node(self.mainWindow, self, property_node_path)
+                new_node = node(main_window=self.mainWindow, scene=self, property_node_path=property_node_path, meta_task_path=meta_task_path, meta_tool_path=meta_tool_path)
                 new_node.addText(self, str(node_name))
 
                 for tool_default_output in tool_data['default_outputs']:
@@ -1155,8 +1159,6 @@ class SceneView(QGraphicsScene):
         return callback
 
     def removeObject(self, item):
-
-
 
         reply = QMessageBox.warning(self.mainWindow, str('about to delete item'), str('are you sure to \ndelete %s %s \nand its contents?' %(item.data(2), item.label)), QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
 

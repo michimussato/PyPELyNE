@@ -449,7 +449,7 @@ class PypelyneMainWindow(QMainWindow):
 
                                 self.tools.append(tool.copy())
 
-                                print 'tool', tool
+                                # print 'tool', tool
 
                 else:
                     logging.info('source file skipped (reason: disabled): %s' % source_file)
@@ -1148,19 +1148,18 @@ class PypelyneMainWindow(QMainWindow):
     #     return self.pypelyneRoot
 
     def setNodeWidget(self, node):
-        self.widgetUi = nodeWidgetUi(self)
+        self.widgetUi = NodeWidgetUi(self)
+
+        # print node.data(0)
             
         self.nodeMenuArea.setWidget(self.widgetUi)
 
-        
         # self.nodeVersion, self.nodeVendor, self.nodeFamily, self.nodeArch
         self.nodeApplicationInfo = node.queryApplicationInfo()
-
 
         self.widgetUi.labelNode.setText(node.data(0))
         self.widgetUi.labelApplication.setText(self.nodeApplicationInfo[2] + ' ' + self.nodeApplicationInfo[0])
         #self.widgetUi.labelVersion.setText(self.nodeApplicationInfo[0])
-        #self.widgetUi.labelExecutable.setText(node.data(0).toPyObject())
 
     def clearNodeWidget(self):
         #self.nodeWidgets = []
@@ -1880,7 +1879,7 @@ class PypelyneMainWindow(QMainWindow):
 
                 self.toolsComboBox.addItem(tool[u'label_x32'], run_item.copy())
 
-                executable[:] = []
+            executable[:] = []
 
             if tool[u'executable_x64'] is not None:
                 executable.append(self._tools[index][u'executable_x64'])
@@ -1891,7 +1890,7 @@ class PypelyneMainWindow(QMainWindow):
 
                 self.toolsComboBox.addItem(tool[u'label_x64'], run_item.copy())
 
-                executable[:] = []
+            executable[:] = []
 
             del executable
             # del run_item
@@ -1909,7 +1908,8 @@ class PypelyneMainWindow(QMainWindow):
                     u'default_outputs': tool[u'default_outputs'],
                     u'executable': tool[u'executable_x32'],
                     u'project_workspace': tool[u'project_workspace'],
-                    u'label': tool[u'label_x32']
+                    u'label': tool[u'label_x32'],
+                    u'architecture': u'x32'
                     }
 
         return dict_x32
@@ -1927,7 +1927,8 @@ class PypelyneMainWindow(QMainWindow):
                     u'project_directories': tool[u'project_directories'],
                     u'default_outputs': tool[u'default_outputs'],
                     u'project_workspace': tool[u'project_workspace'],
-                    u'flags': tool[u'flags_x64']
+                    u'flags': tool[u'flags_x64'],
+                    u'architecture': u'x64'
                     }
 
         return dict_x64

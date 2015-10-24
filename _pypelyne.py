@@ -1030,7 +1030,7 @@ class pypelyneMainWindow( QMainWindow ):
 #         
 #         items = []
 #         
-#         #self.menu.addAction( 'new node', self.newNodeDialog( pos ) )
+#         #self.menu.addAction( 'new node', self.new_node_dialog( pos ) )
 #         
 #         if isinstance( QPushButton ):
 #             
@@ -1060,24 +1060,15 @@ class pypelyneMainWindow( QMainWindow ):
     def getPypelyneRoot( self ):
         return self.pypelyneRoot
 
-    def setNodeWidget( self, node ):
-        self.widgetUi = nodeWidgetUi( self )
+    def setNodeWidget(self, node):
+        self.widgetUi = nodeWidgetUi(self)
             
-        self.nodeMenuArea.setWidget( self.widgetUi )
+        self.nodeMenuArea.setWidget(self.widgetUi)
 
-        
-        # self.nodeVersion, self.nodeVendor, self.nodeFamily, self.nodeArch
         self.nodeApplicationInfo = node.queryApplicationInfo()
 
-
-        self.widgetUi.labelNode.setText( node.data( 0 ).toPyObject() )
+        self.widgetUi.labelNode.setText( node.data(0).toPyObject() )
         self.widgetUi.labelApplication.setText( self.nodeApplicationInfo[ 2 ] + ' ' + self.nodeApplicationInfo[ 0 ] )
-        #self.widgetUi.labelVersion.setText( self.nodeApplicationInfo[ 0 ] )
-        #self.widgetUi.labelExecutable.setText( node.data( 0 ).toPyObject() )
-
-
-
-
 
     def clearNodeWidget( self ):
         #self.nodeWidgets = []

@@ -14,6 +14,7 @@ import shutil
 import os
 import subprocess
 import logging
+import json
 
 # class Signals(QObject):
 #     trigger = pyqtSignal(str)
@@ -173,7 +174,7 @@ class SceneView(QGraphicsScene):
         contentDirs = os.listdir(os.path.join(self.mainWindow._projects_root, self.mainWindow._current_project, 'content', self.mainWindow._current_content['content']))
         print contentDirs
         
-        self.menu.addAction('new node', self.newNodeDialog(pos))
+        self.menu.addAction('new node', self.new_node_dialog(pos))
         self.menu.addSeparator()
         self.menu.addAction('new loader', self.newLoaderDialog(pos))
         #for dir in contentDirs:
@@ -1054,53 +1055,61 @@ class SceneView(QGraphicsScene):
 
         return callback
 
-    def newNodeDialog(self, pos):
+    def new_node_dialog(self, pos):
         def callback():
             tasks = self.mainWindow.getTasks()
+
+            meta_tool = {}
+            meta_task = {}
             
-            node_dir = os.path.join(self.mainWindow._projects_root, self.mainWindow._current_project, 'content', self.mainWindow._current_content['content'], self.mainWindow._current_content_item)
+            node_dir = os.path.join(self.mainWindow._projects_root,
+                                    self.mainWindow._current_project,
+                                    'content',
+                                    self.mainWindow._current_content['content'],
+                                    self.mainWindow._current_content_item)
 
-            text, ok, tool_index, task_index = newNodeUI.getNewNodeData(node_dir, tasks, self.mainWindow)
-
-            # try:
-            #     toolNode = tools[tool_index]
-            #     print toolNode
-            # except:
-            #     print 'deadline job'
-            #     toolNode = ('Thinkbox Software Deadline 5.2 x64', ['"deadlinecommand" -SubmitCommandLineJob'], 'DDL', 'Thinkbox Software', 'Deadline', '5.2', 'x64', 'None', [], [])
+            node_name, ok, tool_data, task_index = newNodeUI.getNewNodeData(node_dir, tasks, self.mainWindow)
 
             taskNode = tasks[task_index]
-            toolTask = taskNode[2][1]
+            # toolTask = taskNode[2][1]
  
             if ok:
-                new_node_path = os.path.join(self.mainWindow._projects_root, self.mainWindow._current_project, 'content', self.mainWindow._current_content['content'], self.mainWindow._current_content_item, str(text))
+                new_node_path = os.path.join(node_dir, str(node_name))
 
-                property_node = ET.Element('propertyNode')
-                
-                posX = str(int(float(round(pos.x()))))
-                posY = str(int(float(round(pos.y()))))
+                pos_x = str(int(float(round(pos.x()))))
+                pos_y = str(int(float(round(pos.y()))))
 
-                ET.SubElement(property_node, 'node', { 'positionX':posX, 'positionY':posY })
+                meta_task['pos_x'] = pos_x
+                meta_task['pos_y'] = pos_y
 
-                print self.mainWindow._tools[tool_index]
+                meta_task['creator'] = self.mainWindow.user
+                meta_task['operating_system'] = self.mainWindow.operating_system
 
-                # ET.SubElement(property_node, 'task', {'family':self.mainWindow._tools[tool_index]['family'],
-                #                                       'vendor':self.mainWindow._tools[tool_index]['vendor'],
-                #                                       'version':self.mainWindow._tools[tool_index]['release_number'],
-                #                                       'arch':self.mainWindow._tools[tool_index]['executable_x64'],
-                #                                       'nodetask':toolTask
+                meta_tool['family'] = tool_data['family']
+                meta_tool['architecture_fallback'] = tool_data['architecture_fallback']
+                meta_tool['abbreviation'] = tool_data['abbreviation']
+                meta_tool['architecture'] = tool_data['architecture']
+                meta_tool['vendor'] = tool_data['vendor']
+                meta_tool['release_number'] = tool_data['release_number']
+
+                meta_node_path = os.path.join(new_node_path, 'meta_task.json')
+                meta_tool_path = os.path.join(new_node_path, 'meta_tool.json')
+
+                # posX = pos_x
+                # posY = pox_y
+                #
+                # property_node = ET.Element('propertyNode')
+                #
+                # ET.SubElement(property_node, 'node', { 'positionX':posX, 'positionY':posY })
+                #
+                # ET.SubElement(property_node, 'task', {'family':tool_data['family'],
+                #                                       'vendor':tool_data['vendor'],
+                #                                       'version':tool_data['release_number'],
+                #                                       'arch':tool_data['architecture'],
+                #                                       'nodetask':toolTask,
                 #                                       })
-
-
-
-                ET.SubElement(property_node, 'task', {'family':self.mainWindow._tools[tool_index]['family'],
-                                                      'vendor':self.mainWindow._tools[tool_index]['vendor'],
-                                                      'version':self.mainWindow._tools[tool_index]['release_number'],
-                                                      'arch':'x64',
-                                                      'nodetask':toolTask
-                                                      })
-                
-                property_node_path = os.path.join(new_node_path, 'propertyNode.xml')
+                #
+                # property_node_path = os.path.join(new_node_path, 'propertyNode.xml')
 
                 os.makedirs(new_node_path, mode=0777)
                 os.makedirs(os.path.join(new_node_path, 'project'), mode=0777)
@@ -1108,27 +1117,39 @@ class SceneView(QGraphicsScene):
                 os.makedirs(os.path.join(new_node_path, 'live'), mode=0777)
                 os.makedirs(os.path.join(new_node_path, 'input'), mode=0777)
 
-                for tool_directory in self.mainWindow._tools[tool_index]['project_directories']:
+                for tool_directory in tool_data['project_directories']:
                     os.makedirs(os.path.join(new_node_path, 'project', tool_directory), mode=0777)
 
-                if not self.mainWindow._tools[tool_index]['project_template'] == 'None':
-                    shutil.copyfile(os.path.join('src', 'template_documents', self.mainWindow._tools[tool_index]['project_template']), os.path.join(new_node_path, 'project', str(text + '.' + '0000' + os.path.splitext(self.mainWindow._tools[tool_index]['project_template'])[1])))
+                if tool_data['project_template'] is not None:
+                    extension = os.path.splitext(tool_data['project_template'])[1]
+                    src_path = os.path.join('src', 'template_documents', tool_data['project_template'])
+                    dst_path = os.path.join(new_node_path, 'project', str(node_name + '.' + '0000' + extension))
+                    shutil.copyfile(src_path, dst_path)
 
-                    if not self.mainWindow._tools[tool_index]['project_workspace'] == 'None':
-                        shutil.copyfile(os.path.join('src', 'template_documents', self.mainWindow._tools[tool_index]['project_workspace']), os.path.join(new_node_path, str(self.mainWindow._tools[tool_index]['project_workspace']).split('_')[-1]))
+                if tool_data['project_workspace'] is not None:
+                    extension = os.path.splitext(tool_data['project_workspace'])[1]
+                    # extension = str(tool_data['project_workspace']).split('_')[-1]
+                    src_path = os.path.join('src', 'template_documents', tool_data['project_workspace'])
+                    dst_path = os.path.join(new_node_path, extension)
+                    shutil.copyfile(src_path, dst_path)
 
-                xml_doc = open(property_node_path, 'w')
-                
-                xml_doc.write('<?xml version="1.0"?>')
-                xml_doc.write(ET.tostring(property_node))
-                
-                xml_doc.close()
+                # xml_doc = open(property_node_path, 'w')
+                #
+                # xml_doc.write('<?xml version="1.0"?>')
+                # xml_doc.write(ET.tostring(property_node))
+                #
+                # xml_doc.close()
+
+                with open(meta_node_path, 'w') as outfile:
+                    json.dump(meta_task, outfile)
+
+                with open(meta_tool_path, 'w') as outfile:
+                    json.dump(meta_tool, outfile)
                 
                 new_node = node(self.mainWindow, self, property_node_path)
-                new_node.addText(self, str(text))
+                new_node.addText(self, str(node_name))
 
-                for tool_default_output in self.mainWindow._tools[tool_index]['default_outputs']:
-                    #print toolDefaultOutput
+                for tool_default_output in tool_data['default_outputs']:
                     self.newOutputAuto(new_node, tool_default_output)
 
         return callback

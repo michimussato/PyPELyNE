@@ -167,12 +167,15 @@ class node(QGraphicsItem, QObject):
 
         else:
             search_string = self.nodeVendor + ' ' + self.nodeFamily + ' ' + self.nodeVersion + ' ' + self.nodeArch
-            search_index = self.mainWindow.toolsComboBox.findText(QString(search_string), Qt.MatchContains)
+            search_index = self.mainWindow.toolsComboBox.findText(search_string, Qt.MatchContains)
+
+            print search_string
+            print search_index
 
             if search_index < 3:
                 if not str(self.nodeFamily + ' ' + self.nodeVersion) in [self.mainWindow.toolsComboBox.itemText(i) for i in range(self.mainWindow.toolsComboBox.count())]:
                     logging.warning('application family not available')
-                    QMessageBox.critical(self.mainWindow, 'application warning', str('%s not available.' %str(self.nodeFamily + ' ' + self.nodeVersion)), QMessageBox.Abort, QMessageBox.Abort)
+                    QMessageBox.critical(self.mainWindow, 'application warning', str('%s not available.' % str(self.nodeFamily + ' ' + self.nodeVersion)), QMessageBox.Abort, QMessageBox.Abort)
                     return
 
                 elif self.nodeArch == 'x64':
@@ -185,7 +188,11 @@ class node(QGraphicsItem, QObject):
                     else:
                         return
                 elif self.nodeArch == 'x32':
-                    reply = QMessageBox.warning(self.mainWindow, 'architecture warning', str('x32 version of %s not available. continue using x64?' %self.nodeFamily), QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+                    reply = QMessageBox.warning(self.mainWindow,
+                                                'architecture warning',
+                                                str('x32 version of %s not available. continue using x64?' % self.nodeFamily),
+                                                QMessageBox.Yes | QMessageBox.No,
+                                                QMessageBox.No)
 
                     if reply == QMessageBox.Yes:
                         search_string = str(self.nodeVendor + ' ' + self.nodeFamily + ' ' + self.nodeVersion + ' ' + 'x64')

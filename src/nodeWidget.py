@@ -6,9 +6,9 @@ from PyQt4.QtGui import *
 from PyQt4.uic import *
 
 
-class nodeWidgetUi(QWidget):
+class NodeWidgetUi(QWidget):
     def __init__(self, mainWindow, parent = None):
-        super(nodeWidgetUi, self).__init__(parent)
+        super(NodeWidgetUi, self).__init__(parent)
         self.mainWindow = mainWindow
         self.pypelyneRoot = self.mainWindow._pypelyne_root
         self.currentPlatform = self.mainWindow._current_platform

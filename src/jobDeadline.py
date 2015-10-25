@@ -5,15 +5,17 @@ import xml.etree.ElementTree as ET
 from PyQt4.QtGui import *
 from PyQt4.uic import *
 
+import settings as SETTINGS
+
 
 class jobAddArgUi(QWidget):
-    def __init__(self, mainWindow, argValue = None, parent = None):
+    def __init__(self, main_window, argValue = None, parent = None):
         super(jobAddArgUi, self).__init__(parent)
 
-        self.mainWindow = mainWindow
-        self.pypelyneRoot = self.mainWindow._pypelyne_root
-        self.currentPlatform = self.mainWindow._current_platform
-        self.ui = loadUi(os.path.join(self.pypelyneRoot, 'ui', 'jobAddArg.ui'), self)
+        self.main_window = main_window
+        # self.pypelyne_root = self.main_window.pypelyne_root
+        self.main_window.current_platform = self.main_window.current_platform
+        self.ui = loadUi(os.path.join(self.main_window.pypelyne_root, 'ui', 'jobAddArg.ui'), self)
         self.pushButtonDelete.setVisible(False)
 
         if not bool(argValue) == False:
@@ -30,13 +32,13 @@ class jobAddArgUi(QWidget):
 
 
 class jobAddPropUi(QWidget):
-    def __init__(self, mainWindow, propValue = None, parent = None):
+    def __init__(self, main_window, propValue = None, parent = None):
         super(jobAddPropUi, self).__init__(parent)
 
-        self.mainWindow = mainWindow
-        self.pypelyneRoot = self.mainWindow._pypelyne_root
-        self.currentPlatform = self.mainWindow._current_platform
-        self.ui = loadUi(os.path.join(self.pypelyneRoot, 'ui', 'jobAddProp.ui'), self)
+        self.main_window = main_window
+        # self.pypelyne_root = self.main_window.pypelyne_root
+        # self.current_platform = self.main_window.current_platform
+        self.ui = loadUi(os.path.join(self.main_window.pypelyne_root, 'ui', 'jobAddProp.ui'), self)
         self.pushButtonDelete.setVisible(False)
 
         if not bool(propValue) == False:
@@ -53,13 +55,13 @@ class jobAddPropUi(QWidget):
 
 
 class jobDeadlineUi(QDialog):
-    def __init__(self, taskRoot, mainWindow = None, parent = None):
+    def __init__(self, taskRoot, main_window = None, parent = None):
         super(jobDeadlineUi, self).__init__(parent)
 
-        self.mainWindow = mainWindow
-        self.pypelyneRoot = self.mainWindow._pypelyne_root
-        self.currentPlatform = self.mainWindow._current_platform
-        self.exclusions = mainWindow._exclusions
+        self.main_window = main_window
+        # self.pypelyne_root = self.main_window.pypelyne_root
+        # self.current_platform = self.main_window.current_platform
+        # self.exclusions = SETTINGS.EXCLUSIONS
         self.taskRoot = taskRoot
         self.projectName = os.path.basename(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(self.taskRoot)))))
         self.assetName = os.path.basename(os.path.dirname(self.taskRoot))
@@ -70,7 +72,7 @@ class jobDeadlineUi(QDialog):
         self.input = []
 
         for directory in inputContent:
-            if not directory in self.exclusions:
+            if directory not in SETTINGS.EXCLUSIONS:
                 self.input.append(os.path.join(self.taskRoot, 'input', directory))
 
         self.input = self.input[0]
@@ -81,7 +83,7 @@ class jobDeadlineUi(QDialog):
         if self.inputPrefix in self.inputContent:
             self.inputContent.remove(self.inputPrefix)
 
-        for exclusion in self.exclusions:
+        for exclusion in SETTINGS.EXCLUSIONS:
             if exclusion in self.inputContent:
                 print 'exclusion found'
                 self.inputContent.remove(exclusion)
@@ -97,14 +99,14 @@ class jobDeadlineUi(QDialog):
         self.output = []
 
         for directory in outputContent:
-            if not directory in self.exclusions:
+            if directory not in SETTINGS.EXCLUSIONS:
                 self.output.append(os.path.join(self.taskRoot, 'output', directory))
 
         self.output = self.output[0]
         self.outputName = os.path.basename(self.output)
         self.outputVersion = os.readlink(os.path.join(self.output, 'current'))
 
-        self.ui = loadUi(os.path.join(self.pypelyneRoot, 'ui', 'jobDeadline.ui'), self)
+        self.ui = loadUi(os.path.join(self.main_window.pypelyne_root, 'ui', 'jobDeadline.ui'), self)
 
         self.propWidgets = []
         self.argWidgets = []
@@ -236,13 +238,13 @@ class jobDeadlineUi(QDialog):
     def addArg(self, argValue=None):
 
         #print 'addArg'
-        newArg = jobAddArgUi(self.mainWindow, argValue)
+        newArg = jobAddArgUi(self.main_window, argValue)
 
         self.vLayoutProps.addWidget(newArg)
         self.argWidgets.append(newArg)
 
     def addProp(self, propValue=None):
-        newProp = jobAddPropUi(self.mainWindow, propValue)
+        newProp = jobAddPropUi(self.main_window, propValue)
         self.vLayoutProps.addWidget(newProp)
         self.propWidgets.append(newProp)
 
@@ -298,8 +300,8 @@ class jobDeadlineUi(QDialog):
         self.reject()
 
     @staticmethod
-    def getDeadlineJobData(nodeDir, mainWindow):
-        dialog = jobDeadlineUi(nodeDir, mainWindow)
+    def getDeadlineJobData(nodeDir, main_window):
+        dialog = jobDeadlineUi(nodeDir, main_window)
         result = dialog.exec_()
         submissionCmdArgs = dialog.submitData()
         return result == dialog.Accepted, submissionCmdArgs

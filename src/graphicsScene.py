@@ -16,6 +16,8 @@ import subprocess
 import logging
 import json
 
+import settings as SETTINGS
+
 # class Signals(QObject):
 #     trigger = pyqtSignal(str)
 
@@ -28,33 +30,24 @@ class SceneView(QGraphicsScene):
     def __init__(self, main_window, parent=None):
         super(SceneView, self).__init__(parent)
 
-        self.mainWindow = main_window
-        self.pypelyneRoot = self.mainWindow._pypelyne_root
-        self.currentPlatform = self.mainWindow._current_platform
-        self.projectsRoot = str(self.mainWindow._projects_root)
-
-        self.exclusions = self.mainWindow._exclusions
-        self.imageExtensions = self.mainWindow._image_extensions
-        self.movieExtensions = self.mainWindow._movie_extensions
-        self.sequenceExec = self.mainWindow._sequence_exec
-
+        self.main_window = main_window
         self.line = None
-        # rect = self.setSceneRect(QRectF(0, 0, 0, 0))
-        
-        self.nodeList = []
+        self.node_list = []
+
+        self.menu = None
 
     def addToNodeList(self, node):
-        self.nodeList.append(node)
+        self.node_list.append(node)
 
-    @property
-    def _node_list(self):
-        return self.nodeList
+    # @property
+    # def _node_list(self):
+    #     return self.node_list
 
     # def getNodeList(self):
-    #     return self.nodeList
+    #     return self.node_list
         
     def clearNodeList(self):
-        self.nodeList = []
+        self.node_list = []
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Delete:
@@ -76,17 +69,17 @@ class SceneView(QGraphicsScene):
 
     def viewVersion(self, imgFile):
         def callback():
-            subprocess.Popen([self.sequenceExec, imgFile], shell=False)
+            subprocess.Popen([self.main_window.sequence_exec, imgFile], shell=False)
         return callback
 
     def compareVersion(self, imgFile, liveImgFile):
         def callback():
-            subprocess.Popen([self.sequenceExec, imgFile, '-wipe', liveImgFile], shell=False)
+            subprocess.Popen([self.main_window.sequence_exec, imgFile, '-wipe', liveImgFile], shell=False)
         return callback
 
     def differenceVersion(self, imgFile, liveImgFile):
         def callback():
-            subprocess.Popen([self.sequenceExec, imgFile, '-diff', liveImgFile], shell=False)
+            subprocess.Popen([self.main_window.sequence_exec, imgFile, '-diff', liveImgFile], shell=False)
         return callback
 
     def deleteContentCallback(self, path):
@@ -98,7 +91,7 @@ class SceneView(QGraphicsScene):
         shutil.rmtree(path)
 
     def copyToClipboard(self, text):
-        self.mainWindow.clipBoard.setText(text)
+        self.main_window.clipBoard.setText(text)
         print '%s copied to clipboard' %(text)
 
     def copyToClipboardCallback(self, text):
@@ -106,41 +99,41 @@ class SceneView(QGraphicsScene):
             self.copyToClipboard(text)
         return callback
 
-    @property
-    def _item_clicked(self, event):
-        pos = event.scenePos()
-        return self.itemAt(pos)
-
-    @property
-    def _node_clicked(self, event):
-        pos = event.scenePos()
-        object_clicked = self.itemAt(pos)
-        # try:
-        # node specific context menu items
-        if isinstance(object_clicked, node) \
-                or isinstance(object_clicked.parentItem(), node) \
-                or isinstance(object_clicked.parentItem().parentItem(), node) \
-                or isinstance(object_clicked.parentItem().parentItem().parentItem(), node):
-
-            if isinstance(object_clicked, node):
-                object_clicked = object_clicked
-            elif isinstance(object_clicked.parentItem(), node):
-                object_clicked = object_clicked.parentItem()
-            elif isinstance(object_clicked.parentItem().parentItem(), node):
-                object_clicked = object_clicked.parentItem().parentItem()
-            elif isinstance(object_clicked.parentItem().parentItem().parentItem(), node):
-                object_clicked = object_clicked.parentItem().parentItem().parentItem()
-
-        return object_clicked
+    # @property
+    # def _item_clicked(self, event):
+    #     pos = event.scenePos()
+    #     return self.itemAt(pos)
+    #
+    # @property
+    # def _node_clicked(self, event):
+    #     pos = event.scenePos()
+    #     object_clicked = self.itemAt(pos)
+    #     # try:
+    #     # node specific context menu items
+    #     if isinstance(object_clicked, node) \
+    #             or isinstance(object_clicked.parentItem(), node) \
+    #             or isinstance(object_clicked.parentItem().parentItem(), node) \
+    #             or isinstance(object_clicked.parentItem().parentItem().parentItem(), node):
+    #
+    #         if isinstance(object_clicked, node):
+    #             object_clicked = object_clicked
+    #         elif isinstance(object_clicked.parentItem(), node):
+    #             object_clicked = object_clicked.parentItem()
+    #         elif isinstance(object_clicked.parentItem().parentItem(), node):
+    #             object_clicked = object_clicked.parentItem().parentItem()
+    #         elif isinstance(object_clicked.parentItem().parentItem().parentItem(), node):
+    #             object_clicked = object_clicked.parentItem().parentItem().parentItem()
+    #
+    #     return object_clicked
 
     def contextMenu(self, pos):
         self.menu = QMenu()
 
-        objectClicked = self.itemAt(pos)
+        object_clicked = self.itemAt(pos)
 
         # items = []
 
-        contentDirs = os.listdir(os.path.join(self.mainWindow._projects_root, self.mainWindow._current_project, 'content', self.mainWindow._current_content['content']))
+        contentDirs = os.listdir(os.path.join(self.main_window.projects_root, self.main_window._current_project, 'content', self.main_window._current_content['content']))
 
         self.menu.addAction('new node', self.new_node_dialog(pos))
         self.menu.addSeparator()
@@ -156,200 +149,200 @@ class SceneView(QGraphicsScene):
         
         try:
             #node specific context menu items
-            if isinstance(objectClicked, node) \
-                    or isinstance(objectClicked.parentItem(), node) \
-                    or isinstance(objectClicked.parentItem().parentItem(), node) \
-                    or isinstance(objectClicked.parentItem().parentItem().parentItem(), node):
+            if isinstance(object_clicked, node) \
+                    or isinstance(object_clicked.parentItem(), node) \
+                    or isinstance(object_clicked.parentItem().parentItem(), node) \
+                    or isinstance(object_clicked.parentItem().parentItem().parentItem(), node):
 
-                if isinstance(objectClicked, node):
-                    nodeClicked = objectClicked
-                elif isinstance(objectClicked.parentItem(), node):
-                    nodeClicked = objectClicked.parentItem()
-                elif isinstance(objectClicked.parentItem().parentItem(), node):
-                    nodeClicked = objectClicked.parentItem().parentItem()
-                elif isinstance(objectClicked.parentItem().parentItem().parentItem(), node):
-                    nodeClicked = objectClicked.parentItem().parentItem().parentItem()
+                if isinstance(object_clicked, node):
+                    node_clicked = object_clicked
+                elif isinstance(object_clicked.parentItem(), node):
+                    node_clicked = object_clicked.parentItem()
+                elif isinstance(object_clicked.parentItem().parentItem(), node):
+                    node_clicked = object_clicked.parentItem().parentItem()
+                elif isinstance(object_clicked.parentItem().parentItem().parentItem(), node):
+                    node_clicked = object_clicked.parentItem().parentItem().parentItem()
 
-                self.menuNode = self.menu.addMenu('node')
+                self.menu_node = self.menu.addMenu('node')
 
-                if not nodeClicked.label.startswith('LDR') and not nodeClicked.label.startswith('SVR'):
-                    self.menuNode.addAction('open node directory', lambda: self.mainWindow.locate_content(nodeClicked.getNodeRootDir()))
+                if not node_clicked.label.startswith('LDR') and not node_clicked.label.startswith('SVR'):
+                    self.menu_node.addAction('open node directory', lambda: self.main_window.locate_content(node_clicked.getNodeRootDir()))
 
-                    if not os.path.exists(os.path.join(nodeClicked.getNodeRootDir(), 'locked')):
-                        self.menuNode.addSeparator()
-                        self.menuNode.addAction('cleanup node', self.cleanUpNodeCallback(nodeClicked))
-                        self.menuNode.addAction('delete node', self.removeObjectCallback(nodeClicked))
+                    if not os.path.exists(os.path.join(node_clicked.getNodeRootDir(), 'locked')):
+                        self.menu_node.addSeparator()
+                        self.menu_node.addAction('cleanup node', self.cleanUpNodeCallback(node_clicked))
+                        self.menu_node.addAction('delete node', self.removeObjectCallback(node_clicked))
 
-                        if os.path.exists(os.path.join(nodeClicked.getNodeRootDir(), 'checkedOut')):
-                            self.menuNode.addSeparator()
-                            self.menuNode.addAction('check in node', self.mainWindow.checkInCallback(nodeClicked))
+                        if os.path.exists(os.path.join(node_clicked.getNodeRootDir(), 'checkedOut')):
+                            self.menu_node.addSeparator()
+                            self.menu_node.addAction('check in node', self.main_window.checkInCallback(node_clicked))
 
                         else:
-                            self.menuNode.addSeparator()
-                            self.menuNode.addAction('check out node', self.mainWindow.checkOutCallback(nodeClicked))
+                            self.menu_node.addSeparator()
+                            self.menu_node.addAction('check out node', self.main_window.checkOutCallback(node_clicked))
 
-                elif nodeClicked.label.startswith('LDR'):
+                elif node_clicked.label.startswith('LDR'):
 
-                    self.menuNode.addAction('open source tree', lambda: self.mainWindow.get_content(None, node_label=nodeClicked.getLabel()))
-                    self.menuNode.addSeparator()
-                    self.menuNode.addAction('delete loader', self.removeObjectCallback(nodeClicked))
+                    self.menu_node.addAction('open source tree', lambda: self.main_window.get_content(None, node_label=node_clicked.getLabel()))
+                    self.menu_node.addSeparator()
+                    self.menu_node.addAction('delete loader', self.removeObjectCallback(node_clicked))
 
-                # elif nodeClicked.label.startswith('LDR_SHT'):
-                #     #self.menuNode.addAction('open shot', lambda: self.foo(nodeClicked.getNodeRootDir()))
-                #     self.menuNode.addAction('open shot tree', lambda: self.mainWindow.get_content(None, node_label=nodeClicked.getLabel()))
-                #     self.menuNode.addSeparator()
-                #     self.menuNode.addAction('delete shot loader', self.removeObjectCallback(nodeClicked))
+                # elif node_clicked.label.startswith('LDR_SHT'):
+                #     #self.menu_node.addAction('open shot', lambda: self.foo(node_clicked.getNodeRootDir()))
+                #     self.menu_node.addAction('open shot tree', lambda: self.main_window.get_content(None, node_label=node_clicked.getLabel()))
+                #     self.menu_node.addSeparator()
+                #     self.menu_node.addAction('delete shot loader', self.removeObjectCallback(node_clicked))
 
-                elif nodeClicked.label.startswith('SVR'):
-                    self.menuNode.addAction('delete saver', self.removeObjectCallback(nodeClicked))
-                    self.menuNode.addSeparator()
-                    self.menuNode.addAction('check out tree', self.mainWindow.checkOutCallback(nodeClicked))
+                elif node_clicked.label.startswith('SVR'):
+                    self.menu_node.addAction('delete saver', self.removeObjectCallback(node_clicked))
+                    self.menu_node.addSeparator()
+                    self.menu_node.addAction('check out tree', self.main_window.checkOutCallback(node_clicked))
 
-                # elif nodeClicked.label.startswith('SVR_SHT'):
-                #     self.menuNode.addAction('delete shot saver', self.removeObjectCallback(nodeClicked))
-                #     self.menuNode.addSeparator()
-                #     self.menuNode.addAction('check out shot', self.mainWindow.checkOutCallback(nodeClicked))
+                # elif node_clicked.label.startswith('SVR_SHT'):
+                #     self.menu_node.addAction('delete shot saver', self.removeObjectCallback(node_clicked))
+                #     self.menu_node.addSeparator()
+                #     self.menu_node.addAction('check out shot', self.main_window.checkOutCallback(node_clicked))
 
-                self.menuNode.addSeparator()
+                self.menu_node.addSeparator()
 
-            if isinstance(objectClicked, portInput) and not objectClicked.label == None:
-                self.menuInput = self.menu.addMenu('input')
+            if isinstance(object_clicked, portInput) and not object_clicked.label == None:
+                self.menu_input = self.menu.addMenu('input')
 
-                self.menuPathOps = self.menuInput.addMenu('clipboard')
-                self.menuInput.addSeparator()
-                self.menuInput.addAction('delete input', self.removeObjectCallback(objectClicked))
+                self.menu_path_ops = self.menu_input.addMenu('clipboard')
+                self.menu_input.addSeparator()
+                self.menu_input.addAction('delete input', self.removeObjectCallback(object_clicked))
 
-                inputLabel = objectClicked.getLabel()
-                inputDir = objectClicked.getInputDir()
+                input_label = object_clicked.getLabel()
+                input_dir = object_clicked.getInputDir()
 
-                outputNode = objectClicked.parentItem()
-                outputNodeRootDir = outputNode.getNodeRootDir()
+                output_node = object_clicked.parentItem()
+                output_node_root_dir = output_node.getNodeRootDir()
 
-                self.menuPathOps.addAction('copy input label', self.copyToClipboardCallback(inputLabel))
-                self.menuPathOps.addAction('copy absolute input path',  self.copyToClipboardCallback(os.path.join(inputDir, inputLabel)))
-                self.menuPathOps.addAction('copy relative input path',  self.copyToClipboardCallback(os.path.relpath(os.path.join(inputDir, inputLabel), os.path.join(outputNodeRootDir))))
+                self.menu_path_ops.addAction('copy input label', self.copyToClipboardCallback(input_label))
+                self.menu_path_ops.addAction('copy absolute input path',  self.copyToClipboardCallback(os.path.join(input_dir, input_label)))
+                self.menu_path_ops.addAction('copy relative input path',  self.copyToClipboardCallback(os.path.relpath(os.path.join(input_dir, input_label), os.path.join(output_node_root_dir))))
 
-            if isinstance(objectClicked, portOutput) and not objectClicked.parentItem().label.startswith('LDR'):
-                self.menuOutput = self.menu.addMenu('output')
+            if isinstance(object_clicked, portOutput) and not object_clicked.parentItem().label.startswith('LDR'):
+                self.menu_output = self.menu.addMenu('output')
 
-                self.menuPathOps = self.menuOutput.addMenu('clipboard')
-                self.menuOutput.addSeparator()
+                self.menu_path_ops = self.menu_output.addMenu('clipboard')
+                self.menu_output.addSeparator()
 
-                outputDir = objectClicked.getOutputDir()
-                outputLabel = objectClicked.getLabel()
-                liveDir = objectClicked.getLiveDir()
-                outputNodeRootDir = objectClicked.getOutputRootDir()
+                output_dir = object_clicked.getOutputDir()
+                output_label = object_clicked.getLabel()
+                live_dir = object_clicked.getLiveDir()
+                output_node_root_dir = object_clicked.getOutputRootDir()
 
-                versions = self.getVersions(outputDir)
+                versions = self.getVersions(output_dir)
 
-                self.menuOutput.addAction('open output directory', lambda: self.mainWindow.locate_content(outputDir))
+                self.menu_output.addAction('open output directory', lambda: self.main_window.locate_content(output_dir))
 
-                self.menuOutput.addSeparator()
+                self.menu_output.addSeparator()
 
-                self.menuPathOps.addAction('copy output label', self.copyToClipboardCallback(outputLabel))
-                self.menuPathOps.addAction('copy absolute output path',  self.copyToClipboardCallback(os.path.join(outputDir, 'current', outputLabel)))
-                self.menuPathOps.addAction('copy relative output path',  self.copyToClipboardCallback(os.path.relpath(os.path.join(outputDir, 'current', outputLabel), os.path.join(outputNodeRootDir))))
+                self.menu_path_ops.addAction('copy output label', self.copyToClipboardCallback(output_label))
+                self.menu_path_ops.addAction('copy absolute output path',  self.copyToClipboardCallback(os.path.join(output_dir, 'current', output_label)))
+                self.menu_path_ops.addAction('copy relative output path',  self.copyToClipboardCallback(os.path.relpath(os.path.join(output_dir, 'current', output_label), os.path.join(output_node_root_dir))))
 
-                self.menuOutput.addAction('cleanup output', self.cleanUpOutputCallback(objectClicked))
+                self.menu_output.addAction('cleanup output', self.cleanUpOutputCallback(object_clicked))
 
-                if os.path.exists(liveDir):
-                    self.menuOutput.addAction('remove pipe (live)', self.unmakeLiveCallback(liveDir))
+                if os.path.exists(live_dir):
+                    self.menu_output.addAction('remove pipe (live)', self.unmakeLiveCallback(live_dir))
 
-                self.menuOutput.addAction('delete output', self.removeObjectCallback(objectClicked))
-                self.menuOutput.addSeparator()
+                self.menu_output.addAction('delete output', self.removeObjectCallback(object_clicked))
+                self.menu_output.addSeparator()
 
-                self.menuOutput.addAction('create new version', self.createNewVersionCallback(outputDir))
+                self.menu_output.addAction('create new version', self.createNewVersionCallback(output_dir))
 
-                self.menuOutput.addSeparator()
+                self.menu_output.addSeparator()
 
                 for version in versions:
                     if not version == 'current':
 
-                        versionPath = os.path.join(outputDir, version)
+                        version_path = os.path.join(output_dir, version)
 
-                        outputDirContent = os.listdir(versionPath)
+                        output_dir_content = os.listdir(version_path)
 
-                        for item in outputDirContent:
-                            if item in self.exclusions:
+                        for item in output_dir_content:
+                            if item in SETTINGS.EXCLUSIONS:
                                 # try:
-                                os.remove(os.path.join(versionPath, item))
-                                outputDirContent.remove(item)
-                                logging.info('exclusion found and removed: %s' %(os.path.join(versionPath, item)))
+                                os.remove(os.path.join(version_path, item))
+                                output_dir_content.remove(item)
+                                logging.info('exclusion found and removed: %s' %(os.path.join(version_path, item)))
 
                             try:
-                                outputDirContent.remove('approved')
+                                output_dir_content.remove('approved')
                             except ValueError, e:
                                 print 'error captured:', e
                             try:
-                                outputDirContent.remove('requestApproval')
+                                output_dir_content.remove('requestApproval')
                             except ValueError, e:
                                 print 'error captured:', e
                             try:
-                                outputDirContent.remove('denied')
+                                output_dir_content.remove('denied')
                             except ValueError, e:
                                 print 'error captured:', e
-                        outputDirContent.remove(outputLabel)
+                        output_dir_content.remove(output_label)
 
-                        menuMakeLive = self.menuOutput.addMenu(version)
+                        menu_make_live = self.menu_output.addMenu(version)
 
-                        if self.currentPlatform == 'Darwin' or self.currentPlatform == 'Linux':
-                            if os.path.exists(liveDir):
-                                if not objectClicked.parentItem().label.startswith('LDR'):
-                                    if os.path.exists(os.path.join(outputDir, version, 'approved')):
-                                        if os.path.basename(os.readlink(liveDir)) == version:
-                                            menuMakeLive.setIcon(QIcon('src/icons/dotActiveApproved.png'))
-                                        elif not os.path.basename(os.readlink(liveDir)) == version:
-                                            menuMakeLive.setIcon(QIcon('src/icons/dotInactiveApproved.png'))
+                        if self.main_window.current_platform == 'Darwin' or self.main_window.current_platform == 'Linux':
+                            if os.path.exists(live_dir):
+                                if not object_clicked.parentItem().label.startswith('LDR'):
+                                    if os.path.exists(os.path.join(output_dir, version, 'approved')):
+                                        if os.path.basename(os.readlink(live_dir)) == version:
+                                            menu_make_live.setIcon(QIcon('src/icons/dotActiveApproved.png'))
+                                        elif not os.path.basename(os.readlink(live_dir)) == version:
+                                            menu_make_live.setIcon(QIcon('src/icons/dotInactiveApproved.png'))
 
-                                    elif os.path.exists(os.path.join(outputDir, version, 'waiting')):
-                                        if os.path.basename(os.readlink(liveDir)) == version:
-                                            menuMakeLive.setIcon(QIcon('src/icons/dotActiveRequested.png'))
-                                        elif not os.path.basename(os.readlink(liveDir)) == version:
-                                            menuMakeLive.setIcon(QIcon('src/icons/dotInactiveRequested.png'))
+                                    elif os.path.exists(os.path.join(output_dir, version, 'waiting')):
+                                        if os.path.basename(os.readlink(live_dir)) == version:
+                                            menu_make_live.setIcon(QIcon('src/icons/dotActiveRequested.png'))
+                                        elif not os.path.basename(os.readlink(live_dir)) == version:
+                                            menu_make_live.setIcon(QIcon('src/icons/dotInactiveRequested.png'))
 
-                                    elif os.path.exists(os.path.join(outputDir, version, 'denied')):
-                                        if os.path.basename(os.readlink(liveDir)) == version:
-                                            menuMakeLive.setIcon(QIcon('src/icons/dotActiveDenied.png'))
-                                        elif not os.path.basename(os.readlink(liveDir)) == version:
-                                            menuMakeLive.setIcon(QIcon('src/icons/dotInactiveDenied.png'))
+                                    elif os.path.exists(os.path.join(output_dir, version, 'denied')):
+                                        if os.path.basename(os.readlink(live_dir)) == version:
+                                            menu_make_live.setIcon(QIcon('src/icons/dotActiveDenied.png'))
+                                        elif not os.path.basename(os.readlink(live_dir)) == version:
+                                            menu_make_live.setIcon(QIcon('src/icons/dotInactiveDenied.png'))
 
                                     else:
-                                        if os.path.basename(os.readlink(liveDir)) == version:
-                                            menuMakeLive.setIcon(QIcon('src/icons/dotActive.png'))
-                                        elif not os.path.basename(os.readlink(liveDir)) == version:
-                                            menuMakeLive.setIcon(QIcon('src/icons/dotInactive.png'))
+                                        if os.path.basename(os.readlink(live_dir)) == version:
+                                            menu_make_live.setIcon(QIcon('src/icons/dotActive.png'))
+                                        elif not os.path.basename(os.readlink(live_dir)) == version:
+                                            menu_make_live.setIcon(QIcon('src/icons/dotInactive.png'))
 
                                 else:
-                                    menuMakeLive.setIcon(QIcon('src/icons/dotActive.png'))
+                                    menu_make_live.setIcon(QIcon('src/icons/dotActive.png'))
                             else:
-                                    menuMakeLive.setIcon(QIcon('src/icons/dotInactive.png'))
+                                    menu_make_live.setIcon(QIcon('src/icons/dotInactive.png'))
 
-                        if os.path.exists(os.path.join(versionPath, 'approved')):
-                            menuMakeLive.addAction('remove approval', self.removeApproveVersionCallback(versionPath))
-                            menuMakeLive.addSeparator()
+                        if os.path.exists(os.path.join(version_path, 'approved')):
+                            menu_make_live.addAction('remove approval', self.removeApproveVersionCallback(version_path))
+                            menu_make_live.addSeparator()
                         else:
-                            if not os.path.exists(os.path.join(versionPath, 'denied')):
-                                menuMakeLive.addAction('approve', self.approveVersionCallback(versionPath))
-                                menuMakeLive.addAction('deny', self.denyVersionCallback(versionPath))
+                            if not os.path.exists(os.path.join(version_path, 'denied')):
+                                menu_make_live.addAction('approve', self.approveVersionCallback(version_path))
+                                menu_make_live.addAction('deny', self.denyVersionCallback(version_path))
 
-                            if os.path.exists(os.path.join(versionPath, 'waiting')):
-                                menuMakeLive.addAction('cancel approval request', self.removeApproveRequestVersionCallback(versionPath))
+                            if os.path.exists(os.path.join(version_path, 'waiting')):
+                                menu_make_live.addAction('cancel approval request', self.removeApproveRequestVersionCallback(version_path))
                             else:
-                                menuMakeLive.addAction('request approval', self.approveRequestCallback(versionPath))
+                                menu_make_live.addAction('request approval', self.approveRequestCallback(version_path))
 
-                            menuMakeLive.addSeparator()
+                            menu_make_live.addSeparator()
 
-                        # if outputLabel.startswith('SEQ') or outputLabel.startswith('TEX') or outputLabel.startswith('PLB'):
-                        # print os.path.splitext(outputDirContent[0])[1]
+                        # if output_label.startswith('SEQ') or output_label.startswith('TEX') or output_label.startswith('PLB'):
+                        # print os.path.splitext(output_dir_content[0])[1]
                         # TODO: error here
                         try:
-                            if os.path.splitext(outputDirContent[0])[1] in self.imageExtensions or os.path.splitext(outputDirContent[0])[1] in self.movieExtensions:
+                            if os.path.splitext(output_dir_content[0])[1] in SETTINGS.IMAGE_EXTENSIONS or os.path.splitext(output_dir_content[0])[1] in SETTINGS.MOVIE_EXTENSIONS:
                                 try:
-                                    menuMakeLive.addAction('view', self.viewVersion(os.path.join(versionPath, outputDirContent[0])))
+                                    menu_make_live.addAction('view', self.viewVersion(os.path.join(version_path, output_dir_content[0])))
                                     try:
-                                        if self.mainWindow.rv == True:
-                                            menuMakeLive.addAction('compare to live', self.compareVersion(os.path.join(versionPath, outputDirContent[0]), os.path.join(liveDir, outputDirContent[0])))
-                                            menuMakeLive.addAction('difference to live', self.differenceVersion(os.path.join(versionPath, outputDirContent[0]), os.path.join(liveDir, outputDirContent[0])))
+                                        if self.main_window.rv == True:
+                                            menu_make_live.addAction('compare to live', self.compareVersion(os.path.join(version_path, output_dir_content[0]), os.path.join(live_dir, output_dir_content[0])))
+                                            menu_make_live.addAction('difference to live', self.differenceVersion(os.path.join(version_path, output_dir_content[0]), os.path.join(live_dir, output_dir_content[0])))
 
                                     except:
                                         print 'compare/difference to live version not possible'
@@ -358,48 +351,48 @@ class SceneView(QGraphicsScene):
                         except IndexError, e:
                             print 'error captured', e
 
-                        menuMakeLive.addAction('open directory', self.mainWindow.locate_content_callback(versionPath))
+                        menu_make_live.addAction('open directory', self.main_window.locate_content_callback(version_path))
 
-                        deleteVersionAction = menuMakeLive.addAction('delete version', self.deleteContentCallback(versionPath))
+                        delete_version_action = menu_make_live.addAction('delete version', self.deleteContentCallback(version_path))
 
-                        makeCurrentAction = menuMakeLive.addAction('make current', self.makeCurrentCallback(versionPath))
+                        make_current_action = menu_make_live.addAction('make current', self.makeCurrentCallback(version_path))
 
-                        if self.currentPlatform == 'Darwin' or self.currentPlatform == 'Linux':
-                            if os.path.join(outputDir, version) == os.path.join(outputDir, os.readlink(os.path.join(outputDir, 'current'))):
-                                deleteVersionAction.setEnabled(False)
+                        if self.main_window.current_platform == 'Darwin' or self.main_window.current_platform == 'Linux':
+                            if os.path.join(output_dir, version) == os.path.join(output_dir, os.readlink(os.path.join(output_dir, 'current'))):
+                                delete_version_action.setEnabled(False)
                             else:
-                                deleteVersionAction.setEnabled(True)
-                        elif self.currentPlatform == 'Windows':
+                                delete_version_action.setEnabled(True)
+                        elif self.main_window.current_platform == 'Windows':
 
-                            print os.path.join(outputDir, version)
-                            print os.path.join(outputDir, 'current')
-                            print os.path.join(outputDir, os.path.realpath(os.path.join(outputDir, 'current')))
+                            print os.path.join(output_dir, version)
+                            print os.path.join(output_dir, 'current')
+                            print os.path.join(output_dir, os.path.realpath(os.path.join(output_dir, 'current')))
 
-                        makeLiveAction = menuMakeLive.addAction('make live', self.makeLiveCallback(versionPath))
+                        make_live_action = menu_make_live.addAction('make live', self.makeLiveCallback(version_path))
 
-                        if len(outputDirContent) > 0:
-                            makeLiveAction.setEnabled(True)
+                        if len(output_dir_content) > 0:
+                            make_live_action.setEnabled(True)
 
                         else:
-                            makeLiveAction.setEnabled(False)
-                            makeLiveAction.setText(makeLiveAction.text() + ' (no content)')
+                            make_live_action.setEnabled(False)
+                            make_live_action.setText(make_live_action.text() + ' (no content)')
 
                         try:
-                            if os.path.join(outputDir, os.path.basename(os.readlink(liveDir))) == os.path.join(outputDir, version):
-                                makeLiveAction.setEnabled(False)
-                                makeLiveAction.setText(makeLiveAction.text() + ' (already live)')
-                                deleteVersionAction.setEnabled(False)
+                            if os.path.join(output_dir, os.path.basename(os.readlink(live_dir))) == os.path.join(output_dir, version):
+                                make_live_action.setEnabled(False)
+                                make_live_action.setText(make_live_action.text() + ' (already live)')
+                                delete_version_action.setEnabled(False)
 
                         except OSError, e:
                             print 'no live version found:', e
-                            makeLiveAction.setEnabled(True)
+                            make_live_action.setEnabled(True)
 
-                        if self.currentPlatform == 'Darwin' or self.currentPlatform == 'Linux':
-                            if versionPath == os.path.join(outputDir, os.path.basename(os.readlink(os.path.join(outputDir, 'current')))):
-                                makeCurrentAction.setEnabled(False)
-                        elif self.currentPlatform == 'Windows':
-                            if versionPath == os.path.join(outputDir, os.path.basename(os.path.realpath(os.path.join(outputDir, 'current')))):
-                                makeCurrentAction.setEnabled(False)
+                        if self.main_window.current_platform == 'Darwin' or self.main_window.current_platform == 'Linux':
+                            if version_path == os.path.join(output_dir, os.path.basename(os.readlink(os.path.join(output_dir, 'current')))):
+                                make_current_action.setEnabled(False)
+                        elif self.main_window.current_platform == 'Windows':
+                            if version_path == os.path.join(output_dir, os.path.basename(os.path.realpath(os.path.join(output_dir, 'current')))):
+                                make_current_action.setEnabled(False)
 
         except AttributeError, e:
             print 'error captured:', e
@@ -422,7 +415,7 @@ class SceneView(QGraphicsScene):
 
         denyVersionFilePath = os.path.join(versionPath, 'denied')
         denyVersionFile = open(denyVersionFilePath, 'a')
-        denyVersionFile.write(self.mainWindow.user)
+        denyVersionFile.write(self.main_window.user)
         # self.menu.show()
 
     def approveRequestCallback(self, versionPath):
@@ -440,7 +433,7 @@ class SceneView(QGraphicsScene):
 
         approveRequestFilePath = os.path.join(versionPath, 'waiting')
         approveRequestFile = open(approveRequestFilePath, 'a')
-        approveRequestFile.write(self.mainWindow.user)
+        approveRequestFile.write(self.main_window.user)
         approveRequestFile.close()
 
     def removeApproveRequestVersionCallback(self, versionPath):
@@ -458,8 +451,8 @@ class SceneView(QGraphicsScene):
         return callback
 
     def removeApproveVersion(self, versionPath):
-        approveFilePath = os.path.join(versionPath, 'approved')
-        os.remove(approveFilePath)
+        approve_file_path = os.path.join(versionPath, 'approved')
+        os.remove(approve_file_path)
 
     def approveVersionCallback(self, versionPath):
         def callback():
@@ -474,39 +467,39 @@ class SceneView(QGraphicsScene):
         except:
             pass
 
-        approveFilePath = os.path.join(versionPath, 'approved')
-        approveFile = open(approveFilePath, 'a')
-        approveFile.write(self.mainWindow.user)
-        approveFile.close()
+        approve_file_path = os.path.join(versionPath, 'approved')
+        approve_file = open(approve_file_path, 'a')
+        approve_file.write(self.main_window.user)
+        approve_file.close()
 
     def cleanUpOutputProc(self, portOutput):
-        outputDir = portOutput.getOutputDir()
-        outputVersions = self.getVersions(outputDir)
-        outputVersions.remove('current')
-        for exclusion in self.exclusions:
+        output_dir = portOutput.getOutputDir()
+        output_versions = self.getVersions(output_dir)
+        output_versions.remove('current')
+        for exclusion in SETTINGS.EXCLUSIONS:
             try:
-                outputVersions.remove(exclusion)
+                output_versions.remove(exclusion)
             except:
                 pass
 
-        currentVersion = os.path.realpath(os.path.join(outputDir, 'current'))
-        outputVersions.remove(os.path.basename(currentVersion))
-        liveDir = portOutput.getLiveDir()
+        current_version = os.path.realpath(os.path.join(output_dir, 'current'))
+        output_versions.remove(os.path.basename(current_version))
+        live_dir = portOutput.getLiveDir()
 
-        if os.path.exists(liveDir):
-            liveDirDest = os.path.realpath(liveDir)
-            liveVersion = os.path.basename(liveDirDest)
+        if os.path.exists(live_dir):
+            live_dir_dest = os.path.realpath(live_dir)
+            live_version = os.path.basename(live_dir_dest)
             try:
-                outputVersions.remove(liveVersion)
+                output_versions.remove(live_version)
             except:
                 print 'outputCurrent = live'
 
         else:
-            print 'no liveDir'
+            print 'no live_dir'
 
-        for outputVersion in outputVersions:
-            self.deleteContent(os.path.join(outputDir, outputVersion))
-            print '%s removed' %(os.path.join(outputDir, outputVersion))
+        for output_version in output_versions:
+            self.deleteContent(os.path.join(output_dir, output_version))
+            print '%s removed' %(os.path.join(output_dir, output_version))
         print 'output %s cleaned up' %(portOutput.getLabel())
 
     def cleanUpNodeCallback(self, node):
@@ -515,7 +508,7 @@ class SceneView(QGraphicsScene):
         return callback
 
     def cleanUpNode(self, node):
-        reply = QMessageBox.warning(self.mainWindow, str('about to cleanup item'), str('are you sure to \ncleanup all outputs of %s?' %(node.getLabel())), QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        reply = QMessageBox.warning(self.main_window, str('about to cleanup item'), str('are you sure to \ncleanup all outputs of %s?' %(node.getLabel())), QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
 
         if reply == QMessageBox.Yes:
             for output in node.outputList:
@@ -527,7 +520,7 @@ class SceneView(QGraphicsScene):
         return callback
 
     def cleanUpOutput(self, portOutput):
-        reply = QMessageBox.warning(self.mainWindow, str('about to cleanup item'), str('are you sure to \ncleanup %s?' %(portOutput.getLabel())), QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        reply = QMessageBox.warning(self.main_window, str('about to cleanup item'), str('are you sure to \ncleanup %s?' %(portOutput.getLabel())), QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
 
         if reply == QMessageBox.Yes:
             self.cleanUpOutputProc(portOutput)
@@ -545,19 +538,19 @@ class SceneView(QGraphicsScene):
         def callback():
             cwd = os.getcwd()
 
-            outputDir = os.path.basename(os.path.dirname(versionDir))
+            output_dir = os.path.basename(os.path.dirname(versionDir))
 
-            liveDir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(versionDir))), 'live')            #print liveDir
+            live_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(versionDir))), 'live')            #print live_dir
 
-            os.chdir(liveDir)
+            os.chdir(live_dir)
 
-            if os.path.islink(outputDir):
-                os.unlink(outputDir)
+            if os.path.islink(output_dir):
+                os.unlink(output_dir)
 
-            if self.currentPlatform == "Darwin" or self.currentPlatform == "Linux":
-                os.symlink(os.path.relpath(versionDir, liveDir), outputDir)
-            elif self.currentPlatform == "Windows":
-                cmdstring = str("mklink /D " + outputDir + " " + os.path.relpath(versionDir, liveDir))
+            if self.main_window.current_platform == "Darwin" or self.main_window.current_platform == "Linux":
+                os.symlink(os.path.relpath(versionDir, live_dir), output_dir)
+            elif self.main_window.current_platform == "Windows":
+                cmdstring = str("mklink /D " + output_dir + " " + os.path.relpath(versionDir, live_dir))
                 os.system(cmdstring)
 
             os.chdir(cwd)
@@ -570,25 +563,25 @@ class SceneView(QGraphicsScene):
         return callback
 
     def makeCurrent(self, currentDir):
-        fullOutputDir = os.path.dirname(currentDir)
+        full_output_dir = os.path.dirname(currentDir)
 
         try:
-            if self.currentPlatform == "Darwin":
-                os.unlink(os.path.join(fullOutputDir, 'current'))
-            elif self.currentPlatform == "Windows":
-                os.rmdir(os.path.join(fullOutputDir, 'current'))
+            if self.main_window.current_platform == "Darwin":
+                os.unlink(os.path.join(full_output_dir, 'current'))
+            elif self.main_window.current_platform == "Windows":
+                os.rmdir(os.path.join(full_output_dir, 'current'))
         except:
             print 'cannot remove symlink or not available'
 
         cwd = os.getcwd()
         os.chdir(os.path.join(os.path.dirname(currentDir)))
 
-        if self.currentPlatform == "Darwin":
+        if self.main_window.current_platform == "Darwin":
             # TODO: need to create relative links
 
             os.symlink(os.path.basename(currentDir), 'current')
 
-        elif self.currentPlatform == "Windows":
+        elif self.main_window.current_platform == "Windows":
             logging.info('creating windows symlink to %s' %(os.path.join(os.path.dirname(currentDir))))
 
             cmdstring = str("mklink /D " + os.path.join(os.path.dirname(currentDir), 'current') + " " + currentDir)
@@ -597,30 +590,30 @@ class SceneView(QGraphicsScene):
 
         os.chdir(cwd)
 
-    def createNewVersion(self, fullOutputDir):
-        newVersion = datetime.datetime.now().strftime('%Y-%m-%d_%H%M-%S')
-        newVersionDir = os.path.join(fullOutputDir, newVersion)
-        os.makedirs(newVersionDir, mode=0777)
-        open(os.path.join(fullOutputDir, newVersion, os.path.basename(fullOutputDir)), 'a').close()
+    def createNewVersion(self, full_output_dir):
+        new_version = datetime.datetime.now().strftime('%Y-%m-%d_%H%M-%S')
+        new_version_dir = os.path.join(full_output_dir, new_version)
+        os.makedirs(new_version_dir, mode=0777)
+        open(os.path.join(full_output_dir, new_version, os.path.basename(full_output_dir)), 'a').close()
 
-        self.makeCurrent(newVersionDir)
+        self.makeCurrent(new_version_dir)
 
-    def createNewVersionCallback(self, fullOutputDir):
+    def createNewVersionCallback(self, full_output_dir):
         def callback():
-            self.createNewVersion(fullOutputDir)
+            self.createNewVersion(full_output_dir)
         return callback
 
-    def getVersions(self, fullOutputDir):
-        versions = os.listdir(fullOutputDir)
+    def getVersions(self, full_output_dir):
+        versions = os.listdir(full_output_dir)
         for version in versions:
-            if version in self.exclusions:
+            if version in SETTINGS.EXCLUSIONS:
                 try:
-                    os.remove(os.path.join(fullOutputDir, version))
+                    os.remove(os.path.join(full_output_dir, version))
                     versions.remove(version)
-                    logging.info('exclusion found and removed: %s' %(os.path.join(fullOutputDir, version)))
+                    logging.info('exclusion found and removed: %s' %(os.path.join(full_output_dir, version)))
                 except:
                     versions.remove(version)
-                    logging.warning('exclusion found but not removed: %s' %(os.path.join(fullOutputDir, version)))
+                    logging.warning('exclusion found but not removed: %s' %(os.path.join(full_output_dir, version)))
         return versions
 
     def foo(self, arg):
@@ -632,77 +625,80 @@ class SceneView(QGraphicsScene):
         return callback
 
     def newOutputAuto(self, node, defaultOutput):
-        nodeRootDir = node.getNodeRootDir()
+        node_root_dir = node.getNodeRootDir()
 
-        newOutputDir = os.path.join(str(nodeRootDir), 'output', str(defaultOutput))
+        new_output_dir = os.path.join(str(node_root_dir), 'output', str(defaultOutput))
 
-        os.makedirs(newOutputDir, mode=0777)
+        os.makedirs(new_output_dir, mode=0777)
 
-        self.createNewVersion(newOutputDir)
+        self.createNewVersion(new_output_dir)
 
     def newOutputDialog(self, node):
 
-        currentContent = str(self.mainWindow._current_content)
-        # currentProject = str(self.mainWindow.projectComboBox.currentText())
-        outputs = self.mainWindow._outputs
+        # current_content = str(self.main_window._current_content)
+        # currentProject = str(self.main_window.projectComboBox.currentText())
+        # outputs = self.main_window.outputs
 
-        outputDir = os.path.join(self.projectsRoot, currentContent, str(node.data(0)), 'output')
+        # print self.main_window._current_content
+        #
+        # output_dir = os.path.join(self.main_window.projects_root, 'content', self.main_window._current_content['content'], node.data(0), 'output')
+        # print output_dir
 
         # print node._label
 
-        text, ok, outputIndex = newOutputUI.getNewOutputData(outputDir, outputs, self.mainWindow, node)
+        text, ok = NewOutputUI.get_new_output_data(self.main_window, node)
 
         if ok:
 
-            nodeRootDir = node.getNodeRootDir()
+            node_root_dir = node.getNodeRootDir()
 
-            newOutputDir = os.path.join(str(nodeRootDir), 'output', str(text))
+            new_output_dir = os.path.join(str(node_root_dir), 'output', str(text))
 
-            if os.path.exists(newOutputDir):
+            if os.path.exists(new_output_dir):
                 node.sendFromNodeToBox('--- output already exists' + '\n')
                 
             else:
                 node.newOutput(self, str(text))
-                os.makedirs(newOutputDir, mode=0777)
+                os.makedirs(new_output_dir, mode=0777)
 
-                self.createNewVersion(newOutputDir)
+                self.createNewVersion(new_output_dir)
 
                 node.sendFromNodeToBox(str(datetime.datetime.now()))
                 node.sendFromNodeToBox(':' + '\n')
                 node.sendFromNodeToBox('--- new output created' + '\n')
 
     def newOutputDialogOld(self, node):
-        nodeLabel = node.getLabel()
+        # node_label = node.getLabel()
 
-        text, ok = QInputDialog.getText(self.mainWindow, 'create new output in %s' %nodeLabel, 'enter output name:')
+        text, ok = QInputDialog.getText(self.main_window, 'create new output in %s' % node.label, 'enter output name:')
 
         if ok:
-            nodeRootDir = node.getNodeRootDir()
+            node_root_dir = node.getNodeRootDir()
 
-            newNodeDir = os.path.join(str(nodeRootDir), 'output', str(text))
+            new_node_dir = os.path.join(str(node_root_dir), 'output', str(text))
             
-            if os.path.exists(newNodeDir):
+            if os.path.exists(new_node_dir):
                 node.sendFromNodeToBox('--- output already exists' + '\n')
                 
             else:
                 # output = node.newOutput(self, str(text))
-                os.makedirs(newNodeDir, mode=0777)
+                os.makedirs(new_node_dir, mode=0777)
                 node.sendFromNodeToBox(str(datetime.datetime.now()))
                 node.sendFromNodeToBox(':' + '\n')
                 node.sendFromNodeToBox('--- new output created' + '\n')
 
     def newLoaderDialog(self, pos):
         def callback():
-            activeItemPath = os.path.join(self.mainWindow._projects_root, self.mainWindow._current_project, 'content', self.mainWindow._current_content['content'], self.mainWindow._current_content_item)
+            active_item_path = os.path.join(self.main_window.projects_root, self.main_window._current_project, 'content', self.main_window._current_content['content'], self.main_window._current_content_item)
 
-            ok, loaderName, sourceSaverLocation = NewNodeUI.get_new_loader_data(activeItemPath, self.mainWindow)
+            ok, loaderName, sourceSaverLocation = NewLoaderUI.get_new_loader_data(active_item_path, self.main_window)
 
             if ok:
-                newLoaderPath = os.path.join(activeItemPath, loaderName)
+                newLoaderPath = os.path.join(active_item_path, loaderName)
 
-                srcParentDirs = os.sep.join([str(os.path.relpath(self.projectsRoot, sourceSaverLocation))]) + os.sep
+                srcParentDirs = os.sep.join([str(os.path.relpath(self.main_window.projects_root, sourceSaverLocation))]) + os.sep
 
-                src = os.sep.join([str(os.path.relpath(sourceSaverLocation, self.projectsRoot))])
+                src = os.sep.join([str(os.path.relpath(sourceSaverLocation, self.main_window.projects_root))])
 
                 relPath = os.sep.join([str(srcParentDirs + src)])
 
@@ -710,33 +706,28 @@ class SceneView(QGraphicsScene):
                 inputLinkLive = os.path.join(newLoaderPath, 'live')
 
                 if not os.path.exists(newLoaderPath):
-                    propertyNode = ET.Element('propertyNode')
-
-                    posX = str(int(float(round(pos.x()))))
-                    posY = str(int(float(round(pos.y()))))
-
-                    ET.SubElement(propertyNode, 'node', { 'positionX':posX, 'positionY':posY })
-                    
-                    # tree = ET.ElementTree(propertyNode)
-                    
-                    propertyNodePath = os.path.join(newLoaderPath, 'propertyNode.xml')
-
                     os.makedirs(newLoaderPath, mode=0777)
-
                     os.makedirs(os.path.join(newLoaderPath, 'input'), mode=0777)
 
                     os.symlink(os.path.join(relPath, 'input'), inputLinkOutput)
                     os.symlink(os.path.join(relPath, 'input'), inputLinkLive)
 
-                    xmlDoc = open(propertyNodePath, 'w')
+                    meta_task_path = os.path.join(newLoaderPath, 'meta_task.json')
 
-                    xmlDoc.write('<?xml version="1.0"?>')
-                    xmlDoc.write(ET.tostring(propertyNode))
+                    meta_task = {}
 
-                    xmlDoc.close()
+                    meta_task['pos_x'] = pos.x()
+                    meta_task['pos_y'] = pos.y()
+                    meta_task['task'] = 'LDR'
+                    meta_task['operating_system'] = self.main_window.operating_system
+                    meta_task['creator'] = self.main_window.user
+
+                    with open(meta_task_path, 'w') as outfile:
+                        json.dump(meta_task, outfile)
+                        outfile.close()
                     
-                    newNode = node(self.mainWindow, self, propertyNodePath)
-                    newNode.addText(self, loaderName)
+                    new_node = node(self.main_window, self, newLoaderPath)
+                    new_node.addText(loaderName)
 
                 else:
                     print 'asset loader already exists'
@@ -744,35 +735,31 @@ class SceneView(QGraphicsScene):
 
     def newSaverDialog(self, pos):
         def callback():
-            newSaverName = 'SVR_' + self.mainWindow._current_content['abbreviation'] + '__' + self.mainWindow._current_content_item
+            newSaverName = 'SVR_' + self.main_window._current_content['abbreviation'] + '__' + self.main_window._current_content_item
 
-            newSaverPath = os.path.join(self.mainWindow._projects_root, self.mainWindow._current_project, 'content', self.mainWindow._current_content['content'], self.mainWindow._current_content_item, newSaverName)
+            newSaverPath = os.path.join(self.main_window.projects_root, self.main_window._current_project, 'content', self.main_window._current_content['content'], self.main_window._current_content_item, newSaverName)
 
             if not os.path.exists(newSaverPath):
-                propertyNode = ET.Element('propertyNode')
-                
-                posX = str(int(float(round(pos.x()))))
-                posY = str(int(float(round(pos.y()))))
-
-                ET.SubElement(propertyNode, 'node', { 'positionX':posX, 'positionY':posY })
-
-                # tree = ET.ElementTree(propertyNode)
-                
-                propertyNodePath = os.path.join(newSaverPath, 'propertyNode.xml')
-
                 os.makedirs(newSaverPath, mode=0777)
                 os.makedirs(os.path.join(newSaverPath, 'output'), mode=0777)
                 os.makedirs(os.path.join(newSaverPath, 'input'), mode=0777)
 
-                xmlDoc = open(propertyNodePath, 'w')
-                 
-                xmlDoc.write('<?xml version="1.0"?>')
-                xmlDoc.write(ET.tostring(propertyNode))
+                meta_task_path = os.path.join(newSaverPath, 'meta_task.json')
 
-                xmlDoc.close()
+                meta_task = {}
+
+                meta_task['pos_x'] = pos.x()
+                meta_task['pos_y'] = pos.y()
+                meta_task['task'] = 'SVR'
+                meta_task['operating_system'] = self.main_window.operating_system
+                meta_task['creator'] = self.main_window.user
+
+                with open(meta_task_path, 'w') as outfile:
+                    json.dump(meta_task, outfile)
+                    outfile.close()
                 
-                newNode = node(self.mainWindow, self, propertyNodePath)
-                newNode.addText(self, newSaverName)
+                new_node = node(main_window=self.main_window, scene=self, meta_task_path=meta_task_path)
+                new_node.addText(newSaverName)
 
             else:
                 print 'asset saver already exists'
@@ -781,18 +768,18 @@ class SceneView(QGraphicsScene):
 
     def new_node_dialog(self, pos):
         def callback():
-            tasks = self.mainWindow.getTasks()
+            tasks = self.main_window.getTasks()
 
             meta_tool = {}
             meta_task = {}
             
-            node_dir = os.path.join(self.mainWindow._projects_root,
-                                    self.mainWindow._current_project,
+            node_dir = os.path.join(self.main_window.projects_root,
+                                    self.main_window._current_project,
                                     'content',
-                                    self.mainWindow._current_content['content'],
-                                    self.mainWindow._current_content_item)
+                                    self.main_window._current_content['content'],
+                                    self.main_window._current_content_item)
 
-            node_name, ok, tool_data, task_index = NewNodeUI.get_new_node_data(node_dir, tasks, self.mainWindow)
+            node_name, ok, tool_data, task_index = NewNodeUI.get_new_node_data(node_dir, tasks, self.main_window)
 
             if ok:
                 new_node_path = os.path.join(node_dir, str(node_name))
@@ -803,10 +790,9 @@ class SceneView(QGraphicsScene):
                 meta_task['pos_x'] = pos_x
                 meta_task['pos_y'] = pos_y
 
-                meta_task['creator'] = self.mainWindow.user
-                meta_task['operating_system'] = self.mainWindow.operating_system
-                # print self.mainWindow._tasks[task_index][1][2]
-                meta_task['task'] = self.mainWindow._tasks[task_index][1][1]
+                meta_task['creator'] = self.main_window.user
+                meta_task['operating_system'] = self.main_window.operating_system
+                meta_task['task'] = self.main_window.tasks[task_index][1][1]
 
                 meta_tool['family'] = tool_data['family']
                 meta_tool['architecture_fallback'] = tool_data['architecture_fallback']
@@ -844,12 +830,14 @@ class SceneView(QGraphicsScene):
 
                 with open(meta_task_path, 'w') as outfile:
                     json.dump(meta_task, outfile)
+                    outfile.close()
 
                 with open(meta_tool_path, 'w') as outfile:
                     json.dump(meta_tool, outfile)
+                    outfile.close()
                 
-                new_node = node(main_window=self.mainWindow, scene=self, property_node_path=property_node_path, meta_task_path=meta_task_path, meta_tool_path=meta_tool_path)
-                new_node.addText(self, str(node_name))
+                new_node = node(main_window=self.main_window, scene=self, property_node_path=property_node_path, meta_task_path=meta_task_path, meta_tool_path=meta_tool_path)
+                new_node.addText(str(node_name))
 
                 for tool_default_output in tool_data['default_outputs']:
                     self.newOutputAuto(new_node, tool_default_output)
@@ -857,7 +845,7 @@ class SceneView(QGraphicsScene):
         return callback
 
     def removeObject(self, item):
-        reply = QMessageBox.warning(self.mainWindow, str('about to delete item'), str('are you sure to \ndelete %s %s \nand its contents?' %(item.data(2), item.label)), QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        reply = QMessageBox.warning(self.main_window, str('about to delete item'), str('are you sure to \ndelete %s %s \nand its contents?' %(item.data(2), item.label)), QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
 
         if reply == QMessageBox.Yes:
 
@@ -891,9 +879,9 @@ class SceneView(QGraphicsScene):
                 inputDir = item.getInputDir()
 
                 try:
-                    if self.currentPlatform == "Darwin":
+                    if self.main_window.current_platform == "Darwin":
                         os.unlink(inputDir)
-                    elif self.currentPlatform == "Windows":
+                    elif self.main_window.current_platform == "Windows":
                         os.rmdir(inputDir)
                         # windows removes the contents of the connected output folder as well using shutil.rmtree :(((
                         # and if inputDir is not empty, it cannot remove the link/directory because it's not empty :(((
@@ -925,9 +913,9 @@ class SceneView(QGraphicsScene):
             inputDir = port.getInputDir()
 
             try:
-                if self.currentPlatform == "Darwin":
+                if self.main_window.current_platform == "Darwin":
                     os.unlink(inputDir)
-                elif self.currentPlatform == "Windows":
+                elif self.main_window.current_platform == "Windows":
                     os.rmdir(inputDir)
             except:
                 print 'cannot remove symlink 2345'
@@ -937,11 +925,11 @@ class SceneView(QGraphicsScene):
         
         item.parentItem().outputs.remove(item)
 
-        outputDir = item.getOutputDir()
-        liveDir = item.getLiveDir()
-        if os.path.exists(liveDir):
-            os.unlink(liveDir)
-        shutil.rmtree(outputDir)
+        output_dir = item.getOutputDir()
+        live_dir = item.getLiveDir()
+        if os.path.exists(live_dir):
+            os.unlink(live_dir)
+        shutil.rmtree(output_dir)
 
         self.removeItem(item)
 
@@ -960,11 +948,11 @@ class SceneView(QGraphicsScene):
         except:
             print 'port is input portal! mustn\'t delete!'
 
-    def newNode(self, pos):
-        def callback():
-            node(self.mainWindow, pos, self)
-
-        return callback
+    # def new_node(self, pos):
+    #     def callback():
+    #         node(self.main_window, pos, self)
+    #
+    #     return callback
     
     def printContextMenuAction(self, item):
         def callback():
@@ -997,7 +985,7 @@ class SceneView(QGraphicsScene):
                 self.nodeDeselect.emit()
 
             modifiers = QApplication.keyboardModifiers()
-            pos = event.scenePos()
+            # pos = event.scenePos()
             if modifiers == Qt.ControlModifier:
                 # print "Control + Click: (%d, %d)" % (pos.x(), pos.y())
                 pass
@@ -1063,7 +1051,7 @@ class SceneView(QGraphicsScene):
                             parentNode.sendFromNodeToBox('--- don\'t connect loader to saver' + '\n')
                             logging.info('tried to connect loader to saver, which is not possible')
                         else:
-                            connectionLine = bezierLine(self.mainWindow, self, startItems[0], endItems[0], QPainterPath(startItems[0].scenePos()))
+                            connectionLine = bezierLine(self.main_window, self, startItems[0], endItems[0], QPainterPath(startItems[0].scenePos()))
 
                             endItems[0].parentItem().inputs.append(endItems[0])
                             endItems[0].connection.append(connectionLine)
@@ -1080,14 +1068,14 @@ class SceneView(QGraphicsScene):
                             startItemOutputDir = os.path.join(str(startItemRootDir), 'live', str(startItemOutputLabel))
                             endItemInputDir = os.path.join(str(endItemRootDir), 'input', str(startItemOutputLabel))
 
-                            # currentContent = str(self.mainWindow._current_content)
+                            # current_content = str(self.main_window._current_content)
 
                             cwd = os.getcwd()
                             dst = endItemInputDir
 
-                            srcParentDirs = os.sep.join([str(os.path.relpath(self.projectsRoot, os.path.dirname(dst)))]) + os.sep
+                            srcParentDirs = os.sep.join([str(os.path.relpath(self.main_window.projects_root, os.path.dirname(dst)))]) + os.sep
 
-                            src = os.sep.join([str(os.path.relpath(startItemOutputDir, self.projectsRoot))])
+                            src = os.sep.join([str(os.path.relpath(startItemOutputDir, self.main_window.projects_root))])
 
                             relPath = os.sep.join([str(srcParentDirs + src)])
 
@@ -1096,13 +1084,13 @@ class SceneView(QGraphicsScene):
 
                             else:
                                 inputLink = os.path.dirname(dst) + os.sep + os.path.basename(os.path.dirname(os.path.dirname(startItemRootDir))) + '.' + os.path.basename(os.path.dirname(startItemRootDir)) + '.' + os.path.basename(startItemRootDir) + '.' + os.path.basename(dst)
-                            if self.currentPlatform == "Darwin":
+                            if self.main_window.current_platform == "Darwin":
                                 try:
                                     os.symlink(relPath, inputLink)
                                 except:
                                     pass
                                 endItems[0].setInputDir(inputLink)
-                            elif self.currentPlatform == "Windows":
+                            elif self.main_window.current_platform == "Windows":
                                 cmdstring = "mklink /D " + inputLink + " " + src
                                 os.chdir(os.path.dirname(endItemInputDir))
                                 os.system(cmdstring)

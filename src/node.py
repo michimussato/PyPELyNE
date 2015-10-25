@@ -21,7 +21,7 @@ import xml.etree.ElementTree as ET
 class node(QGraphicsItem, QObject):
     nodeClicked = pyqtSignal()
 
-    def __init__(self, main_window=None, scene=None, property_node_path = None, meta_task_path = None, meta_tool_path = None):
+    def __init__(self, main_window=None, scene=None, property_node_path=None, meta_task_path=None, meta_tool_path=None):
         super(node, self).__init__(None, scene)
 
         try:
@@ -54,17 +54,17 @@ class node(QGraphicsItem, QObject):
 
 
 
-        self.mainWindow = main_window
-        self.pypelyneRoot = self.mainWindow.pypelyneRoot
-        self.user = self.mainWindow._user
+        self.main_window = main_window
+        # self.pypelyne_root = self.main_window.pypelyne_root
+        self.user = self.main_window.user
         self.location = self.getNodeRootDir()
         self.loaderSaver = os.path.basename(self.location)[:7]
         self.asset = os.path.dirname(self.location)
         self.project = os.path.dirname(os.path.dirname (os.path.dirname(self.asset)))
         self.scene = scene
-        # self._tools = self.mainWindow.get_tools()
-        self.tasks = self.mainWindow.getTasks()
-        self.exclusions = self.mainWindow._exclusions
+        # self._tools = self.main_window.get_tools()
+        self.tasks = self.main_window.getTasks()
+        # self.exclusions = self.main_window._exclusions
         self.now = datetime.datetime.now()
         self.nowStr = str(self.now)
         self.rect = QRectF(0, 0, 200, 40)
@@ -140,10 +140,14 @@ class node(QGraphicsItem, QObject):
 
     def queryApplicationInfo(self):
 
-        return self.nodeVersion, self.nodeVendor, self.nodeFamily, self.nodeArch, self.nodeTask
-        #       [1][1]          [3][1]      [4][1]      [0][1]      [2][1]
-        #       ('modelling',   'R 15',       'CINEMA 4D',  'x64',      'MAXON')
-        #       [2][1]      [3][1]     [4][1]   [0][1]  [2][1]
+        try:
+            return self.nodeVersion, self.nodeVendor, self.nodeFamily, self.nodeArch, self.nodeTask
+            #       [1][1]          [3][1]      [4][1]      [0][1]      [2][1]
+            #       ('modelling',   'R 15',       'CINEMA 4D',  'x64',      'MAXON')
+            #       [2][1]      [3][1]     [4][1]   [0][1]  [2][1]
+
+        except TypeError, e:
+            logging.warning('queryApplicationInfo for not yet available for saver and loader nodes (%s)' % e)
 
     def setNodePosition(self):
         try:
@@ -187,29 +191,29 @@ class node(QGraphicsItem, QObject):
 
     def mouseDoubleClickEvent(self, event):
         if self.label.startswith('LDR'):
-            self.mainWindow.get_content(node_label=self.label)
+            self.main_window.get_content(node_label=self.label)
 
         else:
             search_string = self.nodeVendor + ' ' + self.nodeFamily + ' ' + self.nodeVersion + ' ' + self.nodeArch
-            search_index = self.mainWindow.toolsComboBox.findText(search_string, Qt.MatchContains)
+            search_index = self.main_window.toolsComboBox.findText(search_string, Qt.MatchContains)
 
             if search_index < 3:
-                if not str(self.nodeFamily + ' ' + self.nodeVersion) in [self.mainWindow.toolsComboBox.itemText(i) for i in range(self.mainWindow.toolsComboBox.count())]:
+                if not str(self.nodeFamily + ' ' + self.nodeVersion) in [self.main_window.toolsComboBox.itemText(i) for i in range(self.main_window.toolsComboBox.count())]:
                     logging.warning('application family not available')
-                    QMessageBox.critical(self.mainWindow, 'application warning', str('%s not available.' % str(self.nodeFamily + ' ' + self.nodeVersion)), QMessageBox.Abort, QMessageBox.Abort)
+                    QMessageBox.critical(self.main_window, 'application warning', str('%s not available.' % str(self.nodeFamily + ' ' + self.nodeVersion)), QMessageBox.Abort, QMessageBox.Abort)
                     return
 
                 elif self.nodeArch == 'x64':
-                    reply = QMessageBox.warning(self.mainWindow, 'architecture warning', str('x64 version of %s not available. continue using x32?' %self.nodeFamily), QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+                    reply = QMessageBox.warning(self.main_window, 'architecture warning', str('x64 version of %s not available. continue using x32?' %self.nodeFamily), QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
 
                     if reply == QMessageBox.Yes:
                         search_string = str(self.nodeVendor + ' ' + self.nodeFamily + ' ' + self.nodeVersion + ' ' + 'x32')
-                        search_index = self.mainWindow.toolsComboBox.findText(QString(search_string), Qt.MatchContains) - 2
+                        search_index = self.main_window.toolsComboBox.findText(QString(search_string), Qt.MatchContains) - 2
                         logging.warning('x64 not available. using x32 version.')
                     else:
                         return
                 elif self.nodeArch == 'x32':
-                    reply = QMessageBox.warning(self.mainWindow,
+                    reply = QMessageBox.warning(self.main_window,
                                                 'architecture warning',
                                                 str('x32 version of %s not available. continue using x64?' % self.nodeFamily),
                                                 QMessageBox.Yes | QMessageBox.No,
@@ -217,7 +221,7 @@ class node(QGraphicsItem, QObject):
 
                     if reply == QMessageBox.Yes:
                         search_string = str(self.nodeVendor + ' ' + self.nodeFamily + ' ' + self.nodeVersion + ' ' + 'x64')
-                        search_index = self.mainWindow.toolsComboBox.findText(QString(search_string), Qt.MatchContains) - 2
+                        search_index = self.main_window.toolsComboBox.findText(QString(search_string), Qt.MatchContains) - 2
                         logging.warning('x32 not available. using x64 version.')
                     else:
                         return
@@ -225,11 +229,11 @@ class node(QGraphicsItem, QObject):
                     logging.warning('some weird shit')
 
             elif os.path.exists(os.path.join(self.location, 'locked')):
-                QMessageBox.critical(self.mainWindow, 'node warning', str('%s is currently in use.' %str(self.label)), QMessageBox.Abort, QMessageBox.Abort)
+                QMessageBox.critical(self.main_window, 'node warning', str('%s is currently in use.' %str(self.label)), QMessageBox.Abort, QMessageBox.Abort)
                 return
 
             elif os.path.exists(os.path.join(self.location, 'checkedOut')):
-                QMessageBox.critical(self.mainWindow, 'node warning', str('%s is currently checked out.' %str(self.label)), QMessageBox.Abort, QMessageBox.Abort)
+                QMessageBox.critical(self.main_window, 'node warning', str('%s is currently checked out.' %str(self.label)), QMessageBox.Abort, QMessageBox.Abort)
                 return
 
             args = []
@@ -250,14 +254,14 @@ class node(QGraphicsItem, QObject):
             absFiles = []
 
             for relFile in files:
-                if not relFile in self.exclusions:
+                if relFile not in SETTINGS.EXCLUSIONS:
                     absFiles.append(os.path.join(projectRoot, relFile))
 
             if not 'DDL' in self.label:
                 newestFile = max(absFiles, key=os.path.getctime)
-                self.mainWindow.runTask(self, self._tools[search_index][1][0], newestFile, args)
+                self.main_window.runTask(self, self._tools[search_index][1][0], newestFile, args)
             else:
-                ok, jobDeadline = jobDeadlineUi.getDeadlineJobData(self.location, self.mainWindow)
+                ok, jobDeadline = jobDeadlineUi.getDeadlineJobData(self.location, self.main_window)
 
                 if ok:
                     txtFile = os.path.join(self.location, 'project', 'deadlineJob.txt')
@@ -269,13 +273,13 @@ class node(QGraphicsItem, QObject):
 
                     jobFile.close()
 
-                    self.mainWindow.submitDeadlineJob(txtFile)
+                    self.main_window.submitDeadlineJob(txtFile)
 
     def data_ready(self):
-        cursor_box = self.mainWindow.statusBox.textCursor()
+        cursor_box = self.main_window.statusBox.textCursor()
         cursor_box.movePosition(cursor_box.End)
         cursor_box.insertText("%s (%s): %s" %(datetime.datetime.now(), self.pid, str(self.process.readAll())))
-        self.mainWindow.statusBox.ensureCursorVisible()
+        self.main_window.statusBox.ensureCursorVisible()
     '''
     def hoverEnterEvent(self, event):
         pass
@@ -395,7 +399,7 @@ class node(QGraphicsItem, QObject):
         allOutputs = os.listdir(self.outputRootDir)
         
         for i in allOutputs:
-            if not i in self.exclusions:
+            if i not in SETTINGS.EXCLUSIONS:
                 self.newOutput(self, i)
 
     #add existing inputs from file system
@@ -403,7 +407,7 @@ class node(QGraphicsItem, QObject):
         self.inputRootDir = os.path.join(str(self.location), 'input')
         allInputs = os.listdir(self.inputRootDir)
         for i in allInputs:
-            if not i in self.exclusions:
+            if i not in SETTINGS.EXCLUSIONS:
                 input = self.newInput(self.scene)
                 try:
                     lookupDir = os.path.dirname(os.path.join(self.inputRootDir, os.readlink(os.path.join(self.inputRootDir, i))))
@@ -423,7 +427,7 @@ class node(QGraphicsItem, QObject):
 
     #add new dynamic input
     def newInput(self, scene):
-        input = portInput(self, scene, self.mainWindow)
+        input = portInput(self, scene, self.main_window)
         input.setParentItem(self)
 
         self.inputList.append(input)
@@ -441,6 +445,7 @@ class node(QGraphicsItem, QObject):
 
         with open(self.meta_task_path, 'w') as outfile:
             json.dump(meta_task, outfile)
+            outfile.close()
         
     def updatePropertyNodeXML(self):
         pos = self.scenePos()
@@ -471,7 +476,7 @@ class node(QGraphicsItem, QObject):
 
     #add new dynamic output:
     def newOutput(self, node, name):
-        output = portOutput(self, name, self.mainWindow)
+        output = portOutput(self, name, self.main_window)
 
         if len(name.split('.')) > 1:
 
@@ -492,7 +497,7 @@ class node(QGraphicsItem, QObject):
         self.resizeHeight()
 
     def newOutputButton(self):
-        outputButton = portOutputButton(self, 'create new output', self.mainWindow)
+        outputButton = portOutputButton(self.main_window)
         
         outputButton.setParentItem(self)
     
@@ -506,7 +511,7 @@ class node(QGraphicsItem, QObject):
     def _label(self):
         return self.label
 
-    def addText(self, scene, text):
+    def addText(self, text):
         self.setData(0, text)
         nodeLabel = QGraphicsTextItem(text)
         self.label = text
@@ -532,13 +537,13 @@ class node(QGraphicsItem, QObject):
             if os.path.basename(self.location)[:7].endswith('LIB'):
                 self.taskColor = '#00FF00'
             else:
-                for tab in self.mainWindow.content_tabs:
+                for tab in self.main_window.content_tabs:
                     if os.path.basename(self.location)[:7].endswith(tab['abbreviation']):
                         self.taskColor = tab['loader_color']
                         break
 
         elif os.path.basename(self.location)[:7].startswith('SVR'):
-            for tab in self.mainWindow.content_tabs:
+            for tab in self.main_window.content_tabs:
                 if os.path.basename(self.location)[:7].endswith(tab['abbreviation']):
                     self.taskColor = tab['saver_color']
             # if os.path.basename(self.location)[:7].endswith('AST'):

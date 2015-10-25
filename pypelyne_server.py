@@ -19,6 +19,8 @@ import src.getLocalIp as getLocalIp
 
 from conf.valuePyPELyNE import *
 
+import settings as SETTINGS
+
 
 class server():
     def __init__(self, host = '', debugLevel = INFO):
@@ -34,13 +36,13 @@ class server():
         self.portRange = int(serverPortRange)
 
 
-        self.projectsRoot = projectsRootServer
+        # self.projects_root = projectsRootServer
         self.projectsRootDarwin = projectsRootServerDarwin
         self.projectsRootWin = projectsRootServerWin
         self.projectsRootLinux = projectsRootServerLinux
-        self.tarSep = archiveSeparator
+        self.tarSep = SETTINGS.ARCHIVE_SEPARATOR
 
-        self.pypelyneRoot = os.getcwd()
+        self.pypelyne_root = os.getcwd()
 
         self.sockets = []
 
@@ -90,8 +92,8 @@ class server():
                 self.sendList(sock, self.projectsRootWin, addr)
 
             elif response == 'addProjectsServer':
-                projects = os.listdir(self.projectsRoot)
-                self.sendList(sock, self.projectsRoot, addr, projects)
+                projects = os.listdir(self.projects_root)
+                self.sendList(sock, self.projects_root, addr, projects)
                 info('client %s:%s requested projects list, which is %s' %(addr[0], addr[1], projects))
 
             elif response == 'bye':

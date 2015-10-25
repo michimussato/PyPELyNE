@@ -47,12 +47,14 @@ from settings import FILE_EXPLORER_LINUX_GNOME, FILE_EXPLORER_LINUX_KDE, PROJECT
 from settings import AUDIO_FOLDER_LINUX, SCREEN_CAST_EXEC_LINUX, SEQUENCE_EXEC_LINUX, SEQUENCE_EXEC_RV_LINUX
 from settings import TAR_EXEC_LINUX, PROJECTS_ROOT_SERVER_WIN
 
+import settings as SETTINGS
+
 import xml.etree.ElementTree as ET
 
 try:
     from src.vlc import *
-except:
-    print 'failed to import vlc'
+except ImportError, e:
+    print 'failed to import vlc:', e
     # raise ImportError('failed to import vlc')
 
 app = None
@@ -69,9 +71,9 @@ class PypelyneMainWindow(QMainWindow):
 
         # logging.basicConfig(level = logging.INFO)
 
-        self.serverHost = SERVER_IP
-        self.serverPort = int(SERVER_PORT)
-        self.portRange = int(SERVER_PORT_RANGE)
+        # self.serverHost = SERVER_IP
+        # self.serverPort = int(SETTINGS.SERVER_PORT)
+        # self.portRange = int(SETTINGS.SERVER_PORT_RANGE)
 
         # self.serverPort = 50002
         self.serverAlive = False
@@ -85,33 +87,24 @@ class PypelyneMainWindow(QMainWindow):
 
         # self.connectServer()
 
-        if USE_SERVER:
+        if SETTINGS.USE_SERVER:
             logging.info('connecting to server')
-            logging.info('server ip is %s' % self.serverHost)
+            logging.info('server ip is %s' % SETTINGS.SERVER_IP)
             counter = 1
             while True:
                 try:
-                    logging.info('trying to connect to %s:%s' % (self.serverHost, self.serverPort))
-                    self.socket.connect((self.serverHost, self.serverPort))
+                    logging.info('trying to connect to %s:%s' % (SETTINGS.SERVER_IP, SETTINGS.SERVER_PORT))
+                    self.socket.connect((SETTINGS.SERVER_IP, SETTINGS.SERVER_PORT))
                     logging.info('connection to server successful')
                     self.serverAlive = True
                     break
                 except:
                     logging.info('connection failed')
-                    logging.info('trying next port')
-                    if counter < self.portRange:
-                        #warning('port %s in use' %(self.port))
-                        counter += 1
-                        self.serverPort += 1
-                    else:
-                        logging.warning('tried %s port(s) without success. no server found. continuing as workstation version.' % counter)
-                        self.serverAlive = False
-                        break
 
         else:
             self.serverAlive = False
 
-        self.pypelyneRoot = os.getcwd()
+        self.pypelyne_root = os.getcwd()
         self.current_platform = platform.system()
         self.operating_system = self.current_platform.lower()
 
@@ -130,72 +123,72 @@ class PypelyneMainWindow(QMainWindow):
 
         self.current_content_item = None
         
-        self.exclusions = EXCLUSIONS
-        self.audioExtensions = AUDIO_EXTENSIONS
-        self.imageExtensions = IMAGE_EXTENSIONS
-        self.movieExtensions = MOVIE_EXTENSIONS
-        self.tarSep = ARCHIVE_SEPARATOR
-        self.screenCastActive = USE_SCREEN_CAST
+        # self.exclusions = SETTINGS.EXCLUSIONS
+        # self.audioExtensions = SETTINGS.AUDIO_EXTENSIONS
+        # self.imageExtensions = SETTINGS.IMAGE_EXTENSIONS
+        # self.movieExtensions = SETTINGS.MOVIE_EXTENSIONS
+        # self.tarSep = SETTINGS.ARCHIVE_SEPARATOR
+        # self.screenCastActive = SETTINGS.USE_SCREEN_CAST
 
         self.setProjectsRoot()
 
         if self.current_platform == "Windows":
             # print 'platform not fully supported'
             logging.info('Windows not fully supported')
-            self.file_explorer = FILE_EXPLORER_WIN
-            self.tarExec = TAR_EXEC_WIN
-            # self.projectsRoot = projectsRootWin
-            self.libraryRoot = LIBRARY_ROOT_WIN
-            self.audioFolder = AUDIO_FOLDER_WIN
-            if SCREEN_CAST_EXEC_WIN[1:].startswith(':' + os.sep):
-                self.screenCastExec = SCREEN_CAST_EXEC_WIN
+            self.file_explorer = SETTINGS.FILE_EXPLORER_WIN
+            self.tarExec = SETTINGS.TAR_EXEC_WIN
+            # self.projects_root = projectsRootWin
+            self.libraryRoot = SETTINGS.LIBRARY_ROOT_WIN
+            self.audioFolder = SETTINGS.AUDIO_FOLDER_WIN
+            if SETTINGS.SCREEN_CAST_EXEC_WIN[1:].startswith(':' + os.sep):
+                self.screenCastExec = SETTINGS.SCREEN_CAST_EXEC_WIN
             else:
-                self.screenCastExec = os.path.join(self.pypelyneRoot, SCREEN_CAST_EXEC_WIN)
-            if len(SEQUENCE_EXEC_RV_WIN) <= 0 or not os.path.exists(SEQUENCE_EXEC_RV_WIN):
-                self.sequenceExec = SEQUENCE_EXEC_WIN
+                self.screenCastExec = os.path.join(self.pypelyne_root, SETTINGS.SCREEN_CAST_EXEC_WIN)
+            if len(SETTINGS.SEQUENCE_EXEC_RV_WIN) <= 0 or not os.path.exists(SETTINGS.SEQUENCE_EXEC_RV_WIN):
+                self.sequenceExec = SETTINGS.SEQUENCE_EXEC_WIN
                 self.rv = False
             else:
-                self.sequenceExec = SEQUENCE_EXEC_RV_WIN
+                self.sequenceExec = SETTINGS.SEQUENCE_EXEC_RV_WIN
                 self.rv = True
         elif self.current_platform == "Darwin":
             logging.info('welcome to pypelyne for darwin')
-            self.file_explorer = FILE_EXPLORER_DARWIN
-            self.tarExec = TAR_EXEC_DARWIN
-            # self.projectsRoot = projectsRootDarwin
-            self.libraryRoot = LIBRARY_ROOT_DARWIN
-            self.audioFolder = AUDIO_FOLDER_DARWIN
-            if SCREEN_CAST_EXEC_DARWIN.startswith(os.sep):
-                self.screenCastExec = SCREEN_CAST_EXEC_DARWIN
+            self.file_explorer = SETTINGS.FILE_EXPLORER_DARWIN
+            self.tarExec = SETTINGS.TAR_EXEC_DARWIN
+            # self.projects_root = projectsRootDarwin
+            self.libraryRoot = SETTINGS.LIBRARY_ROOT_DARWIN
+            self.audioFolder = SETTINGS.AUDIO_FOLDER_DARWIN
+            if SETTINGS.SCREEN_CAST_EXEC_DARWIN.startswith(os.sep):
+                self.screenCastExec = SETTINGS.SCREEN_CAST_EXEC_DARWIN
             else:
-                self.screenCastExec = os.path.join(self.pypelyneRoot, SCREEN_CAST_EXEC_DARWIN)
-            if len(SEQUENCE_EXEC_RV_DARWIN) <= 0 or not os.path.exists(SEQUENCE_EXEC_RV_DARWIN):
-                self.sequenceExec = SEQUENCE_EXEC_DARWIN
+                self.screenCastExec = os.path.join(self.pypelyne_root, SETTINGS.SCREEN_CAST_EXEC_DARWIN)
+            if len(SETTINGS.SEQUENCE_EXEC_RV_DARWIN) <= 0 or not os.path.exists(SETTINGS.SEQUENCE_EXEC_RV_DARWIN):
+                self.sequenceExec = SETTINGS.SEQUENCE_EXEC_DARWIN
                 self.rv = False
             else:
-                self.sequenceExec = SEQUENCE_EXEC_RV_DARWIN
+                self.sequenceExec = SETTINGS.SEQUENCE_EXEC_RV_DARWIN
                 self.rv = True
         elif self.current_platform == "Linux":
             logging.info('linux not fully supported')
-            if os.path.exists(FILE_EXPLORER_LINUX_GNOME):
-                self.file_explorer = FILE_EXPLORER_LINUX_GNOME
-            elif os.path.exists(FILE_EXPLORER_LINUX_KDE):
-                self.file_explorer = FILE_EXPLORER_LINUX_KDE
+            if os.path.exists(SETTINGS.FILE_EXPLORER_LINUX_GNOME):
+                self.file_explorer = SETTINGS.FILE_EXPLORER_LINUX_GNOME
+            elif os.path.exists(SETTINGS.FILE_EXPLORER_LINUX_KDE):
+                self.file_explorer = SETTINGS.FILE_EXPLORER_LINUX_KDE
             else:
                 logging.warning('no valid file explorer found for linux')
             # quit()
-            self.tarExec = TAR_EXEC_LINUX
-            # self.projectsRoot = projectsRootLinux
-            self.libraryRoot = LIBRARY_ROOT_LINUX
-            self.audioFolder = AUDIO_FOLDER_LINUX
-            if SCREEN_CAST_EXEC_LINUX.startswith(os.sep):
-                self.screenCastExec = SCREEN_CAST_EXEC_LINUX
+            self.tarExec = SETTINGS.TAR_EXEC_LINUX
+            # self.projects_root = projectsRootLinux
+            self.libraryRoot = SETTINGS.LIBRARY_ROOT_LINUX
+            self.audioFolder = SETTINGS.AUDIO_FOLDER_LINUX
+            if SETTINGS.SCREEN_CAST_EXEC_LINUX.startswith(os.sep):
+                self.screenCastExec = SETTINGS.SCREEN_CAST_EXEC_LINUX
             else:
-                self.screenCastExec = os.path.join(self.pypelyneRoot, SCREEN_CAST_EXEC_LINUX)
-            if len(SEQUENCE_EXEC_RV_LINUX) <= 0 or not os.path.exists(SEQUENCE_EXEC_RV_LINUX):
+                self.screenCastExec = os.path.join(self.pypelyne_root, SETTINGS.SCREEN_CAST_EXEC_LINUX)
+            if len(SETTINGS.SEQUENCE_EXEC_RV_LINUX) <= 0 or not os.path.exists(SETTINGS.SEQUENCE_EXEC_RV_LINUX):
                 self.sequenceExec = SEQUENCE_EXEC_LINUX
                 self.rv = False
             else:
-                self.sequenceExec = SEQUENCE_EXEC_RV_LINUX
+                self.sequenceExec = SETTINGS.SEQUENCE_EXEC_RV_LINUX
                 self.rv = True
         else:
             print 'platform unknown. not supported. bye.'
@@ -213,8 +206,8 @@ class PypelyneMainWindow(QMainWindow):
         self.screenCasts = []
         self.screenCastsWindowOpen = None
 
-        self.ui = loadUi(os.path.join(self.pypelyneRoot, 'ui', 'pypelyneMainWindow.ui'), self)
-        self.valueApplicationsXML = os.path.join(self.pypelyneRoot, 'conf', 'valueApplications.xml')
+        self.ui = loadUi(os.path.join(self.pypelyne_root, 'ui', 'pypelyneMainWindow.ui'), self)
+        self.valueApplicationsXML = os.path.join(self.pypelyne_root, 'conf', 'valueApplications.xml')
         
         self.nodeView.setVisible(False)
         self.assetsShotsTabWidget.setVisible(False)
@@ -224,7 +217,7 @@ class PypelyneMainWindow(QMainWindow):
         self.openPushButton.setVisible(True)
         self.checkBoxDescription.setVisible(False)
         self.configPushButton.setVisible(False)
-        if not self.screenCastActive:
+        if not SETTINGS.USE_SCREEN_CAST:
             self.screenCastsPushButton.setVisible(False)
 
         self.openPushButton.setEnabled(False)
@@ -289,7 +282,7 @@ class PypelyneMainWindow(QMainWindow):
         self.screenCastsPushButton.clicked.connect(self.screenCastsWindow)
         self.scene.nodeSelect.connect(self.set_node_widget)
         self.scene.nodeDeselect.connect(self.clear_node_widget)
-        self.openPushButton.clicked.connect(lambda: self.locate_content(os.path.join(self.projectsRoot, str(self.projectComboBox.currentText()))))
+        self.openPushButton.clicked.connect(lambda: self.locate_content(os.path.join(self.projects_root, str(self.projectComboBox.currentText()))))
 
         self.clipBoard = QApplication.clipboard()
         
@@ -305,37 +298,37 @@ class PypelyneMainWindow(QMainWindow):
 
     # def connectServer(self):
 
-    @property
-    def _user(self):
-        return self.user
+    # @property
+    # def _user(self):
+    #     return self.user
 
-    @property
-    def _exclusions(self):
-        return self.exclusions
+    # @property
+    # def _exclusions(self):
+    #     return SETTINGS.EXCLUSIONS
 
-    @property
-    def _image_extensions(self):
-        return self.imageExtensions
+    # @property
+    # def _image_extensions(self):
+    #     return SETTINGS.IMAGE_EXTENSIONS
 
-    @property
-    def _movie_extensions(self):
-        return self.movieExtensions
+    # @property
+    # def _movie_extensions(self):
+    #     return SETTINGS.MOVIE_EXTENSIONS
 
-    @property
-    def _sequence_exec(self):
-        return self.sequenceExec
+    # @property
+    # def _sequence_exec(self):
+    #     return self.sequenceExec
 
-    @property
-    def _current_platform(self):
-        return self.current_platform
+    # @property
+    # def _current_platform(self):
+    #     return self.current_platform
 
-    @property
-    def _pypelyne_root(self):
-        return self.pypelyneRoot
+    # @property
+    # def _pypelyne_root(self):
+    #     return self.pypelyne_root
 
-    @property
-    def _projects_root(self):
-        return self.projectsRoot
+    # @property
+    # def _projects_root(self):
+    #     return self.projects_root
 
     @property
     def _current_content(self):
@@ -351,7 +344,7 @@ class PypelyneMainWindow(QMainWindow):
             logging.info('parsing tools')
 
             app_conf_root = os.path.join(os.path.abspath(r'conf'), r'tools', r'applications')
-            app_conf_files = [os.path.join(app_conf_root, f) for f in os.listdir(app_conf_root) if not f.startswith('_') and f not in self.exclusions and f.split('.')[-1].endswith('json')]
+            app_conf_files = [os.path.join(app_conf_root, f) for f in os.listdir(app_conf_root) if not f.startswith('_') and f not in SETTINGS.EXCLUSIONS and f.split('.')[-1].endswith('json')]
 
             self.tools = []
 
@@ -467,13 +460,13 @@ class PypelyneMainWindow(QMainWindow):
         # print self.tools
         return self.tools
 
-    @property
-    def _outputs(self):
-        return self.outputs
+    # @property
+    # def _outputs(self):
+    #     return self.outputs
 
-    @property
-    def _tasks(self):
-        return self.tasks
+    # @property
+    # def _tasks(self):
+    #     return self.tasks
 
     @property
     def _tool_items(self):
@@ -551,7 +544,7 @@ class PypelyneMainWindow(QMainWindow):
         return deserialized
 
     def setProjectsRoot(self):
-        logging.info('getting projectsRoot')
+        logging.info('getting projects_root')
         if self.current_platform == 'Windows':
             self.setProjectsRootWin()
         elif self.current_platform == 'Darwin':
@@ -564,53 +557,53 @@ class PypelyneMainWindow(QMainWindow):
 
     def setProjectsRootWin(self):
         try:
-            # self.socket.connect((self.serverHost, self.serverPort))
+            # self.socket.connect((SETTINGS.SERVER_IP, self.serverPort))
             # print 'here'
             self.socket.sendall('getProjectsRootServerWin')
-            self.projectsRoot = self.receive_serialized(self.socket)
+            self.projects_root = self.receive_serialized(self.socket)
             logging.info('projectsRootServerWin server successfully queried')
             self.serverAlive = True
             # self.socket.close()
         except socket.error:
-            self.projectsRoot = PROJECTS_ROOT_WIN
+            self.projects_root = PROJECTS_ROOT_WIN
             self.serverAlive = False
 
     def setProjectsRootLinux(self):
         try:
-            # self.socket.connect((self.serverHost, self.serverPort))
+            # self.socket.connect((SETTINGS.SERVER_IP, self.serverPort))
             # print 'here'
             self.socket.sendall('getProjectsRootServerLinux')
-            self.projectsRoot = self.receive_serialized(self.socket)
+            self.projects_root = self.receive_serialized(self.socket)
             logging.info('projectsRootServerLinux server successfully queried')
             self.serverAlive = True
             # self.socket.close()
         except socket.error:
-            self.projectsRoot = PROJECTS_ROOT_LINUX
+            self.projects_root = PROJECTS_ROOT_LINUX
             self.serverAlive = False
 
     def setProjectsRootDarwin(self):
         if self.serverAlive == True:
             try:
                 logging.info('sending getProjectsRootServerDarwin to server')
-                # self.socket.connect((self.serverHost, self.serverPort))
+                # self.socket.connect((SETTINGS.SERVER_IP, self.serverPort))
                 # print 'here'
                 self.socket.sendall('getProjectsRootServerDarwin')
-                self.projectsRoot = self.receive_serialized(self.socket)
+                self.projects_root = self.receive_serialized(self.socket)
                 logging.info('projectsRootServerDarwin server successfully queried')
                 # self.serverAlive = True
                 # self.socket.close()
             except socket.error:
                 logging.warning('looks like server connection died')
-                self.projectsRoot = PROJECTS_ROOT_DARWIN
+                self.projects_root = PROJECTS_ROOT_DARWIN
                 self.serverAlive = False
 
         else:
             if os.path.exists(PROJECTS_ROOT_DARWIN):
-                self.projectsRoot = PROJECTS_ROOT_DARWIN
+                self.projects_root = PROJECTS_ROOT_DARWIN
             elif os.path.exists(PROJECTS_ROOT_DARWIN_ALT):
-                self.projectsRoot = PROJECTS_ROOT_DARWIN_ALT
+                self.projects_root = PROJECTS_ROOT_DARWIN_ALT
             else:
-                logging.warning('no predefinded projectsRoot found')
+                logging.warning('no predefinded projects_root found')
 
     def exportToLibraryCallback(self, node):
         def callback():
@@ -625,7 +618,7 @@ class PypelyneMainWindow(QMainWindow):
         export_src_node_dir_inputs = os.path.join(export_src_node_dir, 'input')
         # exportSrcNodeDirOutputs = os.path.join(exportSrcNodeDir, 'output')
         exportDstDirRoot = self.libraryRoot
-        exportDstName = self.getCurrentProject() + self.tarSep + os.path.basename(os.path.dirname(node.getNodeAsset())) + self.tarSep + os.path.basename(node.getNodeAsset()) + self.tarSep + node.label + self.tarSep + date_time
+        exportDstName = self.getCurrentProject() + SETTINGS.ARCHIVE_SEPARATOR + os.path.basename(os.path.dirname(node.getNodeAsset())) + SETTINGS.ARCHIVE_SEPARATOR + os.path.basename(node.getNodeAsset()) + SETTINGS.ARCHIVE_SEPARATOR + node.label + SETTINGS.ARCHIVE_SEPARATOR + date_time
         exportDstDir = os.path.join(exportDstDirRoot, exportDstName)
         exportDstNameInput = os.path.join(exportDstDir, 'input')
         exportDstNameOutput = os.path.join(exportDstDir, 'output')
@@ -717,11 +710,11 @@ class PypelyneMainWindow(QMainWindow):
 
         for dir, subdirs, files in os.walk(self.audioFolder, topdown=False):
             for file in files:
-                if file in self.exclusions:
+                if file in SETTINGS.EXCLUSIONS:
                     os.remove(os.path.join(dir, file))
                     logging.warning('file %s deleted from %s' % (file, dir))
 
-                elif os.path.splitext(file)[1] not in self.audioExtensions:
+                elif os.path.splitext(file)[1] not in SETTINGS.AUDIO_EXTENSIONS:
                     logging.warning('non audio file %s found in %s' % (file, dir))
 
                 else:
@@ -852,8 +845,8 @@ class PypelyneMainWindow(QMainWindow):
             threading.Timer(0.5, self.fromStopToSkip).start()
 
     def computeValueOutputs(self):
-        #print os.path.join(self.pypelyneRoot, 'conf', 'valueOutputs.xml')
-        self.valueOutputs = ET.parse(os.path.join(self.pypelyneRoot, 'conf', 'valueOutputs.xml'))
+        #print os.path.join(self.pypelyne_root, 'conf', 'valueOutputs.xml')
+        self.valueOutputs = ET.parse(os.path.join(self.pypelyne_root, 'conf', 'valueOutputs.xml'))
         self.valueOutputsRoot = self.valueOutputs.getroot()
 
         self.outputs = []
@@ -870,7 +863,7 @@ class PypelyneMainWindow(QMainWindow):
             itemList = []
 
     def computeValueTasks(self):
-        self.valueTasks = ET.parse(os.path.join(self.pypelyneRoot, 'conf', 'valueTasks.xml'))
+        self.valueTasks = ET.parse(os.path.join(self.pypelyne_root, 'conf', 'valueTasks.xml'))
         self.valueTasksRoot = self.valueTasks.getroot()
 
         self.tasks = []
@@ -943,10 +936,10 @@ class PypelyneMainWindow(QMainWindow):
         # self.tarSep = '_____'
         dateTime = datetime.datetime.now().strftime('%Y-%m-%d_%H%M-%S')
         # executable = self.tarExec
-        pigz = os.path.join(self.pypelyneRoot, 'payload', 'pigz', 'darwin', 'pigz')
-        tarDirRoot = os.path.join(self.projectsRoot, self.getCurrentProject(), 'check_out')
+        pigz = os.path.join(self.pypelyne_root, 'payload', 'pigz', 'darwin', 'pigz')
+        tarDirRoot = os.path.join(self.projects_root, self.getCurrentProject(), 'check_out')
         # print self._current_content
-        tarName = dateTime + self.tarSep + self.getCurrentProject() + self.tarSep + os.path.basename(os.path.dirname(node.getNodeAsset())) + self.tarSep + os.path.basename(node.getNodeAsset()) + self.tarSep + node.label + '.tar.gz'
+        tarName = dateTime + SETTINGS.ARCHIVE_SEPARATOR + self.getCurrentProject() + SETTINGS.ARCHIVE_SEPARATOR + os.path.basename(os.path.dirname(node.getNodeAsset())) + SETTINGS.ARCHIVE_SEPARATOR + os.path.basename(node.getNodeAsset()) + SETTINGS.ARCHIVE_SEPARATOR + node.label + '.tar.gz'
 
         if not os.path.exists(tarDirRoot):
             os.makedirs(tarDirRoot, mode=0777)
@@ -1011,7 +1004,7 @@ class PypelyneMainWindow(QMainWindow):
         lockFile.write(self.user)
         lockFile.close()
         #
-        if self.screenCastActive:
+        if SETTINGS.USE_SCREEN_CAST:
             screenCast.start()
             self.screenCasts.append(screenCast)
             self.addNewScreenCast.emit()
@@ -1022,7 +1015,7 @@ class PypelyneMainWindow(QMainWindow):
     def task_on_finished(self, node, qprocess, screenCast, timeTracker):
         logging.info('task %s finished' %node.getLabel())
 
-        if self.screenCastActive and screenCast in self.screenCasts:
+        if SETTINGS.USE_SCREEN_CAST and screenCast in self.screenCasts:
             screenCast.stop()
             self.screenCasts.remove(screenCast)
             self.addNewScreenCast.emit()
@@ -1091,11 +1084,11 @@ class PypelyneMainWindow(QMainWindow):
 
         text, ok = QInputDialog.getText(self, 'create new %s' %(self.content_tabs[tab_index]['content']), 'enter %s name:' %(self.content_tabs[tab_index]['content']))
 
-        current_target = os.path.join(self.projectsRoot, self._current_project, 'content', self.content_tabs[tab_index]['content'])
+        current_target = os.path.join(self.projects_root, self._current_project, 'content', self.content_tabs[tab_index]['content'])
             
         new_content = os.path.join(current_target, str(text))
 
-        # TODO: capture invalid characters. see newNode.set_status()
+        # TODO: capture invalid characters. see new_node.set_status()
 
         if ok:
             if not os.path.exists(new_content):
@@ -1110,21 +1103,20 @@ class PypelyneMainWindow(QMainWindow):
                 logging.warning('content not created because it already exists (%s)' % new_content)
 
     def set_node_widget(self, node):
-        self.widget_ui = NodeWidgetUi(self)
+        try:
+            self.widget_ui = NodeWidgetUi(self)
 
-        # print node.data(0)
-            
-        self.nodeMenuArea.setWidget(self.widget_ui)
+            self.nodeMenuArea.setWidget(self.widget_ui)
 
-        # self.nodeVersion, self.nodeVendor, self.nodeFamily, self.nodeArch
-        self.node_application_info = node.queryApplicationInfo()
+            self.node_application_info = node.queryApplicationInfo()
 
-        self.widget_ui.labelNode.setText(node.data(0))
-        self.widget_ui.labelApplication.setText(self.node_application_info[2] + ' ' + self.node_application_info[0])
-        #self.widgetUi.labelVersion.setText(self.nodeApplicationInfo[0])
+            self.widget_ui.labelNode.setText(node.data(0))
+            self.widget_ui.labelApplication.setText(self.node_application_info[2] + ' ' + self.node_application_info[0])
+
+        except TypeError, e:
+            logging.warning('set_node_widget for not yet available for saver and loader nodes (%s)' % e)
 
     def clear_node_widget(self):
-        #self.nodeWidgets = []
         self.nodeMenuArea.takeWidget()
         
     def configurationWindow(self):
@@ -1134,7 +1126,7 @@ class PypelyneMainWindow(QMainWindow):
     def compute_connections(self):
         logging.info('compute_connections...')
         # get all nodes
-        node_list = self.scene._node_list
+        node_list = self.scene.node_list
         # for each node
         for node_dst in node_list:
             logging.info('%s:' % node_dst.data(0))
@@ -1147,7 +1139,7 @@ class PypelyneMainWindow(QMainWindow):
             # for each input
 
             for input in inputs:
-                if len(inputs) > 0 and not input in self.exclusions:
+                if len(inputs) > 0 and not input in SETTINGS.EXCLUSIONS:
                     logging.info('\tprocessing input %s' %(input))
                     # input circle = endItem
                     endItem = node_dst.inputList[len(node_dst.inputs)]
@@ -1227,7 +1219,7 @@ class PypelyneMainWindow(QMainWindow):
 
                     endItem.parentItem().newInput(self.scene)
 
-                elif input in self.exclusions:
+                elif input in SETTINGS.EXCLUSIONS:
                     logging.info('input data is in exclusions list')
 
                 else:
@@ -1262,11 +1254,11 @@ class PypelyneMainWindow(QMainWindow):
         # self.addRectangular()
         self.scene.clearNodeList()
 
-        content_root = os.path.join(self.projectsRoot, self._current_project, 'content', content)
+        content_root = os.path.join(self.projects_root, self._current_project, 'content', content)
         content_items = os.listdir(os.path.join(content_root, str(button_text)))
 
         for node_item in content_items:
-            if node_item not in self.exclusions:
+            if node_item not in SETTINGS.EXCLUSIONS:
                 if os.path.isdir(os.path.join(content_root, str(button_text), node_item)):
                     node_path = os.path.join(content_root, str(button_text), node_item)
                     # convert xml to json if propertyNode.xml is found
@@ -1384,7 +1376,7 @@ class PypelyneMainWindow(QMainWindow):
                     meta_tool_path = os.path.join(content_root, str(button_text), node_item, 'meta_tool.json')
 
                     new_node = node(main_window=self, scene=self.scene, property_node_path=None, meta_task_path=meta_task_path, meta_tool_path=meta_tool_path)
-                    new_node.addText(self.scene, node_item)
+                    new_node.addText(node_item)
                     self.scene.addToNodeList(new_node)
                 else:
                     logging.warning('shots: nodeItem %s is not a directory' % node_item)
@@ -1396,7 +1388,7 @@ class PypelyneMainWindow(QMainWindow):
 
     def getCurrentProject(self):
         currentProject = str(self.projectComboBox.currentText())
-        self.assetsRoot = os.path.join(self.projectsRoot, currentProject)
+        self.assetsRoot = os.path.join(self.projects_root, currentProject)
         return currentProject
         
     @property
@@ -1417,11 +1409,11 @@ class PypelyneMainWindow(QMainWindow):
         for tab in self.content_tabs:
             content = []
 
-            content_root = os.path.join(self.projectsRoot, self._current_project, 'content', self.content_tabs[self.content_tabs.index(tab)]['content'])
+            content_root = os.path.join(self.projects_root, self._current_project, 'content', self.content_tabs[self.content_tabs.index(tab)]['content'])
 
             try:
                 for i in os.listdir(content_root):
-                    if i not in self.exclusions:
+                    if i not in SETTINGS.EXCLUSIONS:
                         content.append(i)
             except WindowsError, e:
                 logging.warning('no %s root found: %s' % (self.content_tabs[self.content_tabs.index(tab)]['content'], e))
@@ -1469,7 +1461,7 @@ class PypelyneMainWindow(QMainWindow):
 
         tab_index = self.assetsShotsTabWidget.currentIndex()
 
-        current_target = os.path.join(self.projectsRoot, self._current_project, 'content', self.content_tabs[tab_index]['content'])
+        current_target = os.path.join(self.projects_root, self._current_project, 'content', self.content_tabs[tab_index]['content'])
 
         contentLocation = os.path.join(str(current_target), str(sendingButtonText))
 
@@ -1511,25 +1503,25 @@ class PypelyneMainWindow(QMainWindow):
 
         else:
             try:
-                projects = os.listdir(self.projectsRoot)
+                projects = os.listdir(self.projects_root)
             except:
                 logging.warning('could not find projects')
                 projects = []
 
-        logging.info('using projects root: %s' %(self.projectsRoot))
+        logging.info('using projects root: %s' % self.projects_root)
 
-        for exclusion in self.exclusions:
+        for exclusion in SETTINGS.EXCLUSIONS:
             try:
                 projects.remove(exclusion)
-                os.remove(os.path.join(self.projectsRoot, exclusion))
-                logging.info('exclusion in projectsRoot removed')
+                os.remove(os.path.join(self.projects_root, exclusion))
+                logging.info('exclusion in projects_root removed')
             except:
                 pass
 
         for i in projects:
             self.projectComboBox.addItem(i)
-            self.sendTextToBox('\tproject %s found\n' %(i))
-            logging.info('project %s found' %(i))
+            self.sendTextToBox('\tproject %s found\n' % i)
+            logging.info('project %s found' % i)
 
         self.sendTextToBox('all projects added.\n\n')
         self.projectComboBox.activated.connect(self.refresh_projects)
@@ -1707,7 +1699,7 @@ class PypelyneMainWindow(QMainWindow):
         self.qprocesses.append(qprocess)
 
     def checkoutOnFinished(self, qprocess, node, tarName):
-        tarNameSplit = tarName.split(self.tarSep)
+        tarNameSplit = tarName.split(SETTINGS.ARCHIVE_SEPARATOR)
         #        0                1        2          3           4
         #2015-08-27_1134-42_____test_____assets_____asdf_____SVR_AST__asdf.tar.gz
         #projectName = os.path.basename(os.path.dirname(node.getNodeAsset()))

@@ -7,13 +7,13 @@ from PyQt4.uic import *
 
 
 class playerWidgetUi(QWidget):
-    def __init__(self, mainWindow, parent = None):
+    def __init__(self, main_window, parent = None):
         super(playerWidgetUi, self).__init__(parent)
-        self.mainWindow = mainWindow
-        self.pypelyneRoot = self.mainWindow._pypelyne_root
-        self.currentPlatform = self.mainWindow._current_platform
+        self.main_window = main_window
+        # self.pypelyne_root = self.main_window.pypelyne_root
+        # self.current_platform = self.main_window.current_platform
 
-        self.ui = loadUi(os.path.join(self.pypelyneRoot, 'ui', 'player.ui'), self)
+        self.ui = loadUi(os.path.join(self.main_window.pypelyne_root, 'ui', 'player.ui'), self)
 
 
         #self.connect(self.pushButtonPlayStop, SIGNAL('customContextMenuRequested(const QPoint&)'), self.playerContextMenu)

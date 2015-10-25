@@ -3,6 +3,8 @@ import os
 from PyQt4.QtGui import *
 from PyQt4.uic import *
 
+import settings as SETTINGS
+
 '''
 #library loader procedure:
 cd /Volumes/pili/pypelyne_projects/0000-00-00___test___test/content/assets/libraryTest ;
@@ -23,22 +25,22 @@ ln -s ../../../../../../pypelyne_library/2015-05-20___myself___edelviz_____asset
 '''
 
 
-class NewNodeUI(QDialog):
+class NewLoaderUI(QDialog):
     def __init__(self, active_item_path, main_window, parent=None):
-        super(NewNodeUI, self).__init__(parent)
+        super(NewLoaderUI, self).__init__(parent)
 
         self.main_window = main_window
-        self.exclusions = self.main_window._exclusions
-        self.pypelyne_root = self.main_window._pypelyne_root
+        self.exclusions = SETTINGS.EXCLUSIONS
+        # self.pypelyne_root = self.main_window.pypelyne_root
         
-        self.current_platform = self.main_window._current_platform
+        # self.current_platform = self.main_window.current_platform
         self.active_item_path = active_item_path
         self.contentDirectory = os.path.dirname(os.path.dirname(active_item_path))
 
         self.loader_name = None
         self.source_saver_location = None
 
-        self.ui = loadUi(os.path.join(self.pypelyne_root, 'ui', 'newLoader.ui'), self)
+        self.ui = loadUi(os.path.join(self.main_window.pypelyne_root, 'ui', 'newLoader.ui'), self)
 
         self.setModal(True)
 
@@ -61,7 +63,7 @@ class NewNodeUI(QDialog):
         directory_content = os.listdir(self.contentDirectory)
 
         for directory in directory_content:
-            if directory not in self.exclusions:
+            if directory not in SETTINGS.EXCLUSIONS:
                 self.comboBoxCategory.addItem(directory)
 
     def create_connects(self):
@@ -111,7 +113,7 @@ class NewNodeUI(QDialog):
             if self.comboBoxItem.currentIndex() == 0:
 
                 for directory in content:
-                    if directory not in self.exclusions:
+                    if directory not in SETTINGS.EXCLUSIONS:
                         self.comboBoxItem.addItem(directory)
 
     def on_cancel(self):
@@ -131,8 +133,9 @@ class NewNodeUI(QDialog):
 
     # http://stackoverflow.com/questions/18196799/how-can-i-show-a-pyqt-modal-dialog-and-get-data-out-of-its-controls-once-its-clo
     @staticmethod
-    def get_new_loader_data(content_directory, exclusions):
-        dialog = NewNodeUI(content_directory, exclusions)
+    # TODO: check if SETTINGS.EXCLUSIONS gets passed to this function
+    def get_new_loader_data(content_directory, main_window):
+        dialog = NewLoaderUI(content_directory, main_window)
         result = dialog.exec_()
         loader_name, source_saver_location = dialog.on_ok()
         return result == QDialog.Accepted, loader_name, source_saver_location

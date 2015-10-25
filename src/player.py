@@ -13,9 +13,9 @@ from vlc import *
 class playerUi(QWidget):
     def __init__(self, parent = None):
         super(playerUi, self).__init__(parent)
-        self.pypelyneRoot = os.getcwd()
+        self.pypelyne_root = os.getcwd()
 
-        self.ui = loadUi(os.path.join(os.path.dirname(self.pypelyneRoot), 'ui', 'player.ui'), self)
+        self.ui = loadUi(os.path.join(os.path.dirname(self.main_window.pypelyne_root), 'ui', 'player.ui'), self)
         #self.ui = loadUi(r'C:\Users\michael.mussato.SCHERRERMEDIEN\Dropbox\development\workspace\PyPELyNE\ui\player.ui')
 
         self.player = None

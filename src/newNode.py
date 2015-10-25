@@ -10,11 +10,11 @@ from newOutput import *
 # class configureRenderJobWidgetUi(QWidget):
 #     def __init__(self, parent = None):
 #         super(configureRenderJobWidgetUi, self).__init__(parent)
-#         self.pypelyneRoot = os.getcwd()
-#         self.currentPlatform = platform.system()
-#         if self.currentPlatform == "Windows":
+#         self.pypelyne_root = os.getcwd()
+#         self.current_platform = platform.system()
+#         if self.current_platform == "Windows":
 #             self.ui = loadUi(r'C:\Users\michael.mussato.SCHERRERMEDIEN\Dropbox\development\workspace\PyPELyNE\ui\configureRenderJobWidget.ui', self)
-#         elif self.currentPlatform == "Linux" or self.currentPlatform == "Darwin":
+#         elif self.current_platform == "Linux" or self.current_platform == "Darwin":
 #             self.ui = loadUi(r'/Users/michaelmussato/Dropbox/development/workspace/PyPELyNE/ui/configureRenderJobWidget.ui', self)
 #
 #     def getDeadlineItems(self):
@@ -45,12 +45,12 @@ class NewNodeUI(QDialog):
         super(NewNodeUI, self).__init__(parent)
         
         self.main_window = main_window
-        self.pypelyne_root = self.main_window._pypelyne_root
-        self.current_platform = self.main_window._current_platform
+        # self.pypelyne_root = self.main_window.pypelyne_root
+        # self.current_platform = self.main_window.current_platform
 
         self.tool_data = None
 
-        self.ui = loadUi(os.path.join(self.pypelyne_root, 'ui', 'newNode.ui'), self)
+        self.ui = loadUi(os.path.join(self.main_window.pypelyne_root, 'ui', 'newNode.ui'), self)
         self.setModal(True)
         
         self.node_dir = node_dir
@@ -124,7 +124,7 @@ class NewNodeUI(QDialog):
     def set_status(self):
         # print self.nodeDir
 
-        nodes_dir = os.listdir(os.path.join(self.main_window._projects_root, self.main_window._current_project, 'content', self.main_window._current_content['content'], self.main_window._current_content_item))
+        nodes_dir = os.listdir(os.path.join(self.main_window.projects_root, self.main_window._current_project, 'content', self.main_window._current_content['content'], self.main_window._current_content_item))
 
         used_names = nodes_dir
 

@@ -58,7 +58,7 @@ class newOutputUI(QDialog):
 
     def createConnects(self):
         self.buttonOk.clicked.connect(self.onOk)
-        #self.buttonOk.accepted.connect(self.onOk)
+        #self.buttonOk.accepted.connect(self.on_ok)
         self.buttonCancel.clicked.connect(self.onCancel)
         self.lineEditOutputName.textChanged.connect(self.setStatus)
         self.comboBoxOutput.activated.connect(self.setStatus)

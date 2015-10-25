@@ -113,7 +113,7 @@ class NewNodeUI(QDialog):
 
     def create_connects(self):
         self.buttonOk.clicked.connect(self.onOk)
-        # self.buttonOk.accepted.connect(self.onOk)
+        # self.buttonOk.accepted.connect(self.on_ok)
         self.buttonCancel.clicked.connect(self.onCancel)
         self.lineEditNodeName.textChanged.connect(self.set_status)
         self.comboBoxApplication.activated.connect(self.set_status)

@@ -695,7 +695,7 @@ class SceneView(QGraphicsScene):
         def callback():
             activeItemPath = os.path.join(self.mainWindow._projects_root, self.mainWindow._current_project, 'content', self.mainWindow._current_content['content'], self.mainWindow._current_content_item)
 
-            ok, loaderName, sourceSaverLocation = newLoaderUI.getNewLoaderData(activeItemPath, self.mainWindow)
+            ok, loaderName, sourceSaverLocation = NewNodeUI.get_new_loader_data(activeItemPath, self.mainWindow)
 
             if ok:
                 newLoaderPath = os.path.join(activeItemPath, loaderName)

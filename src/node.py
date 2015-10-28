@@ -183,47 +183,80 @@ class node(QGraphicsItem, QObject):
                     if self.meta_tool['release_number'] == tool['release_number']:
                         run_task['release_number'] = tool['release_number']
                         # run_task['project_workspace'] = tool['project_workspace']
-                        print tool
+                        # print tool
                         if self.meta_tool['architecture'] == 'x64':
                             if self.meta_tool['architecture_fallback']:
                                 print 'this is a %s %s %s task, but can fallback to x32' % (tool['family'], tool['release_number'], self.meta_tool['architecture'])
-                                run_task['executable'] = tool['executable_x64']
-                                run_task['flags'] = tool['flags_x64']
-                                run_task['label'] = tool['label_x64']
+                                if os.path.exists(tool['executable_x64']):
+                                    print 'x64 found.'
+                                    run_task['executable'] = tool['executable_x64']
+                                    # run_task['architecture_fallback'] = False
+                                    run_task['flags'] = tool['flags_x64']
+                                    run_task['label'] = tool['label_x64']
 
-                                run_task['executable_alt'] = tool['executable_x32']
-                                run_task['label_alt'] = tool['label_x32']
-                                run_task['flags_alt'] = tool['flags_x32']
+                                elif os.path.exists(tool['executable_x32']):
+                                    print 'x64 not found. using x32.'
+                                    run_task['executable'] = tool['executable_x32']
+                                    # run_task['architecture_fallback'] = True
+                                    run_task['label'] = tool['label_x32']
+                                    run_task['flags'] = tool['flags_x32']
+
+                                else:
+                                    print 'x32 and x64 not found.'
+                                    run_task['executable'] = None
+                                    run_task['label'] = None
+                                    run_task['flags'] = None
 
                             else:
                                 print 'this is a %s %s %s task (cannot fallback)' % (tool['family'], tool['release_number'], self.meta_tool['architecture'])
-                                run_task['executable'] = tool['executable_x64']
-                                run_task['flags'] = tool['flags_x64']
-                                run_task['label'] = tool['label_x64']
+                                if os.path.exists(tool['executable_x64']):
+                                    print 'x64 found'
+                                    run_task['executable'] = tool['executable_x64']
+                                    run_task['flags'] = tool['flags_x64']
+                                    run_task['label'] = tool['label_x64']
 
-                                run_task['executable_alt'] = None
-                                run_task['label_alt'] = None
-                                run_task['flags_alt'] = None
+                                else:
+                                    print 'x64 not found'
+                                    run_task['executable'] = None
+                                    run_task['label'] = None
+                                    run_task['flags'] = None
+
                         elif self.meta_tool['architecture'] == 'x32':
                             if self.meta_tool['architecture_fallback']:
                                 print 'this is a %s %s %s task, but can fallback to x64.' % (tool['family'], tool['release_number'], self.meta_tool['architecture'])
-                                run_task['executable'] = tool['executable_x32']
-                                run_task['flags'] = tool['flags_x32']
-                                run_task['label'] = tool['label_x32']
+                                if os.path.exists(tool['executable_x32']):
+                                    print 'x32 found.'
+                                    run_task['executable'] = tool['executable_x32']
+                                    # run_task['architecture_fallback'] = False
+                                    run_task['flags'] = tool['flags_x32']
+                                    run_task['label'] = tool['label_x32']
 
-                                run_task['executable_alt'] = tool['executable_x64']
-                                run_task['label_alt'] = tool['label_x64']
-                                run_task['flags_alt'] = tool['flags_x64']
+                                elif os.path.exists(tool['executable_x64']):
+                                    print 'x32 not found. using x64.'
+                                    run_task['executable'] = tool['executable_x64']
+                                    # run_task['architecture_fallback'] = True
+                                    run_task['label'] = tool['label_x64']
+                                    run_task['flags'] = tool['flags_x64']
+
+                                else:
+                                    print 'x32 and x64 not found.'
+                                    run_task['executable'] = None
+                                    run_task['label'] = None
+                                    run_task['flags'] = None
 
                             else:
                                 print 'this is a %s %s %s task (cannot fallback)' % (tool['family'], tool['release_number'], self.meta_tool['architecture'])
-                                run_task['executable'] = tool['executable_x32']
-                                run_task['flags'] = tool['flags_x32']
-                                run_task['label'] = tool['label_x32']
+                                if os.path.exists(tool['executable_x32']):
+                                    print 'x32 found'
+                                    run_task['executable'] = tool['executable_x32']
+                                    run_task['flags'] = tool['flags_x32']
+                                    run_task['label'] = tool['label_x32']
 
-                                run_task['executable_alt'] = None
-                                run_task['label_alt'] = None
-                                run_task['flags_alt'] = None
+                                else:
+                                    print 'x32 not found'
+                                    run_task['executable'] = None
+                                    run_task['label'] = None
+                                    run_task['flags'] = None
 
             print run_task
 

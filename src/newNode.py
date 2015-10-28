@@ -108,8 +108,11 @@ class NewNodeUI(QDialog):
         for tool_item in self.main_window._tool_items:
             self.comboBoxApplication.addItem(tool_item[u'label'], tool_item)
 
-        for task in self.tasks:
-            self.comboBoxTask.addItem(task[2][1])
+        for task in self.main_window._tasks:
+            self.comboBoxTask.addItem(task['task'])
+
+        # for task in self.tasks:
+        #     self.comboBoxTask.addItem(task[2][1])
 
     def create_connects(self):
         self.buttonOk.clicked.connect(self.onOk)
@@ -161,19 +164,19 @@ class NewNodeUI(QDialog):
             self.buttonOk.setEnabled(False)
             self.labelStatus.setText('')
 
-        elif self.tasks[self.comboBoxTask.currentIndex() - 1][1][1] + '_' + self.tool_data['abbreviation'] + '__' + self.lineEditNodeName.text() in used_names:
+        elif self.main_window._tasks[self.comboBoxTask.currentIndex() - 1]['abbreviation'] + '_' + self.tool_data['abbreviation'] + '__' + self.lineEditNodeName.text() in used_names:
             self.buttonOk.setEnabled(False)
             self.labelStatus.setText('already exists')
 
         else:
             self.buttonOk.setEnabled(True)
-            self.labelStatus.setText(self.tasks[self.comboBoxTask.currentIndex() - 1][1][1] + '_' + self.tool_data['abbreviation'] + '__' + self.lineEditNodeName.text())
+            self.labelStatus.setText(self.main_window._tasks[self.comboBoxTask.currentIndex() - 1]['abbreviation'] + '_' + self.tool_data['abbreviation'] + '__' + self.lineEditNodeName.text())
 
     def onCancel(self):
         self.reject()
         
     def onOk(self):
-        self.node_name = self.tasks[self.comboBoxTask.currentIndex() - 1][1][1] + '_' + self.tool_data['abbreviation'] + '__' + self.lineEditNodeName.text()
+        self.node_name = self.main_window._tasks[self.comboBoxTask.currentIndex() - 1]['abbreviation'] + '_' + self.tool_data['abbreviation'] + '__' + self.lineEditNodeName.text()
         self.task_index = self.comboBoxTask.currentIndex() - 1
         self.accept()
         return self.node_name, self.tool_data, self.task_index

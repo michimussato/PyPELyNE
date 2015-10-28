@@ -136,7 +136,7 @@ class PypelyneMainWindow(QMainWindow):
             # print 'platform not fully supported'
             logging.info('Windows not fully supported')
             self.file_explorer = SETTINGS.FILE_EXPLORER_WIN
-            self.tarExec = SETTINGS.TAR_EXEC_WIN
+            self.tar_exec = SETTINGS.TAR_EXEC_WIN
             # self.projects_root = projectsRootWin
             self.libraryRoot = SETTINGS.LIBRARY_ROOT_WIN
             self.audioFolder = SETTINGS.AUDIO_FOLDER_WIN
@@ -153,7 +153,7 @@ class PypelyneMainWindow(QMainWindow):
         elif self.current_platform == "Darwin":
             logging.info('welcome to pypelyne for darwin')
             self.file_explorer = SETTINGS.FILE_EXPLORER_DARWIN
-            self.tarExec = SETTINGS.TAR_EXEC_DARWIN
+            self.tar_exec = SETTINGS.TAR_EXEC_DARWIN
             # self.projects_root = projectsRootDarwin
             self.libraryRoot = SETTINGS.LIBRARY_ROOT_DARWIN
             self.audioFolder = SETTINGS.AUDIO_FOLDER_DARWIN
@@ -176,7 +176,7 @@ class PypelyneMainWindow(QMainWindow):
             else:
                 logging.warning('no valid file explorer found for linux')
             # quit()
-            self.tarExec = SETTINGS.TAR_EXEC_LINUX
+            self.tar_exec = SETTINGS.TAR_EXEC_LINUX
             # self.projects_root = projectsRootLinux
             self.libraryRoot = SETTINGS.LIBRARY_ROOT_LINUX
             self.audioFolder = SETTINGS.AUDIO_FOLDER_LINUX
@@ -223,7 +223,7 @@ class PypelyneMainWindow(QMainWindow):
         self.openPushButton.setEnabled(False)
 
         # self.compute_value_applications()
-        self.computeValueTasks()
+        # self.compute_value_tasks()
         self.computeValueOutputs()
 
         # Scene view
@@ -254,6 +254,7 @@ class PypelyneMainWindow(QMainWindow):
         self.nodeView.setBackgroundBrush(QBrush(QColor(60, 60, 60, 255), Qt.SolidPattern))
 
         self.tools = None
+        self.tasks = None
 
         # Projects
         self.addP_projects()
@@ -335,6 +336,27 @@ class PypelyneMainWindow(QMainWindow):
         current_content_index = self.assetsShotsTabWidget.currentIndex()
         # returns dict like {'content': 'assets', 'abbreviation': 'AST', 'loader_color': '#FFFF00', 'saver_color': '#FFFF33'}
         return self.content_tabs[current_content_index]
+
+    @property
+    def _tasks(self):
+        if self.tasks is None:
+            print 'def _tasks(self):'
+            logging.info('parsing tasks')
+
+            tasks_conf_file = os.path.join(os.path.abspath(r'conf'), r'tasks.json')
+
+            # print tasks_conf_file
+
+            json_file = open(tasks_conf_file)
+            tasks_conf = json.load(json_file)
+            json_file.close()
+
+            self.tasks = [task for task in tasks_conf if task['task_enable']]
+
+            # print tasks_conf
+        # print self.tasks
+        return self.tasks
+        # return 'hello'
 
     @property
     def _tools(self):
@@ -862,14 +884,20 @@ class PypelyneMainWindow(QMainWindow):
             self.outputs.append(itemList)
             itemList = []
 
-    def computeValueTasks(self):
-        self.valueTasks = ET.parse(os.path.join(self.pypelyne_root, 'conf', 'valueTasks.xml'))
-        self.valueTasksRoot = self.valueTasks.getroot()
 
-        self.tasks = []
 
-        for category in self.valueTasksRoot:
-            self.tasks.append(category.items())
+    # # TODO: refactor tasks to become a dict
+    # def compute_value_tasks(self):
+    #     # self._taskse
+    #     self.value_tasks = ET.parse(os.path.join(self.pypelyne_root, 'conf', 'valueTasks.xml'))
+    #     self.value_tasks_root = self.value_tasks.getroot()
+    #
+    #     self.tasks = []
+    #
+    #     for category in self.value_tasks_root:
+    #         self.tasks.append(category.items())
+    #
+    #     print self.tasks
 
     @property
     def new_process_color(self):
@@ -883,18 +911,18 @@ class PypelyneMainWindow(QMainWindow):
 
     # TODO: refactor
     def runTask(self, node, executable, newestFile, *args):
-        #print executable
+        # print executable
 
         makingOfDir = os.path.join(self.getCurrentProject(), 'making_of')
 
-        #now = str(datetime.datetime.now().strftime('%Y-%m-%d_%H%M-%S'))
+        # now = str(datetime.datetime.now().strftime('%Y-%m-%d_%H%M-%S'))
         now = datetime.datetime.now()
 
         nowSecs = str(now.strftime('%Y-%m-%d_%H%M-%S'))
         nowMilliSecs = str(now.strftime('%Y-%m-%d_%H%M-%S_%f'))
 
         arguments = QStringList()
-        #arguments = []
+        # arguments = []
 
         for nodeExeArg in args[0]:
             arguments.append(nodeExeArg)
@@ -935,7 +963,7 @@ class PypelyneMainWindow(QMainWindow):
         # open(os.path.join(node.location, 'checkedOut'), 'a').close()
         # self.tarSep = '_____'
         dateTime = datetime.datetime.now().strftime('%Y-%m-%d_%H%M-%S')
-        # executable = self.tarExec
+        # executable = self.tar_exec
         pigz = os.path.join(self.pypelyne_root, 'payload', 'pigz', 'darwin', 'pigz')
         tarDirRoot = os.path.join(self.projects_root, self.getCurrentProject(), 'check_out')
         # print self._current_content
@@ -976,7 +1004,7 @@ class PypelyneMainWindow(QMainWindow):
         process.started.connect(lambda: self.checkOutOnStarted(process))
         process.finished.connect(lambda: self.checkoutOnFinished(process, node, tarName))
 
-        process.start(self.tarExec, arguments)
+        process.start(self.tar_exec, arguments)
 
     def checkInCallback(self, node):
         def callback():
@@ -1072,8 +1100,8 @@ class PypelyneMainWindow(QMainWindow):
         # print contentFiles
         
         shutil.rmtree(content_files)
-        logging.info('content removed from filesystem: %s' %(content_files))
-        self.sendTextToBox('content removed from filesystem: %s\n' %(content_files))
+        logging.info('content removed from filesystem: %s' % content_files)
+        self.sendTextToBox('content removed from filesystem: %s\n' % content_files)
         
         self.add_content()
         self.refresh_projects()
@@ -1082,9 +1110,14 @@ class PypelyneMainWindow(QMainWindow):
     def create_new_content(self):
         tab_index = self.assetsShotsTabWidget.currentIndex()
 
-        text, ok = QInputDialog.getText(self, 'create new %s' %(self.content_tabs[tab_index]['content']), 'enter %s name:' %(self.content_tabs[tab_index]['content']))
+        text, ok = QInputDialog.getText(self,
+                                        'create new %s' % (self.content_tabs[tab_index]['content']),
+                                        'enter %s name:' % (self.content_tabs[tab_index]['content']))
 
-        current_target = os.path.join(self.projects_root, self._current_project, 'content', self.content_tabs[tab_index]['content'])
+        current_target = os.path.join(self.projects_root,
+                                      self._current_project,
+                                      'content',
+                                      self.content_tabs[tab_index]['content'])
             
         new_content = os.path.join(current_target, str(text))
 
@@ -1092,7 +1125,7 @@ class PypelyneMainWindow(QMainWindow):
 
         if ok:
             if not os.path.exists(new_content):
-                os.makedirs(new_content, mode = 0777)
+                os.makedirs(new_content, mode=0777)
                 self.add_content()
                 self.sendTextToBox('content created on filesystem: %s\n' % new_content)
                 logging.info('content created on filesystem: %s' % new_content)
@@ -1114,7 +1147,7 @@ class PypelyneMainWindow(QMainWindow):
             self.widget_ui.labelApplication.setText(self.node_application_info[2] + ' ' + self.node_application_info[0])
 
         except TypeError, e:
-            logging.warning('set_node_widget for not yet available for saver and loader nodes (%s)' % e)
+            logging.warning('set_node_widget not yet available for saver and loader nodes (%s)' % e)
 
     def clear_node_widget(self):
         self.nodeMenuArea.takeWidget()
@@ -1167,14 +1200,14 @@ class PypelyneMainWindow(QMainWindow):
                                     logging.info('\t\t\t\t found output %s' %(outputItem.data(0)))
                                     startItem = outputItem
 
-                        #special case for library loader
+                        # special case for library loader
                         elif nodeSrc.label.startswith('LDR_LIB__'):
                             logging.info('\t\tnodeSrc is a library loader')
                             logging.info('\t\tnodeSrc is %s' %(nodeSrc.data(0)))
                             logging.info('\t\tlooking for output called %s' %(inputOutput))
                             for outputItem in outputItems:
                                 logging.info('\t\t\tprocessing output %s' %(outputItem.data(0).split('.')[3]))
-                                #print nodeSrc.data(0).toPyObject()
+                                # print nodeSrc.data(0).toPyObject()
                                 logging.info('\t\tlooking for output called %s' %(inputOutput))
                                 searchString = outputItem.data(0).split('.')[3]
                                 if searchString == inputOutput:
@@ -1189,7 +1222,7 @@ class PypelyneMainWindow(QMainWindow):
                                     logging.info('\t\tlooking for output called %s' %(inputOutput))
                                     for outputItem in outputItems:
                                         logging.info('\t\t\tprocessing output %s' %(outputItem.data(0).split('.')[3]))
-                                        #print nodeSrc.data(0).toPyObject()
+                                        # print nodeSrc.data(0).toPyObject()
                                         logging.info('\t\tlooking for output called %s' %(inputOutput))
                                         searchString = outputItem.data(0).split('.')[3]
                                         if searchString == inputOutput:

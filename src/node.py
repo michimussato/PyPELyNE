@@ -29,42 +29,30 @@ class node(QGraphicsItem, QObject):
             self.meta_tool_path = meta_tool_path
 
             try:
-                # print self.meta_task_path
                 meta_task_file = open(self.meta_task_path)
                 self.meta_task = json.load(meta_task_file)
-                # print self.meta_task
                 meta_task_file.close()
             except AttributeError, e:
                 print 'self.meta_task', e
 
             try:
-                # print self.meta_tool_path
                 meta_tool_file = open(self.meta_tool_path)
                 self.meta_tool = json.load(meta_tool_file)
-                # print self.meta_tool
                 meta_tool_file.close()
-
             except AttributeError, e:
                 print 'self.meta_tool', e
 
         except IOError, e:
             print 'xml loading:', e
             self.propertyNodePath = property_node_path
-            # print self.propertyNodePath
-
-
 
         self.main_window = main_window
-        # self.pypelyne_root = self.main_window.pypelyne_root
         self.user = self.main_window.user
         self.location = self.getNodeRootDir()
         self.loaderSaver = os.path.basename(self.location)[:7]
         self.asset = os.path.dirname(self.location)
         self.project = os.path.dirname(os.path.dirname (os.path.dirname(self.asset)))
         self.scene = scene
-        # self._tools = self.main_window.get_tools()
-        self.tasks = self.main_window.getTasks()
-        # self.exclusions = self.main_window._exclusions
         self.now = datetime.datetime.now()
         self.nowStr = str(self.now)
         self.rect = QRectF(0, 0, 200, 40)
@@ -82,7 +70,6 @@ class node(QGraphicsItem, QObject):
         self.setData(2, 'node')
         #self.setToolTip('haha')
         self.setNodePosition()
-        #print '===> fix corrupt %s' %(self.propertyNodePath)
 
         self.scene.clearSelection()
         self.labelBoundingRect = 0.0
@@ -107,9 +94,6 @@ class node(QGraphicsItem, QObject):
         self.setTaskColor()
         self.setApplicationColor()
 
-    def convert_xml_to_json(self):
-        pass
-
     def getNodeAsset(self):
         return self.asset
 
@@ -120,9 +104,6 @@ class node(QGraphicsItem, QObject):
         return self.inputPort
         
     def getNodeRootDir(self):
-        # print self.meta_task_path
-        # print os.path.dirname(self.meta_task_path)
-        # print os.path.dirname(os.path.realpath(self.meta_task_path))
         return os.path.dirname(self.meta_task_path)
 
     def getApplicationInfo(self):
@@ -139,12 +120,8 @@ class node(QGraphicsItem, QObject):
             print 'loader or saver? (%s)' % e
 
     def queryApplicationInfo(self):
-
         try:
             return self.nodeVersion, self.nodeVendor, self.nodeFamily, self.nodeArch, self.nodeTask
-            #       [1][1]          [3][1]      [4][1]      [0][1]      [2][1]
-            #       ('modelling',   'R 15',       'CINEMA 4D',  'x64',      'MAXON')
-            #       [2][1]      [3][1]     [4][1]   [0][1]  [2][1]
 
         except TypeError, e:
             logging.warning('queryApplicationInfo for not yet available for saver and loader nodes (%s)' % e)
@@ -194,6 +171,68 @@ class node(QGraphicsItem, QObject):
             self.main_window.get_content(node_label=self.label)
 
         else:
+            # print self.main_window._tools
+            # print self.meta_task
+            # print self.meta_tool
+
+            run_task = {}
+
+            for tool in self.main_window._tools:
+                if self.meta_tool['family'] == tool['family']:
+                    run_task['family'] = tool['family']
+                    if self.meta_tool['release_number'] == tool['release_number']:
+                        run_task['release_number'] = tool['release_number']
+                        # run_task['project_workspace'] = tool['project_workspace']
+                        print tool
+                        if self.meta_tool['architecture'] == 'x64':
+                            if self.meta_tool['architecture_fallback']:
+                                print 'this is a %s %s %s task, but can fallback to x32' % (tool['family'], tool['release_number'], self.meta_tool['architecture'])
+                                run_task['executable'] = tool['executable_x64']
+                                run_task['flags'] = tool['flags_x64']
+                                run_task['label'] = tool['label_x64']
+
+                                run_task['executable_alt'] = tool['executable_x32']
+                                run_task['label_alt'] = tool['label_x32']
+                                run_task['flags_alt'] = tool['flags_x32']
+
+                            else:
+                                print 'this is a %s %s %s task (cannot fallback)' % (tool['family'], tool['release_number'], self.meta_tool['architecture'])
+                                run_task['executable'] = tool['executable_x64']
+                                run_task['flags'] = tool['flags_x64']
+                                run_task['label'] = tool['label_x64']
+
+                                run_task['executable_alt'] = None
+                                run_task['label_alt'] = None
+                                run_task['flags_alt'] = None
+                        elif self.meta_tool['architecture'] == 'x32':
+                            if self.meta_tool['architecture_fallback']:
+                                print 'this is a %s %s %s task, but can fallback to x64.' % (tool['family'], tool['release_number'], self.meta_tool['architecture'])
+                                run_task['executable'] = tool['executable_x32']
+                                run_task['flags'] = tool['flags_x32']
+                                run_task['label'] = tool['label_x32']
+
+                                run_task['executable_alt'] = tool['executable_x64']
+                                run_task['label_alt'] = tool['label_x64']
+                                run_task['flags_alt'] = tool['flags_x64']
+
+                            else:
+                                print 'this is a %s %s %s task (cannot fallback)' % (tool['family'], tool['release_number'], self.meta_tool['architecture'])
+                                run_task['executable'] = tool['executable_x32']
+                                run_task['flags'] = tool['flags_x32']
+                                run_task['label'] = tool['label_x32']
+
+                                run_task['executable_alt'] = None
+                                run_task['label_alt'] = None
+                                run_task['flags_alt'] = None
+
+            print run_task
+
+
+                        # if tool['architecture'] == self.main_window.architectures[0]:
+                        # elif tool
+                        # print 'this is a %s task' % self.meta_tool['family']
+
+
             search_string = self.nodeVendor + ' ' + self.nodeFamily + ' ' + self.nodeVersion + ' ' + self.nodeArch
             search_index = self.main_window.toolsComboBox.findText(search_string, Qt.MatchContains)
 
@@ -204,7 +243,11 @@ class node(QGraphicsItem, QObject):
                     return
 
                 elif self.nodeArch == 'x64':
-                    reply = QMessageBox.warning(self.main_window, 'architecture warning', str('x64 version of %s not available. continue using x32?' %self.nodeFamily), QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+                    reply = QMessageBox.warning(self.main_window,
+                                                'architecture warning',
+                                                'x64 version of %s not available. use x32?' % self.nodeFamily,
+                                                QMessageBox.Yes | QMessageBox.No,
+                                                QMessageBox.No)
 
                     if reply == QMessageBox.Yes:
                         search_string = str(self.nodeVendor + ' ' + self.nodeFamily + ' ' + self.nodeVersion + ' ' + 'x32')
@@ -215,7 +258,7 @@ class node(QGraphicsItem, QObject):
                 elif self.nodeArch == 'x32':
                     reply = QMessageBox.warning(self.main_window,
                                                 'architecture warning',
-                                                str('x32 version of %s not available. continue using x64?' % self.nodeFamily),
+                                                'x32 version of %s not available. use x64?' % self.nodeFamily,
                                                 QMessageBox.Yes | QMessageBox.No,
                                                 QMessageBox.No)
 
@@ -525,45 +568,36 @@ class node(QGraphicsItem, QObject):
         self.resizeWidth()
 
     def setApplicationColor(self):
-        self.applicationColorItem.setNamedColor(self.taskColor)
+        self.applicationColorItem.setNamedColor(self.task_color)
 
     def setTaskColor(self):
-        index = 0
-
-        # print self.location
-        # print self.location[:7]
+        self.task_color = SETTINGS.DEFAULT_TASK_COLOR
 
         if os.path.basename(self.location)[:7].startswith('LDR'):
             if os.path.basename(self.location)[:7].endswith('LIB'):
-                self.taskColor = '#00FF00'
+                self.task_color = '#00FF00'
             else:
                 for tab in self.main_window.content_tabs:
                     if os.path.basename(self.location)[:7].endswith(tab['abbreviation']):
-                        self.taskColor = tab['loader_color']
+                        self.task_color = tab['loader_color']
                         break
 
         elif os.path.basename(self.location)[:7].startswith('SVR'):
             for tab in self.main_window.content_tabs:
                 if os.path.basename(self.location)[:7].endswith(tab['abbreviation']):
-                    self.taskColor = tab['saver_color']
-            # if os.path.basename(self.location)[:7].endswith('AST'):
-            #     self.taskColor = '#FFFF33'
-            # elif os.path.basename(self.location)[:7].endswith('SHT'):
-            #     self.taskColor = '#3333FF'
+                    self.task_color = tab['saver_color']
 
         else:
-
-            for i in self.tasks:
-                # print i
-                # print self.nodeTask
-                if [item for item in i if self.nodeTask in item]:
-                    # print self.tasks[index][0][1]
-                    logging.info('task color description found')
-                    self.taskColor = self.tasks[index][0][1]
+            for task in self.main_window._tasks:
+                print task[u'abbreviation']
+                print self.nodeTask
+                if self.nodeTask == task[u'task']:
+                    logging.info('task color description for task %s found' % task[u'abbreviation'])
+                    self.task_color = task[u'color']
                     break
-                else:
-                    index += 1
 
-        self.taskColorItem.setNamedColor(self.taskColor)
+        self.taskColorItem.setNamedColor(self.task_color)
+
+
 
 

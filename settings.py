@@ -7,6 +7,7 @@ MOVIE_EXTENSIONS          = [ '.mov', '.avi' ]
 ARCHIVE_SEPARATOR         = '_____'
 USE_SERVER                = False
 USE_SCREEN_CAST           = True
+DEFAULT_TASK_COLOR        = '#FF00FF'
 
 
 ###Server

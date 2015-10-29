@@ -166,190 +166,162 @@ class node(QGraphicsItem, QObject):
     def mousePressEvent(self, event):
         self.scene.nodeSelect.emit(self)
 
-    def mouseDoubleClickEvent(self, event):
+    def mouseDoubleClickEvent(self, event=None):
         if self.label.startswith('LDR'):
             self.main_window.get_content(node_label=self.label)
 
         else:
-            # print self.main_window._tools
-            # print self.meta_task
-            # print self.meta_tool
-
             run_task = {}
 
+            run_task['family'] = None
+            run_task['release_number'] = None
+            run_task['project_template'] = None
+            run_task['executable'] = None
+            # run_task['architecture_fallback'] = False
+            run_task['flags'] = None
+            run_task['label'] = None
+
+            if os.path.exists(os.path.join(self.location, 'locked')):
+                QMessageBox.critical(self.main_window, 'node warning', str('%s is currently in use.' % self.label), QMessageBox.Abort, QMessageBox.Abort)
+                return
+
+            if os.path.exists(os.path.join(self.location, 'checkedOut')):
+                QMessageBox.critical(self.main_window, 'node warning', str('%s is currently checked out.' % self.label), QMessageBox.Abort, QMessageBox.Abort)
+                return
+
             for tool in self.main_window._tools:
+                # print tool
                 if self.meta_tool['family'] == tool['family']:
                     run_task['family'] = tool['family']
                     if self.meta_tool['release_number'] == tool['release_number']:
                         run_task['release_number'] = tool['release_number']
+                        run_task['project_template'] = tool['project_template']
                         # run_task['project_workspace'] = tool['project_workspace']
                         # print tool
                         if self.meta_tool['architecture'] == 'x64':
                             if self.meta_tool['architecture_fallback']:
                                 print 'this is a %s %s %s task, but can fallback to x32' % (tool['family'], tool['release_number'], self.meta_tool['architecture'])
-                                if os.path.exists(tool['executable_x64']):
-                                    print 'x64 found.'
-                                    run_task['executable'] = tool['executable_x64']
-                                    # run_task['architecture_fallback'] = False
-                                    run_task['flags'] = tool['flags_x64']
-                                    run_task['label'] = tool['label_x64']
+                                if bool(tool['executable_x64']):
+                                    if os.path.exists(tool['executable_x64']):
+                                        print 'x64 found.'
+                                        run_task['executable'] = tool['executable_x64']
+                                        # run_task['architecture_fallback'] = False
+                                        run_task['flags'] = tool['flags_x64']
+                                        run_task['label'] = tool['label_x64']
 
-                                elif os.path.exists(tool['executable_x32']):
-                                    print 'x64 not found. using x32.'
-                                    run_task['executable'] = tool['executable_x32']
-                                    # run_task['architecture_fallback'] = True
-                                    run_task['label'] = tool['label_x32']
-                                    run_task['flags'] = tool['flags_x32']
+                                if bool(tool['executable_x32']) and run_task['executable'] is None:
+                                    if os.path.exists(tool['executable_x32']):
+                                        reply = QMessageBox.warning(self.main_window,
+                                                    'architecture warning',
+                                                    'x64 version of %s %s not available. use x32?' % (run_task['family'], run_task['release_number']),
+                                                    QMessageBox.Yes | QMessageBox.No,
+                                                    QMessageBox.No)
+                                        if reply == QMessageBox.Yes:
+                                            print 'x64 not found. using x32.'
+                                            run_task['executable'] = tool['executable_x32']
+                                            # run_task['architecture_fallback'] = True
+                                            run_task['label'] = tool['label_x32']
+                                            run_task['flags'] = tool['flags_x32']
 
-                                else:
-                                    print 'x32 and x64 not found.'
-                                    run_task['executable'] = None
-                                    run_task['label'] = None
-                                    run_task['flags'] = None
+                                        else:
+                                            print 'dont use x32 instead of x64.'
+
+                                    else:
+                                        print 'x32 and x64 not found.'
 
                             else:
                                 print 'this is a %s %s %s task (cannot fallback)' % (tool['family'], tool['release_number'], self.meta_tool['architecture'])
-                                if os.path.exists(tool['executable_x64']):
-                                    print 'x64 found'
-                                    run_task['executable'] = tool['executable_x64']
-                                    run_task['flags'] = tool['flags_x64']
-                                    run_task['label'] = tool['label_x64']
+                                if bool(tool['executable_x64']):
+                                    if os.path.exists(tool['executable_x64']):
+                                        print 'x64 found'
+                                        run_task['executable'] = tool['executable_x64']
+                                        run_task['flags'] = tool['flags_x64']
+                                        run_task['label'] = tool['label_x64']
 
-                                else:
-                                    print 'x64 not found'
-                                    run_task['executable'] = None
-                                    run_task['label'] = None
-                                    run_task['flags'] = None
+                                    else:
+                                        print 'x64 not found'
 
                         elif self.meta_tool['architecture'] == 'x32':
                             if self.meta_tool['architecture_fallback']:
                                 print 'this is a %s %s %s task, but can fallback to x64.' % (tool['family'], tool['release_number'], self.meta_tool['architecture'])
-                                if os.path.exists(tool['executable_x32']):
-                                    print 'x32 found.'
-                                    run_task['executable'] = tool['executable_x32']
-                                    # run_task['architecture_fallback'] = False
-                                    run_task['flags'] = tool['flags_x32']
-                                    run_task['label'] = tool['label_x32']
+                                if bool(tool['executable_x32']):
+                                    if os.path.exists(tool['executable_x32']):
+                                        print 'x32 found.'
+                                        run_task['executable'] = tool['executable_x32']
+                                        # run_task['architecture_fallback'] = False
+                                        run_task['flags'] = tool['flags_x32']
+                                        run_task['label'] = tool['label_x32']
 
-                                elif os.path.exists(tool['executable_x64']):
-                                    print 'x32 not found. using x64.'
-                                    run_task['executable'] = tool['executable_x64']
-                                    # run_task['architecture_fallback'] = True
-                                    run_task['label'] = tool['label_x64']
-                                    run_task['flags'] = tool['flags_x64']
+                                    if bool(tool['executable_x64']) and run_task['executable'] is None:
+                                        if os.path.exists(tool['executable_x64']):
+                                            reply = QMessageBox.warning(self.main_window,
+                                                        'architecture warning',
+                                                        'x32 version of %s %s not available. use x64?' % (run_task['family'], run_task['release_number']),
+                                                        QMessageBox.Yes | QMessageBox.No,
+                                                        QMessageBox.No)
+                                            if reply == QMessageBox.Yes:
+                                                print 'x32 not found. using x64.'
+                                                run_task['executable'] = tool['executable_x64']
+                                                # run_task['architecture_fallback'] = True
+                                                run_task['label'] = tool['label_x64']
+                                                run_task['flags'] = tool['flags_x64']
 
-                                else:
-                                    print 'x32 and x64 not found.'
-                                    run_task['executable'] = None
-                                    run_task['label'] = None
-                                    run_task['flags'] = None
+                                            else:
+                                                print 'dont use x32 instead of x64.'
+
+                                    else:
+                                        print 'x32 and x64 not found.'
 
                             else:
                                 print 'this is a %s %s %s task (cannot fallback)' % (tool['family'], tool['release_number'], self.meta_tool['architecture'])
-                                if os.path.exists(tool['executable_x32']):
-                                    print 'x32 found'
-                                    run_task['executable'] = tool['executable_x32']
-                                    run_task['flags'] = tool['flags_x32']
-                                    run_task['label'] = tool['label_x32']
+                                if bool(tool['executable_x32']):
+                                    if os.path.exists(tool['executable_x32']):
+                                        print 'x32 found'
+                                        run_task['executable'] = tool['executable_x32']
+                                        run_task['flags'] = tool['flags_x32']
+                                        run_task['label'] = tool['label_x32']
 
-                                else:
-                                    print 'x32 not found'
-                                    run_task['executable'] = None
-                                    run_task['label'] = None
-                                    run_task['flags'] = None
+                                    else:
+                                        print 'x32 not found'
 
-            print run_task
-
-
-                        # if tool['architecture'] == self.main_window.architectures[0]:
-                        # elif tool
-                        # print 'this is a %s task' % self.meta_tool['family']
-
-
-            search_string = self.nodeVendor + ' ' + self.nodeFamily + ' ' + self.nodeVersion + ' ' + self.nodeArch
-            search_index = self.main_window.toolsComboBox.findText(search_string, Qt.MatchContains)
-
-            if search_index < 3:
-                if not str(self.nodeFamily + ' ' + self.nodeVersion) in [self.main_window.toolsComboBox.itemText(i) for i in range(self.main_window.toolsComboBox.count())]:
-                    logging.warning('application family not available')
-                    QMessageBox.critical(self.main_window, 'application warning', str('%s not available.' % str(self.nodeFamily + ' ' + self.nodeVersion)), QMessageBox.Abort, QMessageBox.Abort)
-                    return
-
-                elif self.nodeArch == 'x64':
-                    reply = QMessageBox.warning(self.main_window,
-                                                'architecture warning',
-                                                'x64 version of %s not available. use x32?' % self.nodeFamily,
-                                                QMessageBox.Yes | QMessageBox.No,
-                                                QMessageBox.No)
-
-                    if reply == QMessageBox.Yes:
-                        search_string = str(self.nodeVendor + ' ' + self.nodeFamily + ' ' + self.nodeVersion + ' ' + 'x32')
-                        search_index = self.main_window.toolsComboBox.findText(QString(search_string), Qt.MatchContains) - 2
-                        logging.warning('x64 not available. using x32 version.')
-                    else:
-                        return
-                elif self.nodeArch == 'x32':
-                    reply = QMessageBox.warning(self.main_window,
-                                                'architecture warning',
-                                                'x32 version of %s not available. use x64?' % self.nodeFamily,
-                                                QMessageBox.Yes | QMessageBox.No,
-                                                QMessageBox.No)
-
-                    if reply == QMessageBox.Yes:
-                        search_string = str(self.nodeVendor + ' ' + self.nodeFamily + ' ' + self.nodeVersion + ' ' + 'x64')
-                        search_index = self.main_window.toolsComboBox.findText(QString(search_string), Qt.MatchContains) - 2
-                        logging.warning('x32 not available. using x64 version.')
-                    else:
-                        return
-                else:
-                    logging.warning('some weird shit')
-
-            elif os.path.exists(os.path.join(self.location, 'locked')):
-                QMessageBox.critical(self.main_window, 'node warning', str('%s is currently in use.' %str(self.label)), QMessageBox.Abort, QMessageBox.Abort)
+            if run_task['executable'] is None:
+                QMessageBox.critical(self.main_window, 'node warning', str('no suitable tool found to launch task %s.' % self.label), QMessageBox.Abort, QMessageBox.Abort)
                 return
-
-            elif os.path.exists(os.path.join(self.location, 'checkedOut')):
-                QMessageBox.critical(self.main_window, 'node warning', str('%s is currently checked out.' %str(self.label)), QMessageBox.Abort, QMessageBox.Abort)
-                return
-
-            args = []
-
-            for arg in self._tools[search_index][10]:
-                args.append(arg)
 
             if self.nodeFamily == 'Maya':
                 for arg in ['-proj', self.location, '-file']:
-                    args.append(arg)
+                    run_task['flags'].append(arg)
 
-            projectRoot = os.path.join(self.location, 'project')
+            project_root_task = os.path.join(self.location, 'project')
 
-            extension = os.path.splitext(self._tools[search_index][7])[1]
+            extension = os.path.splitext(run_task['project_template'])[1]
 
-            files = glob.glob1(projectRoot, str('*' + extension))
+            files = glob.glob1(project_root_task, str('*' + extension))
 
-            absFiles = []
+            abs_files = []
 
-            for relFile in files:
-                if relFile not in SETTINGS.EXCLUSIONS:
-                    absFiles.append(os.path.join(projectRoot, relFile))
+            for rel_file in files:
+                if rel_file not in SETTINGS.EXCLUSIONS:
+                    abs_files.append(os.path.join(project_root_task, rel_file))
 
-            if not 'DDL' in self.label:
-                newestFile = max(absFiles, key=os.path.getctime)
-                self.main_window.runTask(self, self._tools[search_index][1][0], newestFile, args)
+            if 'DDL' not in self.label:
+                newest_file = max(abs_files, key=os.path.getctime)
+                run_task['flags'].append(newest_file)
+                self.main_window.run_task(node_object=self, executable=run_task['executable'], args=run_task['flags'])
             else:
-                ok, jobDeadline = jobDeadlineUi.getDeadlineJobData(self.location, self.main_window)
+                ok, job_deadline = jobDeadlineUi.getDeadlineJobData(self.location, self.main_window)
 
                 if ok:
-                    txtFile = os.path.join(self.location, 'project', 'deadlineJob.txt')
-                    jobFile = open(txtFile, 'w')
+                    txt_file = os.path.join(self.location, 'project', 'deadlineJob.txt')
+                    job_file = open(txt_file, 'w')
 
-                    for element in jobDeadline:
-                        jobFile.write(element)
-                        jobFile.write(' ')
+                    for element in job_deadline:
+                        job_file.write(element)
+                        job_file.write(' ')
 
-                    jobFile.close()
+                    job_file.close()
 
-                    self.main_window.submitDeadlineJob(txtFile)
+                    self.main_window.submitDeadlineJob(txt_file)
 
     def data_ready(self):
         cursor_box = self.main_window.statusBox.textCursor()

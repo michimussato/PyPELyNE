@@ -170,6 +170,8 @@ class SceneView(QGraphicsScene):
 
                     if not os.path.exists(os.path.join(node_clicked.getNodeRootDir(), 'locked')):
                         self.menu_node.addSeparator()
+                        self.menu_node.addAction('run', lambda: node_clicked.mouseDoubleClickEvent())
+                        self.menu_node.addSeparator()
                         self.menu_node.addAction('cleanup node', self.cleanUpNodeCallback(node_clicked))
                         self.menu_node.addAction('delete node', self.removeObjectCallback(node_clicked))
 
@@ -179,7 +181,7 @@ class SceneView(QGraphicsScene):
 
                         else:
                             self.menu_node.addSeparator()
-                            self.menu_node.addAction('check out node', self.main_window.checkOutCallback(node_clicked))
+                            self.menu_node.addAction('check out node', self.main_window.check_out_callback(node_clicked))
 
                 elif node_clicked.label.startswith('LDR'):
 
@@ -196,12 +198,12 @@ class SceneView(QGraphicsScene):
                 elif node_clicked.label.startswith('SVR'):
                     self.menu_node.addAction('delete saver', self.removeObjectCallback(node_clicked))
                     self.menu_node.addSeparator()
-                    self.menu_node.addAction('check out tree', self.main_window.checkOutCallback(node_clicked))
+                    self.menu_node.addAction('check out tree', self.main_window.check_out_callback(node_clicked))
 
                 # elif node_clicked.label.startswith('SVR_SHT'):
                 #     self.menu_node.addAction('delete shot saver', self.removeObjectCallback(node_clicked))
                 #     self.menu_node.addSeparator()
-                #     self.menu_node.addAction('check out shot', self.main_window.checkOutCallback(node_clicked))
+                #     self.menu_node.addAction('check out shot', self.main_window.check_out_callback(node_clicked))
 
                 self.menu_node.addSeparator()
 

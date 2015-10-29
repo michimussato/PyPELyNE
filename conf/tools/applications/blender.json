@@ -22,7 +22,7 @@
         },
         {
           "darwin": {
-            "executable_x32": null,
+            "executable_x32": "/Applications/Blender/blender.app/Contents/MacOS/blender32",
             "flags_x32": [],
             "executable_x64": "/Applications/Blender/blender.app/Contents/MacOS/blender",
             "flags_x64": []

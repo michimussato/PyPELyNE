@@ -6,6 +6,7 @@
   "releases": [
     {
       "release_number": "13.0.314",
+      "release_extension": ".hip",
       "project_template": "null_sidefx_houdini_130260.hip",
       "project_workspace": null,
       "project_directories": ["scripts", "otls", "desktop", "toolbar", "gallery"],

@@ -6,6 +6,7 @@
   "releases": [
     {
       "release_number": "CS6",
+      "release_extension": ".aep",
       "project_template": "null_adobe_aftereffects_CS6.aep",
       "project_workspace": null,
       "project_directories": [],

@@ -6,6 +6,7 @@
   "releases": [
     {
       "release_number": "2.08.01",
+      "release_extension": ".uvl",
       "project_template": null,
       "project_workspace": null,
       "project_directories": [],

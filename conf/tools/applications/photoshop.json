@@ -6,6 +6,7 @@
   "releases": [
     {
       "release_number": "CS6",
+      "release_extension": ".psd",
       "project_template": "null_adobe_photoshop_CS6.psd",
       "project_workspace": null,
       "project_directories": [],
@@ -40,6 +41,7 @@
     },
     {
       "release_number": "CC12",
+      "release_extension": ".psd",
       "project_template": "null_adobe_photoshop_CC12.psd",
       "project_workspace": null,
       "project_directories": [],

@@ -6,6 +6,7 @@
   "releases": [
     {
       "release_number": "6.0.0.0055",
+      "release_extension": ".flw",
       "project_template": "null_nextlimit_realflow_6000055.flw",
       "project_workspace": null,
       "project_directories": ["images", "initialState", "log", "meshes", "objects", "particles", "preview", "preview#images"],
@@ -40,6 +41,7 @@
     },
     {
       "release_number": "7.0.1.0131",
+      "release_extension": ".flw",
       "project_template": "null_nextlimit_realflow_7010131.flw",
       "project_workspace": null,
       "project_directories": ["images", "initialState", "log", "meshes", "objects", "particles", "preview", "preview#images"],

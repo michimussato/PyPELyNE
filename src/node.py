@@ -195,6 +195,7 @@ class node(QGraphicsItem, QObject):
                     run_task['family'] = tool['family']
                     if self.meta_tool['release_number'] == tool['release_number']:
                         run_task['release_number'] = tool['release_number']
+                        run_task['release_extension'] = tool['release_extension']
                         run_task['project_template'] = tool['project_template']
                         # run_task['project_workspace'] = tool['project_workspace']
                         # print tool
@@ -294,7 +295,8 @@ class node(QGraphicsItem, QObject):
 
             project_root_task = os.path.join(self.location, 'project')
 
-            extension = os.path.splitext(run_task['project_template'])[1]
+            # extension = os.path.splitext(run_task['project_template'])[1]
+            extension = run_task['release_extension']
 
             files = glob.glob1(project_root_task, str('*' + extension))
 
@@ -305,6 +307,7 @@ class node(QGraphicsItem, QObject):
                     abs_files.append(os.path.join(project_root_task, rel_file))
 
             if 'DDL' not in self.label:
+                # TODO: if none is a tools template: this will produce an error
                 newest_file = max(abs_files, key=os.path.getctime)
                 run_task['flags'].append(newest_file)
                 self.main_window.run_task(node_object=self, executable=run_task['executable'], args=run_task['flags'])

@@ -6,6 +6,7 @@
   "releases": [
     {
       "release_number": "2013",
+      "release_extension": ".mud",
       "project_template": "null_autodesk_mudbox_2013.mud",
       "project_workspace": null,
       "project_directories": [],
@@ -40,6 +41,7 @@
     },
     {
       "release_number": "2015",
+      "release_extension": ".mud",
       "project_template": "null_autodesk_mudbox_2015.mud",
       "project_workspace": null,
       "project_directories": [],

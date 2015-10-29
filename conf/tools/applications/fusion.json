@@ -6,6 +6,7 @@
   "releases": [
     {
       "release_number": "7",
+      "release_extension": ".comp",
       "project_template": "null_blackmagicdesign_fusion7.comp",
       "project_workspace": null,
       "project_directories": [],

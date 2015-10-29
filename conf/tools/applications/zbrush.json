@@ -6,6 +6,7 @@
   "releases": [
     {
       "release_number": "4R5",
+      "release_extension": ".zpr",
       "project_template": "null_pixologic_zbrush_4r5.zpr",
       "project_workspace": null,
       "project_directories": [],
@@ -40,6 +41,7 @@
     },
     {
       "release_number": "4R6",
+      "release_extension": ".zpr",
       "project_template": "null_pixologic_zbrush_4r6.ZPR",
       "project_workspace": null,
       "project_directories": [],

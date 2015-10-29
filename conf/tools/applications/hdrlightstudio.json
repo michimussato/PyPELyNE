@@ -6,6 +6,7 @@
   "releases": [
     {
       "release_number": "4",
+      "release_extension": null,
       "project_template": null,
       "project_workspace": null,
       "project_directories": [],

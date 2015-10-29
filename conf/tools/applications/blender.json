@@ -6,6 +6,7 @@
   "releases": [
     {
       "release_number": "2.6.9",
+      "release_extension": ".blend",
       "project_template": "null_blenderfoundation_blender_269.blend",
       "project_workspace": null,
       "project_directories": [],

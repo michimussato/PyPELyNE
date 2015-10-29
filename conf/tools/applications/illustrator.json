@@ -6,6 +6,7 @@
   "releases": [
     {
       "release_number": "CS6",
+      "release_extension": ".ai",
       "project_template": null,
       "project_workspace": null,
       "project_directories": [],

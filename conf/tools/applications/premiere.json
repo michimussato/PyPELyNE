@@ -6,6 +6,7 @@
   "releases": [
     {
       "release_number": "CS6",
+      "release_extension": ".prproj",
       "project_template": "null_adobe_premiere_CS6.prproj",
       "project_workspace": null,
       "project_directories": [],
@@ -40,6 +41,7 @@
     },
     {
       "release_number": "CC12",
+      "release_extension": ".prproj",
       "project_template": "null_adobe_premiere_CC12.prproj",
       "project_workspace": null,
       "project_directories": [],

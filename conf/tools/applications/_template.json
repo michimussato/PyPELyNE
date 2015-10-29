@@ -6,6 +6,7 @@
   "releases": [
     {
       "release_number": "1.2.3",
+      "release_extension": ".ext",
       "project_template": "null_familyfoundation_family_123.template" or null,
       "project_workspace": "null_familyfoundation_family_123.workspace" or null,
       "project_directories": ["dir1", "dir1#dir", "dir2#dir#dir5"],
@@ -40,6 +41,7 @@
     },
     {
       "release_number": "4.5.6",
+      "release_extension": ".ext",
       "project_template": "null_familyfoundation_family_456.template" or null,
       "project_workspace": "null_familyfoundation_family_456.workspace" or null,
       "project_directories": ["dir1#dir"],

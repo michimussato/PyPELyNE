@@ -395,11 +395,13 @@ class PypelyneMainWindow(QMainWindow):
                     abbreviation = app_conf[u'abbreviation']
  
                     for release in app_conf[u'releases']:
+                        print release
                         # type(release) = dict
                         logging.info('checking system for release: %s' % release[u'release_number'])
  
                         # and all the version/release related stuff
                         release_number = release[u'release_number']
+                        release_extension = release[u'release_extension']
                         project_template = release[u'project_template']
                         project_workspace = release[u'project_workspace']
                         project_directories = release[u'project_directories']
@@ -450,6 +452,7 @@ class PypelyneMainWindow(QMainWindow):
                                 tool[u'vendor'] = vendor
                                 tool[u'abbreviation'] = abbreviation
                                 tool[u'release_number'] = release_number
+                                tool[u'release_extension'] = release_extension
                                 tool[u'project_template'] = project_template
                                 tool[u'project_workspace'] = project_workspace
                                 tool[u'project_directories'] = project_directories_list

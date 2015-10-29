@@ -11,6 +11,8 @@ import getpass
 import threading
 import socket
 import json
+# TODO: check module colorlog and coloredlogs
+# http://stackoverflow.com/questions/384076/how-can-i-color-python-logging-output
 import logging
 from operator import *
  

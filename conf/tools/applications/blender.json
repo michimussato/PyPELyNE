@@ -8,13 +8,16 @@
       "release_number": "2.6.9",
       "release_extension": ".blend",
       "project_template": "null_blenderfoundation_blender_269.blend",
-      "project_workspace": null,
+      "project_workspace_template": null,
       "project_directories": [],
       "default_outputs": [],
       "architecture_fallback": true,
       "platforms": [
         {
           "windows": {
+            "project_workspace_flag": null,
+            "project_workspace_parent_directory_level": 0,
+            "project_file_flag": null,
             "executable_x32": "C:\\Program Files (x86)\\Blender Foundation\\Blender\\blender.exe",
             "flags_x32": [],
             "executable_x64": "C:\\Program Files\\Blender Foundation\\Blender\\blender.exe",
@@ -23,6 +26,9 @@
         },
         {
           "darwin": {
+            "project_workspace_flag": null,
+            "project_workspace_parent_directory_level": 0,
+            "project_file_flag": null,
             "executable_x32": "/Applications/Blender/blender.app/Contents/MacOS/blender32",
             "flags_x32": [],
             "executable_x64": "/Applications/Blender/blender.app/Contents/MacOS/blender",
@@ -31,6 +37,9 @@
         },
         {
           "linux": {
+            "project_workspace_flag": null,
+            "project_workspace_parent_directory_level": 0,
+            "project_file_flag": null,
             "executable_x32": null,
             "flags_x32": [],
             "executable_x64": null,

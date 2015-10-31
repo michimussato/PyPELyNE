@@ -8,13 +8,16 @@
       "release_number": "7.0v8",
       "release_extension": ".nk",
       "project_template": "null_thefoundry_nuke_708.nk",
-      "project_workspace": null,
+      "project_workspace_template": null,
       "project_directories": [],
       "default_outputs": [],
       "architecture_fallback": true,
       "platforms": [
         {
           "windows": {
+            "project_workspace_flag": null,
+            "project_workspace_parent_directory_level": 1,
+            "project_file_flag": null,
             "executable_x32": null,
             "flags_x32": [],
             "executable_x64": null,
@@ -23,6 +26,9 @@
         },
         {
           "darwin": {
+            "project_workspace_flag": null,
+            "project_workspace_parent_directory_level": 1,
+            "project_file_flag": null,
             "executable_x32": null,
             "flags_x32": [],
             "executable_x64": "/Applications/Nuke7.0v8/Nuke7.0v8.app/Nuke7.0v8",
@@ -31,6 +37,9 @@
         },
         {
           "linux": {
+            "project_workspace_flag": null,
+            "project_workspace_parent_directory_level": 1,
+            "project_file_flag": null,
             "executable_x32": null,
             "flags_x32": [],
             "executable_x64": null,
@@ -43,13 +52,16 @@
       "release_number": "8.0v3",
       "release_extension": ".nk",
       "project_template": null,
-      "project_workspace": null,
+      "project_workspace_template": null,
       "project_directories": [],
       "default_outputs": [],
       "architecture_fallback": true,
       "platforms": [
         {
           "windows": {
+            "project_workspace_flag": null,
+            "project_workspace_parent_directory_level": 1,
+            "project_file_flag": null,
             "executable_x32": null,
             "flags_x32": [],
             "executable_x64": "C:\\Program Files\\Nuke8.0v3\\Nuke8.0.exe",
@@ -58,6 +70,9 @@
         },
         {
           "darwin": {
+            "project_workspace_flag": null,
+            "project_workspace_parent_directory_level": 1,
+            "project_file_flag": null,
             "executable_x32": null,
             "flags_x32": [],
             "executable_x64": "/Applications/Nuke8.0v3/Nuke8.0v3.app/Nuke8.0v3",
@@ -66,6 +81,9 @@
         },
         {
           "linux": {
+            "project_workspace_flag": null,
+            "project_workspace_parent_directory_level": 1,
+            "project_file_flag": null,
             "executable_x32": null,
             "flags_x32": [],
             "executable_x64": null,

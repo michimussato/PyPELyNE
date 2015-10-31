@@ -177,6 +177,9 @@ class node(QGraphicsItem, QObject):
             run_task['release_number'] = None
             run_task['project_template'] = None
             run_task['executable'] = None
+            run_task['project_workspace_flag'] = None
+            run_task['project_workspace_parent_directory_level'] = None
+            run_task['project_file_flag'] = None
             # run_task['architecture_fallback'] = False
             run_task['flags'] = None
             run_task['label'] = None
@@ -197,8 +200,13 @@ class node(QGraphicsItem, QObject):
                         run_task['release_number'] = tool['release_number']
                         run_task['release_extension'] = tool['release_extension']
                         run_task['project_template'] = tool['project_template']
-                        # run_task['project_workspace'] = tool['project_workspace']
+                        # run_task['project_workspace_template'] = tool['project_workspace_template']
                         # print tool
+
+                        run_task['project_workspace_flag'] = tool['project_workspace_flag']
+                        run_task['project_workspace_parent_directory_level'] = tool['project_workspace_parent_directory_level']
+                        run_task['project_file_flag'] = tool['project_file_flag']
+
                         if self.meta_tool['architecture'] == 'x64':
                             if self.meta_tool['architecture_fallback']:
                                 print 'this is a %s %s %s task, but can fallback to x32' % (tool['family'], tool['release_number'], self.meta_tool['architecture'])
@@ -289,11 +297,26 @@ class node(QGraphicsItem, QObject):
                 QMessageBox.critical(self.main_window, 'node warning', str('no suitable tool found to launch task %s.' % self.label), QMessageBox.Abort, QMessageBox.Abort)
                 return
 
-            if self.nodeFamily == 'Maya':
-                for arg in ['-proj', self.location, '-file']:
-                    run_task['flags'].append(arg)
-
             project_root_task = os.path.join(self.location, 'project')
+
+            if run_task['project_workspace_flag'] is not None:
+                run_task['flags'].append(run_task['project_workspace_flag'])
+                workspace_directory = project_root_task
+                for parent_directory in range(run_task['project_workspace_parent_directory_level']):
+                    workspace_directory = os.path.dirname(workspace_directory)
+                run_task['flags'].append(workspace_directory)
+
+            if run_task['project_file_flag'] is not None:
+                    run_task['flags'].append(run_task['project_file_flag'])
+
+
+                        # run_task['project_file_flag']
+
+            # if self.nodeFamily == 'Maya':
+            #     for arg in ['-proj', self.location, '-file']:
+            #         run_task['flags'].append(arg)
+
+
 
             # extension = os.path.splitext(run_task['project_template'])[1]
             extension = run_task['release_extension']
@@ -310,6 +333,9 @@ class node(QGraphicsItem, QObject):
                 # TODO: if none is a tools template: this will produce an error
                 newest_file = max(abs_files, key=os.path.getctime)
                 run_task['flags'].append(newest_file)
+                print run_task['project_workspace_parent_directory_level']
+                print range(run_task['project_workspace_parent_directory_level'])
+                print run_task['executable'], run_task['flags']
                 self.main_window.run_task(node_object=self, executable=run_task['executable'], args=run_task['flags'])
             else:
                 ok, job_deadline = jobDeadlineUi.getDeadlineJobData(self.location, self.main_window)

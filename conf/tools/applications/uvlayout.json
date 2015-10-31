@@ -8,14 +8,16 @@
       "release_number": "2.08.01",
       "release_extension": ".uvl",
       "project_template": null,
-      "project_workspace": null,
+      "project_workspace_template": null,
       "project_directories": [],
       "default_outputs": [],
       "architecture_fallback": true,
       "platforms": [
         {
-          "windows":
-          {
+          "windows": {
+            "project_workspace_flag": null,
+            "project_workspace_parent_directory_level": 0,
+            "project_file_flag": null,
             "executable_x32": "C:\\Program Files (x86)\\headus UVLayout v2 Professional\\howin32.exe",
             "flags_x32": ["-launch"],
             "executable_x64": null,
@@ -23,8 +25,10 @@
           }
         },
         {
-          "darwin":
-          {
+          "darwin": {
+            "project_workspace_flag": null,
+            "project_workspace_parent_directory_level": 0,
+            "project_file_flag": null,
             "executable_x32": "/Applications/headus-UVLayoutPro.app/Contents/MacOS/headus-launch",
             "flags_x32": [],
             "executable_x64": null,
@@ -32,8 +36,10 @@
           }
         },
         {
-          "linux":
-          {
+          "linux": {
+            "project_workspace_flag": null,
+            "project_workspace_parent_directory_level": 0,
+            "project_file_flag": null,
             "executable_x32": null,
             "flags_x32": [],
             "executable_x64": null,

@@ -102,8 +102,8 @@ class objBatchExport( QtGui.QMainWindow ):
         #self.statusBar.showMessage( 'exporting...' )
         currentSet = str( self.setsDropDown.currentText() )
         #print currentSet
-        currentSetMembers = cmds.select( currentSet )
-        currentSelection = cmds.ls( sl=1,fl=1 )
+        currentSetMembers = mc.select( currentSet )
+        currentSelection = mc.ls( sl=1,fl=1 )
         exportDirectory = str( self.lineEditBrowse.text() )
 
         #print cmds.ls(currentSetMembers)
@@ -112,7 +112,7 @@ class objBatchExport( QtGui.QMainWindow ):
         for item in currentSelection:
             fullExportDirectory = '%s%s%s__%s.obj' %( exportDirectory, os.sep, currentSet, item )
             try:
-                cmds.select( item )
+                mc.select( item )
                 mel.eval( 'file -force -options "groups=0;ptgroups=0;materials=0;smoothing=1;normals=1" -typ "OBJexport" -pr -es "%s";' %( fullExportDirectory ) )
             except:
                 self.errors = self.errors + 1

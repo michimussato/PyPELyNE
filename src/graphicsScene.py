@@ -177,7 +177,7 @@ class SceneView(QGraphicsScene):
 
                         if os.path.exists(os.path.join(node_clicked.getNodeRootDir(), 'checkedOut')):
                             self.menu_node.addSeparator()
-                            self.menu_node.addAction('check in node', self.main_window.checkInCallback(node_clicked))
+                            self.menu_node.addAction('check in node', self.main_window.check_in_callback(node_clicked))
 
                         else:
                             self.menu_node.addSeparator()
@@ -821,10 +821,10 @@ class SceneView(QGraphicsScene):
                     dst_path = os.path.join(new_node_path, 'project', str(node_name + '.' + '0000' + extension))
                     shutil.copyfile(src_path, dst_path)
 
-                if tool_data['project_workspace'] is not None:
-                    extension = os.path.splitext(tool_data['project_workspace'])[1]
-                    # extension = str(tool_data['project_workspace']).split('_')[-1]
-                    src_path = os.path.join('src', 'template_documents', tool_data['project_workspace'])
+                if tool_data['project_workspace_template'] is not None:
+                    extension = os.path.splitext(tool_data['project_workspace_template'])[1]
+                    # extension = str(tool_data['project_workspace_template']).split('_')[-1]
+                    src_path = os.path.join('src', 'template_documents', tool_data['project_workspace_template'])
                     dst_path = os.path.join(new_node_path, extension)
                     shutil.copyfile(src_path, dst_path)
 

@@ -8,13 +8,17 @@
       "release_number": "1.2.3",
       "release_extension": ".ext",
       "project_template": "null_familyfoundation_family_123.template" or null,
-      "project_workspace": "null_familyfoundation_family_123.workspace" or null,
+      "project_workspace_template": "null_familyfoundation_family_123.workspace" or null,
+      "needs_workspace": true,
       "project_directories": ["dir1", "dir1#dir", "dir2#dir#dir5"],
       "default_outputs": ["SEQ_01", "PLB_04"],
       "architecture_fallback": true,
       "platforms": [
         {
           "windows": {
+            "project_workspace_flag": "-proj" or null,
+            "project_workspace_parent_directory_level": 1,
+            "project_file_flag": "-file" or null,
             "executable_x32": "C:\\Program Files (x86)\\Autodesk\\Maya2013\\bin\\maya.exe",
             "flags_x32": [],
             "executable_x64": "C:\\Program Files\\Autodesk\\Maya2013\\bin\\maya.exe",
@@ -23,6 +27,9 @@
         },
         {
           "darwin": {
+            "project_workspace_flag": "-proj" or null,
+            "project_workspace_parent_directory_level": 1,
+            "project_file_flag": "-file" or null,
             "executable_x32": "C:\\Program Files (x86)\\Autodesk\\Maya2013\\bin\\maya.exe",
             "flags_x32": [],
             "executable_x64": "C:\\Program Files\\Autodesk\\Maya2013\\bin\\maya.exe",
@@ -31,6 +38,9 @@
         },
         {
           "linux": {
+            "project_workspace_flag": "-proj" or null,
+            "project_workspace_parent_directory_level": 1,
+            "project_file_flag": "-file" or null,
             "executable_x32": "C:\\Program Files (x86)\\Autodesk\\Maya2013\\bin\\maya.exe",
             "flags_x32": [],
             "executable_x64": "C:\\Program Files\\Autodesk\\Maya2013\\bin\\maya.exe",
@@ -43,13 +53,17 @@
       "release_number": "4.5.6",
       "release_extension": ".ext",
       "project_template": "null_familyfoundation_family_456.template" or null,
-      "project_workspace": "null_familyfoundation_family_456.workspace" or null,
+      "project_workspace_template": "null_familyfoundation_family_456.workspace" or null,
+      "needs_workspace": false,
       "project_directories": ["dir1#dir"],
       "default_outputs": [],
       "architecture_fallback": true,
       "platforms": [
         {
           "windows": {
+            "project_workspace_flag": "-proj" or null,
+            "project_workspace_parent_directory_level": 0,
+            "project_file_flag": "-file" or null,
             "executable_x32": "C:\\Program Files (x86)\\Autodesk\\Maya2013\\bin\\maya.exe",
             "flags_x32": [],
             "executable_x64": "C:\\Program Files\\Autodesk\\Maya2013\\bin\\maya.exe",
@@ -58,6 +72,9 @@
         },
         {
           "darwin": {
+            "project_workspace_flag": "-proj" or null,
+            "project_workspace_parent_directory_level": 0,
+            "project_file_flag": "-file" or null,
             "executable_x32": "C:\\Program Files (x86)\\Autodesk\\Maya2013\\bin\\maya.exe",
             "flags_x32": [],
             "executable_x64": "C:\\Program Files\\Autodesk\\Maya2013\\bin\\maya.exe",
@@ -66,6 +83,9 @@
         },
         {
           "linux": {
+            "project_workspace_flag": "-proj" or null,
+            "project_workspace_parent_directory_level": 0,
+            "project_file_flag": "-file" or null,
             "executable_x32": "C:\\Program Files (x86)\\Autodesk\\Maya2013\\bin\\maya.exe",
             "flags_x32": [],
             "executable_x64": "C:\\Program Files\\Autodesk\\Maya2013\\bin\\maya.exe",

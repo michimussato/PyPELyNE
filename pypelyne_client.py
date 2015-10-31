@@ -369,11 +369,11 @@ class PypelyneMainWindow(QMainWindow):
             app_conf_files = [os.path.join(app_conf_root, f) for f in os.listdir(app_conf_root) if not f.startswith('_') and f not in SETTINGS.EXCLUSIONS and f.split('.')[-1].endswith('json')]
  
             self.tools = []
- 
+
+            # test_items = ['maya.json', 'photoshop.json']
             # app_conf_files = []
-            # app_conf_files.append(os.path.join(app_conf_root, '_blender_.json'))
-            # app_conf_files.append(os.path.join(app_conf_root, '_maya_.json'))
-            # app_conf_files.append(os.path.join(app_conf_root, '_uvlayout_.json'))
+            # for test_item in test_items:
+            #     app_conf_files.append(os.path.join(app_conf_root, test_item))
  
             for app_conf_file in app_conf_files:
                 source_file = os.path.join(app_conf_root, app_conf_file)
@@ -405,8 +405,9 @@ class PypelyneMainWindow(QMainWindow):
                         release_number = release[u'release_number']
                         release_extension = release[u'release_extension']
                         project_template = release[u'project_template']
-                        project_workspace = release[u'project_workspace']
+                        project_workspace_template = release[u'project_workspace_template']
                         project_directories = release[u'project_directories']
+                        # needs_workspace = release[u'needs_workspace']
                         default_outputs = release[u'default_outputs']
                         architecture_fallback = release[u'architecture_fallback']
  
@@ -437,6 +438,10 @@ class PypelyneMainWindow(QMainWindow):
  
                                 flags_x32 = platform[self.operating_system][u'flags_x32']
                                 flags_x64 = platform[self.operating_system][u'flags_x64']
+
+                                project_workspace_flag = platform[self.operating_system][u'project_workspace_flag']
+                                project_workspace_parent_directory_level = platform[self.operating_system][u'project_workspace_parent_directory_level']
+                                project_file_flag = platform[self.operating_system][u'project_file_flag']
  
                                 executables = []
  
@@ -456,7 +461,8 @@ class PypelyneMainWindow(QMainWindow):
                                 tool[u'release_number'] = release_number
                                 tool[u'release_extension'] = release_extension
                                 tool[u'project_template'] = project_template
-                                tool[u'project_workspace'] = project_workspace
+                                tool[u'project_workspace_template'] = project_workspace_template
+                                # tool[u'needs_workspace'] = needs_workspace
                                 tool[u'project_directories'] = project_directories_list
                                 tool[u'default_outputs'] = default_outputs
                                 tool[u'architecture_fallback'] = architecture_fallback
@@ -465,6 +471,9 @@ class PypelyneMainWindow(QMainWindow):
                                 tool[u'project_directories'] = project_directories
                                 tool[u'flags_x32'] = flags_x32
                                 tool[u'flags_x64'] = flags_x64
+                                tool[u'project_workspace_flag'] = project_workspace_flag
+                                tool[u'project_workspace_parent_directory_level'] = project_workspace_parent_directory_level
+                                tool[u'project_file_flag'] = project_file_flag
  
                                 if executable_x32 in executables:
                                     tool[u'executable_x32'] = executable_x32
@@ -537,7 +546,7 @@ class PypelyneMainWindow(QMainWindow):
  
                 executable[:] = []
  
-        # print 'self.tool_items', self.tool_items
+        print 'self.tool_items', self.tool_items
         return self.tool_items
  
     def receive_serialized(self, sock):
@@ -959,15 +968,15 @@ class PypelyneMainWindow(QMainWindow):
  
         process.start(self.tar_exec, arguments)
  
-    def checkInCallback(self, node):
+    def check_in_callback(self, node_object):
         def callback():
-            self.checkIn(node)
+            self.check_in(node_object)
         return callback
  
-    def checkIn(self, node):
+    def check_in(self, node_object):
         try:
-            checkOutFilePath = os.path.join(node.location, 'checkedOut')
-            os.remove(checkOutFilePath)
+            check_out_file_path = os.path.join(node_object.location, 'checkedOut')
+            os.remove(check_out_file_path)
         except:
             #print 'check in failed'
             logging.warning('check in failed')
@@ -1560,7 +1569,10 @@ class PypelyneMainWindow(QMainWindow):
                     u'project_directories': tool[u'project_directories'],
                     u'default_outputs': tool[u'default_outputs'],
                     u'executable': tool[u'executable_x32'],
-                    u'project_workspace': tool[u'project_workspace'],
+                    u'project_workspace_template': tool[u'project_workspace_template'],
+                    u'project_workspace_flag': tool[u'project_workspace_flag'],
+                    u'project_workspace_parent_directory_level': tool[u'project_workspace_parent_directory_level'],
+                    u'project_file_flag': tool[u'project_file_flag'],
                     u'label': tool[u'label_x32'],
                     u'architecture': u'x32'
                     }
@@ -1579,7 +1591,10 @@ class PypelyneMainWindow(QMainWindow):
                     u'release_number': tool[u'release_number'],
                     u'project_directories': tool[u'project_directories'],
                     u'default_outputs': tool[u'default_outputs'],
-                    u'project_workspace': tool[u'project_workspace'],
+                    u'project_workspace_template': tool[u'project_workspace_template'],
+                    u'project_workspace_flag': tool[u'project_workspace_flag'],
+                    u'project_workspace_parent_directory_level': tool[u'project_workspace_parent_directory_level'],
+                    u'project_file_flag': tool[u'project_file_flag'],
                     u'flags': tool[u'flags_x64'],
                     u'architecture': u'x64'
                     }
@@ -1646,29 +1661,43 @@ class PypelyneMainWindow(QMainWindow):
                 temp_project = str(name + '.' + date_time + extension)
                 temp_project_dir = str(name + '.' + date_time)
                 src = os.path.join('src', 'template_documents', dict_combobox['project_template'])
-                dst = os.path.join(temp_pypelyne_dir, temp_project_dir, temp_project)
+                dst = os.path.join(temp_pypelyne_dir, temp_project_dir, 'project', temp_project)
  
-                os.makedirs(os.path.join(temp_pypelyne_dir, temp_project_dir), mode=0777)
+                os.makedirs(os.path.join(temp_pypelyne_dir, temp_project_dir, 'project'), mode=0777)
  
                 shutil.copyfile(src, dst)
+
+                project_directory = os.path.dirname(dst)
  
-                os.chdir(os.path.join(temp_pypelyne_dir, temp_project_dir))
+                os.chdir(project_directory)
  
                 # arguments = QStringList()
                 arguments = []
- 
+
                 for flag in dict_combobox['flags']:
                     arguments.append(flag)
- 
+
+                if dict_combobox['project_workspace_flag'] is not None:
+                    arguments.append(dict_combobox['project_workspace_flag'])
+                    workspace_directory = os.path.dirname(dst)
+                    for parent_directory in range(dict_combobox['project_workspace_parent_directory_level']):
+                        workspace_directory = os.path.dirname(workspace_directory)
+                    arguments.append(workspace_directory)
+
+                if dict_combobox['project_file_flag'] is not None:
+                    arguments.append(dict_combobox['project_file_flag'])
+
                 arguments.append(dst)
+
+                print dict_combobox['executable'], arguments
  
                 process.start(dict_combobox['executable'], arguments)
                 os.chdir(current_dir)
  
             elif dict_combobox['family'].lower() == 'deadline':
-                os.chdir(temp_pypelyne_dir)
+                # os.chdir(temp_pypelyne_dir)
                 process.start(dict_combobox['executable'])
-                os.chdir(current_dir)
+                # os.chdir(current_dir)
             else:
                 temp_project_dir = 'no_template_' + dict_combobox['vendor'] + '_' + dict_combobox['family'] + '_' + dict_combobox['release_number'] + '.' +  date_time
                 temp_project_dir_full = os.path.join(temp_pypelyne_dir, temp_project_dir)

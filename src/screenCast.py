@@ -5,12 +5,12 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
 class screenCast(QProcess):
-    def __init__(self, mainWindow, assetName, taskName, projectPath):
+    def __init__(self, main_window, assetName, taskName, projectPath):
         super(screenCast, self).__init__(None)
 
-        self.mainWindow = mainWindow
+        self.main_window = main_window
 
-        self.vlcExec = self.mainWindow.screenCastExec
+        self.vlcExec = self.main_window.screenCastExec
 
         self.now = datetime.datetime.now().strftime('%Y-%m-%d_%H%M-%S-%f')
 
@@ -19,7 +19,7 @@ class screenCast(QProcess):
         self.taskName = taskName
         self.makingOfDir = os.path.join(self.projectPath, 'making_of')
 
-        self.user = self.mainWindow._user
+        self.user = self.main_window.user
 
         if not os.path.exists(self.makingOfDir):
             os.makedirs(self.makingOfDir, mode=0777)
@@ -29,15 +29,13 @@ class screenCast(QProcess):
 
         self.vlcArgs = [self.vlcExec, '-I', 'rc', '--rc-fake-tty', '--rc-unix', self.vlcSocket, 'screen://', '--screen-fps', '4', '--quiet', '--sout', '#transcode{vcodec=h264,vb=512,scale=0.5}:standard{access=file,mux=mp4,dst=' + self.mp4 + '}']
 
-
-
     def start(self):
         try:
             subprocess.Popen(self.vlcArgs, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            self.mainWindow.sendTextToBox('%s: screencast for %s started\n' %(datetime.datetime.now(), self.taskName))
+            self.main_window.sendTextToBox('%s: screencast for %s started\n' %(datetime.datetime.now(), self.taskName))
             logging.info('screencast for %s started' %(self.taskName))
         except:
-            self.mainWindow.sendTextToBox('%s: startCast failed\n'%(datetime.datetime.now()))
+            self.main_window.sendTextToBox('%s: startCast failed\n'%(datetime.datetime.now()))
             logging.warning('startCast failed')
 
     def stop(self):
@@ -46,8 +44,8 @@ class screenCast(QProcess):
 
         os.system(commandStop)
         os.system(commandQuit)
-        self.mainWindow.sendTextToBox('%s: screenCast on %s finished\n' %(datetime.datetime.now(), self.taskName))
-        self.mainWindow.sendTextToBox('%s: video created at %s\n' %(datetime.datetime.now(), self.mp4))
+        self.main_window.sendTextToBox('%s: screenCast on %s finished\n' %(datetime.datetime.now(), self.taskName))
+        self.main_window.sendTextToBox('%s: video created at %s\n' %(datetime.datetime.now(), self.mp4))
 
         logging.info('screenCast on %s finished' %(self.taskName))
         logging.info('video created at %s' %(self.mp4))

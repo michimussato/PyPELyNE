@@ -7,18 +7,18 @@ from PyQt4.QtCore import *
 from PyQt4.uic import *
 
 class addScreenCastUI(QWidget):
-    def __init__(self, mainWindow = None, castProcess = None, parent = None):
+    def __init__(self, main_window = None, castProcess = None, parent = None):
         super(addScreenCastUI, self).__init__(parent)
-        self.mainWindow = mainWindow
+        self.main_window = main_window
         self.castProcess = castProcess
-        self.pypelyneRoot = self.mainWindow.pypelyneRoot
+        # self.pypelyne_root = self.main_window.pypelyne_root
 
         self.createUI()
 
         self.createConnects()
 
     def createUI(self):
-        self.ui = loadUi(os.path.join(self.pypelyneRoot, 'ui', 'addScreenCast.ui'), self)
+        self.ui = loadUi(os.path.join(self.main_window.pypelyne_root, 'ui', 'addScreenCast.ui'), self)
         self.labelProcess.setText(self.castProcess.taskName)
         self.pushButtonScreenCastAction.setText('stop')
 
@@ -27,7 +27,7 @@ class addScreenCastUI(QWidget):
 
     def stopCast(self):
         self.castProcess.stop()
-        self.mainWindow.screenCasts.remove(self.castProcess)
+        self.main_window.screenCasts.remove(self.castProcess)
         self.close()
         #self.setParen(None)
 
@@ -36,21 +36,21 @@ class addScreenCastUI(QWidget):
 
 
 
-class listScreenCastsUI(QDialog):
+class ListScreenCastsUI(QDialog):
     listScreenCastsUIClosed = pyqtSignal()
     #newScreenCast = pyqtSignal()
 
 
 
-    def __init__(self, mainWindow = None, parent = None):
-        super (listScreenCastsUI, self).__init__(parent)
+    def __init__(self, main_window = None, parent = None):
+        super (ListScreenCastsUI, self).__init__(parent)
 
-        self.mainWindow = mainWindow
-        self.pypelyneRoot = self.mainWindow._pypelyne_root
-        self.processes = self.mainWindow.qprocesses
+        self.main_window = main_window
+        # self.pypelyne_root = self.main_window.pypelyne_root
+        self.processes = self.main_window.qprocesses
         self.screenCasts = None
         #self.ui = loadUi(r'/Users/michaelmussato/Dropbox/development/workspace/PyPELyNE/ui/screenCasts.ui')
-        #self.vLayoutScreenCast(addScreenCastUI(self.mainWindow))
+        #self.vLayoutScreenCast(addScreenCastUI(self.main_window))
         #for i in self.processes:
 
 
@@ -62,19 +62,19 @@ class listScreenCastsUI(QDialog):
         #self.timer = threading.Timer(1, self.refresh).start()
 
     def createUI(self):
-        self.ui = loadUi(os.path.join(self.pypelyneRoot, 'ui', 'screenCasts.ui'), self)
+        self.ui = loadUi(os.path.join(self.main_window.pypelyne_root, 'ui', 'screenCasts.ui'), self)
         self.spacer = QSpacerItem(0, 0, QSizePolicy.Minimum, QSizePolicy.Expanding)
         self.refreshPushButton.setVisible(False)
         #self.spacer.expandingDirections(Qt.Vertical)
 
     def createConnects(self):
         self.refreshPushButton.clicked.connect(self.refresh)
-        self.mainWindow.addNewScreenCast.connect(self.refresh)
+        self.main_window.addNewScreenCast.connect(self.refresh)
 
 
 
     def refresh(self):
-        #self.mainWindow.addNewScreenCast.connect(self.refresh)
+        #self.main_window.addNewScreenCast.connect(self.refresh)
         #self.timer = threading.Timer(1, self.refresh).start()
         print 'refresh'
         for item in reversed(range(self.vLayoutScreenCasts.count())):
@@ -85,15 +85,15 @@ class listScreenCastsUI(QDialog):
         #for i in range(self.vLayoutScreenCasts.count()):
         #    print i
 
-        #self.screenCasts = self.mainWindow.screenCasts
+        #self.screenCasts = self.main_window.screenCasts
         self.addScreenCastsUI()
         #time.sleep(2)
 
 
     def addScreenCastsUI(self):
-        self.screenCasts = self.mainWindow.screenCasts
+        self.screenCasts = self.main_window.screenCasts
         for castProcess in self.screenCasts:
-            newCast = addScreenCastUI(self.mainWindow, castProcess)
+            newCast = addScreenCastUI(self.main_window, castProcess)
             #newCast = addScreenCastUI()
             #button = QPushButton()
             self.vLayoutScreenCasts.addWidget(newCast)
@@ -104,12 +104,12 @@ class listScreenCastsUI(QDialog):
 
     def closeEvent(self, event):
         self.listScreenCastsUIClosed.emit()
-        #self.mainWindow.screenCastsWindow = None
+        #self.main_window.screen_casts_window = None
 
     '''
     @staticmethod
-    def displayCasts(mainWindow = None):
-        dialog = listScreenCastsUI(mainWindow)
+    def displayCasts(main_window = None):
+        dialog = ListScreenCastsUI(main_window)
         result = dialog.exec_()
         submissionCmdArgs = dialog.submitData()
         #return result == dialog.Accepted, submissionCmdArgs
@@ -120,7 +120,7 @@ def main():
 
     #taskFolder = r'/Users/michaelmussato/Dropbox/development/workspace/PyPELyNE/projects/proj1/content/assets/asset_01/RND_DDL__vvasdfa'
 
-    window = listScreenCastsUI()
+    window = ListScreenCastsUI()
 
     #print jobArnold
     #if ok:

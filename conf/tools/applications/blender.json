@@ -1,49 +1,49 @@
 {
+  "family_enable": true,
   "family": "Blender",
-  "abbreviation": "BLD",
   "vendor": "Blender Foundation",
-  "versions": [
+  "abbreviation": "BLD",
+  "releases": [
     {
-      "release": "2.6.9",
+      "release_number": "2.6.9",
+      "release_extension": ".blend",
       "project_template": "null_blenderfoundation_blender_269.blend",
-      "project_workspace": "None",
+      "project_workspace_template": null,
       "project_directories": [],
       "default_outputs": [],
+      "architecture_fallback": true,
       "platforms": [
         {
           "windows": {
-            "x32": {
-              "executable": "None",
-              "flags": []
-            },
-            "x64": {
-              "executable": "None",
-              "flags": []
-            }
+            "project_workspace_flag": null,
+            "project_workspace_parent_directory_level": 0,
+            "project_file_flag": null,
+            "executable_x32": "C:\\Program Files (x86)\\Blender Foundation\\Blender\\blender.exe",
+            "flags_x32": [],
+            "executable_x64": "C:\\Program Files\\Blender Foundation\\Blender\\blender.exe",
+            "flags_x64": []
           }
         },
         {
           "darwin": {
-            "x32": {
-              "executable": "None",
-              "flags": []
-            },
-            "x64": {
-              "executable": "/Applications/Blender/blender.app/Contents/MacOS/blender",
-              "flags": []
-            }
+            "project_workspace_flag": null,
+            "project_workspace_parent_directory_level": 0,
+            "project_file_flag": null,
+            "executable_x32": "/Applications/Blender/blender.app/Contents/MacOS/blender32",
+            "flags_x32": [],
+            "executable_x64": "/Applications/Blender/blender.app/Contents/MacOS/blender",
+            "flags_x64": []
           }
         },
         {
           "linux": {
-            "x32": {
-              "executable": "None",
-              "flags": []
-            },
-            "x64": {
-              "executable": "None",
-              "flags": []
-            }
+            "project_workspace_flag": null,
+            "project_workspace_parent_directory_level": 0,
+            "project_file_flag": null,
+            "executable_x32": null,
+            "flags_x32": [],
+            "executable_x64": null,
+            "flags_x64": []
           }
         }
       ]

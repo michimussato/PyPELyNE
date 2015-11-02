@@ -1,0 +1,116 @@
+[
+  {
+    "task_enable": true,
+    "task": "modelling",
+    "abbreviation": "MDL",
+    "color": "#FFC6C6"
+  },
+  {
+    "task_enable": true,
+    "task": "uv layout",
+    "abbreviation": "UVL",
+    "color": "#CAC1FF"
+  },
+  {
+    "task_enable": true,
+    "task": "camera",
+    "abbreviation": "CAM",
+    "color": "#C4C7FF"
+  },
+  {
+    "task_enable": true,
+    "task": "lighting",
+    "abbreviation": "LIT",
+    "color": "#F5BEFF"
+  },
+  {
+    "task_enable": true,
+    "task": "shading",
+    "abbreviation": "SHD",
+    "color": "#C7B4FF"
+  },
+  {
+    "task_enable": true,
+    "task": "animation",
+    "abbreviation": "ANM",
+    "color": "#C6FFC6"
+  },
+  {
+    "task_enable": true,
+    "task": "simulation",
+    "abbreviation": "SIM",
+    "color": "#FFEFC7"
+  },
+  {
+    "task_enable": true,
+    "task": "rendering",
+    "abbreviation": "RND",
+    "color": "#BCFFED"
+  },
+  {
+    "task_enable": true,
+    "task": "texturing",
+    "abbreviation": "TEX",
+    "color": "#B9D7FF"
+  },
+  {
+    "task_enable": true,
+    "task": "sculpting",
+    "abbreviation": "SPT",
+    "color": "#E6FFBE"
+  },
+  {
+    "task_enable": true,
+    "task": "rigging",
+    "abbreviation": "RIG",
+    "color": "#FFFCB0"
+  },
+  {
+    "task_enable": true,
+    "task": "compositing",
+    "abbreviation": "CMP",
+    "color": "#C4FFD6"
+  },
+  {
+    "task_enable": true,
+    "task": "fur and hair",
+    "abbreviation": "FUR",
+    "color": "#FFBEE9"
+  },
+  {
+    "task_enable": true,
+    "task": "cutting",
+    "abbreviation": "CUT",
+    "color": "#BBE0F9"
+  },
+  {
+    "task_enable": true,
+    "task": "tracking",
+    "abbreviation": "TRK",
+    "color": "#C8FFD0"
+  },
+  {
+    "task_enable": true,
+    "task": "skinning",
+    "abbreviation": "SKN",
+    "color": "#BFFDF9"
+  },
+  {
+    "task_enable": true,
+    "task": "file reader",
+    "abbreviation": "FRD",
+    "color": "#D9D9D9"
+  },
+  {
+    "task_enable": true,
+    "task": "motion graphics",
+    "abbreviation": "MOG",
+    "color": "#FFC1D7"
+  },
+  {
+    "task_enable": true,
+    "task": "tutorial",
+    "abbreviation": "TUT",
+    "color": "#333333"
+  }
+]

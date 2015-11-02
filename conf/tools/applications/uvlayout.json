@@ -1,49 +1,49 @@
 {
+  "family_enable": true,
   "family": "UVLayout",
-  "abbreviation": "UVL",
   "vendor": "Headus",
-  "versions": [
+  "abbreviation": "UVL",
+  "releases": [
     {
-      "release": "2.08.01",
-      "project_template": "None",
-      "project_workspace": "None",
+      "release_number": "2.08.01",
+      "release_extension": ".uvl",
+      "project_template": null,
+      "project_workspace_template": null,
       "project_directories": [],
       "default_outputs": [],
+      "architecture_fallback": true,
       "platforms": [
         {
           "windows": {
-            "x32": {
-              "executable": "C:\\Program Files (x86)\\headus UVLayout v2 Professional\\howin32.exe",
-              "flags": ["-launch"]
-            },
-            "x64": {
-              "executable": "None",
-              "flags": []
-            }
+            "project_workspace_flag": null,
+            "project_workspace_parent_directory_level": 0,
+            "project_file_flag": null,
+            "executable_x32": "C:\\Program Files (x86)\\headus UVLayout v2 Professional\\howin32.exe",
+            "flags_x32": ["-launch"],
+            "executable_x64": null,
+            "flags_x64": []
           }
         },
         {
           "darwin": {
-            "x32": {
-              "executable": "/Applications/headus-UVLayoutPro.app/Contents/MacOS/headus-launch",
-              "flags": []
-            },
-            "x64": {
-              "executable": "None",
-              "flags": []
-            }
+            "project_workspace_flag": null,
+            "project_workspace_parent_directory_level": 0,
+            "project_file_flag": null,
+            "executable_x32": "/Applications/headus-UVLayoutPro.app/Contents/MacOS/headus-launch",
+            "flags_x32": [],
+            "executable_x64": null,
+            "flags_x64": []
           }
         },
         {
           "linux": {
-            "x32": {
-              "executable": "None",
-              "flags": []
-            },
-            "x64": {
-              "executable": "None",
-              "flags": []
-            }
+            "project_workspace_flag": null,
+            "project_workspace_parent_directory_level": 0,
+            "project_file_flag": null,
+            "executable_x32": null,
+            "flags_x32": [],
+            "executable_x64": null,
+            "flags_x64": []
           }
         }
       ]

@@ -18,7 +18,7 @@ class parseApplicationsXML():
 
 
     def __init__(self, platform):
-        #self.currentPlatform = platform.system()
+        #self.current_platform = platform.system()
         
         self.xmlPath = ''
         
@@ -74,7 +74,7 @@ class parseApplicationsXML():
 # for i in xmlObject.applications:
 #     print i
 
-currentPlatform = platform.system()
+current_platform = platform.system()
 
 tree = ET.parse(r'../conf/applications.xml')
 root = tree.getroot()
@@ -90,7 +90,7 @@ for family in root:
                     print executable
                     for flag in executable:
                         print "hallo"
-                        if not executable.items()[0][1] == 'None' and platform.items()[0][1] == currentPlatform:
+                        if not executable.items()[0][1] == 'None' and platform.items()[0][1] == current_platform:
                         
                             print element.items()[0][1] + ' ' + family.items()[0][1] + ' ' + platform.items()[0][1] + ' ' + executable.tag + ' = ' + executable.items()[0][1]
                     

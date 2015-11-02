@@ -11,10 +11,10 @@ from PyQt4.QtGui import *
 
 
 class bezierLine(QGraphicsPathItem):
-    def __init__(self, mainwindow, scene, startItem, endItem, *args, **kwargs):
+    def __init__(self, main_window, scene, startItem, endItem, *args, **kwargs):
         super(bezierLine, self).__init__(*args, **kwargs)
-        self.mainwindow = mainwindow
-        self.outputs = self.mainwindow._outputs
+        self.main_window = main_window
+        self.outputs = self.main_window.outputs
         self.startItemOutputDir = startItem.outputDir
         self.startItemLiveDir = startItem.liveDir
         self.scene = scene

@@ -1,94 +1,183 @@
 {
+  "family_enable": true,
   "family": "Maya",
-  "abbreviation": "MAY",
   "vendor": "Autodesk",
-  "versions": [
+  "abbreviation": "MAY",
+  "releases": [
     {
-      "release": "2013",
+      "release_number": "2013",
+      "release_extension": ".ma",
       "project_template": "null_autodesk_maya2013.ma",
-      "project_workspace": "null_autodesk_maya2013_workspace.mel",
+      "project_workspace_template": "null_autodesk_maya2013_workspace.mel",
       "project_directories": [],
       "default_outputs": [],
+      "architecture_fallback": true,
       "platforms": [
         {
           "windows": {
-            "x32": {
-              "executable": "C:\\Program Files (x86)\\Autodesk\\Maya2013\\bin\\maya.exe",
-              "flags": []
-            },
-            "x64": {
-              "executable": "C:\\Program Files\\Autodesk\\Maya2013\\bin\\maya.exe",
-              "flags": []
-            }
+            "project_workspace_flag": null,
+            "project_workspace_parent_directory_level": 1,
+            "project_file_flag": null,
+            "executable_x32": "C:\\Program Files (x86)\\Autodesk\\Maya2013\\bin\\maya.exe",
+            "flags_x32": [],
+            "executable_x64": "C:\\Program Files\\Autodesk\\Maya2013\\bin\\maya.exe",
+            "flags_x64": []
           }
         },
         {
           "darwin": {
-            "x32": {
-              "executable": "None",
-              "flags": []
-            },
-            "x64": {
-              "executable": "/Applications/Autodesk/maya2013/Maya.app/Contents/bin/maya",
-              "flags": []
-            }
+            "project_workspace_flag": null,
+            "project_workspace_parent_directory_level": 1,
+            "project_file_flag": null,
+            "executable_x32": null,
+            "flags_x32": [],
+            "executable_x64": "/Applications/Autodesk/maya2013/Maya.app/Contents/bin/maya",
+            "flags_x64": []
           }
         },
         {
           "linux": {
-            "x32": {
-              "executable": "None",
-              "flags": []
-            },
-            "x64": {
-              "executable": "None",
-              "flags": []
-            }
+            "project_workspace_flag": null,
+            "project_workspace_parent_directory_level": 1,
+            "project_file_flag": null,
+            "executable_x32": null,
+            "flags_x32": [],
+            "executable_x64": null,
+            "flags_x64": []
           }
         }
       ]
     },
     {
-      "release": "2014",
+      "release_number": "2014",
+      "release_extension": ".ma",
       "project_template": "null_autodesk_maya2014.ma",
-      "project_workspace": "null_autodesk_maya2014_workspace.mel",
+      "project_workspace_template": "null_autodesk_maya2014_workspace.mel",
       "project_directories": [],
       "default_outputs": [],
+      "architecture_fallback": true,
       "platforms": [
         {
           "windows": {
-            "x32": {
-              "executable": "C:\\Program Files (x86)\\Autodesk\\Maya2014\\bin\\maya.exe",
-              "flags": []
-            },
-            "x64": {
-              "executable": "C:\\Program Files\\Autodesk\\Maya2014\\bin\\maya.exe",
-              "flags": []
-            }
+            "project_workspace_flag": "-proj",
+            "project_workspace_parent_directory_level": 1,
+            "project_file_flag": "-file",
+            "executable_x32": "C:\\Program Files (x86)\\Autodesk\\Maya2014\\bin\\maya.exe",
+            "flags_x32": [],
+            "executable_x64": "C:\\Program Files\\Autodesk\\Maya2014\\bin\\maya.exe",
+            "flags_x64": []
           }
         },
         {
           "darwin": {
-            "x32": {
-              "executable": "None",
-              "flags": []
-            },
-            "x64": {
-              "executable": "/Applications/Autodesk/maya2014/Maya.app/Contents/MacOS/Maya",
-              "flags": []
-            }
+            "project_workspace_flag": "-proj",
+            "project_workspace_parent_directory_level": 1,
+            "project_file_flag": "-file",
+            "executable_x32": null,
+            "flags_x32": [],
+            "executable_x64": "/Applications/Autodesk/maya2014/Maya.app/Contents/MacOS/Maya",
+            "flags_x64": []
           }
         },
         {
           "linux": {
-            "x32": {
-              "executable": "None",
-              "flags": []
-            },
-            "x64": {
-              "executable": "None",
-              "flags": []
-            }
+            "project_workspace_flag": null,
+            "project_workspace_parent_directory_level": 1,
+            "project_file_flag": null,
+            "executable_x32": null,
+            "flags_x32": [],
+            "executable_x64": null,
+            "flags_x64": []
+          }
+        }
+      ]
+    },
+    {
+      "release_number": "2014 (Guerilla Games)",
+      "release_extension": ".ma",
+      "project_template": "null_autodesk_maya2014.ma",
+      "project_workspace_template": null,
+      "needs_workspace": true,
+      "project_directories": [],
+      "default_outputs": [],
+      "architecture_fallback": false,
+      "platforms": [
+        {
+          "windows": {
+            "project_workspace_flag": null,
+            "project_workspace_parent_directory_level": 1,
+            "project_file_flag": null,
+            "executable_x32": null,
+            "flags_x32": [],
+            "executable_x64": "D:\\dev\\common\\tools\\AppLaunchers\\MayaLauncher\\MayaLauncher.exe",
+            "flags_x64": []
+          }
+        },
+        {
+          "darwin": {
+            "project_workspace_flag": null,
+            "project_workspace_parent_directory_level": 1,
+            "project_file_flag": null,
+            "executable_x32": null,
+            "flags_x32": [],
+            "executable_x64": null,
+            "flags_x64": []
+          }
+        },
+        {
+          "linux": {
+            "project_workspace_flag": null,
+            "project_workspace_parent_directory_level": 1,
+            "project_file_flag": null,
+            "executable_x32": null,
+            "flags_x32": [],
+            "executable_x64": null,
+            "flags_x64": []
+          }
+        }
+      ]
+    },
+    {
+      "release_number": "2015",
+      "release_extension": ".ma",
+      "project_template": null,
+      "project_workspace_template": null,
+      "needs_workspace": true,
+      "project_directories": [],
+      "default_outputs": [],
+      "architecture_fallback": true,
+      "platforms": [
+        {
+          "windows": {
+            "project_workspace_flag": null,
+            "project_workspace_parent_directory_level": 1,
+            "project_file_flag": null,
+            "executable_x32": null,
+            "flags_x32": [],
+            "executable_x64": "C:\\appnet\\applications\\maya\\2014-x64\\Maya2014\\bin\\maya.exe",
+            "flags_x64": []
+          }
+        },
+        {
+          "darwin": {
+            "project_workspace_flag": null,
+            "project_workspace_parent_directory_level": 1,
+            "project_file_flag": null,
+            "executable_x32": null,
+            "flags_x32": [],
+            "executable_x64": null,
+            "flags_x64": []
+          }
+        },
+        {
+          "linux": {
+            "project_workspace_flag": null,
+            "project_workspace_parent_directory_level": 1,
+            "project_file_flag": null,
+            "executable_x32": null,
+            "flags_x32": [],
+            "executable_x64": null,
+            "flags_x64": []
           }
         }
       ]

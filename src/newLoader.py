@@ -1,17 +1,9 @@
-'''
-Created on May 2, 2015
-
-@author: michaelmussato
-'''
-
+import os
 
 from PyQt4.QtGui import *
 from PyQt4.uic import *
 
-import os
-
-
-
+import settings as SETTINGS
 
 '''
 #library loader procedure:
@@ -33,55 +25,32 @@ ln -s ../../../../../../pypelyne_library/2015-05-20___myself___edelviz_____asset
 '''
 
 
+class NewLoaderUI(QDialog):
+    def __init__(self, active_item_path, main_window, parent=None):
+        super(NewLoaderUI, self).__init__(parent)
 
-
-
-
-
-
-class newLoaderUI(QDialog):
-    def __init__(self, activeItemPath, mainWindow, parent = None):
-        super(newLoaderUI, self).__init__(parent)
-
-        self.mainWindow = mainWindow
-        self.exclusions = self.mainWindow._exclusions
-        self.pypelyneRoot = self.mainWindow._pypelyne_root
+        self.main_window = main_window
+        self.exclusions = SETTINGS.EXCLUSIONS
+        # self.pypelyne_root = self.main_window.pypelyne_root
         
-        self.currentPlatform = self.mainWindow._current_platform
-        self.activeItemPath = activeItemPath
-        self.contentDirectory = os.path.dirname(os.path.dirname(activeItemPath))
-        #contentDirectory 
-        #self.exclusions = exclusions
-        '''
-        if self.currentPlatform == "Windows":
-            self.ui = loadUi(r'C:\Users\michael.mussato.SCHERRERMEDIEN\Dropbox\development\workspace\PyPELyNE\ui\newLoader.ui', self)
-            
-        elif self.currentPlatform == "Linux" or self.currentPlatform == "Darwin":
-            self.ui = loadUi(r'/Users/michaelmussato/Dropbox/development/workspace/PyPELyNE/ui/newLoader.ui', self)
-        '''
+        # self.current_platform = self.main_window.current_platform
+        self.active_item_path = active_item_path
+        self.contentDirectory = os.path.dirname(os.path.dirname(active_item_path))
 
-        self.ui = loadUi(os.path.join(self.pypelyneRoot, 'ui', 'newLoader.ui'), self)
+        self.loader_name = None
+        self.source_saver_location = None
+
+        self.ui = loadUi(os.path.join(self.main_window.pypelyne_root, 'ui', 'newLoader.ui'), self)
 
         self.setModal(True)
 
+        self.create_ui()
+        self.add_combo_box_category_items()
+        self.create_connects()
 
-        
-        #self.outputDir = outputDir
-        #self.outputs = outputs
-        
-        self.createUI()
-        self.addComboBoxCategoryItems()
-        self.createConnects()
-        
-    
-    def createUI(self):
+    def create_ui(self):
         self.comboBoxCategory.addItem('select')
         self.comboBoxItem.addItem('select')
-        
-        #self.comboBoxVersion.addItem('select')
-        #self.comboBoxVersion.setEnabled(False)
-        
-        #self.comboBoxTask.addItem('select')
         
         self.comboBoxItem.setEnabled(False)
 
@@ -89,99 +58,44 @@ class newLoaderUI(QDialog):
         
         self.labelFolder.setEnabled(False)
         self.labelStatus.setEnabled(False)
-        
-    
-    def addComboBoxCategoryItems(self):
-        
-        #self.applicationItems = [['Maya', 'MAY', ['2013', '2014', '2015']], ['Cinema 4D', 'C4D', ['R14', 'R15', 'R16']]]
-        #for applicationItem in self.applicationItems:
-        #    self.comboBoxApplication.addItem(applicationItem[0])
 
-        directoryContent = os.listdir(self.contentDirectory)
-        
+    def add_combo_box_category_items(self):
+        directory_content = os.listdir(self.contentDirectory)
 
-        for directory in directoryContent:
-            if not directory in self.exclusions:
+        for directory in directory_content:
+            if directory not in SETTINGS.EXCLUSIONS:
                 self.comboBoxCategory.addItem(directory)
-        '''
-        self.tasks = [['Model', 'MDL'], ['Shader', 'SHD']]
-        for task in self.tasks:
-            self.comboBoxOutput.addItem(taskOutput[0])
-        '''
-        
 
-    def createConnects(self):
-        self.buttonOk.clicked.connect(self.onOk)
-        #self.buttonOk.accepted.connect(self.onOk)
-        self.buttonCancel.clicked.connect(self.onCancel)
-        #self.lineEditOutputName.textChanged.connect(self.setStatus)
-        self.comboBoxCategory.activated.connect(self.setStatus)
-        #self.comboBoxApplication.activated.connect(self.updateVersions)
-        self.comboBoxItem.activated.connect(self.setComboBoxItem)
-        #self.comboBoxVersion.activated.connect(self.setStatus)
-        
-    # def updateVersions(self):
-        # print 'updating versions'
-        # versions = ['1', '2', '3']
-        # self.comboBoxVersion.clear()
-        # self.comboBoxVersion.addItem('select')
-        # if not self.comboBoxApplication.currentIndex() == 0:
-            # self.comboBoxVersion.setEnabled(True)
-            # for version in self.applicationItems[self.comboBoxApplication.currentIndex() - 1][2]:
-                # self.comboBoxVersion.addItem(version)
-        # else:
-            # self.comboBoxVersion.addItem('select')
+    def create_connects(self):
+        self.buttonOk.clicked.connect(self.on_ok)
+        self.buttonCancel.clicked.connect(self.on_cancel)
+        self.comboBoxCategory.activated.connect(self.set_status)
+        self.comboBoxItem.activated.connect(self.set_combo_box_item)
 
-    def setComboBoxItem(self):
-        #self.activeItemPath
+    def set_combo_box_item(self):
         if str(self.comboBoxItem.currentText()) == 'select':
             self.buttonOk.setEnabled(False)
             self.labelStatus.setText('')
-        else:
-            subcontentLocation = os.path.join(self.contentDirectory, str(self.comboBoxCategory.currentText()), str(self.comboBoxItem.currentText()))
-            subcontent = os.listdir(subcontentLocation)
 
-            #print subcontent
+        else:
+            subcontent_location = os.path.join(self.contentDirectory, str(self.comboBoxCategory.currentText()), str(self.comboBoxItem.currentText()))
+            subcontent = os.listdir(subcontent_location)
 
             if any('SVR' in s for s in subcontent):
-                if self.activeItemPath == os.path.join(self.contentDirectory, str(self.comboBoxCategory.currentText()), str(self.comboBoxItem.currentText())):
+                if self.active_item_path == os.path.join(self.contentDirectory, str(self.comboBoxCategory.currentText()), str(self.comboBoxItem.currentText())):
                     self.buttonOk.setEnabled(False)
                     self.labelStatus.setText('dont\'t create its own loader')
-                else:
-                    #print 'yes'
 
-                    #if 'SVR' in subcontent:
-                    
+                else:
                     self.buttonOk.setEnabled(True)
                     self.labelStatus.setText('item has saver')
-                    self.sourceSaverLocation = subcontentLocation
+                    self.source_saver_location = subcontent_location
+
             else:
                 self.buttonOk.setEnabled(False)
                 self.labelStatus.setText('item has no saver')
-                #print 'no'
-        
-        
-    def setStatus(self):
 
-        print 'tabIndex:', self.tabAsset.currentIndex()
-
-
-        #print type(self.comboBoxCategory.currentText())
-        #print self.comboBoxCategory.currentText()
-
-        
-        #print content
-
-        #usedNames = os.listdir(self.outputDir)
-        #print usedNames
-
-        #task[2][1]
-
-        #print self.outputs
-        #print self.outputs[self.comboBoxOutput.currentIndex() - 1][0][1][1]
-        #print self.tools[self.comboBoxApplication.currentIndex() - 1][2]
-
-
+    def set_status(self):
         if self.comboBoxCategory.currentIndex() == 0:
             self.comboBoxItem.clear()
             self.labelStatus.setText('')
@@ -189,86 +103,39 @@ class newLoaderUI(QDialog):
             self.comboBoxItem.setEnabled(False)
             self.buttonOk.setEnabled(False)
 
-
         else:
-
             content = os.listdir(os.path.join(self.contentDirectory, str(self.comboBoxCategory.currentText())))
             self.comboBoxItem.clear()
             self.comboBoxItem.addItem('select')
             self.labelStatus.setText('')
             self.comboBoxItem.setEnabled(True)
 
-            #print content
-            
             if self.comboBoxItem.currentIndex() == 0:
 
                 for directory in content:
-                    if directory not in self.exclusions:
+                    if directory not in SETTINGS.EXCLUSIONS:
                         self.comboBoxItem.addItem(directory)
 
-
-            #else:
-                
-            #print self.comboBoxCategory.text()
-            
-
-        '''
-        if self.comboBoxOutput.currentIndex() == 0 \
-                or self.comboBoxOutput.currentIndex() == 0 \
-                or self.lineEditOutputName.text() == '':
-            self.buttonOk.setEnabled(False)
-            self.labelStatus.setText('')
-            
-        elif self.outputs[self.comboBoxOutput.currentIndex() - 1][0][1][1]  + '__' + self.lineEditOutputName.text() in usedNames:
-            self.buttonOk.setEnabled(False)
-            self.labelStatus.setText('already exists')
-
-        elif ' ' in self.lineEditOutputName.text() \
-                or '-' in self.lineEditOutputName.text() \
-                or '__' in self.lineEditOutputName.text():
-            self.buttonOk.setEnabled(False)
-            self.labelStatus.setText('invalid character')
-            
-        else:
-            self.buttonOk.setEnabled(True)
-            self.labelStatus.setText(self.outputs[self.comboBoxOutput.currentIndex() - 1][0][1][1] + '__' + self.lineEditOutputName.text())
-            #self.labelStatus.setText(self.outputDir + os.sep + self.taskItems[self.comboBoxTask.currentIndex() - 1][1] + '_' + self.applicationItems[self.comboBoxApplication.currentIndex() - 1][1] + '__' + self.lineEditNodeName.text())
-            
-        '''
-    
-    def onCancel(self):
+    def on_cancel(self):
         self.reject()
         
-    def onOk(self):
+    def on_ok(self):
+        saver_folder = [folder for folder in os.listdir(self.source_saver_location) if folder.startswith('SVR_')][0]
 
-        tabIndex = self.tabAsset.currentIndex()
+        for tab in self.main_window.content_tabs:
+            if str(self.comboBoxCategory.currentText()) == tab['content']:
+                self.loader_name = 'LDR_' + tab['abbreviation'] + '__' + str(self.comboBoxItem.currentText())
+                break
 
-        #tabItem = self.tabAsset.currentItem()
-
-        saverFolder = [folder for folder in os.listdir(self.sourceSaverLocation) if folder.startswith('SVR_')][0]
-        #print saverFolder
-
-        #print os.path.basename(os.path.dirname(self.activeItemPath))
-        #print os.path.basename(self.activeItemPath)
-
-        #self.loaderRoot = os.path.join(self.contentDirectory, str(self.comboBoxCategory.currentText()), str(self.comboBoxItem.currentText()))
-        #print 'self.loaderRoot :', self.loaderRoot
-        if str(self.comboBoxCategory.currentText()) == 'assets':
-            self.loaderName = 'LDR_AST__' + str(self.comboBoxItem.currentText())
-        elif str(self.comboBoxCategory.currentText()) == 'shots':
-            self.loaderName = 'LDR_SHT__' + str(self.comboBoxItem.currentText())
-        #self.outputName = self.outputs[self.comboBoxOutput.currentIndex() - 1][0][1][1] + '__' + self.lineEditOutputName.text()
-        #self.outputIndex = self.comboBoxOutput.currentIndex() - 1
-        #self.taskIndex = self.comboBoxTask.currentIndex() - 1
-        #print self.nodeName
         self.accept()
-        return self.loaderName, os.path.join(self.sourceSaverLocation, saverFolder), tabIndex
-    
-    
+
+        return self.loader_name, os.path.join(self.source_saver_location, saver_folder)
+
     # http://stackoverflow.com/questions/18196799/how-can-i-show-a-pyqt-modal-dialog-and-get-data-out-of-its-controls-once-its-clo
     @staticmethod
-    def getNewLoaderData(contentDirectory, exclusions):
-        dialog = newLoaderUI(contentDirectory, exclusions)
+    # TODO: check if SETTINGS.EXCLUSIONS gets passed to this function
+    def get_new_loader_data(content_directory, main_window):
+        dialog = NewLoaderUI(content_directory, main_window)
         result = dialog.exec_()
-        loaderName, sourceSaverLocation, tabIndex = dialog.onOk()
-        return result == QDialog.Accepted, loaderName, sourceSaverLocation
+        loader_name, source_saver_location = dialog.on_ok()
+        return result == QDialog.Accepted, loader_name, source_saver_location

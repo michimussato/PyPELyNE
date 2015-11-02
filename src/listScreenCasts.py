@@ -36,14 +36,14 @@ class addScreenCastUI(QWidget):
 
 
 
-class listScreenCastsUI(QDialog):
+class ListScreenCastsUI(QDialog):
     listScreenCastsUIClosed = pyqtSignal()
     #newScreenCast = pyqtSignal()
 
 
 
     def __init__(self, main_window = None, parent = None):
-        super (listScreenCastsUI, self).__init__(parent)
+        super (ListScreenCastsUI, self).__init__(parent)
 
         self.main_window = main_window
         # self.pypelyne_root = self.main_window.pypelyne_root
@@ -104,12 +104,12 @@ class listScreenCastsUI(QDialog):
 
     def closeEvent(self, event):
         self.listScreenCastsUIClosed.emit()
-        #self.main_window.screenCastsWindow = None
+        #self.main_window.screen_casts_window = None
 
     '''
     @staticmethod
     def displayCasts(main_window = None):
-        dialog = listScreenCastsUI(main_window)
+        dialog = ListScreenCastsUI(main_window)
         result = dialog.exec_()
         submissionCmdArgs = dialog.submitData()
         #return result == dialog.Accepted, submissionCmdArgs
@@ -120,7 +120,7 @@ def main():
 
     #taskFolder = r'/Users/michaelmussato/Dropbox/development/workspace/PyPELyNE/projects/proj1/content/assets/asset_01/RND_DDL__vvasdfa'
 
-    window = listScreenCastsUI()
+    window = ListScreenCastsUI()
 
     #print jobArnold
     #if ok:

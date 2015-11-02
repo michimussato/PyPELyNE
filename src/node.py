@@ -5,6 +5,7 @@ import subprocess
 import getpass
 import logging
 import json
+import copy
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -167,6 +168,14 @@ class node(QGraphicsItem, QObject):
         self.scene.nodeSelect.emit(self)
 
     def mouseDoubleClickEvent(self, event=None):
+        _tools = copy.deepcopy(self.main_window._tools)
+        # run_task = None
+
+        # print run_task
+        # print self.main_window._tools
+
+        # tools_copy = self.main_window._tools.copy
+
         if self.label.startswith('LDR'):
             self.main_window.get_content(node_label=self.label)
 
@@ -192,27 +201,23 @@ class node(QGraphicsItem, QObject):
                 QMessageBox.critical(self.main_window, 'node warning', str('%s is currently checked out.' % self.label), QMessageBox.Abort, QMessageBox.Abort)
                 return
 
-            for tool in self.main_window._tools:
-                # print tool
+            for tool in _tools:
                 if self.meta_tool['family'] == tool['family']:
                     run_task['family'] = tool['family']
                     if self.meta_tool['release_number'] == tool['release_number']:
                         run_task['release_number'] = tool['release_number']
                         run_task['release_extension'] = tool['release_extension']
                         run_task['project_template'] = tool['project_template']
-                        # run_task['project_workspace_template'] = tool['project_workspace_template']
-                        # print tool
-
                         run_task['project_workspace_flag'] = tool['project_workspace_flag']
                         run_task['project_workspace_parent_directory_level'] = tool['project_workspace_parent_directory_level']
                         run_task['project_file_flag'] = tool['project_file_flag']
 
                         if self.meta_tool['architecture'] == 'x64':
                             if self.meta_tool['architecture_fallback']:
-                                print 'this is a %s %s %s task, but can fallback to x32' % (tool['family'], tool['release_number'], self.meta_tool['architecture'])
+                                logging.info('this is a %s %s %s task, but can fallback to x32' % (tool['family'], tool['release_number'], self.meta_tool['architecture']))
                                 if bool(tool['executable_x64']):
                                     if os.path.exists(tool['executable_x64']):
-                                        print 'x64 found.'
+                                        logging.info('x64 found.')
                                         run_task['executable'] = tool['executable_x64']
                                         # run_task['architecture_fallback'] = False
                                         run_task['flags'] = tool['flags_x64']
@@ -226,36 +231,37 @@ class node(QGraphicsItem, QObject):
                                                     QMessageBox.Yes | QMessageBox.No,
                                                     QMessageBox.No)
                                         if reply == QMessageBox.Yes:
-                                            print 'x64 not found. using x32.'
+                                            logging.warning('x64 not found. using x32.')
                                             run_task['executable'] = tool['executable_x32']
                                             # run_task['architecture_fallback'] = True
                                             run_task['label'] = tool['label_x32']
                                             run_task['flags'] = tool['flags_x32']
 
                                         else:
-                                            print 'dont use x32 instead of x64.'
+                                            logging.warning('dont use x32 instead of x64.')
+                                            return
 
                                     else:
-                                        print 'x32 and x64 not found.'
+                                        logging.error('x32 and x64 not found.')
 
                             else:
                                 print 'this is a %s %s %s task (cannot fallback)' % (tool['family'], tool['release_number'], self.meta_tool['architecture'])
                                 if bool(tool['executable_x64']):
                                     if os.path.exists(tool['executable_x64']):
-                                        print 'x64 found'
+                                        logging.info('x64 found')
                                         run_task['executable'] = tool['executable_x64']
                                         run_task['flags'] = tool['flags_x64']
                                         run_task['label'] = tool['label_x64']
 
                                     else:
-                                        print 'x64 not found'
+                                        logging.warning('x64 not found')
 
                         elif self.meta_tool['architecture'] == 'x32':
                             if self.meta_tool['architecture_fallback']:
                                 print 'this is a %s %s %s task, but can fallback to x64.' % (tool['family'], tool['release_number'], self.meta_tool['architecture'])
                                 if bool(tool['executable_x32']):
                                     if os.path.exists(tool['executable_x32']):
-                                        print 'x32 found.'
+                                        logging.info('x32 found.')
                                         run_task['executable'] = tool['executable_x32']
                                         # run_task['architecture_fallback'] = False
                                         run_task['flags'] = tool['flags_x32']
@@ -269,29 +275,29 @@ class node(QGraphicsItem, QObject):
                                                         QMessageBox.Yes | QMessageBox.No,
                                                         QMessageBox.No)
                                             if reply == QMessageBox.Yes:
-                                                print 'x32 not found. using x64.'
+                                                logging.warning('x32 not found. using x64.')
                                                 run_task['executable'] = tool['executable_x64']
                                                 # run_task['architecture_fallback'] = True
                                                 run_task['label'] = tool['label_x64']
                                                 run_task['flags'] = tool['flags_x64']
 
                                             else:
-                                                print 'dont use x32 instead of x64.'
+                                                logging.warning('dont use x32 instead of x64.')
 
                                     else:
-                                        print 'x32 and x64 not found.'
+                                        logging.error('x32 and x64 not found.')
 
                             else:
                                 print 'this is a %s %s %s task (cannot fallback)' % (tool['family'], tool['release_number'], self.meta_tool['architecture'])
                                 if bool(tool['executable_x32']):
                                     if os.path.exists(tool['executable_x32']):
-                                        print 'x32 found'
+                                        logging.info('x32 found')
                                         run_task['executable'] = tool['executable_x32']
                                         run_task['flags'] = tool['flags_x32']
                                         run_task['label'] = tool['label_x32']
 
                                     else:
-                                        print 'x32 not found'
+                                        logging.error('x32 not found')
 
             if run_task['executable'] is None:
                 QMessageBox.critical(self.main_window, 'node warning', str('no suitable tool found to launch task %s.' % self.label), QMessageBox.Abort, QMessageBox.Abort)
@@ -309,16 +315,6 @@ class node(QGraphicsItem, QObject):
             if run_task['project_file_flag'] is not None:
                     run_task['flags'].append(run_task['project_file_flag'])
 
-
-                        # run_task['project_file_flag']
-
-            # if self.nodeFamily == 'Maya':
-            #     for arg in ['-proj', self.location, '-file']:
-            #         run_task['flags'].append(arg)
-
-
-
-            # extension = os.path.splitext(run_task['project_template'])[1]
             extension = run_task['release_extension']
 
             files = glob.glob1(project_root_task, str('*' + extension))
@@ -333,10 +329,12 @@ class node(QGraphicsItem, QObject):
                 # TODO: if none is a tools template: this will produce an error
                 newest_file = max(abs_files, key=os.path.getctime)
                 run_task['flags'].append(newest_file)
-                print run_task['project_workspace_parent_directory_level']
-                print range(run_task['project_workspace_parent_directory_level'])
-                print run_task['executable'], run_task['flags']
+                # print run_task
+                # print run_task['executable'], run_task['flags']
                 self.main_window.run_task(node_object=self, executable=run_task['executable'], args=run_task['flags'])
+
+                # run_task['flags'].remove(newest_file)
+
             else:
                 ok, job_deadline = jobDeadlineUi.getDeadlineJobData(self.location, self.main_window)
 

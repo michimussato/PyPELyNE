@@ -80,7 +80,7 @@ class NewNodeUI(QDialog):
         '''
 
     def clear_configure_render_job_widget_ui(self):
-        # self.nodeWidgets = []
+        # self.node_widgets = []
         self.configureRenderJobArea.takeWidget()
         
     def create_ui(self):

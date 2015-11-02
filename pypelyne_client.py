@@ -35,20 +35,6 @@ from src.listScreenCasts import *
 from src.nodeWidget import *
 from src.playerWidget import *
  
-# from conf.valuePyPELyNE import *
- 
-from settings import EXCLUSIONS, AUDIO_EXTENSIONS, IMAGE_EXTENSIONS, MOVIE_EXTENSIONS, ARCHIVE_SEPARATOR
-from settings import USE_SERVER, USE_SCREEN_CAST, SERVER_IP, SERVER_PORT, SERVER_PORT_RANGE, PROJECT_ROOT_SERVER
-from settings import LIBRARY_ROOT_SERVER, PROJECTS_ROOT_SERVER_DARWIN, ASSETS_ROOT_SERVER_DARWIN
-from settings import ASSETS_ROOT_SERVER_WIN, PROJECTS_ROOT_SERVER_LINUX, ASSETS_ROOT_SERVER_LINUX
-from settings import FILE_EXPLORER_DARWIN, PROJECTS_ROOT_DARWIN, PROJECTS_ROOT_DARWIN_ALT, LIBRARY_ROOT_DARWIN
-from settings import AUDIO_FOLDER_DARWIN, SCREEN_CAST_EXEC_DARWIN, SEQUENCE_EXEC_DARWIN, SEQUENCE_EXEC_RV_DARWIN
-from settings import TAR_EXEC_DARWIN, FILE_EXPLORER_WIN, PROJECTS_ROOT_WIN, LIBRARY_ROOT_WIN, AUDIO_FOLDER_WIN
-from settings import SCREEN_CAST_EXEC_WIN, SEQUENCE_EXEC_WIN, SEQUENCE_EXEC_RV_WIN, TAR_EXEC_WIN
-from settings import FILE_EXPLORER_LINUX_GNOME, FILE_EXPLORER_LINUX_KDE, PROJECTS_ROOT_LINUX, LIBRARY_ROOT_LINUX
-from settings import AUDIO_FOLDER_LINUX, SCREEN_CAST_EXEC_LINUX, SEQUENCE_EXEC_LINUX, SEQUENCE_EXEC_RV_LINUX
-from settings import TAR_EXEC_LINUX, PROJECTS_ROOT_SERVER_WIN
- 
 import settings as SETTINGS
  
 import xml.etree.ElementTree as ET
@@ -64,7 +50,6 @@ app = None
 # TODO: jumping from shots to asset loader does not update tab widget title correctly
  
  
-# noinspection PyInterpreter,PyInterpreter
 class PypelyneMainWindow(QMainWindow):
     addNewScreenCast = pyqtSignal()
  
@@ -76,33 +61,30 @@ class PypelyneMainWindow(QMainWindow):
         # self.portRange = int(SETTINGS.SERVER_PORT_RANGE)
  
         # self.serverPort = 50002
-        self.serverAlive = False
+        self.server_alive = False
  
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
  
-        self.content_tabs = [{'content': 'assets', 'abbreviation': 'AST', 'loader_color': '#FFFF00', 'saver_color': '#FFFF33'},
-                             {'content': 'shots', 'abbreviation': 'SHT', 'loader_color': '#0000FF', 'saver_color': '#3333FF'},
-                             {'content': 'sequences', 'abbreviation': 'SEQ', 'loader_color': '#00FFFF', 'saver_color': '#33FFFF'}]
+        self.content_tabs = SETTINGS.CONTENT_TABS
  
         # self.connectServer()
  
         if SETTINGS.USE_SERVER:
             logging.info('connecting to server')
             logging.info('server ip is %s' % SETTINGS.SERVER_IP)
-            counter = 1
             while True:
                 try:
                     logging.info('trying to connect to %s:%s' % (SETTINGS.SERVER_IP, SETTINGS.SERVER_PORT))
                     self.socket.connect((SETTINGS.SERVER_IP, SETTINGS.SERVER_PORT))
                     logging.info('connection to server successful')
-                    self.serverAlive = True
+                    self.server_alive = True
                     break
                 except:
                     logging.info('connection failed')
  
         else:
-            self.serverAlive = False
+            self.server_alive = False
  
         self.pypelyne_root = os.getcwd()
         self.current_platform = platform.system()
@@ -123,14 +105,7 @@ class PypelyneMainWindow(QMainWindow):
  
         self.current_content_item = None
          
-        # self.exclusions = SETTINGS.EXCLUSIONS
-        # self.audioExtensions = SETTINGS.AUDIO_EXTENSIONS
-        # self.imageExtensions = SETTINGS.IMAGE_EXTENSIONS
-        # self.movieExtensions = SETTINGS.MOVIE_EXTENSIONS
-        # self.tarSep = SETTINGS.ARCHIVE_SEPARATOR
-        # self.screenCastActive = SETTINGS.USE_SCREEN_CAST
- 
-        self.setProjectsRoot()
+        self.set_projects_root()
  
         if self.current_platform == "Windows":
             # print 'platform not fully supported'
@@ -179,7 +154,7 @@ class PypelyneMainWindow(QMainWindow):
             self.tar_exec = SETTINGS.TAR_EXEC_LINUX
             # self.projects_root = projectsRootLinux
             self.libraryRoot = SETTINGS.LIBRARY_ROOT_LINUX
-            self.audioFolder = SETTINGS.AUDIO_FOLDER_LINUX
+            # self.audioFolder = SETTINGS.AUDIO_FOLDER_LINUX
             if SETTINGS.SCREEN_CAST_EXEC_LINUX.startswith(os.sep):
                 self.screenCastExec = SETTINGS.SCREEN_CAST_EXEC_LINUX
             else:
@@ -199,12 +174,12 @@ class PypelyneMainWindow(QMainWindow):
             os.makedirs(self.libraryRoot, mode=0777)
             logging.info('library root directory created')
  
-        self.nodeWidgets = []
+        self.node_widgets = []
         self.qprocesses = []
-        self.openNodes = []
+        self.open_nodes = []
         self.timeTrackers = []
         self.screenCasts = []
-        self.screenCastsWindowOpen = None
+        self.screen_casts_window_open = None
  
         self.ui = loadUi(os.path.join(self.pypelyne_root, 'ui', 'pypelyneMainWindow.ui'), self)
         self.valueApplicationsXML = os.path.join(self.pypelyne_root, 'conf', 'valueApplications.xml')
@@ -222,9 +197,7 @@ class PypelyneMainWindow(QMainWindow):
  
         self.openPushButton.setEnabled(False)
  
-        # self.compute_value_applications()
-        # self.compute_value_tasks()
-        self.computeValueOutputs()
+        self.compute_value_outputs()
  
         # Scene view
         self.scene = SceneView(self)
@@ -263,16 +236,16 @@ class PypelyneMainWindow(QMainWindow):
         # self.tools_dict = {}
         self.add_tools()
  
-        self.audioFolderContent = []
+        self.audio_folder_content = []
  
-        if os.path.exists(self.audioFolder):
-            logging.info('audioFolder found at %s' % self.audioFolder)
-            self.addPlayer()
+        if os.path.exists(SETTINGS.AUDIO_FOLDER_DARWIN):
+            logging.info('audioFolder found at %s' % SETTINGS.AUDIO_FOLDER_DARWIN)
+            self.add_player()
  
         self.runToolPushButton.clicked.connect(self.run_tool)
          
         self.checkBoxConsole.stateChanged.connect(self.toggleConsole)
-        self.checkBoxNodeName.stateChanged.connect(self.toggleNodeName)
+        self.checkBoxNodeName.stateChanged.connect(self.toggle_node_name)
         self.checkBoxDescription.stateChanged.connect(self.toggleDescription)
         self.checkBoxContentBrowser.stateChanged.connect(self.toggleContentBrowser)
         # self.checkBoxNodesWindow.stateChanged.connect(self.toggleNodesWindow)
@@ -280,7 +253,7 @@ class PypelyneMainWindow(QMainWindow):
          
         # configuration window
         self.configPushButton.clicked.connect(self.configurationWindow)
-        self.screenCastsPushButton.clicked.connect(self.screenCastsWindow)
+        self.screenCastsPushButton.clicked.connect(self.screen_casts_window)
         self.scene.nodeSelect.connect(self.set_node_widget)
         self.scene.nodeDeselect.connect(self.clear_node_widget)
         self.openPushButton.clicked.connect(lambda: self.locate_content(os.path.join(self.projects_root, str(self.projectComboBox.currentText()))))
@@ -397,7 +370,7 @@ class PypelyneMainWindow(QMainWindow):
                     abbreviation = app_conf[u'abbreviation']
  
                     for release in app_conf[u'releases']:
-                        print release
+                        # print release
                         # type(release) = dict
                         logging.info('checking system for release: %s' % release[u'release_number'])
  
@@ -577,46 +550,46 @@ class PypelyneMainWindow(QMainWindow):
             raise Exception('Data received was not in JSON format')
         return deserialized
  
-    def setProjectsRoot(self):
+    def set_projects_root(self):
         logging.info('getting projects_root')
         if self.current_platform == 'Windows':
-            self.setProjectsRootWin()
+            self.set_projects_root_win()
         elif self.current_platform == 'Darwin':
-            self.setProjectsRootDarwin()
+            self.set_projects_root_darwin()
         elif self.current_platform == 'Linux':
-            self.setProjectsRootLinux()
+            self.set_projects_root_linux()
         else:
             print 'platform not supported'
             sys.exit()
  
-    def setProjectsRootWin(self):
+    def set_projects_root_win(self):
         try:
             # self.socket.connect((SETTINGS.SERVER_IP, self.serverPort))
             # print 'here'
             self.socket.sendall('getProjectsRootServerWin')
             self.projects_root = self.receive_serialized(self.socket)
             logging.info('projectsRootServerWin server successfully queried')
-            self.serverAlive = True
+            self.server_alive = True
             # self.socket.close()
         except socket.error:
-            self.projects_root = PROJECTS_ROOT_WIN
-            self.serverAlive = False
+            self.projects_root = SETTINGS.PROJECTS_ROOT_WIN
+            self.server_alive = False
  
-    def setProjectsRootLinux(self):
+    def set_projects_root_linux(self):
         try:
             # self.socket.connect((SETTINGS.SERVER_IP, self.serverPort))
             # print 'here'
             self.socket.sendall('getProjectsRootServerLinux')
             self.projects_root = self.receive_serialized(self.socket)
             logging.info('projectsRootServerLinux server successfully queried')
-            self.serverAlive = True
+            self.server_alive = True
             # self.socket.close()
         except socket.error:
-            self.projects_root = PROJECTS_ROOT_LINUX
-            self.serverAlive = False
+            self.projects_root = SETTINGS.PROJECTS_ROOT_LINUX
+            self.server_alive = False
  
-    def setProjectsRootDarwin(self):
-        if self.serverAlive == True:
+    def set_projects_root_darwin(self):
+        if self.server_alive == True:
             try:
                 logging.info('sending getProjectsRootServerDarwin to server')
                 # self.socket.connect((SETTINGS.SERVER_IP, self.serverPort))
@@ -624,73 +597,62 @@ class PypelyneMainWindow(QMainWindow):
                 self.socket.sendall('getProjectsRootServerDarwin')
                 self.projects_root = self.receive_serialized(self.socket)
                 logging.info('projectsRootServerDarwin server successfully queried')
-                # self.serverAlive = True
+                # self.server_alive = True
                 # self.socket.close()
             except socket.error:
                 logging.warning('looks like server connection died')
-                self.projects_root = PROJECTS_ROOT_DARWIN
-                self.serverAlive = False
+                self.projects_root = SETTINGS.PROJECTS_ROOT_DARWIN
+                self.server_alive = False
  
         else:
-            if os.path.exists(PROJECTS_ROOT_DARWIN):
-                self.projects_root = PROJECTS_ROOT_DARWIN
-            elif os.path.exists(PROJECTS_ROOT_DARWIN_ALT):
-                self.projects_root = PROJECTS_ROOT_DARWIN_ALT
+            if os.path.exists(SETTINGS.PROJECTS_ROOT_DARWIN):
+                self.projects_root = SETTINGS.PROJECTS_ROOT_DARWIN
+            elif os.path.exists(SETTINGS.PROJECTS_ROOT_DARWIN_ALT):
+                self.projects_root = SETTINGS.PROJECTS_ROOT_DARWIN_ALT
             else:
                 logging.warning('no predefinded projects_root found')
  
-    def exportToLibraryCallback(self, node):
+    def export_to_library_callback(self, node_object):
         def callback():
-            self.exportToLibrary(node)
+            self.export_to_library(node_object)
         return callback
  
-    def exportToLibrary(self, node):
-        print 'exportToLibrary', node
+    def export_to_library(self, node_object):
+        print 'export_to_library', node_object
         date_time = datetime.datetime.now().strftime('%Y-%m-%d_%H%M-%S')
         current_dir = os.getcwd()
-        export_src_node_dir = node.location
+        export_src_node_dir = node_object.location
         export_src_node_dir_inputs = os.path.join(export_src_node_dir, 'input')
-        # exportSrcNodeDirOutputs = os.path.join(exportSrcNodeDir, 'output')
-        exportDstDirRoot = self.libraryRoot
-        exportDstName = self.getCurrentProject() + SETTINGS.ARCHIVE_SEPARATOR + os.path.basename(os.path.dirname(node.getNodeAsset())) + SETTINGS.ARCHIVE_SEPARATOR + os.path.basename(node.getNodeAsset()) + SETTINGS.ARCHIVE_SEPARATOR + node.label + SETTINGS.ARCHIVE_SEPARATOR + date_time
-        exportDstDir = os.path.join(exportDstDirRoot, exportDstName)
-        exportDstNameInput = os.path.join(exportDstDir, 'input')
-        exportDstNameOutput = os.path.join(exportDstDir, 'output')
+        export_dst_dir_root = self.libraryRoot
+        export_dst_name = self.getCurrentProject() + SETTINGS.ARCHIVE_SEPARATOR + os.path.basename(os.path.dirname(node_object.getNodeAsset())) + SETTINGS.ARCHIVE_SEPARATOR + os.path.basename(node_object.getNodeAsset()) + SETTINGS.ARCHIVE_SEPARATOR + node_object.label + SETTINGS.ARCHIVE_SEPARATOR + date_time
+        export_dst_dir = os.path.join(export_dst_dir_root, export_dst_name)
+        export_dst_name_input = os.path.join(export_dst_dir, 'input')
+        export_dst_name_output = os.path.join(export_dst_dir, 'output')
  
-        # print 'export from:', exportSrcNodeDirInputs
-        # print 'export to:', exportDstNameInput
-        # print 'export name:', exportDstName
+        os.makedirs(os.path.join(self.libraryRoot, export_dst_name), mode=0777)
+        os.makedirs(os.path.join(self.libraryRoot, export_dst_name_input), mode=0777)
+
+        shutil.copytree(export_src_node_dir_inputs, export_dst_name_output, symlinks=False)
  
-        os.makedirs(os.path.join(self.libraryRoot, exportDstName), mode=0777)
-        os.makedirs(os.path.join(self.libraryRoot, exportDstNameInput), mode=0777)
-        # os.makedirs(os.path.join(self.libraryRoot, exportDstNameOutput), mode = 0777)
- 
-        # shutil.copytree('/Volumes/pili/pypelyne_projects/0000-00-00___test___test/content/assets/test/SVR_AST__test/input', '/Volumes/pili/pypelyne_assets/0000-00-00___test___test_____assets_____test_____SVR_AST__test_____2015-09-04_1311-41/output', symlinks = False)
-        #                   /Volumes/pili/pypelyne_projects/0000-00-00___test___test/content/assets/test/SVR_AST__test/input
- 
-        shutil.copytree(export_src_node_dir_inputs, exportDstNameOutput, symlinks=False)
- 
-        os.chdir(exportDstDir)
-        os.symlink(os.path.relpath(exportDstNameOutput, exportDstDir), 'live')
-        os.path.relpath(exportDstNameOutput, exportDstDir)
+        os.chdir(export_dst_dir)
+        os.symlink(os.path.relpath(export_dst_name_output, export_dst_dir), 'live')
+        os.path.relpath(export_dst_name_output, export_dst_dir)
         os.chdir(current_dir)
-        # shutil.copytree(exportSrcNodeDirOutputs, exportDstNameInput, symlinks = False)
- 
-    def screenCastsWindow(self):
-        if self.screenCastsWindowOpen == None:
-            self.screenCastsUI = listScreenCastsUI(self, self)
-            self.screenCastsUI.show()
-            self.screenCastsWindowOpen = self.screenCastsUI
-            self.screenCastsUI.listScreenCastsUIClosed.connect(self.resetScreenCastsWindowOpen)
+
+    def screen_casts_window(self):
+        if self.screen_casts_window_open is None:
+            self.screen_casts_ui = ListScreenCastsUI(self, self)
+            self.screen_casts_ui.show()
+            self.screen_casts_window_open = self.screen_casts_ui
+            self.screen_casts_ui.listScreenCastsUIClosed.connect(self.reset_screen_casts_window_open)
  
         else:
-            self.screenCastsUI.activateWindow()
-            self.screenCastsUI.raise_()
-        # print 'hallo'
- 
-    def resetScreenCastsWindowOpen(self):
+            self.screen_casts_ui.activateWindow()
+            self.screen_casts_ui.raise_()
+
+    def reset_screen_casts_window_open(self):
         # print 'emitted'
-        self.screenCastsWindowOpen = None
+        self.screen_casts_window_open = None
  
     # def getUser(self):
     #     return self.user
@@ -717,7 +679,7 @@ class PypelyneMainWindow(QMainWindow):
             reply = QMessageBox.question(self, 'Message', quit_msg, QMessageBox.Yes, QMessageBox.No)
  
         if reply == QMessageBox.Yes:
-            if self.serverAlive == True:
+            if self.server_alive == True:
                 logging.info('sending bye')
                 self.socket.sendall('bye')
                 # byeMsg = self.receive_serialized(self.socket)[1]
@@ -725,24 +687,24 @@ class PypelyneMainWindow(QMainWindow):
                 logging.info('closing socket')
                 self.socket.close()
                 logging.info('socket closed')
-                self.serverAlive = False
+                self.server_alive = False
             event.accept()
         else:
             event.ignore()
  
-    def addPlayer(self):
-        self.playerUi = playerWidgetUi(self)
-        self.horizontalLayout.addWidget(self.playerUi)
-        # self.playerUi.radioButtonPlay.clicked.connect(self.playAudio)
-        self.playerUi.pushButtonPlayStop.clicked.connect(self.playAudio)
+    def add_player(self):
+        self.player_ui = PlayerWidgetUi(self)
+        self.horizontalLayout.addWidget(self.player_ui)
+        # self.player_ui.radioButtonPlay.clicked.connect(self.play_audio)
+        self.player_ui.pushButtonPlayStop.clicked.connect(self.play_audio)
  
-        self.playerUi.pushButtonPlayStop.setContextMenuPolicy(Qt.CustomContextMenu)
-        self.connect(self.playerUi.pushButtonPlayStop, SIGNAL('customContextMenuRequested(const QPoint&)'), self.playerContextMenu)
+        self.player_ui.pushButtonPlayStop.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.connect(self.player_ui.pushButtonPlayStop, SIGNAL('customContextMenuRequested(const QPoint&)'), self.player_context_menu)
  
-        self.playerContextMenu = QMenu()
-        qMenuTitles = []
+        self.player_context_menu = QMenu()
+        q_menu_titles = []
  
-        for dir, subdirs, files in os.walk(self.audioFolder, topdown=False):
+        for dir, subdirs, files in os.walk(SETTINGS.AUDIO_FOLDER_DARWIN, topdown=False):
             for file in files:
                 if file in SETTINGS.EXCLUSIONS:
                     os.remove(os.path.join(dir, file))
@@ -752,148 +714,139 @@ class PypelyneMainWindow(QMainWindow):
                     logging.warning('non audio file %s found in %s' % (file, dir))
  
                 else:
-                    if not os.path.relpath(dir, self.audioFolder) == '.':
-                        qMenuName = os.path.relpath(dir, self.audioFolder)
-                        # if len(qMenuName.split(os.sep)) > 1:
-                        if not qMenuName in qMenuTitles:
-                            self.menuAlbum = self.playerContextMenu.addMenu(qMenuName.replace(os.sep, ' - '))
-                            qMenuTitles.append(qMenuName)
+                    if not os.path.relpath(dir, SETTINGS.AUDIO_FOLDER_DARWIN) == '.':
+                        q_menu_name = os.path.relpath(dir, SETTINGS.AUDIO_FOLDER_DARWIN)
+                        # if len(q_menu_name.split(os.sep)) > 1:
+                        if q_menu_name not in q_menu_titles:
+                            self.menuAlbum = self.player_context_menu.addMenu(q_menu_name.replace(os.sep, ' - '))
+                            q_menu_titles.append(q_menu_name)
  
-                            self.menuAlbum.addAction(file, self.playAudioCallback(os.path.join(dir, file)))
-                            self.audioFolderContent.append(os.path.join(dir, file))
+                            self.menuAlbum.addAction(file, self.play_audio_callback(os.path.join(dir, file)))
+                            self.audio_folder_content.append(os.path.join(dir, file))
                         else:
-                            self.menuAlbum.addAction(file, self.playAudioCallback(os.path.join(dir, file)))
-                            self.audioFolderContent.append(os.path.join(dir, file))
+                            self.menuAlbum.addAction(file, self.play_audio_callback(os.path.join(dir, file)))
+                            self.audio_folder_content.append(os.path.join(dir, file))
  
                     else:
-                        self.playerContextMenu.addAction(file, self.playAudioCallback(os.path.join(dir, file)))
-                        self.audioFolderContent.append(os.path.join(dir, file))
+                        self.player_context_menu.addAction(file, self.play_audio_callback(os.path.join(dir, file)))
+                        self.audio_folder_content.append(os.path.join(dir, file))
  
-        self.playerUi.pushButtonPlayStop.setText('play')
-        self.playerExists = False
+        self.player_ui.pushButtonPlayStop.setText('play')
+        self.player_exists = False
  
-    def playerContextMenu(self, point):
-        self.playerContextMenu.exec_(self.playerUi.pushButtonPlayStop.mapToGlobal(point))
+    def player_context_menu(self, point):
+        self.player_context_menu.exec_(self.player_ui.pushButtonPlayStop.mapToGlobal(point))
  
-    def playAudioCallback(self, track = None):
+    def play_audio_callback(self, track=None):
         def callback():
-            self.playAudio(track)
+            self.play_audio(track)
         return callback
  
-    def playAudio(self, track = None):
+    def play_audio(self, track=None):
         # https://forum.videolan.org/viewtopic.php?t=107039
-        if len(os.listdir(self.audioFolder)) == 0:
+        if len(os.listdir(SETTINGS.AUDIO_FOLDER_DARWIN)) == 0:
             logging.warning('no audio files found')
-            self.playerUi.radioButtonPlay.setEnabled(False)
+            self.player_ui.radioButtonPlay.setEnabled(False)
  
-        elif self.playerExists == False:
-            random.shuffle(self.audioFolderContent, random.random)
+        elif not self.player_exists:
+            random.shuffle(self.audio_folder_content, random.random)
  
-            if not track == False:
-                trackID = self.audioFolderContent.index(track)
- 
-            #print 'playing'
- 
+            if not track:
+                track_id = self.audio_folder_content.index(track)
+
             self.mlp = MediaListPlayer()
             self.mp = MediaPlayer()
             self.mlp.set_media_player(self.mp)
- 
- 
+
             self.ml = MediaList()
  
-            for file in self.audioFolderContent:
-                self.ml.add_media(os.path.join(self.audioFolder, file))
+            for file in self.audio_folder_content:
+                self.ml.add_media(os.path.join(SETTINGS.AUDIO_FOLDER_DARWIN, file))
  
             self.mlp.set_media_list(self.ml)
  
-            if not track == False:
-                #print trackID
-                self.mlp.play_item_at_index(trackID)
-                logging.info('playing %s' %(trackID))
+            if track:
+                self.mlp.play_item_at_index(track_id)
+                logging.info('playing %s' % track_id)
  
             else:
                 self.mlp.play()
                 logging.info('playing randomly')
  
-            #self.playerUi.pushButtonPlayStop.setText('skip')
+            self.player_exists = True
  
-            self.playerExists = True
- 
-            self.playerUi.pushButtonPlayStop.clicked.disconnect(self.playAudio)
-            self.playerUi.pushButtonPlayStop.clicked.connect(self.stopAudio)
-            self.playerUi.pushButtonPlayStop.setText('stop')
+            self.player_ui.pushButtonPlayStop.clicked.disconnect(self.play_audio)
+            self.player_ui.pushButtonPlayStop.clicked.connect(self.stopAudio)
+            self.player_ui.pushButtonPlayStop.setText('stop')
             logging.info('setting pushButtonPlayStop function to stop')
-            threading.Timer(0.5, self.fromStopToSkip).start()
+            threading.Timer(0.5, self.from_stop_to_skip).start()
  
-        elif self.playerExists == True and not track == False:
- 
-            logging.info('playing %s' %(track))
- 
-            trackID = self.audioFolderContent.index(track)
- 
-            self.skipAudio(trackID)
+        elif self.player_exists and track:
+            logging.info('playing %s' % track)
+            track_id = self.audio_folder_content.index(track)
+            self.skip_audio(track_id)
  
         else:
             logging.info('already on air')
  
-    def fromStopToSkip(self):
-        if self.playerExists == True:
-            self.playerUi.pushButtonPlayStop.clicked.disconnect(self.stopAudio)
-            self.playerUi.pushButtonPlayStop.clicked.connect(self.skipAudio)
-            self.playerUi.pushButtonPlayStop.setText('skip')
+    def from_stop_to_skip(self):
+        if self.player_exists == True:
+            self.player_ui.pushButtonPlayStop.clicked.disconnect(self.stopAudio)
+            self.player_ui.pushButtonPlayStop.clicked.connect(self.skip_audio)
+            self.player_ui.pushButtonPlayStop.setText('skip')
             logging.info('setting pushButtonPlayStop function to skip')
  
-    def fromSkipToStop(self):
-        if self.playerExists == True:
-            self.playerUi.pushButtonPlayStop.clicked.disconnect(self.skipAudio)
-            self.playerUi.pushButtonPlayStop.clicked.connect(self.stopAudio)
-            self.playerUi.pushButtonPlayStop.setText('stop')
+    def from_skip_to_stop(self):
+        if self.player_exists == True:
+            self.player_ui.pushButtonPlayStop.clicked.disconnect(self.skip_audio)
+            self.player_ui.pushButtonPlayStop.clicked.connect(self.stopAudio)
+            self.player_ui.pushButtonPlayStop.setText('stop')
             logging.info('setting pushButtonPlayStop function to stop')
  
-    def stopAudio(self):
-        if self.playerExists == True:
+    def stop_audio(self):
+        if self.player_exists:
             try:
-                self.playerUi.pushButtonPlayStop.clicked.disconnect(self.stopAudio)
-                self.playerUi.pushButtonPlayStop.clicked.connect(self.playAudio)
+                self.player_ui.pushButtonPlayStop.clicked.disconnect(self.stopAudio)
+                self.player_ui.pushButtonPlayStop.clicked.connect(self.play_audio)
                 self.mp.stop()
                 self.mp.release()
                 self.mlp.release()
-                self.playerExists = False
-                self.playerUi.pushButtonPlayStop.setText('play')
+                self.player_exists = False
+                self.player_ui.pushButtonPlayStop.setText('play')
                 logging.info('setting pushButtonPlayStop function to play')
                 #logging.info('audio stopped')
             except:
                 logging.warning('error or not playing')
  
-    def skipAudio(self, trackID = None):
-        if self.playerExists == True:
-            if not trackID == False:
-                self.mlp.play_item_at_index(trackID)
+    def skip_audio(self, track_id=None):
+        if self.player_exists:
+            if track_id:
+                self.mlp.play_item_at_index(track_id)
  
             else:
                 self.mlp.next()
  
-            self.playerUi.pushButtonPlayStop.clicked.disconnect(self.skipAudio)
-            self.playerUi.pushButtonPlayStop.clicked.connect(self.stopAudio)
-            self.playerUi.pushButtonPlayStop.setText('stop')
-            threading.Timer(0.5, self.fromStopToSkip).start()
+            self.player_ui.pushButtonPlayStop.clicked.disconnect(self.skip_audio)
+            self.player_ui.pushButtonPlayStop.clicked.connect(self.stopAudio)
+            self.player_ui.pushButtonPlayStop.setText('stop')
+            threading.Timer(0.5, self.from_stop_to_skip).start()
  
-    def computeValueOutputs(self):
-        self.valueOutputs = ET.parse(os.path.join(self.pypelyne_root, 'conf', 'valueOutputs.xml'))
-        self.valueOutputsRoot = self.valueOutputs.getroot()
+    def compute_value_outputs(self):
+        self.value_outputs = ET.parse(os.path.join(self.pypelyne_root, 'conf', 'valueOutputs.xml'))
+        self.value_outputs_root = self.value_outputs.getroot()
  
         self.outputs = []
-        categoryList = []
-        mimeList = []
-        itemList = []
+        # categoryList = []
+        # mimeList = []
+        item_list = []
  
-        for category in self.valueOutputsRoot:
-            itemList.append(category.items())
+        for category in self.value_outputs_root:
+            item_list.append(category.items())
             for mime in category:
-                itemList.append(mime.items())
+                item_list.append(mime.items())
  
-            self.outputs.append(itemList)
-            itemList = []
+            self.outputs.append(item_list)
+            item_list = []
 
     @property
     def new_process_color(self):
@@ -912,7 +865,9 @@ class PypelyneMainWindow(QMainWindow):
         process = QProcess(self)
  
         process_color = self.new_process_color
- 
+
+        # print executable, args
+
         process.readyReadStandardOutput.connect(lambda: self.data_ready_std(process, process_color))
         process.readyReadStandardError.connect(lambda: self.dataReadyErr(process, process_color))
         process.started.connect(lambda: self.taskOnStarted(node_object, process, new_screen_cast, new_time_tracker))
@@ -928,14 +883,14 @@ class PypelyneMainWindow(QMainWindow):
         return callback
  
     def check_out(self, node_object):
-        dateTime = datetime.datetime.now().strftime('%Y-%m-%d_%H%M-%S')
+        date_time = datetime.datetime.now().strftime('%Y-%m-%d_%H%M-%S')
         pigz = os.path.join(self.pypelyne_root, 'payload', 'pigz', 'darwin', 'pigz')
-        tarDirRoot = os.path.join(self.projects_root, self.getCurrentProject(), 'check_out')
+        tar_dir_root = os.path.join(self.projects_root, self.getCurrentProject(), 'check_out')
         # TODO: refactor
-        tarName = dateTime + SETTINGS.ARCHIVE_SEPARATOR + self._current_project + SETTINGS.ARCHIVE_SEPARATOR + os.path.basename(os.path.dirname(node_object.getNodeAsset())) + SETTINGS.ARCHIVE_SEPARATOR + os.path.basename(node_object.getNodeAsset()) + SETTINGS.ARCHIVE_SEPARATOR + node_object.label + '.tar.gz'
+        tar_name = date_time + SETTINGS.ARCHIVE_SEPARATOR + self._current_project + SETTINGS.ARCHIVE_SEPARATOR + os.path.basename(os.path.dirname(node_object.getNodeAsset())) + SETTINGS.ARCHIVE_SEPARATOR + os.path.basename(node_object.getNodeAsset()) + SETTINGS.ARCHIVE_SEPARATOR + node_object.label + '.tar.gz'
  
-        if not os.path.exists(tarDirRoot):
-            os.makedirs(tarDirRoot, mode=0777)
+        if not os.path.exists(tar_dir_root):
+            os.makedirs(tar_dir_root, mode=0777)
  
         arguments = []
         arguments.append('cvL')
@@ -953,7 +908,7 @@ class PypelyneMainWindow(QMainWindow):
         arguments.append('--use-compress-program')
         arguments.append(pigz)
         arguments.append('-f')
-        arguments.append(os.path.join(tarDirRoot, tarName))
+        arguments.append(os.path.join(tar_dir_root, tar_name))
         arguments.append('--directory')
         arguments.append(node_object.getNodeRootDir())
         arguments.append('.')
@@ -964,7 +919,7 @@ class PypelyneMainWindow(QMainWindow):
         process.readyReadStandardOutput.connect(lambda: self.data_ready_std(process, process_color))
         process.readyReadStandardError.connect(lambda: self.dataReadyErr(process, process_color))
         process.started.connect(lambda: self.checkOutOnStarted(process))
-        process.finished.connect(lambda: self.checkoutOnFinished(process, node_object, tarName))
+        process.finished.connect(lambda: self.checkoutOnFinished(process, node_object, tar_name))
  
         process.start(self.tar_exec, arguments)
  
@@ -981,15 +936,14 @@ class PypelyneMainWindow(QMainWindow):
             #print 'check in failed'
             logging.warning('check in failed')
  
-    def taskOnStarted(self, node, qprocess, screenCast, timeTracker):
- 
+    def taskOnStarted(self, node_object, qprocess, screenCast, timeTracker):
         self.qprocesses.append(qprocess)
-        self.openNodes.append(node)
+        self.open_nodes.append(node_object)
         #print self.qprocesses
  
-        logging.info('task %s started' %node.getLabel())
+        logging.info('task %s started' % node_object.label)
  
-        lockFilePath = os.path.join(node.getNodeRootDir(), 'locked')
+        lockFilePath = os.path.join(node_object.getNodeRootDir(), 'locked')
         lockFile = open(lockFilePath, 'a')
         lockFile.write(self.user)
         lockFile.close()
@@ -1002,8 +956,8 @@ class PypelyneMainWindow(QMainWindow):
         timeTracker.start()
         self.timeTrackers.append(timeTracker)
  
-    def task_on_finished(self, node, qprocess, screenCast, timeTracker):
-        logging.info('task %s finished' %node.getLabel())
+    def task_on_finished(self, node_object, qprocess, screenCast, timeTracker):
+        logging.info('task %s finished' % node_object.label)
  
         if SETTINGS.USE_SCREEN_CAST and screenCast in self.screenCasts:
             screenCast.stop()
@@ -1013,17 +967,14 @@ class PypelyneMainWindow(QMainWindow):
         timeTracker.stop()
         self.timeTrackers.remove(timeTracker)
  
-        os.remove(os.path.join(node.getNodeRootDir(), 'locked'))
+        os.remove(os.path.join(node_object.getNodeRootDir(), 'locked'))
  
-        self.openNodes.remove(node)
+        self.open_nodes.remove(node_object)
         self.qprocesses.remove(qprocess)
  
-    def getTasks(self):
+    def get_tasks(self):
         return self.tasks
-         
-    # def get_tools(self):
-    #     return self._tools
- 
+
     def locate_content_callback(self, content_files):
         def callback():
             self.locate_content(content_files)
@@ -1059,8 +1010,7 @@ class PypelyneMainWindow(QMainWindow):
      
     def remove_content(self, content_files):
         tab_index = self.assetsShotsTabWidget.currentIndex()
-        # print contentFiles
-         
+
         shutil.rmtree(content_files)
         logging.info('content removed from filesystem: %s' % content_files)
         self.sendTextToBox('content removed from filesystem: %s\n' % content_files)
@@ -1128,68 +1078,63 @@ class PypelyneMainWindow(QMainWindow):
             # get node inputs
             node_root_dir = node_dst.getNodeRootDir()
             node_input_dir = os.sep.join([str(node_root_dir), 'input'])
-            #endItems =
             inputs = os.listdir(node_input_dir)
-            #print inputs
-            # for each input
- 
+
             for input in inputs:
                 if len(inputs) > 0 and not input in SETTINGS.EXCLUSIONS:
                     logging.info('\tprocessing input %s' %(input))
-                    # input circle = endItem
-                    endItem = node_dst.inputList[len(node_dst.inputs)]
-                    # find connected node (string[2])
-                    inputString = input.split('.')
-                    inputContent = inputString[0]
-                    inputAsset = inputString[1]
-                    inputNode = inputString[2]
-                    inputOutput = inputString[3]
+                    # endItem = node_dst.inputList[len(node_dst.inputs)]
+                    input_string = input.split('.')
+                    # inputContent = input_string[0]
+                    input_asset = input_string[1]
+                    input_node = input_string[2]
+                    input_output = input_string[3]
  
-                    nodeDstAssetDir = node_dst.getNodeAsset()
+                    node_dst_asset_dir = node_dst.asset
                     for nodeSrc in node_list:
-                        nodeSrcRootDir = nodeSrc.getNodeRootDir()
-                        # nodeSrcRootDirBasename = os.path.basename(nodeSrcRootDir)
+                        node_src_root_dir = nodeSrc.getNodeRootDir()
+                        # nodeSrcRootDirBasename = os.path.basename(node_src_root_dir)
  
-                        outputItems = nodeSrc.outputList
+                        output_items = nodeSrc.outputList
  
-                        if nodeSrcRootDir == os.path.join(nodeDstAssetDir, inputNode):
+                        if node_src_root_dir == os.path.join(node_dst_asset_dir, input_node):
                             logging.info('\t\tnodeSrc is a task')
                             logging.info('\t\tnodeSrc is %s' %(nodeSrc.data(0)))
-                            logging.info('\t\tlooking for output called %s' %(inputOutput))
-                            for outputItem in outputItems:
-                                logging.info('\t\t\tprocessing output %s' %(outputItem.data(0)))
-                                if outputItem.data(0) == inputOutput:
-                                    logging.info('\t\t\t\t found output %s' %(outputItem.data(0)))
-                                    startItem = outputItem
+                            logging.info('\t\tlooking for output called %s' % input_output)
+                            for output_item in output_items:
+                                logging.info('\t\t\tprocessing output %s' % output_item.data(0))
+                                if output_item.data(0) == input_output:
+                                    logging.info('\t\t\t\t found output %s' % output_item.data(0))
+                                    startItem = output_item
  
                         # special case for library loader
                         elif nodeSrc.label.startswith('LDR_LIB__'):
                             logging.info('\t\tnodeSrc is a library loader')
-                            logging.info('\t\tnodeSrc is %s' %(nodeSrc.data(0)))
-                            logging.info('\t\tlooking for output called %s' %(inputOutput))
-                            for outputItem in outputItems:
-                                logging.info('\t\t\tprocessing output %s' %(outputItem.data(0).split('.')[3]))
+                            logging.info('\t\tnodeSrc is %s' % nodeSrc.data(0))
+                            logging.info('\t\tlooking for output called %s' % input_output)
+                            for output_item in output_items:
+                                logging.info('\t\t\tprocessing output %s' % output_item.data(0).split('.')[3])
                                 # print nodeSrc.data(0).toPyObject()
-                                logging.info('\t\tlooking for output called %s' %(inputOutput))
-                                searchString = outputItem.data(0).split('.')[3]
-                                if searchString == inputOutput:
-                                    logging.info('\t\t\t\t found output %s' %(outputItem.data(0).split('.')[3]))
-                                    startItem = outputItem
+                                logging.info('\t\tlooking for output called %s' % input_output)
+                                searchString = output_item.data(0).split('.')[3]
+                                if searchString == input_output:
+                                    logging.info('\t\t\t\t found output %s' % output_item.data(0).split('.')[3])
+                                    startItem = output_item
  
                         else:
                             for tab in self.content_tabs:
-                                if nodeSrcRootDir == os.path.join(nodeDstAssetDir, 'LDR_' + tab['abbreviation'] + '__' + inputAsset):
+                                if node_src_root_dir == os.path.join(node_dst_asset_dir, 'LDR_' + tab['abbreviation'] + '__' + input_asset):
                                     logging.info('\t\tnodeSrc is a loader')
                                     logging.info('\t\tnodeSrc is %s' %(nodeSrc.data(0)))
-                                    logging.info('\t\tlooking for output called %s' %(inputOutput))
-                                    for outputItem in outputItems:
-                                        logging.info('\t\t\tprocessing output %s' %(outputItem.data(0).split('.')[3]))
+                                    logging.info('\t\tlooking for output called %s' % input_output)
+                                    for output_item in output_items:
+                                        logging.info('\t\t\tprocessing output %s' % output_item.data(0).split('.')[3])
                                         # print nodeSrc.data(0).toPyObject()
-                                        logging.info('\t\tlooking for output called %s' %(inputOutput))
-                                        searchString = outputItem.data(0).split('.')[3]
-                                        if searchString == inputOutput:
-                                            logging.info('\t\t\t\t found output %s' %(outputItem.data(0).split('.')[3]))
-                                            startItem = outputItem
+                                        logging.info('\t\tlooking for output called %s' % input_output)
+                                        searchString = output_item.data(0).split('.')[3]
+                                        if searchString == input_output:
+                                            logging.info('\t\t\t\t found output %s' % output_item.data(0).split('.')[3])
+                                            startItem = output_item
  
                     endItem = node_dst.inputList[len(node_dst.inputs)]
  
@@ -1488,7 +1433,7 @@ class PypelyneMainWindow(QMainWindow):
         self.projectComboBox.addItem('select project')
         self.projectComboBox.insertSeparator(1)
  
-        if self.serverAlive == True:
+        if self.server_alive == True:
             try:
                 self.socket.sendall('addProjectsServer')
                 projects = self.receive_serialized(self.socket)[2]
@@ -1713,22 +1658,22 @@ class PypelyneMainWindow(QMainWindow):
     def checkOutOnStarted(self, qprocess):
         self.qprocesses.append(qprocess)
  
-    def checkoutOnFinished(self, qprocess, node, tarName):
+    def checkoutOnFinished(self, qprocess, node_object, tarName):
         tarNameSplit = tarName.split(SETTINGS.ARCHIVE_SEPARATOR)
         #        0                1        2          3           4
         #2015-08-27_1134-42_____test_____assets_____asdf_____SVR_AST__asdf.tar.gz
-        #projectName = os.path.basename(os.path.dirname(node.getNodeAsset()))
+        #projectName = os.path.basename(os.path.dirname(node_object.getNodeAsset()))
         projectName = tarNameSplit[1]
         contentFamily = tarNameSplit[2][:-1]
-        #contentName = os.path.basename(node.getNodeAsset())
+        #contentName = os.path.basename(node_object.getNodeAsset())
         contentName = tarNameSplit[3]
         nodeName = tarNameSplit[4].split('.')[0]
-        #nodeName = node.label
+        #nodeName = node_object.label
         self.qprocesses.remove(qprocess)
-        QMessageBox.information(self, 'check out finished', str('node %s successfully checked out\nproject:\t%s\n%s:\t%s\n\narchive file: %s' %(nodeName, projectName, contentFamily, contentName, tarName)), QMessageBox.Ok, QMessageBox.Ok)
+        QMessageBox.information(self, 'check out finished', str('node_object %s successfully checked out\nproject:\t%s\n%s:\t%s\n\narchive file: %s' %(nodeName, projectName, contentFamily, contentName, tarName)), QMessageBox.Ok, QMessageBox.Ok)
  
         if not nodeName.startswith('SVR'):
-            check_out = open(os.path.join(node.location, 'checkedOut'), 'a')
+            check_out = open(os.path.join(node_object.location, 'checkedOut'), 'a')
             check_out.write(str(self.user + ': ' + tarName))
             check_out.close()
  
@@ -1821,7 +1766,7 @@ class PypelyneMainWindow(QMainWindow):
         else:
             self.statusBox.setVisible(True)
      
-    def toggleNodeName(self):
+    def toggle_node_name(self):
         if self.nodeOptionsWindow.isVisible() == True:
             self.nodeOptionsWindow.setVisible(False)
         else:

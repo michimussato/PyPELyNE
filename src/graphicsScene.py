@@ -770,7 +770,7 @@ class SceneView(QGraphicsScene):
 
     def new_node_dialog(self, pos):
         def callback():
-            tasks = self.main_window.getTasks()
+            tasks = self.main_window.get_tasks()
 
             meta_tool = {}
             meta_task = {}

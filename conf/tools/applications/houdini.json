@@ -1,49 +1,49 @@
 {
+  "family_enable": true,
   "family": "Houdini",
-  "abbreviation": "HOU",
   "vendor": "Side Effects Software",
-  "versions": [
+  "abbreviation": "HOU",
+  "releases": [
     {
-      "release": "13.0.314",
+      "release_number": "13.0.314",
+      "release_extension": ".hip",
       "project_template": "null_sidefx_houdini_130260.hip",
-      "project_workspace": "None",
+      "project_workspace_template": null,
       "project_directories": ["scripts", "otls", "desktop", "toolbar", "gallery"],
       "default_outputs": [],
+      "architecture_fallback": true,
       "platforms": [
         {
           "windows": {
-            "x32": {
-              "executable": "None",
-              "flags": []
-            },
-            "x64": {
-              "executable": "None",
-              "flags": []
-            }
+            "project_workspace_flag": null,
+            "project_workspace_parent_directory_level": 0,
+            "project_file_flag": null,
+            "executable_x32": null,
+            "flags_x32": [],
+            "executable_x64": null,
+            "flags_x64": []
           }
         },
         {
           "darwin": {
-            "x32": {
-              "executable": "None",
-              "flags": []
-            },
-            "x64": {
-              "executable": "/Applications/Houdini 13.0.314/Houdini FX.app/Contents/MacOS/houdini",
-              "flags": []
-            }
+            "project_workspace_flag": null,
+            "project_workspace_parent_directory_level": 0,
+            "project_file_flag": null,
+            "executable_x32": null,
+            "flags_x32": [],
+            "executable_x64": "/Applications/Houdini 13.0.314/Houdini FX.app/Contents/MacOS/houdini",
+            "flags_x64": []
           }
         },
         {
           "linux": {
-            "x32": {
-              "executable": "None",
-              "flags": []
-            },
-            "x64": {
-              "executable": "None",
-              "flags": []
-            }
+            "project_workspace_flag": null,
+            "project_workspace_parent_directory_level": 0,
+            "project_file_flag": null,
+            "executable_x32": "C:\\Program Files (x86)\\Autodesk\\Maya2013\\bin\\maya.exe",
+            "flags_x32": [],
+            "executable_x64": "C:\\Program Files\\Autodesk\\Maya2013\\bin\\maya.exe",
+            "flags_x64": []
           }
         }
       ]

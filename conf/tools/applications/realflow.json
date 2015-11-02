@@ -1,94 +1,93 @@
 {
+  "family_enable": true,
   "family": "RealFlow",
-  "abbreviation": "RFL",
   "vendor": "Next Limit",
-  "versions": [
+  "abbreviation": "RFL",
+  "releases": [
     {
-      "release": "6.0.0.0055",
+      "release_number": "6.0.0.0055",
+      "release_extension": ".flw",
       "project_template": "null_nextlimit_realflow_6000055.flw",
-      "project_workspace": "None",
+      "project_workspace_template": null,
       "project_directories": ["images", "initialState", "log", "meshes", "objects", "particles", "preview", "preview#images"],
       "default_outputs": [],
+      "architecture_fallback": true,
       "platforms": [
         {
           "windows": {
-            "x32": {
-              "executable": "None",
-              "flags": []
-            },
-            "x64": {
-              "executable": "None",
-              "flags": []
-            }
+            "project_workspace_flag": null,
+            "project_workspace_parent_directory_level": 0,
+            "project_file_flag": null,
+            "executable_x32": null,
+            "flags_x32": [],
+            "executable_x64": null,
+            "flags_x64": []
           }
         },
         {
           "darwin": {
-            "x32": {
-              "executable": "/Applications/RealFlow 2012/RealFlow.app/Contents/MacOS/RealFlow",
-              "flags": []
-            },
-            "x64": {
-              "executable": "None",
-              "flags": []
-            }
+            "project_workspace_flag": null,
+            "project_workspace_parent_directory_level": 0,
+            "project_file_flag": null,
+            "executable_x32": "/Applications/RealFlow 2012/RealFlow.app/Contents/MacOS/RealFlow",
+            "flags_x32": [],
+            "executable_x64": null,
+            "flags_x64": []
           }
         },
         {
           "linux": {
-            "x32": {
-              "executable": "None",
-              "flags": []
-            },
-            "x64": {
-              "executable": "None",
-              "flags": []
-            }
+            "project_workspace_flag": null,
+            "project_workspace_parent_directory_level": 0,
+            "project_file_flag": null,
+            "executable_x32": null,
+            "flags_x32": [],
+            "executable_x64": null,
+            "flags_x64": []
           }
         }
       ]
     },
     {
-      "release": "7.0.1.0131",
+      "release_number": "7.0.1.0131",
+      "release_extension": ".flw",
       "project_template": "null_nextlimit_realflow_7010131.flw",
-      "project_workspace": "None",
+      "project_workspace_template": null,
       "project_directories": ["images", "initialState", "log", "meshes", "objects", "particles", "preview", "preview#images"],
       "default_outputs": [],
+      "architecture_fallback": true,
       "platforms": [
         {
           "windows": {
-            "x32": {
-              "executable": "None",
-              "flags": []
-            },
-            "x64": {
-              "executable": "None",
-              "flags": []
-            }
+            "project_workspace_flag": null,
+            "project_workspace_parent_directory_level": 0,
+            "project_file_flag": null,
+            "executable_x32": null,
+            "flags_x32": [],
+            "executable_x64": null,
+            "flags_x64": []
           }
         },
         {
           "darwin": {
-            "x32": {
-              "executable": "/Applications/RealFlow 2013/RealFlow.app/Contents/MacOS/RealFlow",
-              "flags": []
-            },
-            "x64": {
-              "executable": "None",
-              "flags": []
-            }
+            "project_workspace_flag": null,
+            "project_workspace_parent_directory_level": 0,
+            "project_file_flag": null,
+            "executable_x32": "/Applications/RealFlow 2013/RealFlow.app/Contents/MacOS/RealFlow",
+            "flags_x32": [],
+            "executable_x64": null,
+            "flags_x64": []
           }
         },
         {
           "linux": {
-            "x32": {
-              "executable": "None",
-              "flags": []
-            },
-            "x64": {
-              "executable": "None",
-              "flags": []
-            }
+            "project_workspace_flag": null,
+            "project_workspace_parent_directory_level": 0,
+            "project_file_flag": null,
+            "executable_x32": null,
+            "flags_x32": [],
+            "executable_x64": null,
+            "flags_x64": []
           }
         }
       ]

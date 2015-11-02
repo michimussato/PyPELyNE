@@ -1,49 +1,49 @@
 {
+  "family_enable": true,
   "family": "NukeX",
-  "abbreviation": "NUX",
   "vendor": "The Foundry",
-  "versions": [
+  "abbreviation": "NUX",
+  "releases": [
     {
-      "release": "7.0v8",
+      "release_number": "7.0v8",
+      "release_extension": ".nk",
       "project_template": "null_thefoundry_nukex_708.nk",
-      "project_workspace": "None",
+      "project_workspace_template": null,
       "project_directories": [],
-      "default_outputs": ["SEQ__test"],
+      "default_outputs": [],
+      "architecture_fallback": true,
       "platforms": [
         {
           "windows": {
-            "x32": {
-              "executable": "None",
-              "flags": []
-            },
-            "x64": {
-              "executable": "None",
-              "flags": []
-            }
+            "project_workspace_flag": null,
+            "project_workspace_parent_directory_level": 1,
+            "project_file_flag": null,
+            "executable_x32": null,
+            "flags_x32": [],
+            "executable_x64": null,
+            "flags_x64": []
           }
         },
         {
           "darwin": {
-            "x32": {
-              "executable": "None",
-              "flags": []
-            },
-            "x64": {
-              "executable": "/Applications/Nuke7.0v8/Nuke7.0v8.app/Nuke7.0v8",
-              "flags": ["--nukex", "-V", "2"]
-            }
+            "project_workspace_flag": null,
+            "project_workspace_parent_directory_level": 1,
+            "project_file_flag": null,
+            "executable_x32": null,
+            "flags_x32": [],
+            "executable_x64": "/Applications/Nuke7.0v8/Nuke7.0v8.app/Nuke7.0v8",
+            "flags_x64": ["--nukex", "-V", "2"]
           }
         },
         {
           "linux": {
-            "x32": {
-              "executable": "None",
-              "flags": []
-            },
-            "x64": {
-              "executable": "None",
-              "flags": []
-            }
+            "project_workspace_flag": null,
+            "project_workspace_parent_directory_level": 1,
+            "project_file_flag": null,
+            "executable_x32": null,
+            "flags_x32": [],
+            "executable_x64": null,
+            "flags_x64": []
           }
         }
       ]

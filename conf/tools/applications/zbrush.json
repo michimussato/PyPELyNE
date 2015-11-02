@@ -1,94 +1,93 @@
 {
+  "family_enable": true,
   "family": "ZBrush",
-  "abbreviation": "ZBR",
   "vendor": "Pixologic",
-  "versions": [
+  "abbreviation": "ZBR",
+  "releases": [
     {
-      "release": "4R5",
+      "release_number": "4R5",
+      "release_extension": ".zpr",
       "project_template": "null_pixologic_zbrush_4r5.zpr",
-      "project_workspace": "None",
+      "project_workspace_template": null,
       "project_directories": [],
       "default_outputs": [],
+      "architecture_fallback": true,
       "platforms": [
         {
           "windows": {
-            "x32": {
-              "executable": "None",
-              "flags": []
-            },
-            "x64": {
-              "executable": "None",
-              "flags": []
-            }
+            "project_workspace_flag": null,
+            "project_workspace_parent_directory_level": 0,
+            "project_file_flag": null,
+            "executable_x32": null,
+            "flags_x32": [],
+            "executable_x64": null,
+            "flags_x64": []
           }
         },
         {
           "darwin": {
-            "x32": {
-              "executable": "/Applications/ZBrushOSX 4R5/ZBrush.app",
-              "flags": []
-            },
-            "x64": {
-              "executable": "None",
-              "flags": []
-            }
+            "project_workspace_flag": null,
+            "project_workspace_parent_directory_level": 0,
+            "project_file_flag": null,
+            "executable_x32": "/Applications/ZBrushOSX 4R5/ZBrush.app",
+            "flags_x32": [],
+            "executable_x64": null,
+            "flags_x64": []
           }
         },
         {
           "linux": {
-            "x32": {
-              "executable": "None",
-              "flags": []
-            },
-            "x64": {
-              "executable": "None",
-              "flags": []
-            }
+            "project_workspace_flag": null,
+            "project_workspace_parent_directory_level": 0,
+            "project_file_flag": null,
+            "executable_x32": null,
+            "flags_x32": [],
+            "executable_x64": null,
+            "flags_x64": []
           }
         }
       ]
     },
     {
-      "release": "4R6",
+      "release_number": "4R6",
+      "release_extension": ".zpr",
       "project_template": "null_pixologic_zbrush_4r6.ZPR",
-      "project_workspace": "None",
+      "project_workspace_template": null,
       "project_directories": [],
       "default_outputs": [],
+      "architecture_fallback": true,
       "platforms": [
         {
           "windows": {
-            "x32": {
-              "executable": "None",
-              "flags": []
-            },
-            "x64": {
-              "executable": "None",
-              "flags": []
-            }
+            "project_workspace_flag": null,
+            "project_workspace_parent_directory_level": 0,
+            "project_file_flag": null,
+            "executable_x32": null,
+            "flags_x32": [],
+            "executable_x64": null,
+            "flags_x64": []
           }
         },
         {
           "darwin": {
-            "x32": {
-              "executable": "/Applications/ZBrushOSX 4R6/ZBrush.app",
-              "flags": []
-            },
-            "x64": {
-              "executable": "None",
-              "flags": []
-            }
+            "project_workspace_flag": null,
+            "project_workspace_parent_directory_level": 0,
+            "project_file_flag": null,
+            "executable_x32": "/Applications/ZBrushOSX 4R6/ZBrush.app",
+            "flags_x32": [],
+            "executable_x64": null,
+            "flags_x64": []
           }
         },
         {
           "linux": {
-            "x32": {
-              "executable": "None",
-              "flags": []
-            },
-            "x64": {
-              "executable": "None",
-              "flags": []
-            }
+            "project_workspace_flag": null,
+            "project_workspace_parent_directory_level": 0,
+            "project_file_flag": null,
+            "executable_x32": null,
+            "flags_x32": [],
+            "executable_x64": null,
+            "flags_x64": []
           }
         }
       ]

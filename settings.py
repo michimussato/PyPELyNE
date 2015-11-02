@@ -1,5 +1,8 @@
 ###Global
 #files matching items in exclusions get removed!
+CONTENT_TABS              = [{'content': 'assets', 'abbreviation': 'AST', 'loader_color': '#FFFF00', 'saver_color': '#FFFF33'},
+                             {'content': 'shots', 'abbreviation': 'SHT', 'loader_color': '#0000FF', 'saver_color': '#3333FF'},
+                             {'content': 'sequences', 'abbreviation': 'SEQ', 'loader_color': '#00FFFF', 'saver_color': '#33FFFF'}]
 EXCLUSIONS                = [ '.mayaSwatches', '.DS_Store', 'Thumbs.db', '.com.apple.timemachine.supported', 'desktop.ini' ]
 AUDIO_EXTENSIONS          = [ '.mp3', '.m4a', '.mp4' ]
 IMAGE_EXTENSIONS          = [ '.jpg', '.exr', '.tga', '.png', '.tiff', '.tif', '.bmp', '.gif' ]
@@ -7,6 +10,7 @@ MOVIE_EXTENSIONS          = [ '.mov', '.avi' ]
 ARCHIVE_SEPARATOR         = '_____'
 USE_SERVER                = False
 USE_SCREEN_CAST           = True
+DEFAULT_TASK_COLOR        = '#FF00FF'
 
 
 ###Server

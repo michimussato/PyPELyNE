@@ -5,9 +5,9 @@
 #
 workdir=/pypelyne/royalrender_repository/
 
-pypelyneRoot=/pypelyne/PyPELyNE
+pypelyne_root=/pypelyne/PyPELyNE
 rrRoot=/pypelyne/royalrender_repository
-logDir=${pypelyneRoot}/logs
+logDir=${pypelyne_root}/logs
 
 
 start() {

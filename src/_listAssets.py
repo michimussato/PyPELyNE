@@ -8,12 +8,12 @@ from PyQt4.uic import *
 import os
 
 class listAssetsUI( QWidget ):
-    def __init__( self, mainWindow = None, position = None, parent = None ):
+    def __init__( self, main_window = None, position = None, parent = None ):
         super( listAssetsUI, self ).__init__( parent )
 
-        self.mainWindow = mainWindow
-        self.pypelyneRoot = self.mainWindow.pypelyneRoot
-        self.libraryRoot = self.mainWindow.libraryRoot
+        self.main_window = main_window
+        # self.pypelyne_root = self.main_window.pypelyne_root
+        self.libraryRoot = self.main_window.libraryRoot
 
         self.position = position
 
@@ -25,7 +25,7 @@ class listAssetsUI( QWidget ):
         self.addAssetToUI()
 
     def createUI( self ):
-        self.ui = loadUi( os.path.join( self.pypelyneRoot, 'ui', 'assetsLibrary.ui' ), self )
+        self.ui = loadUi( os.path.join( self.main_window.pypelyne_root, 'ui', 'assetsLibrary.ui' ), self )
 
 
     def getAssets( self, libraryRoot ):

@@ -1,94 +1,93 @@
 {
+  "family_enable": true,
   "family": "Premiere",
-  "abbreviation": "PRM",
   "vendor": "Adobe",
-  "versions": [
+  "abbreviation": "PRM",
+  "releases": [
     {
-      "release": "CS6",
+      "release_number": "CS6",
+      "release_extension": ".prproj",
       "project_template": "null_adobe_premiere_CS6.prproj",
-      "project_workspace": "None",
+      "project_workspace_template": null,
       "project_directories": [],
       "default_outputs": [],
+      "architecture_fallback": true,
       "platforms": [
         {
           "windows": {
-            "x32": {
-              "executable": "None",
-              "flags": []
-            },
-            "x64": {
-              "executable": "None",
-              "flags": []
-            }
+            "project_workspace_flag": null,
+            "project_workspace_parent_directory_level": 0,
+            "project_file_flag": null,
+            "executable_x32": null,
+            "flags_x32": [],
+            "executable_x64": null,
+            "flags_x64": []
           }
         },
         {
           "darwin": {
-            "x32": {
-              "executable": "None",
-              "flags": []
-            },
-            "x64": {
-              "executable": "/Applications/Adobe Premiere Pro CS6/Adobe Premiere Pro CS6.app/Contents/MacOS/Adobe Premiere Pro CS6",
-              "flags": []
-            }
+            "project_workspace_flag": null,
+            "project_workspace_parent_directory_level": 0,
+            "project_file_flag": null,
+            "executable_x32": null,
+            "flags_x32": [],
+            "executable_x64": "/Applications/Adobe Premiere Pro CS6/Adobe Premiere Pro CS6.app/Contents/MacOS/Adobe Premiere Pro CS6",
+            "flags_x64": []
           }
         },
         {
           "linux": {
-            "x32": {
-              "executable": "None",
-              "flags": []
-            },
-            "x64": {
-              "executable": "None",
-              "flags": []
-            }
+            "project_workspace_flag": null,
+            "project_workspace_parent_directory_level": 0,
+            "project_file_flag": null,
+            "executable_x32": null,
+            "flags_x32": [],
+            "executable_x64": null,
+            "flags_x64": []
           }
         }
       ]
     },
     {
-      "release": "CC12",
+      "release_number": "CC12",
+      "release_extension": ".prproj",
       "project_template": "null_adobe_premiere_CC12.prproj",
-      "project_workspace": "None",
+      "project_workspace_template": null,
       "project_directories": [],
       "default_outputs": [],
+      "architecture_fallback": true,
       "platforms": [
         {
           "windows": {
-            "x32": {
-              "executable": "None",
-              "flags": []
-            },
-            "x64": {
-              "executable": "C:\\Program Files\\Adobe\\Adobe Premiere Pro CC\\Adobe Premiere Pro.exe",
-              "flags": []
-            }
+            "project_workspace_flag": null,
+            "project_workspace_parent_directory_level": 0,
+            "project_file_flag": null,
+            "executable_x32": null,
+            "flags_x32": [],
+            "executable_x64": "C:\\Program Files\\Adobe\\Adobe Premiere Pro CC\\Adobe Premiere Pro.exe",
+            "flags_x64": []
           }
         },
         {
           "darwin": {
-            "x32": {
-              "executable": "None",
-              "flags": []
-            },
-            "x64": {
-              "executable": "/Applications/Adobe Premiere Pro CC/Adobe Premiere Pro CC.app/Contents/MacOS/Adobe Premiere Pro CC",
-              "flags": []
-            }
+            "project_workspace_flag": null,
+            "project_workspace_parent_directory_level": 0,
+            "project_file_flag": null,
+            "executable_x32": null,
+            "flags_x32": [],
+            "executable_x64": "/Applications/Adobe Premiere Pro CC/Adobe Premiere Pro CC.app/Contents/MacOS/Adobe Premiere Pro CC",
+            "flags_x64": []
           }
         },
         {
           "linux": {
-            "x32": {
-              "executable": "None",
-              "flags": []
-            },
-            "x64": {
-              "executable": "None",
-              "flags": []
-            }
+            "project_workspace_flag": null,
+            "project_workspace_parent_directory_level": 0,
+            "project_file_flag": null,
+            "executable_x32": null,
+            "flags_x32": [],
+            "executable_x64": null,
+            "flags_x64": []
           }
         }
       ]

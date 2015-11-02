@@ -1,19 +1,20 @@
-'''
-Created on Dec 15, 2014
-
-@author: michaelmussato
-'''
-
-import datetime, os, glob, subprocess, getpass, logging
+import datetime
+import os
+import glob
+import subprocess
+import getpass
+import logging
+import json
+import copy
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from circlesInOut import *
-#from screenCast import *
+# from screenCast import *
 from timeTracker import *
 from PyQt4.uic import *
 from jobDeadline import *
-#from errorClasses import *
+# from errorClasses import *
 
 import xml.etree.ElementTree as ET
 
@@ -21,21 +22,38 @@ import xml.etree.ElementTree as ET
 class node(QGraphicsItem, QObject):
     nodeClicked = pyqtSignal()
 
-    def __init__(self, mainWindow, scene, propertyNodePath):
+    def __init__(self, main_window=None, scene=None, property_node_path=None, meta_task_path=None, meta_tool_path=None):
         super(node, self).__init__(None, scene)
-        
-        self.propertyNodePath = propertyNodePath
-        self.mainWindow = mainWindow
-        self.pypelyneRoot = self.mainWindow.pypelyneRoot
-        self.user = self.mainWindow._user
+
+        try:
+            self.meta_task_path = meta_task_path
+            self.meta_tool_path = meta_tool_path
+
+            try:
+                meta_task_file = open(self.meta_task_path)
+                self.meta_task = json.load(meta_task_file)
+                meta_task_file.close()
+            except AttributeError, e:
+                print 'self.meta_task', e
+
+            try:
+                meta_tool_file = open(self.meta_tool_path)
+                self.meta_tool = json.load(meta_tool_file)
+                meta_tool_file.close()
+            except AttributeError, e:
+                print 'self.meta_tool', e
+
+        except IOError, e:
+            print 'xml loading:', e
+            self.propertyNodePath = property_node_path
+
+        self.main_window = main_window
+        self.user = self.main_window.user
         self.location = self.getNodeRootDir()
         self.loaderSaver = os.path.basename(self.location)[:7]
         self.asset = os.path.dirname(self.location)
         self.project = os.path.dirname(os.path.dirname (os.path.dirname(self.asset)))
         self.scene = scene
-        # self._tools = self.mainWindow.getTools()
-        self.tasks = self.mainWindow.getTasks()
-        self.exclusions = self.mainWindow._exclusions
         self.now = datetime.datetime.now()
         self.nowStr = str(self.now)
         self.rect = QRectF(0, 0, 200, 40)
@@ -52,12 +70,7 @@ class node(QGraphicsItem, QObject):
         self.setData(1, self.now)
         self.setData(2, 'node')
         #self.setToolTip('haha')
-        try:
-            self.setNodePosition()
-        except:
-            logging.warning('===> fix corrupt %s' %(self.propertyNodePath))
-            return
-            #print '===> fix corrupt %s' %(self.propertyNodePath)
+        self.setNodePosition()
 
         self.scene.clearSelection()
         self.labelBoundingRect = 0.0
@@ -92,58 +105,57 @@ class node(QGraphicsItem, QObject):
         return self.inputPort
         
     def getNodeRootDir(self):
-        return os.path.dirname(os.path.realpath(self.propertyNodePath))
+        return os.path.dirname(self.meta_task_path)
 
-    def getApplicationInfo(self, propertyNode):
-
+    def getApplicationInfo(self):
         try:
-
-            nodeApplicationInfo = propertyNode.findall('./task')
-
-            self.nodeVersion = nodeApplicationInfo[0].items()[3][1]
-            self.nodeVendor = nodeApplicationInfo[0].items()[2][1]
-            self.nodeFamily = nodeApplicationInfo[0].items()[4][1]
-            self.nodeArch = nodeApplicationInfo[0].items()[0][1]
-            self.nodeTask = nodeApplicationInfo[0].items()[1][1]
-
-        except:
-            self.nodeVersion = 'undefined'
-            self.nodeVendor = 'undefined'
-            self.nodeFamily = 'undefined'
-            self.nodeArch = 'undefined'
-            self.nodeTask = 'undefined'
-
-
-        
+            self.nodeVersion = self.meta_tool['release_number']
+            self.nodeVendor = self.meta_tool['vendor']
+            self.nodeFamily = self.meta_tool['family']
+            self.nodeArch = self.meta_tool['architecture']
+            # print self.meta_tool
+            self.nodeTask = self.meta_task['task']
+            self.node_creator = self.meta_task['creator']
+            self.node_operating_system = self.meta_task['operating_system']
+        except TypeError, e:
+            print 'loader or saver? (%s)' % e
 
     def queryApplicationInfo(self):
+        try:
+            return self.nodeVersion, self.nodeVendor, self.nodeFamily, self.nodeArch, self.nodeTask
 
-        return self.nodeVersion, self.nodeVendor, self.nodeFamily, self.nodeArch, self.nodeTask
-        #       [1][1]          [3][1]      [4][1]      [0][1]      [2][1]
-        #       ('modelling',   'R 15',       'CINEMA 4D',  'x64',      'MAXON')
-        #       [2][1]      [3][1]     [4][1]   [0][1]  [2][1]
+        except TypeError, e:
+            logging.warning('queryApplicationInfo for not yet available for saver and loader nodes (%s)' % e)
 
     def setNodePosition(self):
-        self.propertyNode = ET.parse(self.propertyNodePath)
-
         try:
-            logging.info('new style reading')
-            nodePosition = self.propertyNode.findall('./node')
+            pos_x = self.meta_task['pos_x']
+            pos_y = self.meta_task['pos_y']
+            print 'json reading'
 
-            positionX = nodePosition[0].items()[0][1]
-            positionY = nodePosition[0].items()[1][1]
+        except TypeError, e:
+            print e
+            try:
+                print self.propertyNodePath
+                self.propertyNode = ET.parse(self.propertyNodePath)
+                logging.info('new style reading xml')
+                nodePosition = self.propertyNode.findall('./node')
 
-        except:
-            logging.info('old style reading')
-            positionX = self.propertyNode.findall('./positionX')
-            positionY = self.propertyNode.findall('./positionY')
+                pos_x = nodePosition[0].items()[0][1]
+                pos_y = nodePosition[0].items()[1][1]
 
-            positionX = positionX[0].items()[0][1]
-            positionY = positionY[0].items()[0][1]
+            except:
+                logging.info('old style reading xml')
+                pos_x = self.propertyNode.findall('./positionX')
+                pos_y = self.propertyNode.findall('./positionY')
 
-        self.setPos(QPointF(float(positionX), float(positionY)))
+                pos_x = pos_x[0].items()[0][1]
+                pos_y = pos_y[0].items()[0][1]
 
-        self.getApplicationInfo(self.propertyNode)
+        self.setPos(QPointF(float(pos_x), float(pos_y)))
+
+        # TODO: switch to json reading
+        self.getApplicationInfo()
     
 
     def hoverEnterEvent(self, event):
@@ -155,107 +167,194 @@ class node(QGraphicsItem, QObject):
     def mousePressEvent(self, event):
         self.scene.nodeSelect.emit(self)
 
-    def mouseDoubleClickEvent(self, event):
-        print self.mainWindow._tools
+    def mouseDoubleClickEvent(self, event=None):
+        _tools = copy.deepcopy(self.main_window._tools)
+        # run_task = None
+
+        # print run_task
+        # print self.main_window._tools
+
+        # tools_copy = self.main_window._tools.copy
 
         if self.label.startswith('LDR'):
-            self.mainWindow.get_content(node_label=self.label)
-        # elif self.label.startswith('LDR_SHT'):
-        #     self.mainWindow.getShotContent(None, self.label)
-        #elif self.label.startswith('LDR_LIB'):
-        #    pass
+            self.main_window.get_content(node_label=self.label)
 
         else:
-            search_string = self.nodeVendor + ' ' + self.nodeFamily + ' ' + self.nodeVersion + ' ' + self.nodeArch
-            search_index = self.mainWindow.toolsComboBox.findText(QString(search_string), Qt.MatchContains)
+            run_task = {}
 
-            if search_index < 3:
-                if not str(self.nodeFamily + ' ' + self.nodeVersion) in [self.mainWindow.toolsComboBox.itemText(i) for i in range(self.mainWindow.toolsComboBox.count())]:
-                    logging.warning('application family not available')
-                    QMessageBox.critical(self.mainWindow, 'application warning', str('%s not available.' %str(self.nodeFamily + ' ' + self.nodeVersion)), QMessageBox.Abort, QMessageBox.Abort)
-                    return
+            run_task['family'] = None
+            run_task['release_number'] = None
+            run_task['project_template'] = None
+            run_task['executable'] = None
+            run_task['project_workspace_flag'] = None
+            run_task['project_workspace_parent_directory_level'] = None
+            run_task['project_file_flag'] = None
+            # run_task['architecture_fallback'] = False
+            run_task['flags'] = None
+            run_task['label'] = None
 
-                elif self.nodeArch == 'x64':
-                    reply = QMessageBox.warning(self.mainWindow, 'architecture warning', str('x64 version of %s not available. continue using x32?' %self.nodeFamily), QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-
-                    if reply == QMessageBox.Yes:
-                        search_string = str(self.nodeVendor + ' ' + self.nodeFamily + ' ' + self.nodeVersion + ' ' + 'x32')
-                        search_index = self.mainWindow.toolsComboBox.findText(QString(search_string), Qt.MatchContains) - 2
-                        logging.warning('x64 not available. using x32 version.')
-                    else:
-                        return
-                elif self.nodeArch == 'x32':
-                    reply = QMessageBox.warning(self.mainWindow, 'architecture warning', str('x32 version of %s not available. continue using x64?' %self.nodeFamily), QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-
-                    if reply == QMessageBox.Yes:
-                        search_string = str(self.nodeVendor + ' ' + self.nodeFamily + ' ' + self.nodeVersion + ' ' + 'x64')
-                        search_index = self.mainWindow.toolsComboBox.findText(QString(search_string), Qt.MatchContains) - 2
-                        logging.warning('x32 not available. using x64 version.')
-                    else:
-                        return
-                else:
-                    logging.warning('some weird shit')
-
-            elif os.path.exists(os.path.join(self.location, 'locked')):
-                QMessageBox.critical(self.mainWindow, 'node warning', str('%s is currently in use.' %str(self.label)), QMessageBox.Abort, QMessageBox.Abort)
+            if os.path.exists(os.path.join(self.location, 'locked')):
+                QMessageBox.critical(self.main_window, 'node warning', str('%s is currently in use.' % self.label), QMessageBox.Abort, QMessageBox.Abort)
                 return
 
-            elif os.path.exists(os.path.join(self.location, 'checkedOut')):
-                QMessageBox.critical(self.mainWindow, 'node warning', str('%s is currently checked out.' %str(self.label)), QMessageBox.Abort, QMessageBox.Abort)
+            if os.path.exists(os.path.join(self.location, 'checkedOut')):
+                QMessageBox.critical(self.main_window, 'node warning', str('%s is currently checked out.' % self.label), QMessageBox.Abort, QMessageBox.Abort)
                 return
 
+            for tool in _tools:
+                if self.meta_tool['family'] == tool['family']:
+                    run_task['family'] = tool['family']
+                    if self.meta_tool['release_number'] == tool['release_number']:
+                        run_task['release_number'] = tool['release_number']
+                        run_task['release_extension'] = tool['release_extension']
+                        run_task['project_template'] = tool['project_template']
+                        run_task['project_workspace_flag'] = tool['project_workspace_flag']
+                        run_task['project_workspace_parent_directory_level'] = tool['project_workspace_parent_directory_level']
+                        run_task['project_file_flag'] = tool['project_file_flag']
 
-            args = []
+                        if self.meta_tool['architecture'] == 'x64':
+                            if self.meta_tool['architecture_fallback']:
+                                logging.info('this is a %s %s %s task, but can fallback to x32' % (tool['family'], tool['release_number'], self.meta_tool['architecture']))
+                                if bool(tool['executable_x64']):
+                                    if os.path.exists(tool['executable_x64']):
+                                        logging.info('x64 found.')
+                                        run_task['executable'] = tool['executable_x64']
+                                        # run_task['architecture_fallback'] = False
+                                        run_task['flags'] = tool['flags_x64']
+                                        run_task['label'] = tool['label_x64']
 
-            for arg in self._tools[search_index][10]:
-                args.append(arg)
+                                if bool(tool['executable_x32']) and run_task['executable'] is None:
+                                    if os.path.exists(tool['executable_x32']):
+                                        reply = QMessageBox.warning(self.main_window,
+                                                    'architecture warning',
+                                                    'x64 version of %s %s not available. use x32?' % (run_task['family'], run_task['release_number']),
+                                                    QMessageBox.Yes | QMessageBox.No,
+                                                    QMessageBox.No)
+                                        if reply == QMessageBox.Yes:
+                                            logging.warning('x64 not found. using x32.')
+                                            run_task['executable'] = tool['executable_x32']
+                                            # run_task['architecture_fallback'] = True
+                                            run_task['label'] = tool['label_x32']
+                                            run_task['flags'] = tool['flags_x32']
 
-            if self.nodeFamily == 'Maya':
-                for arg in ['-proj', self.location, '-file']:
-                    #print self.location
-                    args.append(arg)
+                                        else:
+                                            logging.warning('dont use x32 instead of x64.')
+                                            return
 
-            projectRoot = os.path.join(self.location, 'project')
+                                    else:
+                                        logging.error('x32 and x64 not found.')
 
-            #print self._tools[search_index][7]
-            extension = os.path.splitext(self._tools[search_index][7])[1]
+                            else:
+                                print 'this is a %s %s %s task (cannot fallback)' % (tool['family'], tool['release_number'], self.meta_tool['architecture'])
+                                if bool(tool['executable_x64']):
+                                    if os.path.exists(tool['executable_x64']):
+                                        logging.info('x64 found')
+                                        run_task['executable'] = tool['executable_x64']
+                                        run_task['flags'] = tool['flags_x64']
+                                        run_task['label'] = tool['label_x64']
 
+                                    else:
+                                        logging.warning('x64 not found')
 
-            files = glob.glob1(projectRoot, str('*' + extension))
+                        elif self.meta_tool['architecture'] == 'x32':
+                            if self.meta_tool['architecture_fallback']:
+                                print 'this is a %s %s %s task, but can fallback to x64.' % (tool['family'], tool['release_number'], self.meta_tool['architecture'])
+                                if bool(tool['executable_x32']):
+                                    if os.path.exists(tool['executable_x32']):
+                                        logging.info('x32 found.')
+                                        run_task['executable'] = tool['executable_x32']
+                                        # run_task['architecture_fallback'] = False
+                                        run_task['flags'] = tool['flags_x32']
+                                        run_task['label'] = tool['label_x32']
 
-            absFiles = []
+                                    if bool(tool['executable_x64']) and run_task['executable'] is None:
+                                        if os.path.exists(tool['executable_x64']):
+                                            reply = QMessageBox.warning(self.main_window,
+                                                        'architecture warning',
+                                                        'x32 version of %s %s not available. use x64?' % (run_task['family'], run_task['release_number']),
+                                                        QMessageBox.Yes | QMessageBox.No,
+                                                        QMessageBox.No)
+                                            if reply == QMessageBox.Yes:
+                                                logging.warning('x32 not found. using x64.')
+                                                run_task['executable'] = tool['executable_x64']
+                                                # run_task['architecture_fallback'] = True
+                                                run_task['label'] = tool['label_x64']
+                                                run_task['flags'] = tool['flags_x64']
 
-            for relFile in files:
-                if not relFile in self.exclusions:
-                    absFiles.append(os.path.join(projectRoot, relFile))
+                                            else:
+                                                logging.warning('dont use x32 instead of x64.')
 
+                                    else:
+                                        logging.error('x32 and x64 not found.')
 
-            if not 'DDL' in self.label:
-                newestFile = max(absFiles, key=os.path.getctime)
-                self.mainWindow.runTask(self, self._tools[search_index][1][0], newestFile, args)
+                            else:
+                                print 'this is a %s %s %s task (cannot fallback)' % (tool['family'], tool['release_number'], self.meta_tool['architecture'])
+                                if bool(tool['executable_x32']):
+                                    if os.path.exists(tool['executable_x32']):
+                                        logging.info('x32 found')
+                                        run_task['executable'] = tool['executable_x32']
+                                        run_task['flags'] = tool['flags_x32']
+                                        run_task['label'] = tool['label_x32']
+
+                                    else:
+                                        logging.error('x32 not found')
+
+            if run_task['executable'] is None:
+                QMessageBox.critical(self.main_window, 'node warning', str('no suitable tool found to launch task %s.' % self.label), QMessageBox.Abort, QMessageBox.Abort)
+                return
+
+            project_root_task = os.path.join(self.location, 'project')
+
+            if run_task['project_workspace_flag'] is not None:
+                run_task['flags'].append(run_task['project_workspace_flag'])
+                workspace_directory = project_root_task
+                for parent_directory in range(run_task['project_workspace_parent_directory_level']):
+                    workspace_directory = os.path.dirname(workspace_directory)
+                run_task['flags'].append(workspace_directory)
+
+            if run_task['project_file_flag'] is not None:
+                    run_task['flags'].append(run_task['project_file_flag'])
+
+            extension = run_task['release_extension']
+
+            files = glob.glob1(project_root_task, str('*' + extension))
+
+            abs_files = []
+
+            for rel_file in files:
+                if rel_file not in SETTINGS.EXCLUSIONS:
+                    abs_files.append(os.path.join(project_root_task, rel_file))
+
+            if 'DDL' not in self.label:
+                # TODO: if none is a tools template: this will produce an error
+                newest_file = max(abs_files, key=os.path.getctime)
+                run_task['flags'].append(newest_file)
+                # print run_task
+                # print run_task['executable'], run_task['flags']
+                self.main_window.run_task(node_object=self, executable=run_task['executable'], args=run_task['flags'])
+
+                # run_task['flags'].remove(newest_file)
+
             else:
-                ok, jobDeadline = jobDeadlineUi.getDeadlineJobData(self.location, self.mainWindow)
+                ok, job_deadline = jobDeadlineUi.getDeadlineJobData(self.location, self.main_window)
 
                 if ok:
-                    txtFile = os.path.join(self.location, 'project', 'deadlineJob.txt')
-                    jobFile = open(txtFile, 'w')
+                    txt_file = os.path.join(self.location, 'project', 'deadlineJob.txt')
+                    job_file = open(txt_file, 'w')
 
-                    for element in jobDeadline:
-                        jobFile.write(element)
-                        jobFile.write(' ')
+                    for element in job_deadline:
+                        job_file.write(element)
+                        job_file.write(' ')
 
-                    jobFile.close()
+                    job_file.close()
 
-                    self.mainWindow.submitDeadlineJob(txtFile)
-
-                    #os.system('bash ' + txtFile)
-
+                    self.main_window.submitDeadlineJob(txt_file)
 
     def data_ready(self):
-        cursor_box = self.mainWindow.statusBox.textCursor()
+        cursor_box = self.main_window.statusBox.textCursor()
         cursor_box.movePosition(cursor_box.End)
         cursor_box.insertText("%s (%s): %s" %(datetime.datetime.now(), self.pid, str(self.process.readAll())))
-        self.mainWindow.statusBox.ensureCursorVisible()
+        self.main_window.statusBox.ensureCursorVisible()
     '''
     def hoverEnterEvent(self, event):
         pass
@@ -294,39 +393,17 @@ class node(QGraphicsItem, QObject):
         pen.setColor(Qt.black)
         pen.setWidth(0)
 
-        try:
+        # try:
 
-            if option.state & QStyle.State_Selected:
-                self.updatePropertyNodeXML()
-                self.setZValue(1)
-                pen.setWidth(1)
-                pen.setColor(Qt.green)
-                self.gradient.setColorAt(0, self.taskColorItem)
-                self.gradient.setColorAt(1, self.applicationColorItem.darker(160))
+        if option.state & QStyle.State_Selected:
+            self.update_meta_task()
+            self.setZValue(1)
+            pen.setWidth(1)
+            pen.setColor(Qt.green)
+            self.gradient.setColorAt(0, self.taskColorItem)
+            self.gradient.setColorAt(1, self.applicationColorItem.darker(160))
 
-                if os.path.exists(os.path.join(self.location, 'locked')):
-                    self.gradient.setColorAt(0, self.taskColorItem)
-                    self.gradient.setColorAt(1, Qt.red)
-
-                elif os.path.exists(os.path.join(self.location, 'checkedOut')):
-                    self.gradient.setColorAt(0, self.taskColorItem)
-                    self.gradient.setColorAt(1, Qt.white)
-
-            elif option.state & QStyle.State_MouseOver or self.hovered:
-                pen.setWidth(1)
-                pen.setColor(Qt.yellow)
-                self.gradient.setColorAt(0, self.taskColorItem)
-                self.gradient.setColorAt(1, self.applicationColorItem.darker(160))
-
-                if os.path.exists(os.path.join(self.location, 'locked')):
-                    self.gradient.setColorAt(0, self.taskColorItem)
-                    self.gradient.setColorAt(1, Qt.red)
-
-                elif os.path.exists(os.path.join(self.location, 'checkedOut')):
-                    self.gradient.setColorAt(0, self.taskColorItem)
-                    self.gradient.setColorAt(1, Qt.white)
-
-            elif os.path.exists(os.path.join(self.location, 'locked')):
+            if os.path.exists(os.path.join(self.location, 'locked')):
                 self.gradient.setColorAt(0, self.taskColorItem)
                 self.gradient.setColorAt(1, Qt.red)
 
@@ -334,28 +411,50 @@ class node(QGraphicsItem, QObject):
                 self.gradient.setColorAt(0, self.taskColorItem)
                 self.gradient.setColorAt(1, Qt.white)
 
-            else:
-                pen.setWidth(0)
-                self.setZValue(0)
+        elif option.state & QStyle.State_MouseOver or self.hovered:
+            pen.setWidth(1)
+            pen.setColor(Qt.yellow)
+            self.gradient.setColorAt(0, self.taskColorItem)
+            self.gradient.setColorAt(1, self.applicationColorItem.darker(160))
+
+            if os.path.exists(os.path.join(self.location, 'locked')):
                 self.gradient.setColorAt(0, self.taskColorItem)
-                self.gradient.setColorAt(1, self.applicationColorItem.darker(160))
+                self.gradient.setColorAt(1, Qt.red)
+
+            elif os.path.exists(os.path.join(self.location, 'checkedOut')):
+                self.gradient.setColorAt(0, self.taskColorItem)
+                self.gradient.setColorAt(1, Qt.white)
+
+        elif os.path.exists(os.path.join(self.location, 'locked')):
+            self.gradient.setColorAt(0, self.taskColorItem)
+            self.gradient.setColorAt(1, Qt.red)
+
+        elif os.path.exists(os.path.join(self.location, 'checkedOut')):
+            self.gradient.setColorAt(0, self.taskColorItem)
+            self.gradient.setColorAt(1, Qt.white)
+
+        else:
+            pen.setWidth(0)
+            self.setZValue(0)
+            self.gradient.setColorAt(0, self.taskColorItem)
+            self.gradient.setColorAt(1, self.applicationColorItem.darker(160))
 
 
-            painter.setBrush(self.gradient)
+        painter.setBrush(self.gradient)
 
-            painter.setPen(pen)
+        painter.setPen(pen)
 
-            painter.drawRoundedRect(self.rect, 10.0, 10.0)
+        painter.drawRoundedRect(self.rect, 10.0, 10.0)
 
-            for i in self.outputList:
-                i.setPos(self.boundingRect().width() - i.rect.width(), i.pos().y())
+        for i in self.outputList:
+            i.setPos(self.boundingRect().width() - i.rect.width(), i.pos().y())
 
-            self.rect.setWidth(self.rect.width())
-            self.arrangeOutputs()
-            self.arrangeInputs()
-            self.resize()
-        except:
-            logging.warning('paint error for node %s (corrupt propertyNode.xml?)' %(self.label))
+        self.rect.setWidth(self.rect.width())
+        self.arrangeOutputs()
+        self.arrangeInputs()
+        self.resize()
+        # except:
+        #     logging.warning('paint error for node %s (corrupt propertyNode.xml?)' %(self.label))
         
     def arrangeOutputs(self):
         for output in self.outputs:
@@ -375,7 +474,7 @@ class node(QGraphicsItem, QObject):
         allOutputs = os.listdir(self.outputRootDir)
         
         for i in allOutputs:
-            if not i in self.exclusions:
+            if i not in SETTINGS.EXCLUSIONS:
                 self.newOutput(self, i)
 
     #add existing inputs from file system
@@ -383,25 +482,27 @@ class node(QGraphicsItem, QObject):
         self.inputRootDir = os.path.join(str(self.location), 'input')
         allInputs = os.listdir(self.inputRootDir)
         for i in allInputs:
-            if not i in self.exclusions:
+            if i not in SETTINGS.EXCLUSIONS:
                 input = self.newInput(self.scene)
                 try:
                     lookupDir = os.path.dirname(os.path.join(self.inputRootDir, os.readlink(os.path.join(self.inputRootDir, i))))
                 except:
                     lookupDir = os.path.dirname(os.path.join(self.inputRootDir, os.path.join(self.inputRootDir, i)))
 
+                try:
+                    if not i in os.listdir(lookupDir) and os.path.basename(os.path.dirname(lookupDir)).startswith('LDR') == True:
+                        os.remove(os.path.join(self.inputRootDir, i))
+                        logging.warning('orphaned input found on node %s: %s removed' %(self.label, i))
 
-                if not i in os.listdir(lookupDir) and os.path.basename(os.path.dirname(lookupDir)).startswith('LDR') == True:
-                    os.remove(os.path.join(self.inputRootDir, i))
-                    logging.warning('orphaned input found on node %s: %s removed' %(self.label, i))
+                    else:
 
-                else:
-                    
-                    logging.info('input is still valid. %s kept' %(i))
+                        logging.info('input is still valid. %s kept' % i)
+                except OSError, e:
+                    print e
 
     #add new dynamic input
     def newInput(self, scene):
-        input = portInput(self, scene, self.mainWindow)
+        input = portInput(self, scene, self.main_window)
         input.setParentItem(self)
 
         self.inputList.append(input)
@@ -409,6 +510,17 @@ class node(QGraphicsItem, QObject):
         self.inputMaxWidth.append(input.childrenBoundingRect().width())
         
         self.resizeHeight()
+
+    def update_meta_task(self):
+        pos = self.scenePos()
+        meta_task = self.meta_task
+
+        meta_task['pos_x'] = pos.x()
+        meta_task['pos_y'] = pos.y()
+
+        with open(self.meta_task_path, 'w') as outfile:
+            json.dump(meta_task, outfile)
+            outfile.close()
         
     def updatePropertyNodeXML(self):
         pos = self.scenePos()
@@ -439,7 +551,7 @@ class node(QGraphicsItem, QObject):
 
     #add new dynamic output:
     def newOutput(self, node, name):
-        output = portOutput(self, name, self.mainWindow)
+        output = portOutput(self, name, self.main_window)
 
         if len(name.split('.')) > 1:
 
@@ -460,7 +572,7 @@ class node(QGraphicsItem, QObject):
         self.resizeHeight()
 
     def newOutputButton(self):
-        outputButton = portOutputButton(self, 'create new output', self.mainWindow)
+        outputButton = portOutputButton(self.main_window)
         
         outputButton.setParentItem(self)
     
@@ -474,7 +586,7 @@ class node(QGraphicsItem, QObject):
     def _label(self):
         return self.label
 
-    def addText(self, scene, text):
+    def addText(self, text):
         self.setData(0, text)
         nodeLabel = QGraphicsTextItem(text)
         self.label = text
@@ -488,42 +600,36 @@ class node(QGraphicsItem, QObject):
         self.resizeWidth()
 
     def setApplicationColor(self):
-        self.applicationColorItem.setNamedColor(self.taskColor)
+        self.applicationColorItem.setNamedColor(self.task_color)
 
     def setTaskColor(self):
-        index = 0
-
-        # print self.location
-        # print self.location[:7]
+        self.task_color = SETTINGS.DEFAULT_TASK_COLOR
 
         if os.path.basename(self.location)[:7].startswith('LDR'):
             if os.path.basename(self.location)[:7].endswith('LIB'):
-                self.taskColor = '#00FF00'
+                self.task_color = '#00FF00'
             else:
-                for tab in self.mainWindow.content_tabs:
+                for tab in self.main_window.content_tabs:
                     if os.path.basename(self.location)[:7].endswith(tab['abbreviation']):
-                        self.taskColor = tab['loader_color']
+                        self.task_color = tab['loader_color']
                         break
 
         elif os.path.basename(self.location)[:7].startswith('SVR'):
-            for tab in self.mainWindow.content_tabs:
+            for tab in self.main_window.content_tabs:
                 if os.path.basename(self.location)[:7].endswith(tab['abbreviation']):
-                    self.taskColor = tab['saver_color']
-            # if os.path.basename(self.location)[:7].endswith('AST'):
-            #     self.taskColor = '#FFFF33'
-            # elif os.path.basename(self.location)[:7].endswith('SHT'):
-            #     self.taskColor = '#3333FF'
+                    self.task_color = tab['saver_color']
 
         else:
-
-            for i in self.tasks:
-                if [item for item in i if self.nodeTask in item]:
-                    logging.info('task color description found')
-                    self.taskColor = self.tasks[index][0][1]
+            for task in self.main_window._tasks:
+                print task[u'abbreviation']
+                print self.nodeTask
+                if self.nodeTask == task[u'task']:
+                    logging.info('task color description for task %s found' % task[u'abbreviation'])
+                    self.task_color = task[u'color']
                     break
-                else:
-                    index += 1
 
-        self.taskColorItem.setNamedColor(self.taskColor)
+        self.taskColorItem.setNamedColor(self.task_color)
+
+
 
 

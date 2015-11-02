@@ -1,49 +1,49 @@
 {
+  "family_enable": true,
   "family": "HDRLightStudio",
-  "abbreviation": "LST",
   "vendor": "Lightmap",
-  "versions": [
+  "abbreviation": "LST",
+  "releases": [
     {
-      "release": "4",
-      "project_template": "None",
-      "project_workspace": "None",
+      "release_number": "4",
+      "release_extension": null,
+      "project_template": null,
+      "project_workspace_template": null,
       "project_directories": [],
       "default_outputs": [],
+      "architecture_fallback": true,
       "platforms": [
         {
           "windows": {
-            "x32": {
-              "executable": "None",
-              "flags": []
-            },
-            "x64": {
-              "executable": "None",
-              "flags": []
-            }
+            "project_workspace_flag": null,
+            "project_workspace_parent_directory_level": 0,
+            "project_file_flag": null,
+            "executable_x32":  null,
+            "flags_x32": [],
+            "executable_x64": null,
+            "flags_x64": []
           }
         },
         {
           "darwin": {
-            "x32": {
-              "executable": "None",
-              "flags": []
-            },
-            "x64": {
-              "executable": "/Applications/HDRLightStudio.app/Contents/MacOS/HDRLightStudio",
-              "flags": []
-            }
+            "project_workspace_flag": null,
+            "project_workspace_parent_directory_level": 0,
+            "project_file_flag": null,
+            "executable_x32": null,
+            "flags_x32": [],
+            "executable_x64": "/Applications/HDRLightStudio.app/Contents/MacOS/HDRLightStudio",
+            "flags_x64": []
           }
         },
         {
           "linux": {
-            "x32": {
-              "executable": "None",
-              "flags": []
-            },
-            "x64": {
-              "executable": "None",
-              "flags": []
-            }
+            "project_workspace_flag": null,
+            "project_workspace_parent_directory_level": 0,
+            "project_file_flag": null,
+            "executable_x32": null,
+            "flags_x32": [],
+            "executable_x64": null,
+            "flags_x64": []
           }
         }
       ]

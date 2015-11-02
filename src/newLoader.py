@@ -14,7 +14,7 @@ mkdir LDR_LIB__mazda;
 cd LDR_LIB__mazda/;
 
 #create the xml file:
-touch propertyNode.xml;
+touch property_node.xml;
 
 ln -s ../../../../../../pypelyne_library/2015-05-20___myself___edelviz_____assets_____edelVizModel_____SVR_AST__edelVizModel_____2015-09-04_1632-53/output output;
 

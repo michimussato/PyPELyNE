@@ -44,7 +44,7 @@ try:
 except WindowsError, e:
     print 'failed to import vlc:', e
     # raise ImportError('failed to import vlc')
- 
+
 app = None
  
 # TODO: jumping from shots to asset loader does not update tab widget title correctly
@@ -160,7 +160,7 @@ class PypelyneMainWindow(QMainWindow):
             else:
                 self.screenCastExec = os.path.join(self.pypelyne_root, SETTINGS.SCREEN_CAST_EXEC_LINUX)
             if len(SETTINGS.SEQUENCE_EXEC_RV_LINUX) <= 0 or not os.path.exists(SETTINGS.SEQUENCE_EXEC_RV_LINUX):
-                self.sequenceExec = SEQUENCE_EXEC_LINUX
+                self.sequenceExec = SETTINGS.SEQUENCE_EXEC_LINUX
                 self.rv = False
             else:
                 self.sequenceExec = SETTINGS.SEQUENCE_EXEC_RV_LINUX
@@ -904,7 +904,7 @@ class PypelyneMainWindow(QMainWindow):
         arguments.append('--exclude')
         arguments.append('live')
         #arguments.append('--exclude')
-        #arguments.append('propertyNode.xml')
+        #arguments.append('property_node.xml')
         arguments.append('--use-compress-program')
         arguments.append(pigz)
         arguments.append('-f')
@@ -1146,10 +1146,10 @@ class PypelyneMainWindow(QMainWindow):
                     endItem.parentItem().incoming.append(startItem)
                     startItem.inputs.append(endItem)
  
-                    startItemRootDir = startItem.parentItem().getNodeRootDir()
+                    # startItemRootDir = startItem.parentItem().getNodeRootDir()
                     endItemRootDir = endItem.parentItem().getNodeRootDir()
  
-                    startItemOutputLabel = startItem.getLabel()
+                    # startItemOutputLabel = startItem.get_label()
  
                     endItemInputDir = os.path.join(str(endItemRootDir), 'input', str(input))
  
@@ -1157,13 +1157,13 @@ class PypelyneMainWindow(QMainWindow):
  
                     self.scene.addItem(connectionLine)
  
-                    endItem.parentItem().newInput(self.scene)
+                    endItem.parentItem().new_input(self.scene)
  
                 elif input in SETTINGS.EXCLUSIONS:
                     logging.info('input data is in exclusions list')
  
                 else:
-                    logging.info('node %s has no input' %(node.data(0)))
+                    logging.info('node %s has no input' % node_dst.data(0))
  
     @property
     def _current_content_item(self):
@@ -1201,8 +1201,8 @@ class PypelyneMainWindow(QMainWindow):
             if node_item not in SETTINGS.EXCLUSIONS:
                 if os.path.isdir(os.path.join(content_root, str(button_text), node_item)):
                     node_path = os.path.join(content_root, str(button_text), node_item)
-                    # convert xml to json if propertyNode.xml is found
-                    property_node_path = os.path.join(node_path, 'propertyNode.xml')
+                    # convert xml to json if property_node.xml is found
+                    property_node_path = os.path.join(node_path, 'property_node.xml')
                     if os.path.exists(property_node_path):
                         new_name = os.path.join(node_path, 'converted_propertyNode.xml')
  
@@ -1310,13 +1310,11 @@ class PypelyneMainWindow(QMainWindow):
                                 os.remove(meta_tool_path)
                             except:
                                 pass
+
+                    new_node_root = os.path.join(content_root, str(button_text), node_item)
  
- 
-                    meta_task_path = os.path.join(content_root, str(button_text), node_item, 'meta_task.json')
-                    meta_tool_path = os.path.join(content_root, str(button_text), node_item, 'meta_tool.json')
- 
-                    new_node = node(main_window=self, scene=self.scene, property_node_path=None, meta_task_path=meta_task_path, meta_tool_path=meta_tool_path)
-                    new_node.addText(node_item)
+                    new_node = Node(main_window=self, node_root=new_node_root)
+                    new_node.add_text(node_item)
                     self.scene.addToNodeList(new_node)
                 else:
                     logging.warning('shots: nodeItem %s is not a directory' % node_item)

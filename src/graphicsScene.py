@@ -53,7 +53,7 @@ class SceneView(QGraphicsScene):
         if event.key() == Qt.Key_Delete:
             for item in self.selectedItems():
                 if item.inputs > 1:
-                    item.sendFromNodeToBox('item has inputs. cannot delete.\n')
+                    item.send_from_node_to_box('item has inputs. cannot delete.\n')
                 elif item.inputs == 1:
                     self.removeItem(item)
 
@@ -149,18 +149,18 @@ class SceneView(QGraphicsScene):
         
         try:
             #node specific context menu items
-            if isinstance(object_clicked, node) \
-                    or isinstance(object_clicked.parentItem(), node) \
-                    or isinstance(object_clicked.parentItem().parentItem(), node) \
-                    or isinstance(object_clicked.parentItem().parentItem().parentItem(), node):
+            if isinstance(object_clicked, Node) \
+                    or isinstance(object_clicked.parentItem(), Node) \
+                    or isinstance(object_clicked.parentItem().parentItem(), Node) \
+                    or isinstance(object_clicked.parentItem().parentItem().parentItem(), Node):
 
-                if isinstance(object_clicked, node):
+                if isinstance(object_clicked, Node):
                     node_clicked = object_clicked
-                elif isinstance(object_clicked.parentItem(), node):
+                elif isinstance(object_clicked.parentItem(), Node):
                     node_clicked = object_clicked.parentItem()
-                elif isinstance(object_clicked.parentItem().parentItem(), node):
+                elif isinstance(object_clicked.parentItem().parentItem(), Node):
                     node_clicked = object_clicked.parentItem().parentItem()
-                elif isinstance(object_clicked.parentItem().parentItem().parentItem(), node):
+                elif isinstance(object_clicked.parentItem().parentItem().parentItem(), Node):
                     node_clicked = object_clicked.parentItem().parentItem().parentItem()
 
                 self.menu_node = self.menu.addMenu('node')
@@ -185,13 +185,13 @@ class SceneView(QGraphicsScene):
 
                 elif node_clicked.label.startswith('LDR'):
 
-                    self.menu_node.addAction('open source tree', lambda: self.main_window.get_content(None, node_label=node_clicked.getLabel()))
+                    self.menu_node.addAction('open source tree', lambda: self.main_window.get_content(None, node_label=node_clicked.get_label()))
                     self.menu_node.addSeparator()
                     self.menu_node.addAction('delete loader', self.removeObjectCallback(node_clicked))
 
                 # elif node_clicked.label.startswith('LDR_SHT'):
                 #     #self.menu_node.addAction('open shot', lambda: self.foo(node_clicked.getNodeRootDir()))
-                #     self.menu_node.addAction('open shot tree', lambda: self.main_window.get_content(None, node_label=node_clicked.getLabel()))
+                #     self.menu_node.addAction('open shot tree', lambda: self.main_window.get_content(None, node_label=node_clicked.get_label()))
                 #     self.menu_node.addSeparator()
                 #     self.menu_node.addAction('delete shot loader', self.removeObjectCallback(node_clicked))
 
@@ -214,7 +214,7 @@ class SceneView(QGraphicsScene):
                 self.menu_input.addSeparator()
                 self.menu_input.addAction('delete input', self.removeObjectCallback(object_clicked))
 
-                input_label = object_clicked.getLabel()
+                input_label = object_clicked.get_label()
                 input_dir = object_clicked.getInputDir()
 
                 output_node = object_clicked.parentItem()
@@ -231,7 +231,7 @@ class SceneView(QGraphicsScene):
                 self.menu_output.addSeparator()
 
                 output_dir = object_clicked.getOutputDir()
-                output_label = object_clicked.getLabel()
+                output_label = object_clicked.get_label()
                 live_dir = object_clicked.getLiveDir()
                 output_node_root_dir = object_clicked.getOutputRootDir()
 
@@ -502,7 +502,7 @@ class SceneView(QGraphicsScene):
         for output_version in output_versions:
             self.deleteContent(os.path.join(output_dir, output_version))
             print '%s removed' %(os.path.join(output_dir, output_version))
-        print 'output %s cleaned up' %(portOutput.getLabel())
+        print 'output %s cleaned up' %(portOutput.get_label())
 
     def cleanUpNodeCallback(self, node):
         def callback():
@@ -510,7 +510,7 @@ class SceneView(QGraphicsScene):
         return callback
 
     def cleanUpNode(self, node):
-        reply = QMessageBox.warning(self.main_window, str('about to cleanup item'), str('are you sure to \ncleanup all outputs of %s?' %(node.getLabel())), QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        reply = QMessageBox.warning(self.main_window, str('about to cleanup item'), str('are you sure to \ncleanup all outputs of %s?' %(node.get_label())), QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
 
         if reply == QMessageBox.Yes:
             for output in node.outputList:
@@ -522,7 +522,7 @@ class SceneView(QGraphicsScene):
         return callback
 
     def cleanUpOutput(self, portOutput):
-        reply = QMessageBox.warning(self.main_window, str('about to cleanup item'), str('are you sure to \ncleanup %s?' %(portOutput.getLabel())), QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        reply = QMessageBox.warning(self.main_window, str('about to cleanup item'), str('are you sure to \ncleanup %s?' %(portOutput.get_label())), QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
 
         if reply == QMessageBox.Yes:
             self.cleanUpOutputProc(portOutput)
@@ -657,20 +657,20 @@ class SceneView(QGraphicsScene):
             new_output_dir = os.path.join(str(node_root_dir), 'output', str(text))
 
             if os.path.exists(new_output_dir):
-                node.sendFromNodeToBox('--- output already exists' + '\n')
+                node.send_from_node_to_box('--- output already exists' + '\n')
                 
             else:
-                node.newOutput(self, str(text))
+                node.new_output(self, str(text))
                 os.makedirs(new_output_dir, mode=0777)
 
                 self.createNewVersion(new_output_dir)
 
-                node.sendFromNodeToBox(str(datetime.datetime.now()))
-                node.sendFromNodeToBox(':' + '\n')
-                node.sendFromNodeToBox('--- new output created' + '\n')
+                node.send_from_node_to_box(str(datetime.datetime.now()))
+                node.send_from_node_to_box(':' + '\n')
+                node.send_from_node_to_box('--- new output created' + '\n')
 
     def newOutputDialogOld(self, node):
-        # node_label = node.getLabel()
+        # node_label = node.get_label()
 
         text, ok = QInputDialog.getText(self.main_window, 'create new output in %s' % node.label, 'enter output name:')
 
@@ -680,14 +680,14 @@ class SceneView(QGraphicsScene):
             new_node_dir = os.path.join(str(node_root_dir), 'output', str(text))
             
             if os.path.exists(new_node_dir):
-                node.sendFromNodeToBox('--- output already exists' + '\n')
+                node.send_from_node_to_box('--- output already exists' + '\n')
                 
             else:
-                # output = node.newOutput(self, str(text))
+                # output = node.new_output(self, str(text))
                 os.makedirs(new_node_dir, mode=0777)
-                node.sendFromNodeToBox(str(datetime.datetime.now()))
-                node.sendFromNodeToBox(':' + '\n')
-                node.sendFromNodeToBox('--- new output created' + '\n')
+                node.send_from_node_to_box(str(datetime.datetime.now()))
+                node.send_from_node_to_box(':' + '\n')
+                node.send_from_node_to_box('--- new output created' + '\n')
 
     def newLoaderDialog(self, pos):
         def callback():
@@ -696,7 +696,7 @@ class SceneView(QGraphicsScene):
             ok, loaderName, sourceSaverLocation = NewLoaderUI.get_new_loader_data(active_item_path, self.main_window)
 
             if ok:
-                newLoaderPath = os.path.join(active_item_path, loaderName)
+                new_loader_root = os.path.join(active_item_path, loaderName)
 
                 srcParentDirs = os.sep.join([str(os.path.relpath(self.main_window.projects_root, sourceSaverLocation))]) + os.sep
 
@@ -704,17 +704,17 @@ class SceneView(QGraphicsScene):
 
                 relPath = os.sep.join([str(srcParentDirs + src)])
 
-                inputLinkOutput = os.path.join(newLoaderPath, 'output')
-                inputLinkLive = os.path.join(newLoaderPath, 'live')
+                inputLinkOutput = os.path.join(new_loader_root, 'output')
+                inputLinkLive = os.path.join(new_loader_root, 'live')
 
-                if not os.path.exists(newLoaderPath):
-                    os.makedirs(newLoaderPath, mode=0777)
-                    os.makedirs(os.path.join(newLoaderPath, 'input'), mode=0777)
+                if not os.path.exists(new_loader_root):
+                    os.makedirs(new_loader_root, mode=0777)
+                    os.makedirs(os.path.join(new_loader_root, 'input'), mode=0777)
 
                     os.symlink(os.path.join(relPath, 'input'), inputLinkOutput)
                     os.symlink(os.path.join(relPath, 'input'), inputLinkLive)
 
-                    meta_task_path = os.path.join(newLoaderPath, 'meta_task.json')
+                    meta_task_path = os.path.join(new_loader_root, 'meta_task.json')
 
                     meta_task = {}
 
@@ -728,8 +728,8 @@ class SceneView(QGraphicsScene):
                         json.dump(meta_task, outfile)
                         outfile.close()
                     
-                    new_node = node(self.main_window, self, newLoaderPath)
-                    new_node.addText(loaderName)
+                    new_node = Node(main_window=self.main_window, node_root=new_loader_root)
+                    new_node.add_text(loaderName)
 
                 else:
                     print 'asset loader already exists'
@@ -739,14 +739,14 @@ class SceneView(QGraphicsScene):
         def callback():
             newSaverName = 'SVR_' + self.main_window._current_content['abbreviation'] + '__' + self.main_window._current_content_item
 
-            newSaverPath = os.path.join(self.main_window.projects_root, self.main_window._current_project, 'content', self.main_window._current_content['content'], self.main_window._current_content_item, newSaverName)
+            new_saver_path = os.path.join(self.main_window.projects_root, self.main_window._current_project, 'content', self.main_window._current_content['content'], self.main_window._current_content_item, newSaverName)
 
-            if not os.path.exists(newSaverPath):
-                os.makedirs(newSaverPath, mode=0777)
-                os.makedirs(os.path.join(newSaverPath, 'output'), mode=0777)
-                os.makedirs(os.path.join(newSaverPath, 'input'), mode=0777)
+            if not os.path.exists(new_saver_path):
+                os.makedirs(new_saver_path, mode=0777)
+                os.makedirs(os.path.join(new_saver_path, 'output'), mode=0777)
+                os.makedirs(os.path.join(new_saver_path, 'input'), mode=0777)
 
-                meta_task_path = os.path.join(newSaverPath, 'meta_task.json')
+                meta_task_path = os.path.join(new_saver_path, 'meta_task.json')
 
                 meta_task = {}
 
@@ -760,8 +760,8 @@ class SceneView(QGraphicsScene):
                     json.dump(meta_task, outfile)
                     outfile.close()
                 
-                new_node = node(main_window=self.main_window, scene=self, meta_task_path=meta_task_path)
-                new_node.addText(newSaverName)
+                new_node = Node(main_window=self.main_window, node_root=new_saver_path)
+                new_node.add_text(newSaverName)
 
             else:
                 print 'asset saver already exists'
@@ -838,8 +838,8 @@ class SceneView(QGraphicsScene):
                     json.dump(meta_tool, outfile)
                     outfile.close()
                 
-                new_node = node(main_window=self.main_window, scene=self, property_node_path=property_node_path, meta_task_path=meta_task_path, meta_tool_path=meta_tool_path)
-                new_node.addText(str(node_name))
+                new_node = Node(main_window=self.main_window, node_root=new_node_path)
+                new_node.add_text(str(node_name))
 
                 for tool_default_output in tool_data['default_outputs']:
                     self.newOutputAuto(new_node, tool_default_output)
@@ -851,7 +851,7 @@ class SceneView(QGraphicsScene):
 
         if reply == QMessageBox.Yes:
 
-            if isinstance(item, node) :
+            if isinstance(item, Node):
                 tempOutputList = item.outputList
                 tempInputList = item.inputList
 
@@ -981,7 +981,7 @@ class SceneView(QGraphicsScene):
             elif event.button() == Qt.LeftButton and (isinstance(item, portOutputButton)):
                 self.newOutputDialog(item.parentItem())
                 
-            elif event.button() == Qt.LeftButton and (isinstance(item, node)):
+            elif event.button() == Qt.LeftButton and (isinstance(item, Node)):
                 pass
             else:
                 self.nodeDeselect.emit()
@@ -1038,19 +1038,19 @@ class SceneView(QGraphicsScene):
                     # print 'parentNode.childItems() = %s' %parentNode.childItems()
 
                     if startItems[0] in endItems[0].parentItem().incoming:
-                        parentNode.sendFromNodeToBox(str(datetime.datetime.now()))
-                        parentNode.sendFromNodeToBox(':' + '\n')
-                        parentNode.sendFromNodeToBox('--- this connection already exists, you dumbass' + '\n')
+                        parentNode.send_from_node_to_box(str(datetime.datetime.now()))
+                        parentNode.send_from_node_to_box(':' + '\n')
+                        parentNode.send_from_node_to_box('--- this connection already exists, you dumbass' + '\n')
 
                     elif startItems[0].parentItem() == endItems[0].parentItem():
-                        parentNode.sendFromNodeToBox(str(datetime.datetime.now()))
-                        parentNode.sendFromNodeToBox(':' + '\n')
-                        parentNode.sendFromNodeToBox('--- don\'t connect to itself, you moron' + '\n')
+                        parentNode.send_from_node_to_box(str(datetime.datetime.now()))
+                        parentNode.send_from_node_to_box(':' + '\n')
+                        parentNode.send_from_node_to_box('--- don\'t connect to itself, you moron' + '\n')
 
                     elif len(endItems[0].connection) == 0:
                         if os.path.basename(startItems[0].parentItem().getNodeRootDir()).startswith('LDR') \
                                         and os.path.basename(endItems[0].parentItem().getNodeRootDir()).startswith('SVR'):
-                            parentNode.sendFromNodeToBox('--- don\'t connect loader to saver' + '\n')
+                            parentNode.send_from_node_to_box('--- don\'t connect loader to saver' + '\n')
                             logging.info('tried to connect loader to saver, which is not possible')
                         else:
                             connectionLine = bezierLine(self.main_window, self, startItems[0], endItems[0], QPainterPath(startItems[0].scenePos()))
@@ -1102,21 +1102,21 @@ class SceneView(QGraphicsScene):
 
                             self.addItem(connectionLine)
 
-                            endItems[0].parentItem().newInput(self)
+                            endItems[0].parentItem().new_input(self)
 
                     else:
-                        parentNode.sendFromNodeToBox(str(datetime.datetime.now()))
-                        parentNode.sendFromNodeToBox(':' + '\n')
-                        parentNode.sendFromNodeToBox('--- this input port is already in use. obviously.' + '\n')
-                        parentNode.sendFromNodeToBox('--- your iq is dropping...' + '\n')
+                        parentNode.send_from_node_to_box(str(datetime.datetime.now()))
+                        parentNode.send_from_node_to_box(':' + '\n')
+                        parentNode.send_from_node_to_box('--- this input port is already in use. obviously.' + '\n')
+                        parentNode.send_from_node_to_box('--- your iq is dropping...' + '\n')
 
                 else:
                     parentNodeStartItem = startItems[0].parentItem()
 
-                    parentNodeStartItem.sendFromNodeToBox(str(datetime.datetime.now()))
-                    parentNodeStartItem.sendFromNodeToBox(':' + '\n')
-                    parentNodeStartItem.sendFromNodeToBox('--- endItem is not an input :(' + '\n')
-                    parentNodeStartItem.sendFromNodeToBox('--- no endItem chosen' + '\n')
+                    parentNodeStartItem.send_from_node_to_box(str(datetime.datetime.now()))
+                    parentNodeStartItem.send_from_node_to_box(':' + '\n')
+                    parentNodeStartItem.send_from_node_to_box('--- endItem is not an input :(' + '\n')
+                    parentNodeStartItem.send_from_node_to_box('--- no endItem chosen' + '\n')
 
             except IndexError, e:
                 print 'error captured:', e

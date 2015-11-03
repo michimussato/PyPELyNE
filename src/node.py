@@ -6,6 +6,7 @@ import getpass
 import logging
 import json
 import copy
+import uuid
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -46,6 +47,18 @@ class Node(QGraphicsItem, QObject):
         except IOError, e:
             print 'xml loading:', e
             self.propertyNodePath = os.path.join(self.location, 'propertyNode.xml')
+
+        try:
+            self.node_uuid = self.meta_task['uuid']
+        except KeyError, e:
+            print 'this node has no uuid yet. giving it one.'
+            self.node_uuid = uuid.uuid1()
+            print self.node_uuid
+            self.meta_task['node_uuid'] = self.node_uuid
+            print self.meta_task
+            # with open(os.path.join(self.location, 'meta_task.json'), 'w') as outfile:
+            #     json.dump(self.meta_task, outfile)
+            #     outfile.close()
 
         self.loaderSaver = os.path.basename(self.location)[:7]
         self.asset = os.path.dirname(self.location)
@@ -110,6 +123,7 @@ class Node(QGraphicsItem, QObject):
             self.nodeVendor = self.meta_tool['vendor']
             self.nodeFamily = self.meta_tool['family']
             self.nodeArch = self.meta_tool['architecture']
+            # self.node_uuid = self.meta_tool['node_uuid']
             # print self.meta_tool
             self.nodeTask = self.meta_task['task']
             self.node_creator = self.meta_task['creator']
@@ -524,13 +538,14 @@ class Node(QGraphicsItem, QObject):
 
     def update_meta_task(self):
         pos = self.scenePos()
-        meta_task = self.meta_task
+        # meta_task = self.meta_task
 
-        meta_task['pos_x'] = pos.x()
-        meta_task['pos_y'] = pos.y()
+        self.meta_task['pos_x'] = pos.x()
+        self.meta_task['pos_y'] = pos.y()
+        # self.meta_task['node_uuid'] = self.node_uuid
 
         with open(os.path.join(self.location, 'meta_task.json'), 'w') as outfile:
-            json.dump(meta_task, outfile)
+            json.dump(self.meta_task, outfile)
             outfile.close()
         
     def update_property_node_xml(self):

@@ -14,7 +14,7 @@ class NewOutputUI(QDialog):
 
         self.node = node
 
-        self.ui = loadUi(os.path.join(self.main_window.pypelyne_root, 'ui', 'new_output.ui'), self)
+        self.ui = loadUi(os.path.join(self.main_window.pypelyne_root, 'ui', 'newOutput.ui'), self)
         self.setModal(True)
 
         self.create_ui()

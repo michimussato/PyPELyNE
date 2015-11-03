@@ -48,34 +48,34 @@ class portOutput(QGraphicsItem):
 
     def getOutputRootDir(self):
         return self.nodeRoot
-        #returns /path/to/projects/project/content/assets/asset/node
+        # returns /path/to/projects/project/content/assets/asset/node
 
     def getOutputProjectDir(self):
         return self.nodeProject
-        #returns /path/to/projects/project
+        # returns /path/to/projects/project
 
     def getOutputDir(self):
         return self.outputDir
-        #returns /path/to/projects/project/content/assets/asset/node/output/outputLabel
+        # returns /path/to/projects/project/content/assets/asset/node/output/outputLabel
 
     def getLiveDir(self):
         return self.liveDir
-        #returns /path/to/projects/project/content/assets/asset/node/live/outputLabel
+        # returns /path/to/projects/project/content/assets/asset/node/live/outputLabel
         
     def arrange(self, node):
-        self.setPos(node.boundingRect().width() - self.rect.width(), ((self.boundingRect().height() * (len(node.outputList) + 1))))
+        self.setPos(node.boundingRect().width() - self.rect.width(), (self.boundingRect().height() * (len(node.outputList) + 1)))
         
-    def getLabel(self):
+    def get_label(self):
         return self.label
     
-    def addText(self, node, name):
+    def add_text(self, node, name):
         
-        textPortOutput = QGraphicsTextItem(str(name), parent = self)
+        text_port_output = QGraphicsTextItem(str(name), parent=self)
         self.label = name
 
-        textPortOutput.setDefaultTextColor(self.portOutputColorItem.darker(250))
+        text_port_output.setDefaultTextColor(self.portOutputColorItem.darker(250))
         
-        textPortOutput.setPos(QPointF(0 - textPortOutput.boundingRect().width(), 0))
+        text_port_output.setPos(QPointF(0 - text_port_output.boundingRect().width(), 0))
         
     def boundingRect(self):
         return self.rect
@@ -194,7 +194,7 @@ class portOutput(QGraphicsItem):
                         else:
                             self.portOutputRingColorItem.setNamedColor(self.outputColorOnline)
                     except:
-                        #we have a library loader here:
+                        # we have a library loader here:
                         self.portOutputRingColorItem.setNamedColor(self.outputColorOnline)
 
             elif self.main_window.current_platform == 'Windows':
@@ -242,7 +242,7 @@ class portOutput(QGraphicsItem):
                         self.portOutputRingColorItem.setNamedColor(self.outputColorOnline)
 
         else:
-            #output with no live data found
+            # output with no live data found
             self.portOutputRingColorItem.setNamedColor(self.outputcolorNoLive)
 
         if self.hovered:
@@ -297,7 +297,6 @@ class portInput(QGraphicsItem):
             pass
 
     def hoverLeaveEvent(self, event):
-        #print 'left'
         try:
             self.hovered = False
             self.connection[0].hovered = False
@@ -305,7 +304,7 @@ class portInput(QGraphicsItem):
         except:
             pass
 
-    def getLabel(self):
+    def get_label(self):
         return self.label
     
     def setInputDir(self, dir):
@@ -313,14 +312,13 @@ class portInput(QGraphicsItem):
     
     def getInputDir(self):
         return self.inputDir
-        
-    
-    def addText(self, name):
-        textPortInput = QGraphicsTextItem(name, parent = self)
+
+    def add_text(self, name):
+        text_port_input = QGraphicsTextItem(name, parent=self)
         self.label = name
-        textPortInput.setDefaultTextColor(Qt.black)
+        text_port_input.setDefaultTextColor(Qt.black)
         
-        textPortInput.setPos(QPointF(self.boundingRect().width(), 0))
+        text_port_input.setPos(QPointF(self.boundingRect().width(), 0))
 
     def boundingRect(self):
         return self.rect
@@ -400,7 +398,7 @@ class portOutputButton(QGraphicsItem):
         self.icon.append(QLine(10, 6, 10, 14))
         self.icon.append(QLine(6, 10, 14, 10))
 
-    def addText(self, node, name):
+    def add_text(self, node, name):
         item = QGraphicsTextItem('port = %s' % name, parent=self)
         item.setDefaultTextColor(Qt.black)
         item.setPos(QPointF(((node.childrenBoundingRect().width()) - item.boundingRect().width()) - 30, 30))

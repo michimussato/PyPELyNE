@@ -40,7 +40,7 @@ class bezierLine(QGraphicsPathItem):
         self.getEndItem()
 
         self.label = str(startItem.label)
-        self.myEndItem.addText(self.label)
+        self.myEndItem.add_text(self.label)
 
         self.pathColorItem = QColor(0, 0, 0)
         self.setPathColor()

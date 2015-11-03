@@ -127,7 +127,11 @@ class NewNodeUI(QDialog):
     def set_status(self):
         # print self.nodeDir
 
-        nodes_dir = os.listdir(os.path.join(self.main_window.projects_root, self.main_window._current_project, 'content', self.main_window._current_content['content'], self.main_window._current_content_item))
+        nodes_dir = os.listdir(os.path.join(self.main_window.projects_root,
+                                            self.main_window._current_project,
+                                            'content',
+                                            self.main_window._current_content['content'],
+                                            self.main_window._current_content_item))
 
         used_names = nodes_dir
 
@@ -164,19 +168,30 @@ class NewNodeUI(QDialog):
             self.buttonOk.setEnabled(False)
             self.labelStatus.setText('')
 
-        elif self.main_window._tasks[self.comboBoxTask.currentIndex() - 1]['abbreviation'] + '_' + self.tool_data['abbreviation'] + '__' + self.lineEditNodeName.text() in used_names:
+        elif self.main_window._tasks[self.comboBoxTask.currentIndex() - 1]['abbreviation'] \
+                + '_' \
+                + self.tool_data['abbreviation'] \
+                + '__' + self.lineEditNodeName.text() \
+                in used_names:
             self.buttonOk.setEnabled(False)
             self.labelStatus.setText('already exists')
 
         else:
             self.buttonOk.setEnabled(True)
-            self.labelStatus.setText(self.main_window._tasks[self.comboBoxTask.currentIndex() - 1]['abbreviation'] + '_' + self.tool_data['abbreviation'] + '__' + self.lineEditNodeName.text())
+            self.labelStatus.setText(self.main_window._tasks[self.comboBoxTask.currentIndex() - 1]['abbreviation']
+                                     + '_'
+                                     + self.tool_data['abbreviation']
+                                     + '__'
+                                     + self.lineEditNodeName.text())
 
     def onCancel(self):
         self.reject()
         
     def onOk(self):
-        self.node_name = self.main_window._tasks[self.comboBoxTask.currentIndex() - 1]['abbreviation'] + '_' + self.tool_data['abbreviation'] + '__' + self.lineEditNodeName.text()
+        self.node_name = self.main_window._tasks[self.comboBoxTask.currentIndex() - 1]['abbreviation'] \
+                         + '_' \
+                         + self.tool_data['abbreviation'] \
+                         + '__' + self.lineEditNodeName.text()
         self.task_index = self.comboBoxTask.currentIndex() - 1
         self.accept()
         return self.node_name, self.tool_data, self.task_index

@@ -6,6 +6,7 @@ import getpass
 import logging
 import json
 import copy
+import uuid
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -19,25 +20,25 @@ from jobDeadline import *
 import xml.etree.ElementTree as ET
 
 
-class node(QGraphicsItem, QObject):
+class Node(QGraphicsItem, QObject):
     nodeClicked = pyqtSignal()
 
-    def __init__(self, main_window=None, scene=None, property_node_path=None, meta_task_path=None, meta_tool_path=None):
-        super(node, self).__init__(None, scene)
+    def __init__(self, main_window=None, node_root=None):
+        super(Node, self).__init__(None, main_window.scene)
+
+        self.main_window = main_window
+        self.location = node_root
 
         try:
-            self.meta_task_path = meta_task_path
-            self.meta_tool_path = meta_tool_path
-
             try:
-                meta_task_file = open(self.meta_task_path)
+                meta_task_file = open(os.path.join(self.location, 'meta_task.json'))
                 self.meta_task = json.load(meta_task_file)
                 meta_task_file.close()
             except AttributeError, e:
                 print 'self.meta_task', e
 
             try:
-                meta_tool_file = open(self.meta_tool_path)
+                meta_tool_file = open(os.path.join(self.location, 'meta_tool.json'))
                 self.meta_tool = json.load(meta_tool_file)
                 meta_tool_file.close()
             except AttributeError, e:
@@ -45,15 +46,24 @@ class node(QGraphicsItem, QObject):
 
         except IOError, e:
             print 'xml loading:', e
-            self.propertyNodePath = property_node_path
+            self.propertyNodePath = os.path.join(self.location, 'propertyNode.xml')
 
-        self.main_window = main_window
-        self.user = self.main_window.user
-        self.location = self.getNodeRootDir()
+        try:
+            self.node_uuid = self.meta_task['uuid']
+        except KeyError, e:
+            print 'this node has no uuid yet. giving it one.'
+            self.node_uuid = uuid.uuid1()
+            print self.node_uuid
+            self.meta_task['node_uuid'] = self.node_uuid
+            print self.meta_task
+            # with open(os.path.join(self.location, 'meta_task.json'), 'w') as outfile:
+            #     json.dump(self.meta_task, outfile)
+            #     outfile.close()
+
         self.loaderSaver = os.path.basename(self.location)[:7]
         self.asset = os.path.dirname(self.location)
-        self.project = os.path.dirname(os.path.dirname (os.path.dirname(self.asset)))
-        self.scene = scene
+        self.project = os.path.dirname(os.path.dirname(os.path.dirname(self.asset)))
+
         self.now = datetime.datetime.now()
         self.nowStr = str(self.now)
         self.rect = QRectF(0, 0, 200, 40)
@@ -69,27 +79,27 @@ class node(QGraphicsItem, QObject):
         self.hovered = False
         self.setData(1, self.now)
         self.setData(2, 'node')
-        #self.setToolTip('haha')
-        self.setNodePosition()
+        # self.setToolTip('haha')
+        self.set_node_position()
 
-        self.scene.clearSelection()
+        self.main_window.scene.clearSelection()
         self.labelBoundingRect = 0.0
         
         if not self.loaderSaver.startswith('LDR'):
-            self.inputPort = self.newInput(scene)
+            self.inputPort = self.new_input(self.main_window.scene)
         
         self.label = None
         
-        #use this to add outputs from filesystem:
-        self.addOutputs()
-        self.addInputs()
+        # use this to add outputs from filesystem:
+        self.add_outputs()
+        self.add_inputs()
 
         self.gradient = QLinearGradient(self.rect.topLeft(), self.rect.bottomLeft())
         self.taskColorItem = QColor(0, 0, 0)
         self.applicationColorItem = QColor(0, 0, 0)
 
         if not self.loaderSaver.startswith('SVR') and not self.loaderSaver.startswith('LDR'):
-            self.newOutputButton()
+            self.new_output_button()
 
         self.widgetMenu = None
         self.setTaskColor()
@@ -105,7 +115,7 @@ class node(QGraphicsItem, QObject):
         return self.inputPort
         
     def getNodeRootDir(self):
-        return os.path.dirname(self.meta_task_path)
+        return self.location
 
     def getApplicationInfo(self):
         try:
@@ -113,6 +123,7 @@ class node(QGraphicsItem, QObject):
             self.nodeVendor = self.meta_tool['vendor']
             self.nodeFamily = self.meta_tool['family']
             self.nodeArch = self.meta_tool['architecture']
+            # self.node_uuid = self.meta_tool['node_uuid']
             # print self.meta_tool
             self.nodeTask = self.meta_task['task']
             self.node_creator = self.meta_task['creator']
@@ -127,7 +138,7 @@ class node(QGraphicsItem, QObject):
         except TypeError, e:
             logging.warning('queryApplicationInfo for not yet available for saver and loader nodes (%s)' % e)
 
-    def setNodePosition(self):
+    def set_node_position(self):
         try:
             pos_x = self.meta_task['pos_x']
             pos_y = self.meta_task['pos_y']
@@ -137,17 +148,17 @@ class node(QGraphicsItem, QObject):
             print e
             try:
                 print self.propertyNodePath
-                self.propertyNode = ET.parse(self.propertyNodePath)
+                self.property_node = ET.parse(self.propertyNodePath)
                 logging.info('new style reading xml')
-                nodePosition = self.propertyNode.findall('./node')
+                node_position = self.property_node.findall('./node')
 
-                pos_x = nodePosition[0].items()[0][1]
-                pos_y = nodePosition[0].items()[1][1]
+                pos_x = node_position[0].items()[0][1]
+                pos_y = node_position[0].items()[1][1]
 
             except:
                 logging.info('old style reading xml')
-                pos_x = self.propertyNode.findall('./positionX')
-                pos_y = self.propertyNode.findall('./positionY')
+                pos_x = self.property_node.findall('./positionX')
+                pos_y = self.property_node.findall('./positionY')
 
                 pos_x = pos_x[0].items()[0][1]
                 pos_y = pos_y[0].items()[0][1]
@@ -157,7 +168,6 @@ class node(QGraphicsItem, QObject):
         # TODO: switch to json reading
         self.getApplicationInfo()
     
-
     def hoverEnterEvent(self, event):
         self.hovered = True
 
@@ -165,7 +175,7 @@ class node(QGraphicsItem, QObject):
         self.hovered = False
 
     def mousePressEvent(self, event):
-        self.scene.nodeSelect.emit(self)
+        self.main_window.scene.nodeSelect.emit(self)
 
     def mouseDoubleClickEvent(self, event=None):
         _tools = copy.deepcopy(self.main_window._tools)
@@ -194,11 +204,19 @@ class node(QGraphicsItem, QObject):
             run_task['label'] = None
 
             if os.path.exists(os.path.join(self.location, 'locked')):
-                QMessageBox.critical(self.main_window, 'node warning', str('%s is currently in use.' % self.label), QMessageBox.Abort, QMessageBox.Abort)
+                QMessageBox.critical(self.main_window,
+                                     'node warning',
+                                     str('%s is currently in use.' % self.label),
+                                     QMessageBox.Abort,
+                                     QMessageBox.Abort)
                 return
 
             if os.path.exists(os.path.join(self.location, 'checkedOut')):
-                QMessageBox.critical(self.main_window, 'node warning', str('%s is currently checked out.' % self.label), QMessageBox.Abort, QMessageBox.Abort)
+                QMessageBox.critical(self.main_window,
+                                     'node warning',
+                                     str('%s is currently checked out.' % self.label),
+                                     QMessageBox.Abort,
+                                     QMessageBox.Abort)
                 return
 
             for tool in _tools:
@@ -300,7 +318,11 @@ class node(QGraphicsItem, QObject):
                                         logging.error('x32 not found')
 
             if run_task['executable'] is None:
-                QMessageBox.critical(self.main_window, 'node warning', str('no suitable tool found to launch task %s.' % self.label), QMessageBox.Abort, QMessageBox.Abort)
+                QMessageBox.critical(self.main_window,
+                                     'node warning',
+                                     str('no suitable tool found to launch task %s.' % self.label),
+                                     QMessageBox.Abort,
+                                     QMessageBox.Abort)
                 return
 
             project_root_task = os.path.join(self.location, 'project')
@@ -353,7 +375,7 @@ class node(QGraphicsItem, QObject):
     def data_ready(self):
         cursor_box = self.main_window.statusBox.textCursor()
         cursor_box.movePosition(cursor_box.End)
-        cursor_box.insertText("%s (%s): %s" %(datetime.datetime.now(), self.pid, str(self.process.readAll())))
+        cursor_box.insertText("%s (%s): %s" % (datetime.datetime.now(), self.pid, str(self.process.readAll())))
         self.main_window.statusBox.ensureCursorVisible()
     '''
     def hoverEnterEvent(self, event):
@@ -363,25 +385,26 @@ class node(QGraphicsItem, QObject):
         pass
     '''
 
-    def resizeWidth(self):
-        outputListTextWidth = [0]
-        inputListTextWidth = [0]
+    def resize_width(self):
+        output_list_text_width = [0]
+        input_list_text_width = [0]
 
         for i in self.inputList:
-            inputListTextWidth.append(int(i.childrenBoundingRect().width()))
+            input_list_text_width.append(int(i.childrenBoundingRect().width()))
 
         for i in self.outputList:
-            outputListTextWidth.append(int(i.childrenBoundingRect().width()))
+            output_list_text_width.append(int(i.childrenBoundingRect().width()))
 
-        self.rect.setWidth(max((self.labelBoundingRect + 40 + 20), (max(outputListTextWidth) + 80) + (max(inputListTextWidth))))
+        self.rect.setWidth(max((self.labelBoundingRect + 40 + 20),
+                               (max(output_list_text_width) + 80) + (max(input_list_text_width))))
                 
-    def resizeHeight(self):
-        self.rect.setHeight(((max(len(self.inputs) + 1, len(self.outputs) + 1) * 20)))
+    def resize_height(self):
+        self.rect.setHeight(max(len(self.inputs) + 1, len(self.outputs) + 1) * 20)
         self.gradient = QLinearGradient(self.rect.topLeft(), self.rect.bottomLeft())
 
     def resize(self):
-        self.resizeHeight()
-        self.resizeWidth()
+        self.resize_height()
+        self.resize_width()
 
     def boundingRect(self):
         return self.rect
@@ -439,7 +462,6 @@ class node(QGraphicsItem, QObject):
             self.gradient.setColorAt(0, self.taskColorItem)
             self.gradient.setColorAt(1, self.applicationColorItem.darker(160))
 
-
         painter.setBrush(self.gradient)
 
         painter.setPen(pen)
@@ -450,48 +472,51 @@ class node(QGraphicsItem, QObject):
             i.setPos(self.boundingRect().width() - i.rect.width(), i.pos().y())
 
         self.rect.setWidth(self.rect.width())
-        self.arrangeOutputs()
-        self.arrangeInputs()
+        self.arrange_outputs()
+        self.arrange_inputs()
         self.resize()
         # except:
-        #     logging.warning('paint error for node %s (corrupt propertyNode.xml?)' %(self.label))
+        #     logging.warning('paint error for node %s (corrupt property_node.xml?)' %(self.label))
         
-    def arrangeOutputs(self):
+    def arrange_outputs(self):
         for output in self.outputs:
             position = QPointF(self.boundingRect().width() - output.rect.width(), ((output.boundingRect().height() * (self.outputs.index(output) + 1))))
             output.setPos(position)
 
-    def arrangeInputs(self):
+    def arrange_inputs(self):
         for input in self.inputs:
             position = QPointF(0, ((self.inputs.index(input) + 1) * input.boundingRect().height()))
             input.setPos(position)
         
-    #add existing outputs from file system
-    def addOutputs(self):
+    # add existing outputs from file system
+    def add_outputs(self):
         
-        self.outputRootDir = os.path.join(str(self.location), 'output')
+        self.output_root_dir = os.path.join(str(self.location), 'output')
         
-        allOutputs = os.listdir(self.outputRootDir)
+        all_outputs = os.listdir(self.output_root_dir)
         
-        for i in allOutputs:
+        for i in all_outputs:
             if i not in SETTINGS.EXCLUSIONS:
-                self.newOutput(self, i)
+                self.new_output(self, i)
 
-    #add existing inputs from file system
-    def addInputs(self):
-        self.inputRootDir = os.path.join(str(self.location), 'input')
-        allInputs = os.listdir(self.inputRootDir)
-        for i in allInputs:
+    # add existing inputs from file system
+    def add_inputs(self):
+        self.input_root_dir = os.path.join(str(self.location), 'input')
+        all_inputs = os.listdir(self.input_root_dir)
+        for i in all_inputs:
             if i not in SETTINGS.EXCLUSIONS:
-                input = self.newInput(self.scene)
+                input = self.new_input(self.main_window.scene)
                 try:
-                    lookupDir = os.path.dirname(os.path.join(self.inputRootDir, os.readlink(os.path.join(self.inputRootDir, i))))
+                    lookup_dir = os.path.dirname(os.path.join(self.input_root_dir,
+                                                              os.readlink(os.path.join(self.input_root_dir, i))))
                 except:
-                    lookupDir = os.path.dirname(os.path.join(self.inputRootDir, os.path.join(self.inputRootDir, i)))
+                    lookup_dir = os.path.dirname(os.path.join(self.input_root_dir,
+                                                              os.path.join(self.input_root_dir, i)))
 
                 try:
-                    if not i in os.listdir(lookupDir) and os.path.basename(os.path.dirname(lookupDir)).startswith('LDR') == True:
-                        os.remove(os.path.join(self.inputRootDir, i))
+                    if i not in os.listdir(lookup_dir) \
+                            and os.path.basename(os.path.dirname(lookup_dir)).startswith('LDR') == True:
+                        os.remove(os.path.join(self.input_root_dir, i))
                         logging.warning('orphaned input found on node %s: %s removed' %(self.label, i))
 
                     else:
@@ -500,8 +525,8 @@ class node(QGraphicsItem, QObject):
                 except OSError, e:
                     print e
 
-    #add new dynamic input
-    def newInput(self, scene):
+    # add new dynamic input
+    def new_input(self, scene):
         input = portInput(self, scene, self.main_window)
         input.setParentItem(self)
 
@@ -509,56 +534,57 @@ class node(QGraphicsItem, QObject):
         
         self.inputMaxWidth.append(input.childrenBoundingRect().width())
         
-        self.resizeHeight()
+        self.resize_height()
 
     def update_meta_task(self):
         pos = self.scenePos()
-        meta_task = self.meta_task
+        # meta_task = self.meta_task
 
-        meta_task['pos_x'] = pos.x()
-        meta_task['pos_y'] = pos.y()
+        self.meta_task['pos_x'] = pos.x()
+        self.meta_task['pos_y'] = pos.y()
+        # self.meta_task['node_uuid'] = self.node_uuid
 
-        with open(self.meta_task_path, 'w') as outfile:
-            json.dump(meta_task, outfile)
+        with open(os.path.join(self.location, 'meta_task.json'), 'w') as outfile:
+            json.dump(self.meta_task, outfile)
             outfile.close()
         
-    def updatePropertyNodeXML(self):
+    def update_property_node_xml(self):
         pos = self.scenePos()
-        propertyNode = ET.parse(self.propertyNodePath)
-        propertyNodeRoot = propertyNode.getroot()
+        property_node = ET.parse(self.propertyNodePath)
+        property_node_root = property_node.getroot()
         
         try:
-            #new style positioning...
-            nodePosition = propertyNodeRoot.find('node')
+            # new style positioning...
+            node_position = property_node_root.find('node')
 
-            nodePosition.set('positionX', '%s' %pos.x())
-            nodePosition.set('positionY', '%s' %pos.y())
+            node_position.set('positionX', '%s' % pos.x())
+            node_position.set('positionY', '%s' % pos.y())
 
 
         except:
-            #old style positioning...
-            positionX = propertyNodeRoot.find('positionX')
-            positionY = propertyNodeRoot.find('positionY')
+            # old style positioning...
+            position_x = property_node_root.find('positionX')
+            position_y = property_node_root.find('positionY')
 
-            positionX.set('value', '%s' %pos.x())
-            positionY.set('value', '%s' %pos.y())
+            position_x.set('value', '%s' % pos.x())
+            position_y.set('value', '%s' % pos.y())
         
-        xmlDoc = open(self.propertyNodePath, 'w')
+        xml_doc = open(self.propertyNodePath, 'w')
         
-        xmlDoc.write('<?xml version="1.0"?>')
-        xmlDoc.write(ET.tostring(propertyNodeRoot))
-        xmlDoc.close()
+        xml_doc.write('<?xml version="1.0"?>')
+        xml_doc.write(ET.tostring(property_node_root))
+        xml_doc.close()
 
-    #add new dynamic output:
-    def newOutput(self, node, name):
+    # add new dynamic output:
+    def new_output(self, node, name):
         output = portOutput(self, name, self.main_window)
 
         if len(name.split('.')) > 1:
 
-            output.addText(node, name.split('.')[3])
+            output.add_text(node, name.split('.')[3])
 
         else:
-            output.addText(node, name)
+            output.add_text(node, name)
         
         self.outputs.append(output)
 
@@ -569,35 +595,35 @@ class node(QGraphicsItem, QObject):
         
         self.outputMaxWidth.append(output.childrenBoundingRect().width())
         
-        self.resizeHeight()
+        self.resize_height()
 
-    def newOutputButton(self):
-        outputButton = portOutputButton(self.main_window)
+    def new_output_button(self):
+        output_button = portOutputButton(self.main_window)
         
-        outputButton.setParentItem(self)
+        output_button.setParentItem(self)
     
-    def sendFromNodeToBox(self, text):
-        self.scene.textMessage.emit(text)
+    def send_from_node_to_box(self, text):
+        self.main_window.scene.textMessage.emit(text)
         
-    def getLabel(self):
+    def get_label(self):
         return self.label
 
     @property
     def _label(self):
         return self.label
 
-    def addText(self, text):
+    def add_text(self, text):
         self.setData(0, text)
-        nodeLabel = QGraphicsTextItem(text)
+        node_label = QGraphicsTextItem(text)
         self.label = text
-        nodeLabelColor = (QColor(255, 255, 255))
-        nodeLabelColor.setNamedColor('#080808')
-        nodeLabel.setDefaultTextColor(nodeLabelColor)
-        nodeLabel.setPos(QPointF(25, 0))
-        nodeLabel.setParentItem(self)
-        self.labelBoundingRect = nodeLabel.boundingRect().width()
+        node_label_color = (QColor(255, 255, 255))
+        node_label_color.setNamedColor('#080808')
+        node_label.setDefaultTextColor(node_label_color)
+        node_label.setPos(QPointF(25, 0))
+        node_label.setParentItem(self)
+        self.labelBoundingRect = node_label.boundingRect().width()
 
-        self.resizeWidth()
+        self.resize_width()
 
     def setApplicationColor(self):
         self.applicationColorItem.setNamedColor(self.task_color)

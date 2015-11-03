@@ -49,16 +49,17 @@ class Node(QGraphicsItem, QObject):
             self.propertyNodePath = os.path.join(self.location, 'propertyNode.xml')
 
         try:
+            # print self.meta_task
             self.node_uuid = self.meta_task['uuid']
         except KeyError, e:
             print 'this node has no uuid yet. giving it one.'
-            self.node_uuid = uuid.uuid1()
-            print self.node_uuid
-            self.meta_task['node_uuid'] = self.node_uuid
-            print self.meta_task
-            # with open(os.path.join(self.location, 'meta_task.json'), 'w') as outfile:
-            #     json.dump(self.meta_task, outfile)
-            #     outfile.close()
+            self.node_uuid = uuid.uuid4().hex
+            # print self.node_uuid
+            self.meta_task['uuid'] = self.node_uuid
+            # print self.meta_task
+            with open(os.path.join(self.location, 'meta_task.json'), 'w') as outfile:
+                json.dump(self.meta_task, outfile)
+                outfile.close()
 
         self.loaderSaver = os.path.basename(self.location)[:7]
         self.asset = os.path.dirname(self.location)
@@ -147,7 +148,7 @@ class Node(QGraphicsItem, QObject):
         except TypeError, e:
             print e
             try:
-                print self.propertyNodePath
+                # print self.propertyNodePath
                 self.property_node = ET.parse(self.propertyNodePath)
                 logging.info('new style reading xml')
                 node_position = self.property_node.findall('./node')
@@ -647,8 +648,8 @@ class Node(QGraphicsItem, QObject):
 
         else:
             for task in self.main_window._tasks:
-                print task[u'abbreviation']
-                print self.nodeTask
+                # print task[u'abbreviation']
+                # print self.nodeTask
                 if self.nodeTask == task[u'task']:
                     logging.info('task color description for task %s found' % task[u'abbreviation'])
                     self.task_color = task[u'color']

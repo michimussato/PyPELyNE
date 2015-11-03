@@ -721,6 +721,7 @@ class SceneView(QGraphicsScene):
                     meta_task['pos_x'] = pos.x()
                     meta_task['pos_y'] = pos.y()
                     meta_task['task'] = 'LDR'
+                    meta_task['uuid'] = uuid.uuid4().hex
                     meta_task['operating_system'] = self.main_window.operating_system
                     meta_task['creator'] = self.main_window.user
 
@@ -754,6 +755,7 @@ class SceneView(QGraphicsScene):
                 meta_task['pos_y'] = pos.y()
                 meta_task['task'] = 'SVR'
                 meta_task['operating_system'] = self.main_window.operating_system
+                meta_task['uuid'] = uuid.uuid4().hex
                 meta_task['creator'] = self.main_window.user
 
                 with open(meta_task_path, 'w') as outfile:
@@ -795,6 +797,7 @@ class SceneView(QGraphicsScene):
                 meta_task['creator'] = self.main_window.user
                 meta_task['operating_system'] = self.main_window.operating_system
                 meta_task['task'] = self.main_window.tasks[task_index]['task']
+                meta_task['uuid'] = uuid.uuid4().hex
 
                 meta_tool['family'] = tool_data['family']
                 meta_tool['architecture_fallback'] = tool_data['architecture_fallback']

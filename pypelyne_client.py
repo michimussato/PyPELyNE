@@ -519,7 +519,7 @@ class PypelyneMainWindow(QMainWindow):
  
                 executable[:] = []
  
-        print 'self.tool_items', self.tool_items
+        # print 'self.tool_items', self.tool_items
         return self.tool_items
  
     def receive_serialized(self, sock):
@@ -1224,7 +1224,7 @@ class PypelyneMainWindow(QMainWindow):
                             pos_x = node_position[0].items()[0][1]
                             pos_y = node_position[0].items()[1][1]
  
-                            print pos_x, pos_y
+                            # print pos_x, pos_y
  
                             try:
                                 task = node_task[0].items()[1][1]
@@ -1632,7 +1632,7 @@ class PypelyneMainWindow(QMainWindow):
 
                 arguments.append(dst)
 
-                print dict_combobox['executable'], arguments
+                # print dict_combobox['executable'], arguments
  
                 process.start(dict_combobox['executable'], arguments)
                 os.chdir(current_dir)

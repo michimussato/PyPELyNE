@@ -1325,9 +1325,9 @@ class PypelyneMainWindow(QMainWindow):
         self.compute_connections()
  
     def getCurrentProject(self):
-        currentProject = str(self.projectComboBox.currentText())
-        self.assetsRoot = os.path.join(self.projects_root, currentProject)
-        return currentProject
+        current_project = str(self.projectComboBox.currentText())
+        self.assetsRoot = os.path.join(self.projects_root, current_project)
+        return current_project
          
     @property
     def _current_project(self):

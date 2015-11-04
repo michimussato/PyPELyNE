@@ -61,12 +61,16 @@ class Node(QGraphicsItem, QObject):
                 json.dump(self.meta_task, outfile)
                 outfile.close()
 
+        self.type = self.meta_task['type']
+        self.tool = self.meta_tool['name']
+        # self.task = meta_task['type']
+
         self.loaderSaver = os.path.basename(self.location)[:7]
         self.asset = os.path.dirname(self.location)
         self.project = os.path.dirname(os.path.dirname(os.path.dirname(self.asset)))
 
-        self.now = datetime.datetime.now()
-        self.nowStr = str(self.now)
+        # self.now = datetime.datetime.now()
+        # self.nowStr = str(self.now)
         self.rect = QRectF(0, 0, 200, 40)
         self.outputMaxWidth = []
         self.inputMaxWidth = []
@@ -78,16 +82,18 @@ class Node(QGraphicsItem, QObject):
         self.outputs = []
         self.setFlags(QGraphicsItem.ItemIsSelectable | QGraphicsItem.ItemIsMovable)
         self.hovered = False
-        self.setData(1, self.now)
-        self.setData(2, 'node')
+        # self.setData(1, self.now)
+        # self.setData(2, 'node')
         # self.setToolTip('haha')
         self.set_node_position()
 
         self.main_window.scene.clearSelection()
         self.labelBoundingRect = 0.0
         
-        if not self.loaderSaver.startswith('LDR'):
+        if not self.type == 'LDR':
             self.inputPort = self.new_input(self.main_window.scene)
+
+
         
         self.label = None
         
@@ -99,7 +105,7 @@ class Node(QGraphicsItem, QObject):
         self.taskColorItem = QColor(0, 0, 0)
         self.applicationColorItem = QColor(0, 0, 0)
 
-        if not self.loaderSaver.startswith('SVR') and not self.loaderSaver.startswith('LDR'):
+        if not self.type == 'SVR' and not self.type =='LDR':
             self.new_output_button()
 
         self.widgetMenu = None
@@ -126,7 +132,7 @@ class Node(QGraphicsItem, QObject):
             self.nodeArch = self.meta_tool['architecture']
             # self.node_uuid = self.meta_tool['node_uuid']
             # print self.meta_tool
-            self.nodeTask = self.meta_task['task']
+            self.nodeTask = self.meta_task['type']
             self.node_creator = self.meta_task['creator']
             self.node_operating_system = self.meta_task['operating_system']
         except TypeError, e:
@@ -614,7 +620,7 @@ class Node(QGraphicsItem, QObject):
         return self.label
 
     def add_text(self, text):
-        self.setData(0, text)
+        # self.setData(0, text)
         node_label = QGraphicsTextItem(text)
         self.label = text
         node_label_color = (QColor(255, 255, 255))

@@ -15,6 +15,8 @@ import json
 # http://stackoverflow.com/questions/384076/how-can-i-color-python-logging-output
 import logging
 from operator import *
+
+# the mouse events need to go to qgraphicsview, which now comes directly from the ui file.
  
 import sip
 sip.setapi('QString', 2)
@@ -1781,28 +1783,68 @@ class PypelyneMainWindow(QMainWindow):
             self.nodesWindow.setVisible(False)
         else:
             self.nodesWindow.setVisible(True)
- 
+
+    # def mouseMoveEvent(self, event):
+    #     self.setDragMode(self.RubberBandDrag)
+    #     event_pos_scene = event.pos()
+    #     previous_pos = self.mouse_position_previous
+    #     delta = previous_pos - event_pos_scene
+    #
+    #     mouse_modifiers = QtGui.QApplication.mouseButtons()
+    #     keyboard_modifiers = QtGui.QApplication.keyboardModifiers()
+    #
+    #     if mouse_modifiers == QtCore.Qt.MidButton \
+    #             or keyboard_modifiers == QtCore.Qt.ControlModifier and mouse_modifiers == QtCore.Qt.LeftButton:
+    #         self.setDragMode(self.NoDrag)
+    #         group = self.scene.createItemGroup(self.scene.node_items)
+    #         self.point.setPos(event_pos_scene)
+    #         group.translate(-1*delta.x(), -1*delta.y())
+    #         self.scene.destroyItemGroup(group)
+    #         # self.setDragMode(self.RubberBandDrag)
+    #
+    #         # return
+    #
+    #     self.mouse_position_previous = event_pos_scene
+    #
+    #     return QtGui.QGraphicsView.mouseMoveEvent(self, event)
+
+    # def wheelEvent(self, event):
+    #     group = self.scene.createItemGroup(self.scene.node_items)
+    #
+    #     # absolute pos of mouse cursor in scene
+    #     event_pos_scene = self.mapToScene(event.pos())
+    #
+    #     self.point.setPos(event_pos_scene)
+    #
+    #     group.setTransformOriginPoint(event_pos_scene)
+    #
+    #     if event.delta() > 0:
+    #         self.point.setScale(self.point.scale() * (1+SETTINGS.ZOOM_INCREMENT))
+    #         group.setScale(group.scale() + SETTINGS.ZOOM_INCREMENT)
+    #         # self.scene.item_group.setScale(group.scale() + SETTINGS.ZOOM_INCREMENT)
+    #         self.scene.global_scale *= (1+SETTINGS.ZOOM_INCREMENT)
+    #     else:
+    #         self.point.setScale(self.point.scale() * (1-SETTINGS.ZOOM_INCREMENT))
+    #         group.setScale(group.scale() - SETTINGS.ZOOM_INCREMENT)
+    #         # self.scene.item_group.setScale(group.scale() - SETTINGS.ZOOM_INCREMENT)
+    #         self.scene.global_scale *= (1-SETTINGS.ZOOM_INCREMENT)
+    #
+    #     self.scene.destroyItemGroup(group)
+    #
+    #     return QtGui.QGraphicsView.wheelEvent(self, event)
+
     def graphicsView_wheelEvent(self, event):
-         
-#         numSteps = event.delta() / 15 / 8
-#
-#         if numSteps == 0:
-#             event.ignore()
-#
-#         sc = 1.25 * numSteps
-#         self.zoom(sc, self.mapToScene(event.pos()))
-#         event.accept()
- 
+
         factor = 1.15
-           
+
         #self.nodeView.centerOn()
-           
+
         #print 'event.delta() = %s' %event.delta()
-           
+
         if event.delta() > 0:
             self.nodeView.scale(factor, factor)
             self.nodeView.centerOn(event.pos())
-               
+
         else:
             self.nodeView.scale(1.0 / factor, 1.0 / factor)
             self.nodeView.centerOn(event.pos())
@@ -1812,8 +1854,16 @@ class PypelyneMainWindow(QMainWindow):
 #         scale(factor, factor)
 #         centerOn(centerPoint)
  
-    def graphicsView_resizeEvent(self, event):
-        pass
+    # def graphicsView_resizeEvent(self, event):
+    #     pass
+
+    # def resizeEvent(self, event):
+    #     self.scene.setSceneRect(0, 0, self.width(), self.height())
+    #     self.scene.base_rect.setRect(QRectF(self.rect()))
+    #
+    #     print 'test'
+    #
+    #     return QGraphicsView.resizeEvent(self.ui.nodeView, event)
  
     def setNodeMenuWidget(self):
         print "duude"

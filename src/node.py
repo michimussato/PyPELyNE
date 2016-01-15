@@ -62,7 +62,8 @@ class Node(QGraphicsItem, QObject):
                 outfile.close()
 
         self.type = self.meta_task['type']
-        self.tool = self.meta_tool['name']
+        # just commented this out. don't know what it's doing:
+        # self.tool = self.meta_tool['name']
         # self.task = meta_task['type']
 
         self.loaderSaver = os.path.basename(self.location)[:7]

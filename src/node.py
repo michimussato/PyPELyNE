@@ -63,15 +63,8 @@ class Node(QGraphicsItem, QObject):
                 json.dump(self.meta_task, outfile)
                 outfile.close()
 
-<<<<<<< HEAD
-        self.type = self.meta_task['type']
-        # just commented this out. don't know what it's doing:
-        # self.tool = self.meta_tool['name']
-        # self.task = meta_task['type']
-=======
         # print self.meta_task
         # print self.meta_tool
->>>>>>> master
 
         self.loaderSaver = os.path.basename(self.location)[:7]
         self.asset = os.path.dirname(self.location)
@@ -143,12 +136,8 @@ class Node(QGraphicsItem, QObject):
             self.nodeArch = self.meta_tool['architecture']
             # self.node_uuid = self.meta_tool['node_uuid']
             # print self.meta_tool
-<<<<<<< HEAD
-            self.nodeTask = self.meta_task['type']
-=======
             # print self.meta_task['task']
             self.nodeTask = self.meta_task['task']
->>>>>>> master
             self.node_creator = self.meta_task['creator']
             self.node_operating_system = self.meta_task['operating_system']
         except Exception, e:

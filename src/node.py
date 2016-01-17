@@ -28,6 +28,8 @@ class Node(QGraphicsItem, QObject):
 
         self.main_window = main_window
         self.location = node_root
+        self.meta_task = None
+        self.meta_tool = None
 
         try:
             try:
@@ -61,10 +63,15 @@ class Node(QGraphicsItem, QObject):
                 json.dump(self.meta_task, outfile)
                 outfile.close()
 
+<<<<<<< HEAD
         self.type = self.meta_task['type']
         # just commented this out. don't know what it's doing:
         # self.tool = self.meta_tool['name']
         # self.task = meta_task['type']
+=======
+        # print self.meta_task
+        # print self.meta_tool
+>>>>>>> master
 
         self.loaderSaver = os.path.basename(self.location)[:7]
         self.asset = os.path.dirname(self.location)
@@ -110,6 +117,7 @@ class Node(QGraphicsItem, QObject):
             self.new_output_button()
 
         self.widgetMenu = None
+        self.task_color = SETTINGS.DEFAULT_TASK_COLOR
         self.setTaskColor()
         self.setApplicationColor()
 
@@ -127,16 +135,23 @@ class Node(QGraphicsItem, QObject):
 
     def getApplicationInfo(self):
         try:
+            # print self.meta_tool
+            # print self.meta_task
             self.nodeVersion = self.meta_tool['release_number']
             self.nodeVendor = self.meta_tool['vendor']
             self.nodeFamily = self.meta_tool['family']
             self.nodeArch = self.meta_tool['architecture']
             # self.node_uuid = self.meta_tool['node_uuid']
             # print self.meta_tool
+<<<<<<< HEAD
             self.nodeTask = self.meta_task['type']
+=======
+            # print self.meta_task['task']
+            self.nodeTask = self.meta_task['task']
+>>>>>>> master
             self.node_creator = self.meta_task['creator']
             self.node_operating_system = self.meta_task['operating_system']
-        except TypeError, e:
+        except Exception, e:
             print 'loader or saver? (%s)' % e
 
     def queryApplicationInfo(self):
@@ -163,8 +178,8 @@ class Node(QGraphicsItem, QObject):
                 pos_x = node_position[0].items()[0][1]
                 pos_y = node_position[0].items()[1][1]
 
-            except:
-                logging.info('old style reading xml')
+            except Exception, e:
+                logging.info('old style reading xml: %s' % e)
                 pos_x = self.property_node.findall('./positionX')
                 pos_y = self.property_node.findall('./positionY')
 
@@ -568,8 +583,7 @@ class Node(QGraphicsItem, QObject):
             node_position.set('positionX', '%s' % pos.x())
             node_position.set('positionY', '%s' % pos.y())
 
-
-        except:
+        except Exception, e:
             # old style positioning...
             position_x = property_node_root.find('positionX')
             position_y = property_node_root.find('positionY')
@@ -637,7 +651,7 @@ class Node(QGraphicsItem, QObject):
         self.applicationColorItem.setNamedColor(self.task_color)
 
     def setTaskColor(self):
-        self.task_color = SETTINGS.DEFAULT_TASK_COLOR
+
 
         if os.path.basename(self.location)[:7].startswith('LDR'):
             if os.path.basename(self.location)[:7].endswith('LIB'):
@@ -655,10 +669,14 @@ class Node(QGraphicsItem, QObject):
 
         else:
             for task in self.main_window._tasks:
+
+                # print self.nodeTask
                 # print task[u'abbreviation']
                 # print self.nodeTask
                 if self.nodeTask == task[u'task']:
+                    # print 'task =', task
                     logging.info('task color description for task %s found' % task[u'abbreviation'])
+                    # print 'task color description for task %s found' % task[u'abbreviation']
                     self.task_color = task[u'color']
                     break
 

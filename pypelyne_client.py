@@ -120,10 +120,10 @@ class PypelyneMainWindow(QMainWindow):
             else:
                 self.screenCastExec = os.path.join(self.pypelyne_root, SETTINGS.SCREEN_CAST_EXEC_WIN)
             if len(SETTINGS.SEQUENCE_EXEC_RV_WIN) <= 0 or not os.path.exists(SETTINGS.SEQUENCE_EXEC_RV_WIN):
-                self.sequenceExec = SETTINGS.SEQUENCE_EXEC_WIN
+                self.sequence_exec = SETTINGS.SEQUENCE_EXEC_WIN
                 self.rv = False
             else:
-                self.sequenceExec = SETTINGS.SEQUENCE_EXEC_RV_WIN
+                self.sequence_exec = SETTINGS.SEQUENCE_EXEC_RV_WIN
                 self.rv = True
         elif self.current_platform == "Darwin":
             logging.info('welcome to pypelyne for darwin')
@@ -137,10 +137,10 @@ class PypelyneMainWindow(QMainWindow):
             else:
                 self.screenCastExec = os.path.join(self.pypelyne_root, SETTINGS.SCREEN_CAST_EXEC_DARWIN)
             if len(SETTINGS.SEQUENCE_EXEC_RV_DARWIN) <= 0 or not os.path.exists(SETTINGS.SEQUENCE_EXEC_RV_DARWIN):
-                self.sequenceExec = SETTINGS.SEQUENCE_EXEC_DARWIN
+                self.sequence_exec = SETTINGS.SEQUENCE_EXEC_DARWIN
                 self.rv = False
             else:
-                self.sequenceExec = SETTINGS.SEQUENCE_EXEC_RV_DARWIN
+                self.sequence_exec = SETTINGS.SEQUENCE_EXEC_RV_DARWIN
                 self.rv = True
         elif self.current_platform == "Linux":
             logging.info('linux not fully supported')
@@ -160,10 +160,10 @@ class PypelyneMainWindow(QMainWindow):
             else:
                 self.screenCastExec = os.path.join(self.pypelyne_root, SETTINGS.SCREEN_CAST_EXEC_LINUX)
             if len(SETTINGS.SEQUENCE_EXEC_RV_LINUX) <= 0 or not os.path.exists(SETTINGS.SEQUENCE_EXEC_RV_LINUX):
-                self.sequenceExec = SETTINGS.SEQUENCE_EXEC_LINUX
+                self.sequence_exec = SETTINGS.SEQUENCE_EXEC_LINUX
                 self.rv = False
             else:
-                self.sequenceExec = SETTINGS.SEQUENCE_EXEC_RV_LINUX
+                self.sequence_exec = SETTINGS.SEQUENCE_EXEC_RV_LINUX
                 self.rv = True
         else:
             print 'platform unknown. not supported. bye.'
@@ -712,7 +712,7 @@ class PypelyneMainWindow(QMainWindow):
  
                 elif os.path.splitext(file)[1] not in SETTINGS.AUDIO_EXTENSIONS:
                     logging.warning('non audio file %s found in %s' % (file, dir))
- 
+
                 else:
                     if not os.path.relpath(dir, SETTINGS.AUDIO_FOLDER_DARWIN) == '.':
                         q_menu_name = os.path.relpath(dir, SETTINGS.AUDIO_FOLDER_DARWIN)
@@ -720,17 +720,17 @@ class PypelyneMainWindow(QMainWindow):
                         if q_menu_name not in q_menu_titles:
                             self.menuAlbum = self.player_context_menu.addMenu(q_menu_name.replace(os.sep, ' - '))
                             q_menu_titles.append(q_menu_name)
- 
+
                             self.menuAlbum.addAction(file, self.play_audio_callback(os.path.join(dir, file)))
                             self.audio_folder_content.append(os.path.join(dir, file))
                         else:
                             self.menuAlbum.addAction(file, self.play_audio_callback(os.path.join(dir, file)))
                             self.audio_folder_content.append(os.path.join(dir, file))
- 
+
                     else:
                         self.player_context_menu.addAction(file, self.play_audio_callback(os.path.join(dir, file)))
                         self.audio_folder_content.append(os.path.join(dir, file))
- 
+
         self.player_ui.pushButtonPlayStop.setText('play')
         self.player_exists = False
  
@@ -752,6 +752,7 @@ class PypelyneMainWindow(QMainWindow):
             random.shuffle(self.audio_folder_content, random.random)
  
             if not track:
+                print track
                 track_id = self.audio_folder_content.index(track)
 
             self.mlp = MediaListPlayer()
@@ -1169,7 +1170,9 @@ class PypelyneMainWindow(QMainWindow):
     def _current_content_item(self):
         return str(self.current_content_item)
  
-    def get_content(self, button = None, node_label = None):
+    def get_content(self, button=None, node_label=None):
+
+        print 'get_content'
  
         if button is not None:
             button_text = button.text()
@@ -1196,14 +1199,28 @@ class PypelyneMainWindow(QMainWindow):
  
         content_root = os.path.join(self.projects_root, self._current_project, 'content', content)
         content_items = os.listdir(os.path.join(content_root, str(button_text)))
+
+        # print content_items
  
         for node_item in content_items:
             if node_item not in SETTINGS.EXCLUSIONS:
-                if os.path.isdir(os.path.join(content_root, str(button_text), node_item)):
-                    node_path = os.path.join(content_root, str(button_text), node_item)
+                print node_item
+
+                node_path = os.path.join(content_root, str(button_text), node_item)
+
+                if os.path.isdir(node_path):
+                    # print node_path
+                    # node_path = os.path.join(content_root, str(button_text), node_item)
                     # convert xml to json if property_node.xml is found
-                    property_node_path = os.path.join(node_path, 'property_node.xml')
-                    if os.path.exists(property_node_path):
+
+                    if os.path.exists(os.path.join(node_path, 'property_node.xml')):
+                        property_node_path = os.path.join(node_path, 'property_node.xml')
+                    elif os.path.exists(os.path.join(node_path, 'propertyNode.xml')):
+                        property_node_path = os.path.join(node_path, 'propertyNode.xml')
+                    else:
+                        property_node_path = None
+                    if property_node_path is not None and os.path.exists(property_node_path):
+                        print 'converting xml to json'
                         new_name = os.path.join(node_path, 'converted_propertyNode.xml')
  
                         property_node = ET.parse(property_node_path)
@@ -1236,7 +1253,6 @@ class PypelyneMainWindow(QMainWindow):
                                 #     if tab['abbreviation'] == node_item.split('__')[0].split('_')[0]:
                                 #         task = tab['abbreviation']
  
- 
                             meta_task['pos_x'] = pos_x
                             meta_task['pos_y'] = pos_y
                             meta_task['creator'] = 'nobody'
@@ -1250,47 +1266,51 @@ class PypelyneMainWindow(QMainWindow):
                             logging.info('generating meta_task.json successful')
                             rename = True
  
-                        except:
-                            logging.warning('generating meta_task.json failed')
+                        except Exception, e:
+                            logging.warning('generating meta_task.json failed: %s' % e)
                             rename = False
  
                         try:
                             logging.info('generating meta_tool.json')
- 
+
                             arch = node_task[0].items()[0][1]
                             # print arch
                             family = node_task[0].items()[4][1]
                             # print family
+                            # print self._tools
                             for tool in self._tools:
-                                # print tool
+                                print tool
                                 if tool['family'] == family:
                                     abbreviation = tool['abbreviation']
-                                else:
-                                    print 'family %s not available' % family
-                                    # rename = False
-                                    raise
+                            if family == 'Deadline':
+                                print 'deadline'
+                                abbreviation = 'DDL'
+                                # else:
+                                #     # print 'family %s not available' % family
+                                #     # rename = False
+                                #     raise Exception('family %s not available' % family)
                             # abbreviation = 'UVLayout'
- 
+
                             vendor = node_task[0].items()[2][1]
                             version = node_task[0].items()[3][1]
- 
+
                             meta_tool['family'] = family
                             meta_tool['architecture_fallback'] = False
                             meta_tool['abbreviation'] = abbreviation
                             meta_tool['architecture'] = arch
                             meta_tool['vendor'] = vendor
                             meta_tool['release_number'] = version
- 
+
                             with open(meta_tool_path, 'w') as outfile:
                                 json.dump(meta_tool, outfile)
                                 outfile.close()
- 
+
                             logging.info('generating meta_tool.json successful')
- 
+
                             rename = True
  
-                        except:
-                            logging.warning('generating meta_tool.json failed')
+                        except Exception, e:
+                            logging.warning('generating meta_tool.json failed: %s' % e)
                             # rename = False
  
                         if rename:
@@ -1298,18 +1318,18 @@ class PypelyneMainWindow(QMainWindow):
                                 logging.info('renaming %s' % property_node_path)
                                 os.rename(property_node_path, new_name)
  
-                            except:
-                                logging.warning('renaming %s failed' % property_node_path)
+                            except Exception, e:
+                                logging.warning('renaming %s failed: %s' % (property_node_path, e))
                         else:
                             print 'reverting...'
                             try:
                                 os.remove(meta_task_path)
-                            except:
-                                pass
+                            except Exception, e:
+                                print e
                             try:
                                 os.remove(meta_tool_path)
-                            except:
-                                pass
+                            except Exception, e:
+                                print e
 
                     new_node_root = os.path.join(content_root, str(button_text), node_item)
  
@@ -1353,7 +1373,7 @@ class PypelyneMainWindow(QMainWindow):
                 for i in os.listdir(content_root):
                     if i not in SETTINGS.EXCLUSIONS:
                         content.append(i)
-            except WindowsError, e:
+            except Exception, e:
                 logging.warning('no %s root found: %s' % (self.content_tabs[self.content_tabs.index(tab)]['content'], e))
  
             self.group_boxes[self.content_tabs.index(tab)] = QGroupBox(self._current_project)
